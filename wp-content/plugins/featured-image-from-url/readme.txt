@@ -157,6 +157,9 @@ Features:
 
 == Changelog ==
 
+= 2.3.3 =
+* Improvement: added usage examples of WP All Import and REST API.
+
 = 2.3.2 =
 * Improvement: sanitize the URL before saving.
 
@@ -522,6 +525,9 @@ was removed. To finish, a Premium version is now been presented.
 * It's the first and only version so far.
 
 == Upgrade Notice ==
+
+= 2.3.3 =
+* Improvement: added usage examples of WP All Import and REST API.
 
 = 2.3.2 =
 * Improvement: sanitize the URL before saving.

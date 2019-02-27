@@ -48,7 +48,8 @@
 
 th, td {
     border-bottom: 1px solid #ddd;
-    padding-right: 32px;
+    padding-right: 8px;
+    padding-left: 8px;
     font-weight: normal;
 }
 
