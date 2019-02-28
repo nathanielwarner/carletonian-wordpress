@@ -3502,6 +3502,26 @@ Customizations for Carleton
   margin-bottom: 1.125em;
 }
 
+#menu-primary-container {
+  background: #ffffff;
+}
+
 #menu-primary {
   background: #ffffff;
+}
+
+.menu-primary-items a:link {
+  color: #000000;
+}
+
+.menu-primary-items a:visited {
+  color: #000000;
+}
+
+.menu-secondary-items a:link {
+  color: #000000;
+}
+
+.menu-secondary-items a:visited {
+  color: #000000;
 }
