@@ -3525,3 +3525,11 @@ Customizations for Carleton
 .menu-secondary-items a:visited {
   color: #000000;
 }
+
+.site-header .social-media-icons a:link {
+  color: #000000;
+}
+
+.site-header .social-media-icons a:visited {
+  color: #000000;
+}
