@@ -3501,3 +3501,7 @@ Customizations for Carleton
   line-height: 1.286;
   margin-bottom: 1.125em;
 }
+
+#menu-primary {
+  background: #ffffff;
+}
