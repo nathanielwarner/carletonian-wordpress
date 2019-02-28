@@ -350,23 +350,4 @@ jQuery(document).ready(function($){
             }, 600);
         });
     }
-
-
-    // ===== Make sticky header smaller when you scroll past it ==== //
-
-    $(this).scroll(function() {
-        if ($(this).scrollTop() > 0) {
-            $('#site-header').css('font-size', '75%');
-            $('#title-container .custom-logo').css('max-width', '300px');
-            $('#menu-secondary-container').addClass('hidden-elem');
-            $('.date').addClass('hidden-elem');
-            $('.tagline').addClass('hidden-elem');
-        } else if ($(this).scrollTop() == 0) {
-            $('#site-header').css('font-size', '100%');
-            $('#title-container .custom-logo').css('max-width', '600px');
-            $('#menu-secondary-container').removeClass('hidden-elem');
-            $('.date').removeClass('hidden-elem');
-            $('.tagline').removeClass('hidden-elem');
-        }
-    })
 });

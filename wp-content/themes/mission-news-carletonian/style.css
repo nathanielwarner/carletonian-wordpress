@@ -3480,8 +3480,6 @@ Customizations for Carleton
 #title-container .custom-logo {
   width: 100%;
   max-width: 600px;
-  transition-property: max-width;
-  transition: 1s;
 }
 
 .footer-title-container .custom-logo {
@@ -3491,23 +3489,4 @@ Customizations for Carleton
 
 .design-credit {
   display: none;
-}
-
-#site-header {
-  top: 0;
-  z-index: 999;
-  background: #ffffff;
-  position: -webkit-sticky;
-  position: sticky;
-  font-size: 100%;
-  transition-property: font-size;
-  transition: 1s;
-}
-
-#overflow-container {
-  overflow: visible;
-}
-
-.hidden-elem {
-  display: none !important;
 }
