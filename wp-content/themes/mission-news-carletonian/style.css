@@ -3490,3 +3490,14 @@ Customizations for Carleton
 .design-credit {
   display: none;
 }
+
+.widgettitle {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 700;
+  color: #666666;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  font-size: 0.875em;
+  line-height: 1.286;
+  margin-bottom: 1.125em;
+}
