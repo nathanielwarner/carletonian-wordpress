@@ -10,7 +10,7 @@
  * Plugin Name:       WordPress Carousel
  * Plugin URI:        https://shapedplugin.com/plugin/wordpress-carousel-pro/
  * Description:       The Most Powerful and User-friendly WordPress Carousel Plugin. Create beautiful carousels in minutes using Images, Posts, WooCommerce Products etc.
- * Version:           2.0.0
+ * Version:           2.0.1
  * Author:            ShapedPlugin
  * Author URI:        https://shapedplugin.com/
  * License:           GPL-2.0+
@@ -119,7 +119,7 @@ class SP_WP_Carousel_Free {
 	 */
 	public function setup() {
 		$this->plugin_name = 'wp-carousel-free';
-		$this->version     = '2.0.0';
+		$this->version     = '2.0.1';
 		$this->define_constants();
 		$this->includes();
 		$this->load_dependencies();

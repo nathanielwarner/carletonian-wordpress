@@ -100,8 +100,8 @@ $options[] = array(
 					'id'         => 'number_of_total_posts',
 					'type'       => 'number',
 					'title'      => __( 'Total Posts', 'wp-carousel-free' ),
-					'desc'       => __( 'Number of total posts to show. Default value is 50.', 'wp-carousel-free' ),
-					'default'    => '50',
+					'desc'       => __( 'Number of total posts to show. Default value is 10.', 'wp-carousel-free' ),
+					'default'    => '10',
 					'attributes' => array(
 						'min' => 0,
 					),
@@ -134,8 +134,8 @@ $options[] = array(
 					'id'         => 'wpcp_total_products',
 					'type'       => 'number',
 					'title'      => __( 'Total Products', 'wp-carousel-free' ),
-					'desc'       => __( 'Number of total products to display. Default value is 50.', 'wp-carousel-free' ),
-					'default'    => '50',
+					'desc'       => __( 'Number of total products to display. Default value is 10.', 'wp-carousel-free' ),
+					'default'    => '10',
 					'attributes' => array(
 						'min' => 1,
 					),
