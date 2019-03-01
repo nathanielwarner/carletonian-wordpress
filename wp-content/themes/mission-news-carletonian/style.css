@@ -3561,6 +3561,47 @@ Customizations for Carleton
   }
 }
 
+.wpp-list li .wpp-post-title:link {
+  font-family: "PT Serif", serif;
+  font-style: italic;
+  font-weight: bolder;
+  color: #000000;
+  text-decoration: none !important;
+}
+
+.wpp-list li .wpp-post-title:visited {
+  font-family: "PT Serif", serif;
+  font-style: italic;
+  font-weight: bolder;
+  color: #000000;
+  text-decoration: none !important;
+}
+
+.wpp-list li .wpp-post-title:hover {
+  font-family: "PT Serif", serif;
+  font-style: italic;
+  font-weight: bolder;
+  color: #666666;
+  text-decoration: none !important;
+}
+
+.wpp-list li span {
+  display: block;
+  font-size: 0.80em;
+  font-family: "PT Serif", serif;
+  text-transform: uppercase;
+  color: #666666;
+}
+
+.post-header a {
+  font-style: italic;
+  font-weight: bold;
+}
+
+.rows-excerpt .post-header a {
+  font-size: 1.30em;
+}
+
 /*.wp-block-columns .has-2-columns::after {
   content: '';
   display: block;
