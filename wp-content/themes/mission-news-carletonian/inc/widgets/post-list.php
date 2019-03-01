@@ -104,7 +104,13 @@ class ct_mission_news_post_list extends WP_Widget {
 		echo '<div class="style-' . esc_attr( $instance['style'] ) . '">';
 		if ( !empty( $instance['title'] ) ) {
 			echo $args['before_title'];
+			if ( !empty($instance['category']) ) {
+                echo '<a href="' . get_category_link($instance['category']) . '">';
+            }
 			echo esc_html( $instance['title'] );
+            if ( !empty($instance['category']) ) {
+                echo '</a>';
+            }
 			echo $args['after_title'];
 		}
 		if ( $the_query->have_posts() ) {

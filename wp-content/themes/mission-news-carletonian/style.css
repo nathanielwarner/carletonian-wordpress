@@ -3492,14 +3492,17 @@ Customizations for Carleton
 }
 
 .widgettitle {
+  line-height: 1.286;
+  margin-bottom: 1.125em;
+}
+
+.widgettitle a {
   font-family: "PT Sans", sans-serif;
+  font-size: 0.875em;
   font-weight: 700;
   color: #666666;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  font-size: 0.875em;
-  line-height: 1.286;
-  margin-bottom: 1.125em;
 }
 
 #menu-primary-container {
@@ -3535,6 +3538,14 @@ Customizations for Carleton
 }
 
 @media all and (min-width: 50em) {
+
+  #news::before {
+    content: '';
+    display: block;
+    clear: both;
+    border-top: 1px solid #a9a9a9;
+  }
+
   #news::after {
     content: '';
     display: block;
