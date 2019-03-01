@@ -3464,10 +3464,6 @@ Customizations for Carleton
   display: none;
 }
 
-.archive-header {
-  display: none;
-}
-
 .archive .featured-image img {
   width: 100%;
   max-width: 600px;
@@ -3477,9 +3473,15 @@ Customizations for Carleton
   text-align: center;
 }
 
+@media (min-width: 50em) {
+  .top-nav {
+    margin-bottom: 0.0em;
+  }
+}
+
 #title-container .custom-logo {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
 }
 
 .footer-title-container .custom-logo {
@@ -3543,14 +3545,14 @@ Customizations for Carleton
     content: '';
     display: block;
     clear: both;
-    border-top: 1px solid #a9a9a9;
+    border-top: 1px solid #DCDCDC;
   }
 
   #news::after {
     content: '';
     display: block;
     clear: both;
-    border-bottom: 1px solid #a9a9a9;
+    border-bottom: 1px solid #DCDCDC;
   }
 
   #news .post-item {
