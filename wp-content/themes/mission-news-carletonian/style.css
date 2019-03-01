@@ -3604,9 +3604,29 @@ Customizations for Carleton
   font-size: 1.30em;
 }
 
-/*.wp-block-columns .has-2-columns::after {
-  content: '';
-  display: block;
-  clear: both;
-  border-bottom: 1px solid #a9a9a9;
-}*/
+.slick-slide .rpc-title:link {
+  font-size: 1.30em;
+  font-family: "PT Serif", serif;
+  font-style: italic;
+  font-weight: bolder;
+  color: #000000;
+  text-decoration: none !important;
+}
+
+.slick-slide .rpc-title:visited {
+  font-size: 1.30em;
+  font-family: "PT Serif", serif;
+  font-style: italic;
+  font-weight: bolder;
+  color: #000000;
+  text-decoration: none !important;
+}
+
+.slick-slide .rpc-title:hover {
+  font-size: 1.30em;
+  font-family: "PT Serif", serif;
+  font-style: italic;
+  font-weight: bolder;
+  color: #666666;
+  text-decoration: none !important;
+}
