@@ -3533,3 +3533,26 @@ Customizations for Carleton
 .site-header .social-media-icons a:visited {
   color: #000000;
 }
+
+@media all and (min-width: 50em) {
+  #news::after {
+    content: '';
+    display: block;
+    clear: both;
+    border-bottom: 1px solid #a9a9a9;
+  }
+
+  #news .post-item {
+    width: 30%;
+    float: left;
+    margin-right: 2%;
+    display: block;
+  }
+}
+
+/*.wp-block-columns .has-2-columns::after {
+  content: '';
+  display: block;
+  clear: both;
+  border-bottom: 1px solid #a9a9a9;
+}*/
