@@ -608,13 +608,28 @@ class WPP_Output {
      * @return	string
      */
     private function get_author( stdClass $post_object, $post_id ) {
+        $html = '';
 
-        $author = ( $this->options['stats_tag']['author'] )
-          ? get_the_author_meta( 'display_name', $post_object->uid != $post_id ? get_post_field( 'post_author', $post_id ) : $post_object->uid )
-          : "";
+        if ($this->options['stats_tag']['author']) {
+            if (function_exists('coauthors_posts_links')) {
+                $authors = get_coauthors($post_id);
+                foreach ($authors as $author) {
+                    $html .= '<a href="' . get_author_posts_url($author->get('ID')) . '">';
+                    $html .= esc_html($author->get('display_name'));
+                    $html .= '</a>';
+                    if (next($authors)) {
+                        $html .= ' and ';
+                    }
+                }
+            } else {
+                $author_id = $post_object->uid;
+                $author_link = get_author_posts_url($author_id);
+                $author_name = get_the_author_meta('display_name', $author_id);
+                $html = '<a href="' . $author_link . '">' . $author_name . '</a>';
+            }
+        }
 
-        return $author;
-
+        return $html;
     }
 
     /**
@@ -764,9 +779,8 @@ class WPP_Output {
 
         // author
         if ( $this->options['stats_tag']['author'] ) {
-            $author = $this->get_author( $post_object, $post_id );
-            $display_name = '<a href="' . get_author_posts_url( $post_object->uid != $post_id ? get_post_field( 'post_author', $post_id ) : $post_object->uid ) . '">' . $author . '</a>';
-            $stats[] = '<span class="wpp-author">' . sprintf(__('by %s', 'wordpress-popular-posts'), $display_name).'</span>';
+            $author_display = $this->get_author( $post_object, $post_id );
+            $stats[] = '<span class="wpp-author">' . sprintf(__('by %s', 'wordpress-popular-posts'), $author_display).'</span>';
         }
 
         // date

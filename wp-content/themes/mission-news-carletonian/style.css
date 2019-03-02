@@ -3607,6 +3607,7 @@ Customizations for Carleton
   display: block;
   font-size: 0.80em;
   font-family: "PT Serif", serif;
+  font-weight: normal;
   text-transform: uppercase;
   color: #666666;
 }
