@@ -672,15 +672,23 @@ if ( ! function_exists( ( 'ct_mission_news_post_byline' ) ) ) {
 		$post_date = date_i18n( get_option( 'date_format' ), strtotime( get_the_date('c') ) );
 
 		echo '<div class="post-byline">';
-		if ( $author == 'no' ) {
-			echo esc_html( $post_date );
-		} elseif ( $date == 'no' ) {
-			// translators: %s = the author who published the post
-			printf('By <a href="' . get_author_posts_url(get_the_author_meta('ID')) . '">%s</a>', esc_html( $post_author ) );
-		} else {
-			// translators: %1$s = the author who published the post. %2$s = the date it was published
-			printf('By <a href="' . get_author_posts_url(get_the_author_meta('ID')) . '">%1$s</a> on %2$s', esc_html( $post_author ), esc_html( $post_date ) );
-		}
+
+		if ($author != 'no') {
+		    echo 'By ';
+            if (function_exists('coauthors_posts_links')) {
+                coauthors_posts_links();
+            } else {
+                get_the_author_posts_link();
+            }
+            if ($date != 'no') {
+                echo ' on ';
+            }
+        }
+
+		if ($date != 'no') {
+		    echo esc_html($post_date);
+        }
+
 		echo '</div>';
 	}
 }
