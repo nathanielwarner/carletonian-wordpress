@@ -157,6 +157,9 @@ Features:
 
 == Changelog ==
 
+= 2.3.5 =
+* Improvement: settings link added to plugins page; some measures to avoid style conflicts.
+
 = 2.3.4 =
 * Offer: premium version + lifetime updates for US$ 40.
 
@@ -528,6 +531,9 @@ was removed. To finish, a Premium version is now been presented.
 * It's the first and only version so far.
 
 == Upgrade Notice ==
+
+= 2.3.5 =
+* Improvement: settings link added to plugins page; some measures to avoid style conflicts.
 
 = 2.3.4 =
 * Offer: premium version + lifetime updates for US$ 40.
