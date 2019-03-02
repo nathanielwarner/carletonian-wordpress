@@ -3541,6 +3541,11 @@ Customizations for Carleton
 
 @media all and (min-width: 50em) {
 
+  #news {
+    border-left: 1px solid #DCDCDC;
+    border-right: 1px solid #DCDCDC;
+  }
+
   #news::before {
     content: '';
     display: block;
@@ -3560,6 +3565,17 @@ Customizations for Carleton
     float: left;
     margin-right: 2%;
     display: block;
+  }
+
+  .wp-block-columns {
+    border-left: 1px solid #dcdcdc;
+    border-right: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
+    background: linear-gradient(#dcdcdc, #dcdcdc) no-repeat center/2px 100%;
+  }
+
+  .rows-excerpt .post-header a {
+    font-size: 1.40em;
   }
 }
 
@@ -3600,10 +3616,6 @@ Customizations for Carleton
   font-weight: bold;
 }
 
-.rows-excerpt .post-header a {
-  font-size: 1.30em;
-}
-
 .slick-slide .rpc-title:link {
   font-size: 1.30em;
   font-family: "PT Serif", serif;
@@ -3629,4 +3641,8 @@ Customizations for Carleton
   font-weight: bolder;
   color: #666666;
   text-decoration: none !important;
+}
+
+.entry {
+  border-bottom: none;
 }
