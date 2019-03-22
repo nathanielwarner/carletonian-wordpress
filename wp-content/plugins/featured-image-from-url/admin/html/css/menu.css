@@ -67,3 +67,24 @@ th {
     border: 1px dashed red;
     border-radius: 1px;
 }
+
+/* table */
+
+#thumbnail-size {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#thumbnail-size td, #thumbnail-size th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#thumbnail-size tr:nth-child(even){background-color: #f2f2f2;}
+
+#thumbnail-size th {
+    padding-top: 6px;
+    padding-bottom: 6px;
+    background-color: #23282d;
+    color: white;
+}

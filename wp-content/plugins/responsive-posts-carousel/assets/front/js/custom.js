@@ -1,7 +1,9 @@
 jQuery(document).ready(function($) {
 	$(".wcp-slick").each(function(index, el) {
 		var slick_ob = {
-		  	infinite: true,
+			infinite: ($(this).data('infinite') == 'on') ? true : false,		  
+			pauseOnHover: ($(this).data('pauseonhover') == 'on') ? true : false,		  
+			initialSlide: $(this).data('initialslide'),		  
 			dots: ($(this).data('dots') == 'on') ? true : false,		  
 			arrows: ($(this).data('arrows') == 'on') ? true : false,		  
 			autoplay: ($(this).data('autoplay') == 'on') ? true : false,

@@ -14,6 +14,7 @@ class WCP_Responsive_Posts_Carousel
 		add_action( 'wp_ajax_rpc_get_posts', array($this, 'rpc_get_posts') );
 		add_action( 'wp_ajax_rpc_get_terms', array($this, 'rpc_get_terms') );
 		add_action( 'save_post', array($this, 'save_carousel' ) );
+		add_filter( 'post_updated_messages', array($this, 'carousel_messages' ) );
 
 		add_action( 'rpc_carousel_thumbnail', array($this, 'render_carousel_thumbnail' ), 10, 4 );
 		add_action( 'rpc_carousel_title', array($this, 'render_carousel_title' ), 10, 2 );
@@ -90,8 +91,14 @@ class WCP_Responsive_Posts_Carousel
 
 	function carousel_metaboxes( $post_type, $post ) {
 	    add_meta_box( 'rpc-settings', 'Carousel Settings', array($this, 'render_carousel_settings'), 'wcp_carousel', 'normal');
+	    add_meta_box( 'rpc-template', 'Template Settings', array($this, 'render_template_settings'), 'wcp_carousel', 'normal');
 	    add_meta_box( 'wcp-shortcode', 'Shortcode', array($this, 'render_sc_box'), 'wcp_carousel', 'side');
-	    add_meta_box( 'wcp-help', 'Pro Version / Help', array($this, 'render_help_box'), 'wcp_carousel', 'side');
+	    add_meta_box( 'wcp-help', 'Pro Version', array($this, 'render_pro_box'), 'wcp_carousel', 'side');
+	    add_meta_box( 'wcp-more', 'Explore More Plugins', array($this, 'explore_more_plugins'), 'wcp_carousel', 'side');
+	}
+
+	function render_template_settings() {
+		echo '<a target="_blank" href="https://codecanyon.net/item/responsive-posts-carousel-wordpress-plugin/23353228?ref=WebCodingPlace"><img style="width:100%;" src="'.RPC_URL.'/assets/admin/images/template-editor.jpg"></a>';
 	}
 
 	/**
@@ -263,34 +270,55 @@ class WCP_Responsive_Posts_Carousel
 
 	function render_sc_box($carousel){
 		if (isset($carousel->ID)) { ?>
-			<p style="text-align:center;">
+			<p style="text-align:center;border: 1px dotted red;padding: 15px;">
 				[wcp-carousel id="<?php echo $carousel->ID; ?>"]
 			</p>
 			<p><?php _e( 'Paste above shortcode in the page where you want to display slider.', 'responsive-posts-carousel' ); ?></p>
-
-			<h2 style="text-align:center;"><strong>Are you using Gutenberg Editor?</strong></h2>
-			<a target="_blank" href="https://wordpress.org/plugins/mega-blocks-for-gutenberg/">
-				<img style="width:100%" src="<?php echo RPC_URL.'/assets/admin/images/gutenberg-blocks.jpg' ?>" alt="Mega Blocks Gutenberg">
-				Try Mega UI Blocks for Gutenberg and WordPress 5 absolutely Free
-			</a>
+			<p>Need help? <a target="_blank" href="http://kb.webcodingplace.com/docs/responsive-posts-carousel/">Read Docs.</a></p>
 		<?php }
 	}
 
-	function render_help_box(){
+	function explore_more_plugins(){ ?>
+			<p>Try our following plugins also.</p>
+			<h2 style="text-align:center;"><strong>UI Blocks for WordPress Editor</strong></h2>
+			<a target="_blank" href="https://wordpress.org/plugins/mega-blocks-for-gutenberg/">
+				<img style="width:100%" src="<?php echo RPC_URL.'/assets/admin/images/gutenberg-blocks.jpg' ?>" alt="Mega Blocks Gutenberg">
+				10+ interface elements for your new WordPress Editor and Gutenberg absolutely Free.
+			</a>
+			<br>
+			<h2 style="text-align:center;"><strong>Real Estate Manager</strong></h2>
+			<a target="_blank" href="https://wordpress.org/plugins/real-estate-manager/">
+				<img style="width:100%" src="<?php echo RPC_URL.'/assets/admin/images/rem.jpg' ?>" alt="Mega Blocks Gutenberg">
+				Manage property listings and agents in a simple and flexible way. 
+			</a>
+			<br>
+			<h2 style="text-align:center;"><strong>Image Caption Hover</strong></h2>
+			<a target="_blank" href="https://wordpress.org/plugins/image-caption-hover/">
+				<img style="width:100%" src="<?php echo RPC_URL.'/assets/admin/images/ich.jpg' ?>" alt="Mega Blocks Gutenberg">
+				Display images and their captions using 50+ interactive Hover Effects. 
+			</a>
+		<?php
+	}
+
+	function render_pro_box(){
 		?>
-			<p><?php _e( 'You can contact us', 'responsive-posts-carousel' ); ?>
-				<a target="_blank" href="https://webcodingplace.com/contact-us"><?php _e( 'here', 'responsive-posts-carousel' ); ?></a>
-				<?php _e( 'for help', 'responsive-posts-carousel' ); ?> <br>
-				<?php _e( 'Purchase Premium version and unlock', 'responsive-posts-carousel' ); ?>
+			<p>
+				<?php _e( 'Upgrade to premium version and unlock the following features.', 'responsive-posts-carousel' ); ?>
 			</p>
 			<ol>
-				<li><a target="_blank" href="https://demos.webcodingplace.com/responsive-posts-carousel-pro-wordpress-plugin/"><?php _e( '20+ Premium Templates', 'responsive-posts-carousel' ); ?></a></li>
+				<li><a target="_blank" href="https://demos.webcodingplace.com/responsive-posts-carousel-pro-wordpress-plugin/"><?php _e( '50+ Premium Templates', 'responsive-posts-carousel' ); ?></a></li>
 				<li><?php _e( '15+ Networks for Social Sharing', 'responsive-posts-carousel' ); ?></li>
+				<li><?php _e( 'Live Template Editor', 'responsive-posts-carousel' ); ?></li>
+				<li><?php _e( 'Vertical Slide Mode', 'responsive-posts-carousel' ); ?></li>
+				<li><?php _e( 'Center Mode', 'responsive-posts-carousel' ); ?></li>
+				<li><?php _e( '24+ Slide Animations', 'responsive-posts-carousel' ); ?></li>
+				<li><?php _e( 'Lazy Loading of Images', 'responsive-posts-carousel' ); ?></li>
+				<li><?php _e( 'WooCommerce Support', 'responsive-posts-carousel' ); ?></li>
 				<li><?php _e( 'Access to Premium Support Forum', 'responsive-posts-carousel' ); ?></li>
 				<li><?php _e( 'Lifetime Free Updates', 'responsive-posts-carousel' ); ?></li>
 			</ol>
 			<p style="text-align:center;">
-				<a href="https://webcodingplace.com/responsive-posts-carousel-wordpress-plugin/" target="_blank" class="button button-primary button-hero">
+				<a href="https://codecanyon.net/item/responsive-posts-carousel-wordpress-plugin/23353228?ref=WebCodingPlace" target="_blank" class="button button-primary button-hero">
 					<?php _e( 'Purchase Pro Version', 'responsive-posts-carousel' ); ?>
 				</a>
 			</p>
@@ -382,6 +410,47 @@ class WCP_Responsive_Posts_Carousel
         }		
 	}
 
+    function carousel_messages( $messages ) {
+        $post             = get_post();
+        $post_type        = get_post_type( $post );
+        $post_type_object = get_post_type_object( $post_type );
+
+        $messages['wcp_carousel'] = array(
+            0  => '', // Unused. Messages start at index 1.
+            1  => esc_html__( 'Carousel updated.', 'responsive-posts-carousel' ),
+            2  => esc_html__( 'Custom field updated.', 'responsive-posts-carousel' ),
+            3  => esc_html__( 'Custom field deleted.', 'responsive-posts-carousel' ),
+            4  => esc_html__( 'Carousel updated.', 'responsive-posts-carousel' ),
+            /* translators: %s: date and time of the revision */
+            5  => isset( $_GET['revision'] ) ? sprintf( esc_html__( 'Carousel restored to revision', 'responsive-posts-carousel' ), wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+            6  => esc_html__( 'Carousel published.', 'responsive-posts-carousel' ),
+            7  => esc_html__( 'Carousel saved.', 'responsive-posts-carousel' ),
+            8  => esc_html__( 'Carousel submitted.', 'responsive-posts-carousel' ),
+            9  => sprintf(
+                esc_html__( 'Carousel scheduled.', 'responsive-posts-carousel' ),
+                // translators: Publish box date format, see http://php.net/date
+                date_i18n( esc_html__( 'M j, Y @ G:i', 'responsive-posts-carousel' ), strtotime( $post->post_date ) )
+            ),
+            10 => esc_html__( 'Carousel draft updated.', 'responsive-posts-carousel' )
+        );
+
+        if ( $post_type_object->publicly_queryable && 'wcp_carousel' === $post_type ) {
+            $permalink = get_permalink( $post->ID );
+
+            $view_link = sprintf( ' <a href="%s">%s</a>', esc_url( $permalink ), esc_html__( 'View Carousel', 'responsive-posts-carousel' ) );
+            $messages[ $post_type ][1] .= $view_link;
+            $messages[ $post_type ][6] .= $view_link;
+            $messages[ $post_type ][9] .= $view_link;
+
+            $preview_permalink = add_query_arg( 'preview', 'true', $permalink );
+            $preview_link = sprintf( ' <a target="_blank" href="%s">%s</a>', esc_url( $preview_permalink ), esc_html__( 'Preview Carousel', 'responsive-posts-carousel' ) );
+            $messages[ $post_type ][8]  .= $preview_link;
+            $messages[ $post_type ][10] .= $preview_link;
+        }
+
+        return $messages;
+    }		
+
 	function render_carousel_title($post_id, $carousel_settings){
 		$title_key = ($carousel_settings['title'] != '') ? $carousel_settings['title'] : 'post_title' ;
 		$this->get_display_data($post_id, $title_key, '');
@@ -403,7 +472,7 @@ class WCP_Responsive_Posts_Carousel
 	                break;
 	            case 'content':
 	            	if ($length != '') {
-	            		echo wp_trim_words( get_the_content(), $length );
+						echo wp_trim_words( get_the_content(), $length );
 	            	} else {
 	            		the_content();
 	            	}
@@ -529,12 +598,17 @@ class WCP_Responsive_Posts_Carousel
 
     function wcp_carousel_column_head($defaults){
         $defaults['wcp_rpc'] = __( 'Shortcode', 'responsive-posts-carousel' );
+        $defaults['rpc_template'] = esc_html__( 'Template', 'responsive-posts-carousel' );
         return $defaults;       
     }
 
     function wcp_carousel_column_content($column_name, $carousel_id){
         if ($column_name == 'wcp_rpc') {
             echo '[wcp-carousel id="'.$carousel_id.'"]';
+        }
+        if ($column_name == 'rpc_template') {
+        	$carousel_settings = get_post_meta( $carousel_id, 'carousel_meta', true );
+            echo esc_attr( $carousel_settings['hover_effect'] );
         }
     }
 

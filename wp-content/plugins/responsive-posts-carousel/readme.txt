@@ -3,8 +3,8 @@ Contributors: Rameez_Iqbal
 Tags: carousel, posts slider, custom posts, gallery, pages, posts, responsive, acf, shortcode, slider, slider plugin, wordpress, dutch, german, multi language, i18n, i10n, french
 Donate link: https://www.paypal.me/webcodingplace
 Requires at least: 3.0
-Tested up to: 5.0
-Stable tag: 5.0
+Tested up to: 5.1
+Stable tag: 5.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -17,7 +17,7 @@ Responsive Posts Carousel lets you displays Posts, Pages or any other Custom Pos
 <ul>
 	<li><a href="http://demos.webcodingplace.com/responsive-posts-carousel-wordpress-plugin/">Demo</a></li>
 	<li><a href="http://demos.webcodingplace.com/responsive-posts-carousel-pro-wordpress-plugin/">Pro Demo</a></li>
-	<li><a href="https://webcodingplace.com/responsive-posts-carousel-wordpress-plugin/">Documentation and Help</a></li>
+	<li><a href="http://kb.webcodingplace.com/docs/responsive-posts-carousel/">Documentation</a></li>
 	<li><a href="https://www.youtube.com/watch?v=qqsP6sytBZs">How to use (Quick Video)</a></li>
 	<li><a href="https://webcodingplace.com/responsive-posts-carousel-override-post-templates/">Override Post Templates</a></li>
 </ul>
@@ -64,10 +64,22 @@ Responsive Posts Carousel lets you displays Posts, Pages or any other Custom Pos
 5. Paste that shortcode in any page and visit that page
 
 == Screenshots ==
-1. Carousel Admin Settings
-2. Carousel in Front End
+1. Content Settings
+2. Slider Settings
+3. Customize Arrows
+4. Advanced Settings
+5. Slider in Action
 
 == Changelog ==
+
+= 5.2 - 9th March 2019 =
+* Bug Fixed: Carousel content conflict when using content meta key
+
+= 5.1 - 7th March 2019 =
+* Feature Added: Infinite Looping
+* Feature Added: Pause on Hover
+* Feature Added: Custom Initial Slide
+* Many other small enhancements and fixes
 
 = 5.0 - 28th November 2018 =
 * Feature Added: Compatible with WP 5.0 (Tested with 5.0-RC1-43945) 

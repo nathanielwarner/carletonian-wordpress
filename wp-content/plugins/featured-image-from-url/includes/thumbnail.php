@@ -7,8 +7,10 @@ add_filter('wp_head', 'fifu_apply_css');
 
 function fifu_add_js() {
     if (fifu_is_on('fifu_lazy')) {
-        wp_register_script('lazyload', plugins_url('/html/js/jquery.lazyloadxt.extra.js', __FILE__), array('jquery'));
-        wp_enqueue_script('lazyload');
+        wp_enqueue_style('lazyload-spinner', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.1.0/jquery.lazyloadxt.spinner.min.css');
+        wp_enqueue_script('lazyload', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.1.0/jquery.lazyloadxt.min.js');
+        wp_enqueue_script('lazyload-extra', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.1.0/jquery.lazyloadxt.extra.min.js');
+        wp_enqueue_script('lazyload-srcset', 'https://cdnjs.cloudflare.com/ajax/libs/jquery.lazyloadxt/1.1.0/jquery.lazyloadxt.srcset.min.js');
     }
     include 'html/script.html';
 }

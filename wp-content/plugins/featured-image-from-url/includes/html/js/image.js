@@ -1,10 +1,24 @@
 jQuery(document).ready(function ($) {
+    // lazy load
+    jQuery.extend(jQuery.lazyLoadXT, {
+        srcAttr: 'data-src',
+        visibleOnly: false,
+        updateEvent: 'load orientationchange resize scroll touchmove focus hover'
+    });
+
     disableClick($);
-    //for all images at single product page
+
+    // for all images at single product page
     setTimeout(function () {
         resizeImg($);
         jQuery('a.woocommerce-product-gallery__trigger').css('visibility', 'visible');
     }, 2500);
+});
+
+jQuery(window).on('ajaxComplete', function () {
+    setTimeout(function () {
+        jQuery(window).lazyLoadXT();
+    }, 300);
 });
 
 jQuery(window).on('load', function () {

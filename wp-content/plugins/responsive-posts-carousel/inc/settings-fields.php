@@ -66,8 +66,8 @@
             'tab' => 'contents',
             'default' => '',
             'title' => __( 'Title', 'responsive-posts-carousel' ),
-            'help' => __( 'Provide post meta key to display as heading.', 'responsive-posts-carousel' ).' '.
-            __( 'Example', 'responsive-posts-carousel' ).' '.
+            'help' => esc_html__( 'Provide post meta key to display as heading. You can use only one meta key here.', 'responsive-posts-carousel' ).' '.
+            esc_html__( 'Example', 'responsive-posts-carousel' ).' '.
             '<code>post_title</code>, <code>post_date</code>, <code>content</code>, <code>post_author</code>, <code>excerpt</code>, <code>none</code>',
         ),
         array(
@@ -76,8 +76,8 @@
             'tab' => 'contents',
             'default' => '',
             'title' => __( 'Content', 'responsive-posts-carousel' ),
-            'help' => __( 'Provide post meta key to display as description.', 'responsive-posts-carousel' ).' '.
-            __( 'Example', 'responsive-posts-carousel' ).' '.
+            'help' => esc_html__( 'Provide post meta key to display as description. You can use only one meta key here.', 'responsive-posts-carousel' ).' '.
+            esc_html__( 'Example', 'responsive-posts-carousel' ).' '.
             '<code>post_title</code>, <code>post_date</code>, <code>content</code>, <code>post_author</code>, <code>excerpt</code>, <code>none</code>',
         ),
         array(
@@ -144,6 +144,38 @@
             'help' => __( 'Enables auto play of slides', 'responsive-posts-carousel' ),
         ),
         array(
+            'key' => array('slider', 'autoplaySpeed'),
+            'type' => 'number',
+            'tab' => 'slider',
+            'default' => '',
+            'title' => __( 'Auto Play Speed', 'responsive-posts-carousel' ),
+            'help' => __( 'Auto play change interval in milliseconds', 'responsive-posts-carousel' ),
+        ),
+        array(
+            'key' => array('slider', 'pauseonhover'),
+            'type' => 'checkbox',
+            'tab' => 'slider',
+            'default' => '',
+            'title' => esc_html__( 'Pause on Hover', 'responsive-posts-carousel' ),
+            'help' => esc_html__( 'Enable it to pause the auto play when user hover over the slider.', 'responsive-posts-carousel' ),
+        ),
+        array(
+            'key' => array('slider', 'infinite'),
+            'type' => 'checkbox',
+            'tab' => 'slider',
+            'default' => '',
+            'title' => esc_html__( 'Infinite', 'responsive-posts-carousel' ),
+            'help' => esc_html__( 'Infinite loop sliding.', 'responsive-posts-carousel' ),
+        ),
+        array(
+            'key' => array('slider', 'initialslide'),
+            'type' => 'number',
+            'tab' => 'slider',
+            'default' => '0',
+            'title' => esc_html__( 'Initial Slide', 'responsive-posts-carousel' ),
+            'help' => esc_html__( 'Set the initial slide here, starting from 0', 'responsive-posts-carousel' ),
+        ),
+        array(
             'key' => array('slider', 'dots'),
             'type' => 'checkbox',
             'tab' => 'slider',
@@ -158,14 +190,6 @@
             'default' => '',
             'title' => __( 'Arrows', 'responsive-posts-carousel' ),
             'help' => __( 'Check to enable Next/Prev arrows', 'responsive-posts-carousel' ),
-        ),
-        array(
-            'key' => array('slider', 'autoplaySpeed'),
-            'type' => 'number',
-            'tab' => 'slider',
-            'default' => '',
-            'title' => __( 'Auto Play Speed', 'responsive-posts-carousel' ),
-            'help' => __( 'Auto play change interval in milliseconds', 'responsive-posts-carousel' ),
         ),
         array(
             'key' => array('slider', 'slidesToShow'),
@@ -492,7 +516,7 @@
             'tab' => 'advanced',
             'default' => '',
             'title' => __( 'Images Height', 'responsive-posts-carousel' ),
-            'help' => __( 'Fixed Height for images in px. Eg: 450px', 'responsive-posts-carousel' ),
+            'help' => __( 'Fixed Height for images in px if Equal Height Mode is enabled. Eg: 450px', 'responsive-posts-carousel' ),
         ),
     );
 ?>

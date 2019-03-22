@@ -3,7 +3,7 @@
  * Plugin Name: Responsive Posts Carousel
  * Plugin URI: http://webcodingplace.com/responsive-posts-carousel-wordpress-plugin
  * Description: The best Posts Slider Plugin for WordPress you will ever need.
- * Version: 5.0
+ * Version: 5.2
  * Author: WebCodingPlace
  * Author URI: http://webcodingplace.com/
  * License: GPLv2 or later
@@ -13,12 +13,12 @@
 
 /*
 
-  Copyright (C) 2018  WebCodingPlace  support@webcodingplace.com
+  Copyright (C) 2019  WebCodingPlace  support@webcodingplace.com
 */
 
 define('RPC_PATH', untrailingslashit(plugin_dir_path( __FILE__ )) );
 define('RPC_URL', untrailingslashit(plugin_dir_url( __FILE__ )) );
-define('RPC_VERSION', '5.0' );
+define('RPC_VERSION', '5.1' );
 
 require_once('carousel.class.php');
 
