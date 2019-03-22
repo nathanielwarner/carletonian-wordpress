@@ -3,7 +3,7 @@
 The Carletonian's Wordpress
 
 ### Setting up
-It's Wordpress, so you'll need a LAMP stack server set up.
+It's Wordpress, so you'll need a LAMP stack server set up and have Apache pointing to this directory.
 
 After you have that set up, you'll need to do the following:
 
@@ -12,6 +12,9 @@ After you have that set up, you'll need to do the following:
 3. Install node version `10.15.3` with `nvm`
 4. Install grunt-cli globally with `npm install -g grunt-cli`
 5. Run `npm install` to install node dependencies
+6. Migrate mysql database from snapshot if necessary (If not, Wordpress will start off with no content)
+
+You'll then be able to navigate in your browser to `localhost` or wherever the server is running.
 
 ### General guidelines
 
