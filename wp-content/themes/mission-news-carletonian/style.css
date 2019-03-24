@@ -3651,3 +3651,36 @@ Customizations for Carleton
 .post-title {
   font-size: 1.50em;
 }
+
+.show-more-link:link {
+  font-family: "PT Sans", sans-serif;
+  font-size: 0.875em;
+  font-weight: 700;
+  color: #666666;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  padding: 6px;
+  border: 1px solid #DCDCDC;
+}
+
+.show-more-link:visited {
+  font-family: "PT Sans", sans-serif;
+  font-size: 0.875em;
+  font-weight: 700;
+  color: #666666;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  padding: 6px;
+  border: 1px solid #DCDCDC;
+}
+
+.show-more-link:hover {
+  font-family: "PT Sans", sans-serif;
+  font-size: 0.875em;
+  font-weight: 700;
+  color: #b9b9b9;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  padding: 6px;
+  border: 1px solid #DCDCDC;
+}

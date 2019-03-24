@@ -157,6 +157,9 @@ class ct_mission_news_post_list extends WP_Widget {
 			echo '</ul>';
 			wp_reset_postdata();
 		}
+        if ( !empty($instance['category']) ) {
+            echo '<a class="show-more-link" href="' . get_category_link($instance['category']) . '">Show more...</a>';
+        }
 		echo '</div>';
 		echo $args['after_widget'];
 	}
