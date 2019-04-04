@@ -74,8 +74,17 @@ function fifu_replace($html, $post_id, $post_thumbnail_id, $size) {
         $width = fifu_get_attribute('width', $html);
         $height = fifu_get_attribute('height', $html);
 
-        if (fifu_is_on('fifu_lazy') && !is_admin())
+        if (fifu_is_on('fifu_lazy') && !is_admin()) {
+            // hide image
+            if (strpos('style=', $html) !== false) {
+                $html = (strpos('style="', $html) !== false) ? str_replace('style="', 'style="opacity:0;', $html) : $html;
+                $html = (strpos("style='", $html) !== false) ? str_replace("style='", "style='opacity:0;", $html) : $html;
+            } else
+                $html = str_replace("<img ", "<img style='opacity:0' ", $html);
+
+            // add data-src
             $html = str_replace("src", "data-src", $html);
+        }
 
         $url = get_post_meta($post_id, 'fifu_image_url', true);
         $alt = get_post_meta($post_id, 'fifu_image_alt', true);

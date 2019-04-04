@@ -157,6 +157,12 @@ Features:
 
 == Changelog ==
 
+= 2.3.9 =
+* Offer: premium version + lifetime updates for US$ 35.
+
+= 2.3.8 =
+* Bug fix: Lazy Load feature.
+
 = 2.3.7 =
 * Improvement: Lazy Load feature will show an animated spinner while image is loading.
 
@@ -537,6 +543,12 @@ was removed. To finish, a Premium version is now been presented.
 * It's the first and only version so far.
 
 == Upgrade Notice ==
+
+= 2.3.9 =
+* Offer: premium version + lifetime updates for US$ 35.
+
+= 2.3.8 =
+* Bug fix: Lazy Load feature.
 
 = 2.3.7 =
 * Improvement: Lazy Load feature will show an animated spinner while image is loading.

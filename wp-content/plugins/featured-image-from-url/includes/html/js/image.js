@@ -1,11 +1,15 @@
 jQuery(document).ready(function ($) {
     // lazy load
-    jQuery.extend(jQuery.lazyLoadXT, {
-        srcAttr: 'data-src',
-        visibleOnly: false,
-        updateEvent: 'load orientationchange resize scroll touchmove focus hover'
-    });
+    if ('<?php echo fifu_is_on("fifu_lazy"); ?>') {
+        jQuery.extend(jQuery.lazyLoadXT, {
+            srcAttr: 'data-src',
+            visibleOnly: false,
+            updateEvent: 'load orientationchange resize scroll touchmove focus hover'
+        });
+        jQuery('img').css('opacity', 1);
+    }
 
+    // woocommerce lightbox/zoom
     disableClick($);
 
     // for all images at single product page
@@ -16,9 +20,11 @@ jQuery(document).ready(function ($) {
 });
 
 jQuery(window).on('ajaxComplete', function () {
-    setTimeout(function () {
-        jQuery(window).lazyLoadXT();
-    }, 300);
+    if ('<?php echo fifu_is_on("fifu_lazy"); ?>') {
+        setTimeout(function () {
+            jQuery(window).lazyLoadXT();
+        }, 300);
+    }
 });
 
 jQuery(window).on('load', function () {
