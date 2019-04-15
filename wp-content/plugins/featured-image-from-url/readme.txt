@@ -157,6 +157,12 @@ Features:
 
 == Changelog ==
 
+= 2.4.1 =
+* Improvement: integration with REST API + Custom Post Types.
+
+= 2.4.0 =
+* Improvement: FIFU column shows the images in the same size now.
+
 = 2.3.9 =
 * Offer: premium version + lifetime updates for US$ 35.
 
@@ -543,6 +549,12 @@ was removed. To finish, a Premium version is now been presented.
 * It's the first and only version so far.
 
 == Upgrade Notice ==
+
+= 2.4.1 =
+* Improvement: integration with REST API + Custom Post Types.
+
+= 2.4.0 =
+* Improvement: FIFU column shows the images in the same size now.
 
 = 2.3.9 =
 * Offer: premium version + lifetime updates for US$ 35.

@@ -6,7 +6,6 @@ jQuery(document).ready(function ($) {
             visibleOnly: false,
             updateEvent: 'load orientationchange resize scroll touchmove focus hover'
         });
-        jQuery('img').css('opacity', 1);
     }
 
     // woocommerce lightbox/zoom

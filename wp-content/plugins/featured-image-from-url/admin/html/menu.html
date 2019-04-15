@@ -1,7 +1,7 @@
 <div class="wrap" style="opacity:0">
 
     <div class="header-box" style="background-color:#23282d">
-        <h1 style="color:white"><img src="wp-content/plugins/featured-image-from-url/admin/images/favicon.png" alt=""> <b>Featured Image from URL</b> 2</h1>
+        <h1 style="color:white"><img src="/wp-content/plugins/featured-image-from-url/admin/images/favicon.png" alt=""> <b> featured image from url</b> 2</h1>
     </div>
 
     <div id="tabs-top">        
@@ -20,7 +20,7 @@
             <li><a href="#tabs-c">Video</a></li>
             <li><a href="#tabs-o">WooCommerce</a></li>
             <li><a href="#tabs-p">WP All Import</a></li>
-            <li><a href="#tabs-a">Premium version <b style="border-radius:2px;padding:3px;background-color:darkblue;color:white">30%OFF</b></a></li>
+            <li><a href="#tabs-a">Premium version <b style="border-radius:2px;padding:3px;background-color:#32373c;color:white">30%OFF</b></a></li>
             <br>
             <br>
             <div id="tabs-a">
@@ -957,12 +957,12 @@
             <div id="tabs-l">
                 <div class="box">
 
-                    <h2>Shortcode (beta feature)</h2>
+                    <h2>Shortcode</h2>
 
                     <div class="greybox" id="grad2">
                         <b>Premium feature</b><br><br>
 
-                        This experimental feature allows to use a shortcode as "featured image" of posts/pages/products. Using shortcodes you are not limited to images/videos/sliders anymore. You can use any content provided by the shortcode, what could be a music, a text, a whole site etc. However, some contents will need a large area of your site to be shown properly. So you should define a minimum width that an area of your site should have to be able to show the shortcode content, otherwise it will be shown the regular featured image. Important: shortcodes can be not compatible with other FIFU features, such as CSS Style and Crop Image.
+                        This experimental feature allows to use a shortcode as "featured image" of posts/pages/products. Using shortcodes you are not limited to images/videos/sliders anymore. You can use any content provided by the shortcode, what could be a music, a text, a whole site etc. However, some contents will need a large area of your site to be shown properly. So you should define a minimum width that an area of your site should have to be able to show the shortcode content, otherwise it will be shown the regular featured image (required field). Important: shortcodes can be not compatible with other FIFU features, such as CSS Style, Crop Image, Lazy Load etc.
 
                     </div>
 
@@ -1387,25 +1387,13 @@
                         <table style="text-align:left">
                             <tr>
                                 <th>
-                                    <form 
-                                        id="fifu_form_slider" 
-                                        action="javascript:void(0)" 
-                                        method="post">
-                                        <input 
-                                            type="image" 
-                                            href="javascript:void(0)" 
-                                            id="fifu_toggle_slider" 
-                                            onclick="javascript:void(0)" 
-                                            name="fifu_toggle_slider" 
-                                            class="toggleoff" 
-                                            value="">
-
-                                        <input 
-                                            type="hidden" 
-                                            id="fifu_input_slider" 
-                                            name="fifu_input_slider" 
-                                            value="" >
-                                    </form>
+                                    <input 
+                                        type="image" 
+                                        href="javascript:void(0)" 
+                                        id="fifu_toggle_slider" 
+                                        name="fifu_toggle_slider" 
+                                        class="toggleoff" 
+                                        value="" style="display:block">
                                 </th>
                                 <th>   
                                     slider
@@ -1583,7 +1571,7 @@
                                 </div>
                                 <div id="tabs-flickr-d">
                                     <br><br><br>
-                                    You don't need to change anything here to make the images appear. However, some themes can't calculate the sufficient size that an image should have in each place, which is a waste. So if in a post, for example, a 1600px wide image is being loaded in an area that you know that is never larger than 750px wide, you could disable the options 1024 and 1600, which will make your site much faster without losing quality.
+                                    You don't need to change anything here to make the images appear. However, some themes can't calculate the sufficient size that an image should have in each place, which is a waste. So if in a post, for example, a 1024px wide image is being loaded in an area that you know that is never larger than 750px wide, you could disable the option 1024, which will make your site much faster without losing quality.
                                     <br><br>
                                     <table id="thumbnail-size">
                                         <tr>
@@ -1597,7 +1585,6 @@
                                             <th>640</th>
                                             <th>800</th>
                                             <th>1024</th>
-                                            <th>1600</th>
                                         </tr>
                                         <tr>
                                             <td><center>post</center></td>
@@ -1610,7 +1597,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-post-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-post-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-post-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-post-1600"></center></td>        
                                         </tr>
                                         <tr>
                                             <td><center>page</center></td>
@@ -1623,7 +1609,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-page-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-page-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-page-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-page-1600"></center></td>         
                                         </tr>
                                         <tr>
                                             <td><center>archive</center></td>
@@ -1636,7 +1621,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-arch-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-arch-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-arch-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-arch-1600"></center></td>         
                                         </tr>
                                         <tr>
                                             <td><center>cart</center></td>
@@ -1649,7 +1633,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-cart-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-cart-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-cart-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-cart-1600"></center></td>         
                                         </tr>
                                         <tr>
                                             <td><center>category</center></td>
@@ -1662,7 +1645,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-ctgr-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-ctgr-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-ctgr-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-ctgr-1600"></center></td>         
                                         </tr>
                                         <tr>
                                             <td><center>home</center></td>
@@ -1675,7 +1657,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-home-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-home-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-home-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-home-1600"></center></td>         
                                         </tr>
                                         <tr>
                                             <td><center>product</center></td>
@@ -1688,7 +1669,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-prod-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-prod-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-prod-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-prod-1600"></center></td>         
                                         </tr>                                                                                                    
                                         <tr>
                                             <td><center>shop</center></td>
@@ -1701,7 +1681,6 @@
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-shop-640"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-shop-800"></center></td>
                                         <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-shop-1024"></center></td>
-                                        <td><center><input type="checkbox" onclick="javascript:void(0)" id="cb-shop-1600"></center></td>         
                                         </tr>
                                     </table>
                                 </div>
@@ -1759,6 +1738,12 @@
                                             http://yourdomain/wp-json/wp/v2/posts
                                         </th>
                                     </tr>
+                                    <tr>
+                                        <th>Custom Post Type</th>
+                                        <th>
+                                            http://yourdomain/wp-json/wp/v2/{post_type}
+                                        </th>
+                                    </tr>
                                 </table>
                                 <br>
                                 <br>
@@ -1792,6 +1777,12 @@
                                         <th>Post</th>
                                         <th>
                                             http://yourdomain/wp-json/wp/v2/posts/{id}
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <th>Custom Post Type</th>
+                                        <th>
+                                            http://yourdomain/wp-json/wp/v2/{post_type}/{id}
                                         </th>
                                     </tr>
                                 </table>
