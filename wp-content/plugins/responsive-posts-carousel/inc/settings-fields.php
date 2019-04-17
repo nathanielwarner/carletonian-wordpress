@@ -71,6 +71,15 @@
             '<code>post_title</code>, <code>post_date</code>, <code>content</code>, <code>post_author</code>, <code>excerpt</code>, <code>none</code>',
         ),
         array(
+            'key' => 'titlewords',
+            'type' => 'number',
+            'tab' => 'contents',
+            'default' => '',
+            'title' => __( 'Title Words Length', 'responsive-posts-carousel' ),
+            'help' => __( 'Maximum words to display for title.', 'responsive-posts-carousel' ).' '.
+            __( 'Example', 'responsive-posts-carousel' ).' <code>5</code>',
+        ),
+        array(
             'key' => 'desc',
             'type' => 'text',
             'tab' => 'contents',
@@ -85,9 +94,26 @@
             'type' => 'number',
             'tab' => 'contents',
             'default' => '',
-            'title' => __( 'Description Words Length', 'responsive-posts-carousel' ),
+            'title' => __( 'Content Words Length', 'responsive-posts-carousel' ),
             'help' => __( 'Maximum words to display for description.', 'responsive-posts-carousel' ).' '.
             __( 'Example', 'responsive-posts-carousel' ).' <code>30</code>',
+        ),
+        array(
+            'key' => 'appendmore',
+            'type' => 'text',
+            'tab' => 'contents',
+            'default' => '',
+            'title' => __( 'Append to Trimmed Text', 'responsive-posts-carousel' ),
+            'help' => __( 'What to append if Maximum Words is defined. Default: ', 'responsive-posts-carousel' )
+            .'<code>...</code>',
+        ),
+        array(
+            'key' => 'enableshortcodes',
+            'type' => 'checkbox',
+            'tab' => 'contents',
+            'default' => '',
+            'title' => __( 'Shortcodes/Page Builders', 'responsive-posts-carousel' ),
+            'help' => __( 'Check this if you are using any page builder or shortcodes inside post/page contents.', 'responsive-posts-carousel' ),
         ),
         array(
             'key' => 'read_more_txt',
@@ -150,6 +176,14 @@
             'default' => '',
             'title' => __( 'Auto Play Speed', 'responsive-posts-carousel' ),
             'help' => __( 'Auto play change interval in milliseconds', 'responsive-posts-carousel' ),
+        ),
+        array(
+            'key' => array('slider', 'cssease'),
+            'type' => 'checkbox',
+            'tab' => 'slider',
+            'default' => '',
+            'title' => __( 'Linear CSS Ease', 'responsive-posts-carousel' ),
+            'help' => __( 'Enable it for smooth scrolling. (Auto Play Speed must be set to 0)', 'responsive-posts-carousel' ),
         ),
         array(
             'key' => array('slider', 'pauseonhover'),

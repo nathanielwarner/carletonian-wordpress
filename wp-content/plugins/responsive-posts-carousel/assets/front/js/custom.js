@@ -3,18 +3,20 @@ jQuery(document).ready(function($) {
 		var slick_ob = {
 			infinite: ($(this).data('infinite') == 'on') ? true : false,		  
 			pauseOnHover: ($(this).data('pauseonhover') == 'on') ? true : false,		  
-			initialSlide: $(this).data('initialslide'),		  
+			initialSlide: ($(this).data('initialslide') != undefined) ? parseInt($(this).data('initialslide')) : 0,
 			dots: ($(this).data('dots') == 'on') ? true : false,		  
 			arrows: ($(this).data('arrows') == 'on') ? true : false,		  
 			autoplay: ($(this).data('autoplay') == 'on') ? true : false,
 			autoplaySpeed: $(this).data('autoplayspeed'),
 			draggable: true,
-			// swipeToSlide: true,
+			cssEase: ($(this).data('cssease') == 'on') ? 'linear' : 'ease',
+			swipeToSlide: true,
 			speed: $(this).data('speed'),
 			slidesToShow: $(this).data('slidestoshow'),
 			slidesToScroll: $(this).data('slidestoscroll'),
 			slidesPerRow: $(this).data('slidesperrow'),
 			rows: $(this).data('rows'),
+			adaptiveHeight: true,
 		  	responsive: [{
 		      breakpoint: 992,
 		      settings: {

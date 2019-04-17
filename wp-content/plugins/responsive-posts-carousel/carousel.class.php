@@ -231,7 +231,7 @@ class WCP_Responsive_Posts_Carousel
 				<select name="<?php echo $input_name; ?>" class="widefat" multiple>
 					<?php
 						if (isset($carousel_meta['post_type']) && $carousel_meta['post_type'] != '') {
-							$all_posts = get_posts( array('post_type' => $carousel_meta['post_type'], 'posts_per_page' => -1 ) );
+							$all_posts = get_posts( array('post_type' => $carousel_meta['post_type'], 'posts_per_page' => 500 ) );
 							$selc = (is_array($value) && in_array('all', $value)) ? 'selected' : '' ;
 							echo '<option value="all" '.$selc.'> All '.$carousel_meta['post_type'].'s</option>';
 							foreach ($all_posts as $key => $post_obj) {
@@ -326,7 +326,15 @@ class WCP_Responsive_Posts_Carousel
 	}
 
 	function render_shortcode($attrs){
-		if (isset($attrs['id']) && $attrs['id'] != '') {
+
+		extract( shortcode_atts( array(
+			'id' => '',
+			'count' => '-1',
+			'order' => 'DESC',
+			'orderby' => 'date',
+		), $attrs ) );
+
+		if ($id != '') {
 			wp_enqueue_style( 'font-awesome', RPC_URL.'/assets/front/css/font-awesome.min.css' );
 			wp_enqueue_style( 'slick-css', RPC_URL.'/assets/front/css/slick.css' );
 			wp_enqueue_style( 'slick-theme-css', RPC_URL.'/assets/front/css/slick-theme.css' );
@@ -338,8 +346,13 @@ class WCP_Responsive_Posts_Carousel
 				wp_enqueue_script( 'images-loaded', RPC_URL.'/assets/front/js/imagesloaded.js', array('jquery') );
 				wp_enqueue_script( 'images-fill', RPC_URL.'/assets/front/js/jquery-imagefill.js', array('jquery') );
 			}
-
-			wp_enqueue_script( 'custom-crsl-js', RPC_URL.'/assets/front/js/custom.js', array('jquery') );
+			
+			$in_theme = get_stylesheet_directory().'/rpc/custom.js';
+			if (file_exists($in_theme)) {
+				wp_enqueue_script( 'custom-crsl-js', get_stylesheet_directory_uri().'/rpc/custom.js', array('jquery') );
+			} else {
+				wp_enqueue_script( 'custom-crsl-js', RPC_URL.'/assets/front/js/custom.js', array('jquery') );
+			}
 
 			ob_start();
 
@@ -367,7 +380,7 @@ class WCP_Responsive_Posts_Carousel
 	}
 
 	function rpc_get_posts(){
-		$all_posts = get_posts( array('post_type' => $_REQUEST['post_type'], 'posts_per_page' => -1 ) );
+		$all_posts = get_posts( array('post_type' => $_REQUEST['post_type'], 'posts_per_page' => 500 ) );
 		echo '<option value="all">'.__( 'All', 'responsive-posts-carousel' ).' '.$_REQUEST['post_type'].'s</option>';
 		foreach ($all_posts as $key => $post_obj) {
 			echo '<option value="'.$post_obj->ID.'">'.$post_obj->post_title.'</option>';
@@ -453,10 +466,19 @@ class WCP_Responsive_Posts_Carousel
 
 	function render_carousel_title($post_id, $carousel_settings){
 		$title_key = ($carousel_settings['title'] != '') ? $carousel_settings['title'] : 'post_title' ;
-		$this->get_display_data($post_id, $title_key, '');
+		$words = (isset($carousel_settings['titlewords']) && $carousel_settings['titlewords'] != '') ? $carousel_settings['titlewords'] : '' ;
+		echo $this->get_display_data($post_id, $title_key, $words, $carousel_settings);
 	}
 
-	function get_display_data($post_id, $key, $length){
+	function render_carousel_desc($post_id, $carousel_settings){
+		$title_key = ($carousel_settings['desc'] != '') ? $carousel_settings['desc'] : 'post_date' ;
+		$words = ($carousel_settings['words'] != '') ? $carousel_settings['words'] : '' ;
+		echo $this->get_display_data($post_id, $title_key, $words, $carousel_settings);
+	}	
+
+	function get_display_data($post_id, $key, $length, $carousel_settings){
+		$more = (isset($carousel_settings['appendmore'])) ? $carousel_settings['appendmore'] : '...' ;
+		ob_start();
 		if (strpos($key, ',')) {
 			$exc_arr = explode(',', $key);
 			$more = (isset($exc_arr[2])) ? $exc_arr[2] : '...' ;
@@ -468,13 +490,22 @@ class WCP_Responsive_Posts_Carousel
 	                echo get_the_date();
 	                break;
 	            case 'post_title':
-	                echo get_the_title($post_id);
+		            if ($length != '') {
+		            	echo wp_trim_words(get_the_title( $post_id) , $length, $more );
+		            } else {
+	                	echo get_the_title($post_id);
+		            }
 	                break;
 	            case 'content':
-	            	if ($length != '') {
-						echo wp_trim_words( get_the_content(), $length );
+	            	if (isset($carousel_settings['enableshortcodes'])) {
+						$m_content = do_shortcode( get_the_content() );
+						echo wp_trim_words($m_content , $length );	            		
 	            	} else {
-	            		the_content();
+		            	if ($length != '') {
+							echo wp_trim_words( get_the_content(), $length, $more );
+		            	} else {
+		            		the_content();
+		            	}
 	            	}
 	                break;
                 case 'post_author':
@@ -482,7 +513,7 @@ class WCP_Responsive_Posts_Carousel
                     break;
 	            case 'excerpt':
 	            	if ($length != '') {
-	            		echo wp_trim_words( get_the_excerpt(), $length );
+	            		echo wp_trim_words( get_the_excerpt(), $length, $more );
 	            	} else {
 	            		the_excerpt();
 	            	}
@@ -493,7 +524,7 @@ class WCP_Responsive_Posts_Carousel
 	            default:
 	            	if ($words != '') {
 	            		$meta = get_post_meta( $post_id, $key, true );
-	            		echo wp_trim_words( $meta, $words );
+	            		echo wp_trim_words( $meta, $words, $more );
 	            	} else {
 	            		echo get_post_meta( $post_id, $key, true );
 	            	}	            
@@ -501,13 +532,9 @@ class WCP_Responsive_Posts_Carousel
 	                break;
 	        }
 		}
-		
-	}
 
-	function render_carousel_desc($post_id, $carousel_settings){
-		$title_key = ($carousel_settings['desc'] != '') ? $carousel_settings['desc'] : 'post_date' ;
-		$words = ($carousel_settings['words'] != '') ? $carousel_settings['words'] : '' ;
-		$this->get_display_data($post_id, $title_key, $words);
+		$display = ob_get_clean();
+		return apply_filters( 'rpc_display_meta_data', $display, $post_id, $key, $length, $carousel_settings );		
 	}
 
 	function render_read_more_btn($post_id, $carousel_settings){

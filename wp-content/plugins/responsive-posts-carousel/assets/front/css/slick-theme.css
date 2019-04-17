@@ -21,14 +21,11 @@
 {
     font-size: 0;
     line-height: 0;
-
     position: absolute;
     top: 50%;
-
     display: block;
-
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     padding: 0;
     -webkit-transform: translate(0, -50%);
     -ms-transform: translate(0, -50%);
@@ -79,7 +76,7 @@
 
 .slick-prev
 {
-    left: -25px;
+    left: -32px;
 }
 [dir='rtl'] .slick-prev
 {
@@ -97,7 +94,7 @@
 
 .slick-next
 {
-    right: -25px;
+    right: -30px;
 }
 [dir='rtl'] .slick-next
 {
@@ -201,4 +198,7 @@
 {
     opacity: .75;
     color: black;
+}
+.slick-slider {
+    overflow: visible !important;
 }

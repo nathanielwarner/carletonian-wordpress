@@ -15,10 +15,8 @@
     
     // Query Arguments
     $args = array(
-        'posts_per_page'   => (isset($attrs['count'])) ? $attrs['count'] : -1,
+        'posts_per_page'   => $count,
         'ignore_sticky_posts' => true,
-        'order' => (isset($attrs['order'])) ? $attrs['order'] : 'DESC',
-        'orderby' => (isset($attrs['orderby'])) ? $attrs['orderby'] : 'date',
     );
 
     if (isset($carousel_settings['offset']) && $carousel_settings['offset'] != '') {
@@ -27,10 +25,6 @@
 
     if (isset($carousel_settings['posts_per_page']) && $carousel_settings['posts_per_page'] != '') {
          $args['posts_per_page'] =  intval($carousel_settings['posts_per_page']);
-    }
-
-    if (isset($attrs['meta_key']) && $attrs['meta_key'] != '') {
-        $args['meta_key'] = $attrs['meta_key'];
     }
 
     if (isset($carousel_settings['display_by']) && $carousel_settings['display_by'] == 'taxonomy') {
@@ -60,6 +54,16 @@
         $exclude_ids_arr[] = $current_post_id;
     }
     $args['post__not_in'] = $exclude_ids_arr;
+
+    // Setting query params dynamically  
+    if (is_array($attrs)) {
+        foreach ($attrs as $key => $value) {
+            if ($key != 'id' && $key != 'count') {
+                $args[$key] = $value;
+            }
+        }
+    }
+
 
     $args = apply_filters( 'rpc_query_args', $args );
 
