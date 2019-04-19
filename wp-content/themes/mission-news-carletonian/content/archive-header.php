@@ -16,7 +16,7 @@ if ( is_tag() ) {
 	$prefix = esc_html__( 'Articles tagged as', 'mission-news' );
 } elseif ( is_author() ) {
 	$icon_class = 'user';
-	$prefix = esc_html_x( 'Articles written by', 'Posts published by AUTHOR', 'mission-news' );
+	$prefix = esc_html_x( '', 'Posts published by AUTHOR', 'mission-news' );
 } elseif ( is_date() ) {
 	$icon_class = 'calendar';
 	// Repeating default value to add new translator note - context may change word choice
