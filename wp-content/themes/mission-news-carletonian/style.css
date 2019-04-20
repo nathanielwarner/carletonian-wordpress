@@ -3478,6 +3478,10 @@ Customizations for Carleton
   text-align: center;
 }
 
+.archive .post-byline {
+  text-align: left;
+}
+
 #title-container .custom-logo {
   width: 100%;
   max-width: 900px;
