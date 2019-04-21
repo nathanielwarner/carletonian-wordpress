@@ -11,12 +11,12 @@
             </a>
         </h3>
         <?php if (!isset($carousel_settings['hidemeta'])) { ?>
-        <div class="wcp-post-meta wcp-disable-post-meta" style="color: <?php echo (isset($carousel_settings['desc_color'])) ? $carousel_settings['desc_color'] : ''; ?>;">
-            <span class="wcp-post-author"><i class="fa fa-user"></i>
+        <div class="wcp-post-meta wcp-disable-post-meta post-byline">
+            <span class="wcp-post-author">By
                 <?php the_author_posts_link(); ?>
             </span>
-            &nbsp;
-            <span class="wcp-post-date"><i class="fa fa-clock-o"></i> <?php echo get_the_date(); ?></span>
+            on
+            <span class="wcp-post-date"><?php echo get_the_date(); ?></span>
         </div>
         <?php } ?>
         <div class="wcp-post-contents rpc-content">
