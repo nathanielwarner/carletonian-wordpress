@@ -157,6 +157,9 @@ Features:
 
 == Changelog ==
 
+= 2.4.2 =
+* Bug fixes: examples of import files; broken favicon; metadata lockscreen; URLs from WordPress sites.
+
 = 2.4.1 =
 * Improvement: integration with REST API + Custom Post Types.
 
@@ -549,6 +552,9 @@ was removed. To finish, a Premium version is now been presented.
 * It's the first and only version so far.
 
 == Upgrade Notice ==
+
+= 2.4.2 =
+* Bug fixes: examples of import files; broken favicon; metadata lockscreen; URLs from WordPress sites.
 
 = 2.4.1 =
 * Improvement: integration with REST API + Custom Post Types.
