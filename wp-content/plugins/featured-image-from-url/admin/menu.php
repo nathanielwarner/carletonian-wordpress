@@ -61,15 +61,6 @@ function fifu_get_menu_html() {
     } else
         fifu_disable_fake();
 
-    // fake 2
-    if (fifu_is_on('fifu_fake2')) {
-        update_option('fifu_data_generation', 'toggleoff');
-        fifu_enable_fake2();
-    } else if (fifu_is_off('fifu_fake2')) {
-        fifu_disable_fake2();
-    } else
-        update_option('fifu_fake_created', null, 'no');
-
     // default
     if (!empty($default_url) && fifu_is_on('fifu_enable_default_url') && fifu_is_on('fifu_fake2')) {
         if (!wp_get_attachment_url(get_option('fifu_default_attach_id'))) {
@@ -80,12 +71,6 @@ function fifu_get_menu_html() {
             fifu_db_update_default_url($default_url);
     } else
         fifu_db_delete_default_url();
-
-    // clean
-    if (fifu_is_on('fifu_data_clean')) {
-        fifu_db_enable_clean();
-        update_option('fifu_data_clean', 'toggleoff', 'no');
-    }
 }
 
 function fifu_get_menu_settings() {
