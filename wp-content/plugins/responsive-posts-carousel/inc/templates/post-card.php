@@ -13,7 +13,13 @@
         <?php if (!isset($carousel_settings['hidemeta'])) { ?>
         <div class="wcp-post-meta wcp-disable-post-meta post-byline">
             <span class="wcp-post-author">By
-                <?php the_author_posts_link(); ?>
+                <?php
+                if ( function_exists( 'coauthors_posts_links' ) ) {
+                    coauthors_posts_links();
+                } else {
+                    the_author_posts_link();
+                }
+                ?>
             </span>
             on
             <span class="wcp-post-date"><?php echo get_the_date(); ?></span>
