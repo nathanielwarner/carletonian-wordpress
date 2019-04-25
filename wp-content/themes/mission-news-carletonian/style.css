@@ -3026,7 +3026,6 @@ a img {
 .layout-rows-excerpt .rows-excerpt.has-post-thumbnail .post-header {
   display: inline-block;
   vertical-align: middle;
-  width: calc(70% - 17px);
 }
 
 .layout-rows-excerpt .rows-excerpt > article {
