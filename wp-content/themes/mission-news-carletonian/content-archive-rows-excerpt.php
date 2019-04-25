@@ -14,7 +14,9 @@ $date   = get_theme_mod( 'post_date_blog_archives' );
 		</div>
 		<div class="post-content">
             <?php ct_mission_news_featured_image(); ?>
-            <div class="excerpt-block"><?php echo strip_tags( wp_kses_post( ct_mission_news_excerpt() ) ); ?></div>
+            <?php if (has_post_thumbnail()) echo '<div class="excerpt-block">'; ?>
+            <?php echo strip_tags( wp_kses_post( ct_mission_news_excerpt() ) ); ?>
+            <?php if (has_post_thumbnail()) echo '</div>'; ?>
 		</div>
 	</article>
 	<?php do_action( 'ct_mission_news_archive_post_after' ); ?>
