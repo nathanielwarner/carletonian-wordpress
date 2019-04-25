@@ -3482,6 +3482,12 @@ Customizations for Carleton
   text-align: left;
 }
 
+.archive .excerpt-block {
+  display: inline-block;
+  width: calc(70% - 17px);
+  float: right;
+}
+
 #title-container .custom-logo {
   width: 100%;
   max-width: 900px;

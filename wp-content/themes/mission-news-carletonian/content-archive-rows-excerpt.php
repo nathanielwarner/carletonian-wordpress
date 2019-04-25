@@ -5,7 +5,6 @@ $date   = get_theme_mod( 'post_date_blog_archives' );
 <div <?php post_class(); ?>>
 	<?php do_action( 'ct_mission_news_archive_post_before' ); ?>
 	<article>
-		<?php ct_mission_news_featured_image(); ?>
 		<div class='post-header'>
 			<?php do_action( 'ct_mission_news_sticky_post_status' ); ?>
 			<h2 class='post-title'>
@@ -14,7 +13,8 @@ $date   = get_theme_mod( 'post_date_blog_archives' );
 			<?php ct_mission_news_post_byline( $author, $date ); ?>
 		</div>
 		<div class="post-content">
-			<?php echo wp_kses_post( ct_mission_news_excerpt() ); ?>
+            <?php ct_mission_news_featured_image(); ?>
+            <div class="excerpt-block"><?php echo strip_tags( wp_kses_post( ct_mission_news_excerpt() ) ); ?></div>
 		</div>
 	</article>
 	<?php do_action( 'ct_mission_news_archive_post_after' ); ?>
