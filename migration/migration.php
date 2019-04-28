@@ -26,13 +26,13 @@ define("WP_CATEGORY_ARTSFEATURES", array(2));
 $result = wp_insert_post($post_to_insert, true);
 echo $result . "\n";*/
 
-function get_or_create_author($carl_user) {
-    $user = get_user_by('email', $carl_user . '@carleton.edu');
+function get_or_create_author($author) {
+    $user = get_user_by('login', $author);
     if ($user) {
-        $uid = $user->get('id');
+        $uid = $user->ID;
     } else {
-        //$uid = wp_create_user($carl_user, null, $carl_user . '@carleton.edu');
-        $uid = 999;
+        $random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
+        $uid = wp_create_user($author, $random_password);
     }
     return $uid;
 }
@@ -41,41 +41,44 @@ $reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-4-25.xml");
 //echo print_r($reason_data->entity[0]['type'], true);
 foreach ($reason_data->entity as $entity) {
     foreach($entity->value as $value) {
-        switch($value['name']) {
-            case 'creation_date':
-                $date = (string) $value;
-                break;
-            case 'release_title':
-                $title = (string) $value;
-                break;
-            case 'created_by_username':
-                $author = get_or_create_author((string) $value);
-                break;
-            case 'content':
-                $content = (string) $value;
+        if (!empty((array)$value)) {
+            switch($value['name']) {
+                case 'creation_date':
+                    $date = (string) $value;
+                    break;
+                case 'release_title':
+                    $title = (string) $value;
+                    break;
+                case 'author':
+                    $author = get_or_create_author((string) $value);
+                    break;
+                case 'content':
+                    $content = (string) $value;
+            }
         }
-        foreach($entity->relationships->alrel as $alrel) {
-            if ($alrel['name'] == 'news_to_news_section') {
-                switch ($alrel->rel['to_entity_id']) {
-                    case REASON_CATEGORY_NEWS:
-                        $category = WP_CATEGORY_NEWS;
-                        break;
-                    case REASON_CATEGORY_SPORTS:
-                        $category = WP_CATEGORY_SPORTS;
-                        break;
-                    case REASON_CATEGORY_BALDSPOT:
-                        $category = WP_CATEGORY_BALDSPOT;
-                        break;
-                    case REASON_CATEGORY_VIEWPOINT:
-                        $category = WP_CATEGORY_VIEWPOINT;
-                        break;
-                    case REASON_CATEGORY_ARTSFEATURES:
-                        $category = WP_CATEGORY_ARTSFEATURES;
-                        break;
-                    default:
-                        $category = WP_CATEGORY_VIEWPOINT;
-                        break;
-                }
+    }
+
+    foreach($entity->relationships->alrel as $alrel) {
+        if ($alrel['name'] == 'news_to_news_section') {
+            switch ($alrel->rel['to_entity_id']) {
+                case REASON_CATEGORY_NEWS:
+                    $category = WP_CATEGORY_NEWS;
+                    break;
+                case REASON_CATEGORY_SPORTS:
+                    $category = WP_CATEGORY_SPORTS;
+                    break;
+                case REASON_CATEGORY_BALDSPOT:
+                    $category = WP_CATEGORY_BALDSPOT;
+                    break;
+                case REASON_CATEGORY_VIEWPOINT:
+                    $category = WP_CATEGORY_VIEWPOINT;
+                    break;
+                case REASON_CATEGORY_ARTSFEATURES:
+                    $category = WP_CATEGORY_ARTSFEATURES;
+                    break;
+                default:
+                    $category = WP_CATEGORY_VIEWPOINT;
+                    break;
             }
         }
     }
@@ -89,5 +92,7 @@ foreach ($reason_data->entity as $entity) {
         'post_date'     => $date,
     );
 
-    echo print_r($post_to_insert, true);
+    $result = wp_insert_post($post_to_insert);
+
+    echo "Inserted post " . $result . "\n";
 }
