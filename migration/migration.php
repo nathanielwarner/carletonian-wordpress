@@ -21,14 +21,19 @@ function get_or_create_author($author) {
         $uid = $user->ID;
     } else {
         $random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
-        $uid = wp_create_user($author, $random_password);
+        $userdata = array(
+            'user_login'    => $author,
+            'user_pass'     => $random_password,
+            'role'          => 'author',
+        );
+        $uid = wp_insert_user($userdata);
     }
     return $uid;
 }
 
 $reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-4-25.xml");
 foreach ($reason_data->entity as $entity) {
-    $author = null;
+    $author = get_or_create_author('Carletonian Staff');
     foreach($entity->value as $value) {
         if ($value->__toString()) {
             switch($value['name']) {
@@ -72,7 +77,7 @@ foreach ($reason_data->entity as $entity) {
         }
     }
 
-    if (!get_page_by_title($title)) {
+    if (!get_page_by_title($title, OBJECT, 'post')) {
         $post_to_insert = array(
             'post_title'    => $title,
             'post_content'  => $content,
