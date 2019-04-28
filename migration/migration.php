@@ -72,16 +72,18 @@ foreach ($reason_data->entity as $entity) {
         }
     }
 
-    $post_to_insert = array(
-        'post_title'    => $title,
-        'post_content'  => $content,
-        'post_status'   => 'publish',
-        'post_author'   => $author,
-        'post_category' => $category,
-        'post_date'     => $date,
-    );
+    if (!get_page_by_title($title)) {
+        $post_to_insert = array(
+            'post_title'    => $title,
+            'post_content'  => $content,
+            'post_status'   => 'publish',
+            'post_author'   => $author,
+            'post_category' => $category,
+            'post_date'     => $date,
+        );
 
-    $result = wp_insert_post($post_to_insert);
+        $result = wp_insert_post($post_to_insert);
 
-    echo "Inserted post " . $result . "\n";
+        echo "Inserted post " . $result . "\n";
+    }
 }
