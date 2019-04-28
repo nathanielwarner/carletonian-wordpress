@@ -15,17 +15,6 @@ define("WP_CATEGORY_BALDSPOT", array(5));
 define("WP_CATEGORY_VIEWPOINT", array(6));
 define("WP_CATEGORY_ARTSFEATURES", array(2));
 
-/*$post_to_insert = array(
-    'post_title'    => 'Testing 123',
-    'post_content'  => 'Content goes here',
-    'post_status'   => 'publish',
-    'post_author'   => 1,
-    'post_category' => array(3)
-);
-
-$result = wp_insert_post($post_to_insert, true);
-echo $result . "\n";*/
-
 function get_or_create_author($author) {
     $user = get_user_by('login', $author);
     if ($user) {
@@ -38,7 +27,6 @@ function get_or_create_author($author) {
 }
 
 $reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-4-25.xml");
-//echo print_r($reason_data->entity[0]['type'], true);
 foreach ($reason_data->entity as $entity) {
     foreach($entity->value as $value) {
         if (!empty((array)$value)) {
@@ -77,7 +65,7 @@ foreach ($reason_data->entity as $entity) {
                     $category = WP_CATEGORY_ARTSFEATURES;
                     break;
                 default:
-                    $category = WP_CATEGORY_VIEWPOINT;
+                    $category = WP_CATEGORY_NONE;
                     break;
             }
         }
