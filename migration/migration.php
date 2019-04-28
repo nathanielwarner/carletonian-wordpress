@@ -28,8 +28,9 @@ function get_or_create_author($author) {
 
 $reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-4-25.xml");
 foreach ($reason_data->entity as $entity) {
+    $author = null;
     foreach($entity->value as $value) {
-        if (!empty((array)$value)) {
+        if ($value->__toString()) {
             switch($value['name']) {
                 case 'creation_date':
                     $date = (string) $value;
