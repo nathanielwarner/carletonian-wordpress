@@ -58,6 +58,14 @@ define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT'));
 define('LOGGED_IN_SALT', getenv('LOGGED_IN_SALT'));
 define('NONCE_SALT', getenv('NONCE_SALT'));
 
+/**
+ * S3 Stuff
+ */
+define( 'S3_UPLOADS_BUCKET', 'thecarletonian' );
+define( 'S3_UPLOADS_KEY', getenv('S3_UPLOADS_KEY') );
+define( 'S3_UPLOADS_SECRET', getenv('S3_UPLOADS_SECRET') );
+define( 'S3_UPLOADS_REGION', getenv('S3_UPLOADS_REGION') ); // the s3 bucket region (excluding the rest of the URL)
+
 /**#@-*/
 
 /**
