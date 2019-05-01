@@ -673,7 +673,7 @@ if ( ! function_exists( ( 'ct_mission_news_post_byline' ) ) ) {
 
 		echo '<div class="post-byline">';
 
-		if ($author && $author != 'no') {
+		if ($post_author && $post_author != 'no') {
 		    echo 'By ';
             if (function_exists('coauthors_posts_links')) {
                 coauthors_posts_links();
