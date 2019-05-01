@@ -31,7 +31,7 @@ function get_or_create_author($author) {
     return $uid;
 }
 
-$reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-4-25.xml");
+$reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-4-30-trunc.xml");
 foreach ($reason_data->entity as $entity) {
     $author = get_or_create_author('Carletonian Staff');
     foreach($entity->value as $value) {
