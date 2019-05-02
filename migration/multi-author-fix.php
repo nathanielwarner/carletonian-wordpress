@@ -35,9 +35,13 @@ function get_embedded_users($user)
 foreach ($users as $user) {
     $new_users = get_embedded_users($user);
     if (count($new_users) > 0) {
-        echo "\n---------- " . $user->user_login . " ----------\n";
-        foreach ($new_users as $new_user) {
-            echo $new_user->user_login . "\n";
+
+        if (count($new_users) == 1) {
+            echo "\n---------- " . $user->user_login . " ----------\n";
+            echo $new_users[0]->user_login . "\n";
         }
+        /*foreach ($new_users as $new_user) {
+            echo $new_user->user_login . "\n";
+        }*/
     }
 }
