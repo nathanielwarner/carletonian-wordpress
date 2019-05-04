@@ -1,6 +1,9 @@
 <?php
 
 require_once(__DIR__ . '/../wp-load.php');
+require_once(__DIR__ . '/../wp-admin/includes/user.php');
+
+wp_cache_flush();
 
 $users = get_users();
 
@@ -37,11 +40,14 @@ foreach ($users as $user) {
     if (count($new_users) > 0) {
 
         if (count($new_users) == 1) {
-            echo "\n---------- " . $user->user_login . " ----------\n";
-            echo $new_users[0]->user_login . "\n";
+            echo $user->user_login . "(" . $user->ID . ")  ==>  ". $new_users[0]->user_login . " (" . $new_users[0]->ID . ")\n";
+            $result = wp_delete_user($user->ID, $new_users[0]->ID);
+            echo "    -> " . $result . "\n";
         }
         /*foreach ($new_users as $new_user) {
             echo $new_user->user_login . "\n";
         }*/
     }
 }
+
+wp_cache_flush();
