@@ -31,7 +31,9 @@ function get_or_create_author($author) {
     return $uid;
 }
 
-$reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-5-9.xml");
+$page_contents = "";
+
+$reason_data = simplexml_load_file(__DIR__ . "/carletonian-reason-5-16.xml");
 foreach ($reason_data->entity as $entity) {
     $author = get_or_create_author('Carletonian Staff');
     foreach($entity->value as $value) {
@@ -48,6 +50,10 @@ foreach ($reason_data->entity as $entity) {
                     break;
                 case 'content':
                     $content = (string) $value;
+                    break;
+                case 'id':
+                    $id = (int) $value;
+                    break;
             }
         }
     }
@@ -89,6 +95,16 @@ foreach ($reason_data->entity as $entity) {
 
         $result = wp_insert_post($post_to_insert);
 
-        echo "Inserted post " . $result . "\n";
+        echo "\nInserted post " . $result . "\n";
+    } else {
+        echo "#";
+    }
+
+    if ($url = get_permalink(get_page_by_title($title, OBJECT, 'post'))) {
+        $page_contents = $page_contents . $url . "\t" . $id . "\n";
+    } else {
+        echo "\nError! Page not in db.\n";
     }
 }
+
+file_put_contents(__DIR__ . 'redirects.txt', $page_contents);

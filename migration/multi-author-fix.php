@@ -38,15 +38,11 @@ function get_embedded_users($user)
 foreach ($users as $user) {
     $new_users = get_embedded_users($user);
     if (count($new_users) > 0) {
-
-        if (count($new_users) == 1) {
-            echo $user->user_login . "(" . $user->ID . ")  ==>  ". $new_users[0]->user_login . " (" . $new_users[0]->ID . ")\n";
-            $result = wp_delete_user($user->ID, $new_users[0]->ID);
-            echo "    -> " . $result . "\n";
+        echo $user->user_login . " (" . $user->ID . ")  ==>  ";
+        foreach ($new_users as $new_user) {
+            echo $new_user->user_login . " (" . $new_user->ID . "), ";
         }
-        /*foreach ($new_users as $new_user) {
-            echo $new_user->user_login . "\n";
-        }*/
+        echo "\n";
     }
 }
 
