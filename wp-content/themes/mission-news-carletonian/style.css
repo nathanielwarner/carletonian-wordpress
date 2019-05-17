@@ -3661,6 +3661,11 @@ Wordpress Popular Posts customizations
   text-decoration: none !important;
 }
 
+.wcp-carousel-main-wrap .slick-slider .slick-list {
+  min-height: 560px;
+  max-height: 560px;
+}
+
 .show-more-link:link {
   font-family: "PT Sans", sans-serif;
   font-size: 0.875em;
