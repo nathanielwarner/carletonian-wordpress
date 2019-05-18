@@ -61,7 +61,8 @@ define('NONCE_SALT', getenv('NONCE_SALT'));
 /**
  * S3 Stuff
  */
-define( 'S3_UPLOADS_BUCKET', 'thecarletonian' );
+define( 'S3_UPLOADS_BUCKET', getenv('S3_UPLOADS_BUCKET') );
+define( 'S3_UPLOADS_BUCKET_URL', getenv('S3_UPLOADS_BUCKET_URL') );
 define( 'S3_UPLOADS_KEY', getenv('S3_UPLOADS_KEY') );
 define( 'S3_UPLOADS_SECRET', getenv('S3_UPLOADS_SECRET') );
 define( 'S3_UPLOADS_REGION', getenv('S3_UPLOADS_REGION') ); // the s3 bucket region (excluding the rest of the URL)
