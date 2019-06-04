@@ -104,10 +104,7 @@ OpenAQ
 
 Push to Windy
 
-
-
-
-
+file caching
 
 Accumulated rain in yearly charts
 
