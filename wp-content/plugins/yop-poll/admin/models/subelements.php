@@ -215,7 +215,7 @@ class YOP_POLL_SubElements {
 		if ( false === in_array( $order_by, self::$order_by_allowed ) ) {
 			$order_by = 'sorder';
 		}
-		if ( false === in_array( $order_by, self::$sort_rule_allowed ) ) {
+		if ( false === in_array( $sort_rule, self::$sort_rule_allowed ) ) {
 			$sort_rule = 'ASC';
 		}
 		$query = $GLOBALS['wpdb']->prepare(
@@ -318,7 +318,7 @@ class YOP_POLL_SubElements {
 		$query = $GLOBALS['wpdb']->prepare(
 			"SELECT * from {$GLOBALS['wpdb']->yop_poll_subelements} "
 			. "WHERE `poll_id` = %s AND `element_id` = %s "
-			. "AND LOWER( `stext` ) = %s", $poll_id, $element_id, strtolower( $stext )
+			. "AND LOWER( `stext` ) = %s AND `status` = 'active'", $poll_id, $element_id, strtolower( $stext )
 		);
 		$sub_element = $GLOBALS['wpdb']->get_row( $query );
 		if ( null === $sub_element ) {
@@ -365,5 +365,29 @@ class YOP_POLL_SubElements {
 			"UPDATE {$GLOBALS['wpdb']->yop_poll_subelements} SET `total_submits` = '0' WHERE `poll_id` = %s", $poll_id
 		);
 		$GLOBALS['wpdb']->query( $query );
+	}
+	public static function delete_others_for_poll( $poll_id ) {
+		$data = array(
+			'status' => 'deleted',
+			'sorder' => '0'
+		);
+		$delete_result = $GLOBALS['wpdb']->update(
+			$GLOBALS['wpdb']->yop_poll_subelements,
+			$data,
+			array(
+				'poll_id' => $poll_id,
+				'author' => 0
+			)
+		);
+		if ( false !== $delete_result ) {
+			self::$errors_present = false;
+		} else {
+			self::$errors_present = true;
+			self::$error_text = __( 'Error deleting answer', 'yop-poll' );
+		}
+		return array(
+			'errors_present' => self::$errors_present,
+			'error_text' => self::$error_text
+		);
 	}
 }

@@ -86,7 +86,7 @@ class SimpleLogger
 	 *
 	 * @return array
 	 */
-	function getInfo()
+    public function getInfo()
 	{
 		$arr_info = array(
 			// The logger slug. Defaulting to the class name is nice and logical I think
@@ -115,7 +115,7 @@ class SimpleLogger
 	 * @since 2.5.4
 	 * @return Mixed
 	 */
-	function getInfoValueByKey($key)
+    public function getInfoValueByKey($key)
 	{
 		$arr_info = $this->getInfo();
 
@@ -147,7 +147,7 @@ class SimpleLogger
 	 * @param array  $context
 	 * @param array  $row Currently not always passed, because loggers need to be updated to support this...
 	 */
-	function interpolate($message, $context = array(), $row = null)
+    public function interpolate($message, $context = array(), $row = null)
 	{
 		if (!is_array($context)) {
 			return $message;
@@ -207,7 +207,7 @@ class SimpleLogger
 	 *
 	 * @return string HTML
 	 */
-	function getLogRowHeaderOutput($row)
+    public function getLogRowHeaderOutput($row)
 	{
 		// HTML for initiator
 		$initiator_html = '';
@@ -473,21 +473,18 @@ class SimpleLogger
 		$local_date_format = $time_format;
 
 		// Show local time as date and hours when event is a bit older.
-		if (
-			$time_current - HOUR_IN_SECONDS * 6 >
+        if ($time_current - HOUR_IN_SECONDS * 6 >
 			$date_datetime->getTimestamp()
 		) {
 			$local_date_format = $date_and_time_format;
 		}
 
-		if (
-			$time_current - $date_datetime->getTimestamp() <=
+        if ($time_current - $date_datetime->getTimestamp() <=
 			$time_ago_just_now_max_time
 		) {
 			// Show "just now" if event is very recent.
 			$str_when = __('Just now', 'simple-history');
-		} elseif (
-			$time_current - $date_datetime->getTimestamp() >
+        } elseif ($time_current - $date_datetime->getTimestamp() >
 			$time_ago_max_time
 		) {
 			/* Translators: Date format for log row header, see http://php.net/date */
@@ -509,8 +506,8 @@ class SimpleLogger
 			);
 		}
 
-		$item_permalink = admin_url('index.php?page=simple_history_page');
-		if (!empty($row->id)) {
+		$item_permalink = admin_url( apply_filters( 'simple_history/admin_location', 'index' ) . '.php?page=simple_history_page' );
+		if ( ! empty( $row->id ) ) {
 			$item_permalink .= "#item/{$row->id}";
 		}
 
@@ -1293,8 +1290,7 @@ class SimpleLogger
 		} // End if().
 
 		// Detect XML-RPC calls and append to context, if not already there.
-		if (
-			defined('XMLRPC_REQUEST') &&
+        if (defined('XMLRPC_REQUEST') &&
 			XMLRPC_REQUEST &&
 			!isset($context['_xmlrpc_request'])
 		) {
@@ -1386,8 +1382,7 @@ class SimpleLogger
 					true
 				);
 
-				if (
-					$anonymize_ip_address &&
+                if ($anonymize_ip_address &&
 					function_exists('wp_privacy_anonymize_ip')
 				) {
 					$remote_addr = wp_privacy_anonymize_ip($remote_addr);
@@ -1419,8 +1414,7 @@ class SimpleLogger
 								// valid, add to context, with loop index appended so we can store many IPs.
 								$key_lower = strtolower($key);
 
-								if (
-									$anonymize_ip_address &&
+                                if ($anonymize_ip_address &&
 									function_exists('wp_privacy_anonymize_ip')
 								) {
 									$ip = wp_privacy_anonymize_ip($ip);
@@ -1438,8 +1432,7 @@ class SimpleLogger
 			} // End if().
 
 			// Append http referer.
-			if (
-				!isset($context['_server_http_referer']) &&
+            if (!isset($context['_server_http_referer']) &&
 				isset($_SERVER['HTTP_REFERER'])
 			) {
 				$context['_server_http_referer'] = $_SERVER['HTTP_REFERER'];
@@ -1552,7 +1545,7 @@ class SimpleLogger
 	 * @param array $row Row with info.
 	 * @return array Headers
 	 */
-	function get_event_ip_number_headers($row)
+    public function get_event_ip_number_headers($row)
 	{
 		$ip_keys = $this->get_ip_number_header_keys();
 		$arr_found_additional_ip_headers = array();
@@ -1586,10 +1579,9 @@ class SimpleLogger
 	 * @param string $ip IP number.
 	 * @return bool
 	 */
-	function validate_ip($ip)
+    public function validate_ip($ip)
 	{
-		if (
-			filter_var(
+        if (filter_var(
 				$ip,
 				FILTER_VALIDATE_IP,
 				FILTER_FLAG_IPV4 |
@@ -1608,7 +1600,7 @@ class SimpleLogger
 	 * The CSS that you output will only be outputed
 	 * on pages where Simple History is used.
 	 */
-	function adminCSS()
+    public function adminCSS()
 	{
 		/*
 		?>
@@ -1626,7 +1618,7 @@ class SimpleLogger
 	 * The JS that you output will only be outputed
 	 * on pages where Simple History is used.
 	 */
-	function adminJS()
+    public function adminJS()
 	{
 		/*
 		?>

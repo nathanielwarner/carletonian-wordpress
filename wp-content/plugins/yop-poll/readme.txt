@@ -3,7 +3,7 @@ Contributors: yourownprogrammer
 Donate Link: https://www.yop-poll.com
 Tags: booth, create poll, poll plugin, poll, polls, wordpress poll, vote, voting, survey, polling, yop poll, yop
 Requires at least: 3.3
-Tested up to: 5.1
+Tested up to: 5.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.htm
@@ -104,16 +104,42 @@ You can have only one question per poll.
 == Screenshots ==
 
 1. Choose Template
-2. Template Styling
-3. Add Question and Answers
-4. Define Poll Settings
-5. Define Poll Access Settings
-6. Define Poll Results Settings
-7. Poll on Live Page
-8. View All Polls
-9. View Results
+2. Choose Skin
+3. Available Skins
+4. Available skins
+5. Customize Style
+6. Add Question and Answers
+7. Define Poll Settings
+8. Define Poll Access Settings
+9. Define Poll Results Settings
+10. View Results
+11. Poll With Vertical Display
+12. Poll With Vertical Display Showing Results Before Vote
 
 == Changelog ==
+
+* added ability to manually add votes
+* added support for multisite
+* fixed issue with built in captcha not working on nginx environments
+* fixed issue with sorting results
+
+= 6.0.7 =
+* fixed issue with other answers when resetting votes
+* fixed issue with timezones when using block feature
+
+= 6.0.6 =
+* fixed issue with blocking voters
+* fixed issue with logs
+* fixed issue with bans
+* fixed issue with settings
+* fixed issue with wordpress voting
+
+= 6.0.5 =
+* added skins
+* redesigned templates
+* improved ux for chosing templates
+* cleaned add/edit poll screens
+* cleaned files structure
 
 = 6.0.4 =
 * added ability to search votes

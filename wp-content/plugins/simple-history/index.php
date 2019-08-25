@@ -4,9 +4,8 @@
  * Plugin URI: http://simple-history.com
  * Text Domain: simple-history
  * Domain Path: /languages
- * Description: Plugin that logs various things that occur in WordPress and then
- *              presents those events in a very nice GUI.
- * Version: 2.31.1
+ * Description: Plugin that logs various things that occur in WordPress and then presents those events in a very nice GUI.
+ * Version: 2.32
  * Author: Pär Thernström
  * Author URI: http://simple-history.com/
  * License: GPL2
@@ -47,7 +46,7 @@ if ($ok_php_version && $ok_wp_version) {
      */
 
     if (!defined('SIMPLE_HISTORY_VERSION')) {
-        define('SIMPLE_HISTORY_VERSION', '2.31.1');
+        define('SIMPLE_HISTORY_VERSION', '2.32');
     }
 
     if (!defined('SIMPLE_HISTORY_PATH')) {
@@ -69,6 +68,7 @@ if ($ok_php_version && $ok_wp_version) {
     /** Load required files */
     require_once __DIR__ . '/inc/SimpleHistory.php';
     require_once __DIR__ . '/inc/SimpleHistoryLogQuery.php';
+    require_once __DIR__ . '/inc/helpers.php';
 
     /** Boot up */
     SimpleHistory::get_instance();
@@ -84,35 +84,38 @@ if ($ok_php_version && $ok_wp_version) {
         $ok_wp_version = version_compare($GLOBALS['wp_version'], '4.5.1', '>=');
         $ok_php_version = version_compare(phpversion(), '5.3', '>=');
         ?>
-		<div class="updated error">
-			<?php
-   if (!$ok_php_version) {
-       echo '<p>';
-       printf(
-           /* translators: 1: PHP version */
-           esc_html(
-               __(
-                   'Simple History is a great plugin, but to use it your server must have at least PHP 5.3 installed (you have version %s).',
-                   'simple-history'
-               )
-           ),
-           phpversion() // 1
-       );
-       echo '</p>';
-   }
+        <div class="updated error">
+            <?php
+            if (!$ok_php_version) {
+                echo '<p>';
+                printf(
+                    /* translators: 1: PHP version */
+                    esc_html(
+                        __(
+                            'Simple History is a great plugin, but to use it your server must have at least PHP 5.3 installed (you have version %s).',
+                            'simple-history'
+                        )
+                    ),
+                    phpversion() // 1
+                );
+                echo '</p>';
+            }
 
-   if (!$ok_wp_version) {
-       echo '<p>';
-       printf(
-           /* translators: 1: WordPress version */
-           esc_html(
-               __('Simple History requires WordPress version 4.5.1 or higher (you have version %s).', 'simple-history')
-           ),
-           $GLOBALS['wp_version'] // 1
-       );
-       echo '</p>';
-   }?>
-		</div>
-		<?php
+            if (!$ok_wp_version) {
+                echo '<p>';
+                printf(
+                    /* translators: 1: WordPress version */
+                    esc_html(
+                        __(
+                            'Simple History requires WordPress version 4.5.1 or higher (you have version %s).',
+                            'simple-history'
+                        )
+                    ),
+                    $GLOBALS['wp_version'] // 1
+                );
+                echo '</p>';
+            }?>
+        </div>
+        <?php
     }
 } // End if().

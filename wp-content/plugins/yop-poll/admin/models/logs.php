@@ -4,7 +4,7 @@ class YOP_Poll_Logs {
 		$error_text,
 		$sort_order_allowed = array( 'asc', 'desc' ),
 		$order_by_allowed = array( 'name', 'user_id', 'email', 'user_type', 'ipaddress', 'added_date', 'vote_message' ),
-		$logs_per_page = 10;
+		$logs_per_page = 20;
     private static $_instance = NULL;
     public static function get_instance() {
         if ( self::$_instance == NULL ){

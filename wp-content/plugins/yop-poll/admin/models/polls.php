@@ -3,6 +3,8 @@ class YOP_Poll_Polls {
 	private static $errors_present = false,
 			$error_text,
 			$text_size_allowed = array( 'small', 'medium', 'large' ),
+			$text_weight_allowed = array( 'normal', 'bold' ),
+			$text_align_allowed = array( 'left', 'center', 'right' ),
 			$yes_no_allowed = array( 'yes', 'no' ),
 			$captcha_allowed = array( 'yes', 'yes-recaptcha', 'no' ),
 			$answers_display_allowed = array( 'vertical', 'horizontal', 'columns' ),
@@ -365,6 +367,7 @@ class YOP_Poll_Polls {
 					'name' => $poll->name,
 					'template' => $poll->design->template,
 					'template_base' => $poll->design->templateBase,
+					'skin_base' => $poll->design->skinBase,
 					'author' => $current_user->ID,
 					'stype' => 'poll',
 					'status' => $poll->status,
@@ -497,6 +500,7 @@ class YOP_Poll_Polls {
 					'name' => $poll->name,
 					'template' => $poll->design->template,
 					'template_base' => $poll->design->templateBase,
+					'skin_base' => $poll->design->skinBase,
 					'stype' => 'poll',
 					'status' => $poll->status,
 					'meta_data' => serialize( $poll_meta_data ),
@@ -631,6 +635,7 @@ class YOP_Poll_Polls {
 			'modified_date' => current_time( 'mysql' )
 		);
 		if ( false !== $GLOBALS['wpdb']->update( $GLOBALS['wpdb']->yop_poll_polls, $data, array( 'id' => $poll_id ) ) ) {
+			YOP_Poll_SubElements::delete_others_for_poll( $poll_id );
 			YOP_Poll_SubElements::reset_submits_for_poll( $poll_id );
 			YOP_Poll_Votes::delete_votes_for_poll( $poll_id );
 		} else {
@@ -650,27 +655,21 @@ class YOP_Poll_Polls {
 					'borderSize' => $poll->design->style->poll->borderSize,
 					'borderColor' => $poll->design->style->poll->borderColor,
 					'borderRadius' => $poll->design->style->poll->borderRadius,
-					'padding' => $poll->design->style->poll->padding,
-					'textColor' => $poll->design->style->poll->textColor,
-					'inputElementsBorderColor' => $poll->design->style->poll->inputElementsBorderColor
+					'paddingLeftRight' => $poll->design->style->poll->paddingLeftRight,
+					'paddingTopBottom' => $poll->design->style->poll->paddingTopBottom
 				),
 				'questions' => array(
-					'backgroundColor' => $poll->design->style->questions->backgroundColor,
-					'borderSize' => $poll->design->style->questions->borderSize,
-					'borderColor' => $poll->design->style->questions->borderColor,
-					'borderRadius' => $poll->design->style->questions->borderRadius,
-					'padding' => $poll->design->style->questions->padding,
 					'textColor' => $poll->design->style->questions->textColor,
-					'textSize' => $poll->design->style->questions->textSize
+					'textSize' => $poll->design->style->questions->textSize,
+					'textWeight' => $poll->design->style->questions->textWeight,
+					'textAlign' => $poll->design->style->questions->textAlign
 				),
 				'answers' => array(
-					'backgroundColor' => $poll->design->style->answers->backgroundColor,
-					'borderSize' => $poll->design->style->answers->borderSize,
-					'borderColor' => $poll->design->style->answers->borderColor,
-					'borderRadius' => $poll->design->style->answers->borderRadius,
-					'padding' => $poll->design->style->answers->padding,
+					'paddingLeftRight' => $poll->design->style->answers->paddingLeftRight,
+					'paddingTopBottom' => $poll->design->style->answers->paddingTopBottom,
 					'textColor' => $poll->design->style->answers->textColor,
 					'textSize' => $poll->design->style->answers->textSize,
+					'textWeight' => $poll->design->style->answers->textWeight,
 					'skin' => $poll->design->style->answers->skin,
 					'colorScheme' => $poll->design->style->answers->colorScheme
 				),
@@ -679,19 +678,24 @@ class YOP_Poll_Polls {
 					'borderSize' => $poll->design->style->buttons->borderSize,
 					'borderColor' => $poll->design->style->buttons->borderColor,
 					'borderRadius' => $poll->design->style->buttons->borderRadius,
-					'padding' => $poll->design->style->buttons->padding,
+					'paddingLeftRight' => $poll->design->style->buttons->paddingLeftRight,
+					'paddingTopBottom' => $poll->design->style->buttons->paddingTopBottom,
 					'textColor' => $poll->design->style->buttons->textColor,
-					'textSize' => $poll->design->style->buttons->textSize
+					'textSize' => $poll->design->style->buttons->textSize,
+					'textWeight' => $poll->design->style->buttons->textWeight
 				),
 				'captcha' => array(),
 				'errors' => array(
-					'backgroundColor' => $poll->design->style->errors->backgroundColor,
-					'borderSize' => $poll->design->style->errors->borderSize,
-					'borderColor' => $poll->design->style->errors->borderColor,
-					'borderRadius' => $poll->design->style->errors->borderRadius,
-					'padding' => $poll->design->style->errors->padding,
+					'borderLeftColorForSuccess' => $poll->design->style->errors->borderLeftColorForSuccess,
+					'borderLeftColorForError' => $poll->design->style->errors->borderLeftColorForError,
+					'borderLeftSize' => $poll->design->style->errors->borderLeftSize,
+					'paddingTopBottom' => $poll->design->style->errors->paddingTopBottom,
 					'textColor' => $poll->design->style->errors->textColor,
-					'textSize' => $poll->design->style->errors->textSize
+					'textSize' => $poll->design->style->errors->textSize,
+					'textWeight' => $poll->design->style->errors->textWeight
+				),
+				'custom' => array(
+					'css' => $poll->design->style->custom->css
 				)
 			),
 			'options' => array(
@@ -808,77 +812,23 @@ class YOP_Poll_Polls {
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->poll->padding ) ||
-				( '' === trim( $poll->design->style->poll->padding ) ) ||
-				( !ctype_digit( (string) $poll->design->style->poll->padding ) ) )
+				( !isset( $poll->design->style->poll->paddingLeftRight ) ||
+				( '' === trim( $poll->design->style->poll->paddingLeftRight ) ) ||
+				( !ctype_digit( (string) $poll->design->style->poll->paddingLeftRight ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Padding" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Poll Padding Left/Right" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->poll->textColor ) ||
-				( '' === trim( $poll->design->style->poll->textColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->poll->textColor ) ) ) )
+				( !isset( $poll->design->style->poll->paddingTopBottom ) ||
+				( '' === trim( $poll->design->style->poll->paddingTopBottom ) ) ||
+				( !ctype_digit( (string) $poll->design->style->poll->paddingTopBottom ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Text Color" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->poll->inputElementsBorderColor ) ||
-				( '' === trim( $poll->design->style->poll->inputElementsBorderColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->poll->inputElementsBorderColor ) ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Input Elements Border Color" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Poll Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			/* QUESTIONS STYLE CHECK */
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->questions->backgroundColor ) ||
-				( '' === trim( $poll->design->style->questions->backgroundColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->questions->backgroundColor ) ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Background Color" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->questions->borderSize ) ||
-				( '' === trim( $poll->design->style->questions->borderSize ) ) ||
-				( !ctype_digit( (string) $poll->design->style->questions->borderSize ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Border Thickness" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->questions->borderColor ) ||
-				( '' === trim( $poll->design->style->questions->borderColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->questions->borderColor ) ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Border Color" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->questions->borderRadius ) ||
-				( '' === trim( $poll->design->style->questions->borderRadius ) ) ||
-				( !ctype_digit( (string) $poll->design->style->questions->borderRadius ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Border Radius" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->questions->padding ) ||
-				( '' === trim( $poll->design->style->questions->padding ) ) ||
-				( !ctype_digit( (string) $poll->design->style->questions->padding ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Padding" is invalid', 'yop-poll' );
-			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->questions->textColor ) ||
@@ -891,57 +841,47 @@ class YOP_Poll_Polls {
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->questions->textSize ) ||
-				( '' === trim( $poll->design->style->questions->textSize ) ) ||
-				( !in_array( $poll->design->style->questions->textSize, self::$text_size_allowed ) ) )
+				( '' === trim( $poll->design->style->questions->textSize ) ) )
 			) {
 				self::$errors_present = true;
 				self::$error_text = __( 'Data for "Question Text Size" is invalid', 'yop-poll' );
 			}
+			if (
+				( false === self::$errors_present ) &&
+				( !isset( $poll->design->style->questions->textWeight ) ||
+				( '' === trim( $poll->design->style->questions->textWeight ) ) ||
+				( !in_array( $poll->design->style->questions->textWeight, self::$text_weight_allowed ) ) )
+			) {
+				self::$errors_present = true;
+				self::$error_text = __( 'Data for "Question Text Weight" is invalid', 'yop-poll' );
+			}
+			if (
+				( false === self::$errors_present ) &&
+				( !isset( $poll->design->style->questions->textAlign ) ||
+				( '' === trim( $poll->design->style->questions->textAlign ) ) ||
+				( !in_array( $poll->design->style->questions->textAlign, self::$text_align_allowed ) ) )
+			) {
+				self::$errors_present = true;
+				self::$error_text = __( 'Data for "Question Text Align" is invalid', 'yop-poll' );
+			}
 			/* ANSWERS STYLE CHECK */
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->answers->backgroundColor ) ||
-				( '' === trim( $poll->design->style->questions->backgroundColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->answers->backgroundColor ) ) ) )
+				( !isset( $poll->design->style->answers->paddingLeftRight ) ||
+				( '' === trim( $poll->design->style->answers->paddingLeftRight ) ) ||
+				( !ctype_digit( (string) $poll->design->style->answers->paddingLeftRight ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Background Color" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Answers Padding Left/Right" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->answers->borderSize ) ||
-				( '' === trim( $poll->design->style->answers->borderSize ) ) ||
-				( !ctype_digit( (string) $poll->design->style->answers->borderSize ) ) )
+				( !isset( $poll->design->style->answers->paddingTopBottom ) ||
+				( '' === trim( $poll->design->style->answers->paddingTopBottom ) ) ||
+				( !ctype_digit( (string) $poll->design->style->answers->paddingTopBottom ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Border Thickness" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->answers->borderColor ) ||
-				( '' === trim( $poll->design->style->answers->borderColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->answers->borderColor ) ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Border Color" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->answers->borderRadius ) ||
-				( '' === trim( $poll->design->style->answers->borderRadius ) ) ||
-				( !ctype_digit( (string) $poll->design->style->answers->borderRadius ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Border Radius" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->answers->padding ) ||
-				( '' === trim( $poll->design->style->answers->padding ) ) ||
-				( !ctype_digit( (string) $poll->design->style->answers->padding ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Padding" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Answers Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -955,11 +895,19 @@ class YOP_Poll_Polls {
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->answers->textSize ) ||
-				( '' === trim( $poll->design->style->answers->textSize ) ) ||
-				( !in_array( $poll->design->style->answers->textSize, self::$text_size_allowed ) ) )
+				( '' === trim( $poll->design->style->answers->textSize ) ) )
 			) {
 				self::$errors_present = true;
 				self::$error_text = __( 'Data for "Answers Text Size" is invalid', 'yop-poll' );
+			}
+			if (
+				( false === self::$errors_present ) &&
+				( !isset( $poll->design->style->answers->textWeight ) ||
+				( '' === trim( $poll->design->style->answers->textWeight ) ) ||
+				( !in_array( $poll->design->style->answers->textWeight, self::$text_weight_allowed ) ) )
+			) {
+				self::$errors_present = true;
+				self::$error_text = __( 'Data for "Answers Text Weight" is invalid', 'yop-poll' );
 			}
 			/* BUTTONS STYLE CHECK */
 			if (
@@ -1000,12 +948,21 @@ class YOP_Poll_Polls {
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->buttons->padding ) ||
-				( '' === trim( $poll->design->style->buttons->padding ) ) ||
-				( !ctype_digit( (string) $poll->design->style->buttons->padding ) ) )
+				( !isset( $poll->design->style->buttons->paddingLeftRight ) ||
+				( '' === trim( $poll->design->style->buttons->paddingLeftRight ) ) ||
+				( !ctype_digit( (string) $poll->design->style->buttons->paddingLeftRight ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Padding" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Buttons Padding Left/Right" is invalid', 'yop-poll' );
+			}
+			if (
+				( false === self::$errors_present ) &&
+				( !isset( $poll->design->style->buttons->paddingTopBottom ) ||
+				( '' === trim( $poll->design->style->buttons->paddingTopBottom ) ) ||
+				( !ctype_digit( (string) $poll->design->style->buttons->paddingTopBottom ) ) )
+			) {
+				self::$errors_present = true;
+				self::$error_text = __( 'Data for "Buttons Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1019,57 +976,56 @@ class YOP_Poll_Polls {
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->textSize ) ||
-				( '' === trim( $poll->design->style->buttons->textSize ) ) ||
-				( !in_array( $poll->design->style->buttons->textSize, self::$text_size_allowed ) ) )
+				( '' === trim( $poll->design->style->buttons->textSize ) ) )
 			) {
 				self::$errors_present = true;
 				self::$error_text = __( 'Data for "Buttons Text Size" is invalid', 'yop-poll' );
 			}
+			if (
+				( false === self::$errors_present ) &&
+				( !isset( $poll->design->style->buttons->textWeight ) ||
+				( '' === trim( $poll->design->style->buttons->textWeight ) ) ||
+				( !in_array( $poll->design->style->answers->textWeight, self::$text_weight_allowed ) ) )
+			) {
+				self::$errors_present = true;
+				self::$error_text = __( 'Data for "Buttons Text Weight" is invalid', 'yop-poll' );
+			}
 			/* ERRORS STYLE CHECK */
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->errors->backgroundColor ) ||
-				( '' === trim( $poll->design->style->errors->backgroundColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->errors->backgroundColor ) ) ) )
+				( !isset( $poll->design->style->errors->borderLeftColorForSuccess ) ||
+				( '' === trim( $poll->design->style->errors->borderLeftColorForSuccess ) ) ||
+				( !ctype_alnum( str_replace( '#', '', $poll->design->style->errors->borderLeftColorForSuccess ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Errors Background Color" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Messages Border Color For Success" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->errors->borderSize ) ||
-				( '' === trim( $poll->design->style->errors->borderSize ) ) ||
-				( !ctype_digit( (string) $poll->design->style->errors->borderSize ) ) )
+				( !isset( $poll->design->style->errors->borderLeftColorForError ) ||
+				( '' === trim( $poll->design->style->errors->borderLeftColorForError ) ) ||
+				( !ctype_alnum( str_replace( '#', '', $poll->design->style->errors->borderLeftColorForError ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Errors Border Thickness" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Messages Border Color For Error" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->errors->borderColor ) ||
-				( '' === trim( $poll->design->style->errors->borderColor ) ) ||
-				( !ctype_alnum( str_replace( '#', '', $poll->design->style->errors->borderColor ) ) ) )
+				( !isset( $poll->design->style->errors->borderLeftSize ) ||
+				( '' === trim( $poll->design->style->errors->borderLeftSize ) ) ||
+				( !ctype_digit( (string) $poll->design->style->errors->borderLeftSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Errors Border Color" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Messages Border Left Thickness" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->errors->borderRadius ) ||
-				( '' === trim( $poll->design->style->errors->borderRadius ) ) ||
-				( !ctype_digit( (string) $poll->design->style->errors->borderRadius ) ) )
+				( !isset( $poll->design->style->errors->paddingTopBottom ) ||
+				( '' === trim( $poll->design->style->errors->paddingTopBottom ) ) ||
+				( !ctype_digit( (string) $poll->design->style->errors->paddingTopBottom ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Errors Border Radius" is invalid', 'yop-poll' );
-			}
-			if (
-				( false === self::$errors_present ) &&
-				( !isset( $poll->design->style->errors->padding ) ||
-				( '' === trim( $poll->design->style->errors->padding ) ) ||
-				( !ctype_digit( (string) $poll->design->style->errors->padding ) ) )
-			) {
-				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Errors Padding" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Messages Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1083,11 +1039,19 @@ class YOP_Poll_Polls {
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->textSize ) ||
-				( '' === trim( $poll->design->style->errors->textSize ) ) ||
-				( !in_array( $poll->design->style->errors->textSize, self::$text_size_allowed ) ) )
+				( '' === trim( $poll->design->style->errors->textSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Errors Text Size" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Messages Text Size" is invalid', 'yop-poll' );
+			}
+			if (
+				( false === self::$errors_present ) &&
+				( !isset( $poll->design->style->errors->textWeight ) ||
+				( '' === trim( $poll->design->style->errors->textWeight ) ) ||
+				( !in_array( $poll->design->style->answers->textWeight, self::$text_weight_allowed ) ) )
+			) {
+				self::$errors_present = true;
+				self::$error_text = __( 'Data for "Messages Text Weight" is invalid', 'yop-poll' );
 			}
 			/* POLL ELEMENTS CHECK */
 			if (
@@ -1729,7 +1693,73 @@ class YOP_Poll_Polls {
 		);
 		$poll = $GLOBALS['wpdb']->get_row( $query, OBJECT );
 		if( null !== $poll ){
+			$poll_meta_data = unserialize( $poll->meta_data );
+			$poll->meta_data = array(
+				'style' => self::convert_meta_data_for_style( $poll_meta_data['style'] ),
+				'options' => $poll_meta_data['options']
+			);
+			$poll_elements = YOP_Poll_Elements::get( $poll_id, $elements_order_by, $elements_sort_rule );
+			$poll_sub_elements = YOP_Poll_SubElements::get( $poll_id, $sub_elements_order_by, $sub_elements_sort_rule );
+			foreach ( $poll_elements as $poll_element ) {
+				foreach ( $poll_sub_elements as $poll_sub_element ) {
+					if ( $poll_element->id === $poll_sub_element->element_id ) {
+						$poll_element->answers[] = $poll_sub_element;
+					}
+				}
+			}
+			$poll->elements = $poll_elements;
+			return $poll;
+		} else {
+			return false;
+		}
+	}
+	public static function get_poll_for_results( $poll_id ) {
+		$elements_order_by = 'sorder';
+		$elements_sort_rule = 'ASC';
+		$sub_elements_order_by = 'sorder';
+		$sub_elements_sort_rule = 'ASC';
+		$query = $GLOBALS['wpdb']->prepare(
+			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %s AND `status` !='deleted'", $poll_id
+		);
+		$poll = $GLOBALS['wpdb']->get_row( $query, OBJECT );
+		if( null !== $poll ){
 			$poll->meta_data = unserialize( $poll->meta_data );
+			switch ( $poll->meta_data['options']['results']['sortResults'] ) {
+				case 'as-defined': {
+					$sub_elements_order_by = 'sorder';
+					break;
+				}
+				case 'alphabetical': {
+					$sub_elements_order_by = 'stext';
+					break;
+				}
+				case 'number-of-votes':{
+					$sub_elements_order_by = 'total_submits';
+					break;
+				}
+				default: {
+					$sub_elements_order_by = 'sorder';
+					break;
+				}
+			}
+			if ( 'sorder' === $sub_elements_order_by ) {
+				$sub_elements_sort_rule = 'ASC';
+			} else {
+				switch ( $poll->meta_data['options']['results']['sortResultsRule'] ) {
+					case 'asc': {
+						$sub_elements_sort_rule = 'ASC';
+						break;
+					}
+					case 'desc': {
+						$sub_elements_sort_rule = 'DESC';
+						break;
+					}
+					default: {
+						$sub_elements_sort_rule = 'ASC';
+						break;
+					}
+				}
+			}
 			$poll_elements = YOP_Poll_Elements::get( $poll_id, $elements_order_by, $elements_sort_rule );
 			$poll_sub_elements = YOP_Poll_SubElements::get( $poll_id, $sub_elements_order_by, $sub_elements_sort_rule );
 			foreach ( $poll_elements as $poll_element ) {
@@ -1770,6 +1800,144 @@ class YOP_Poll_Polls {
 		} else {
 			return false;
 		}
+	}
+	public static function get_info( $poll_id ) {
+		$query = $GLOBALS['wpdb']->prepare(
+			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %s AND `status` != 'deleted'", $poll_id
+		);
+		$poll = $GLOBALS['wpdb']->get_row( $query );
+		if ( ( true === isset( $poll->id ) ) && ( $poll->id > 0 ) ) {
+			return $poll;
+		} else {
+			return false;
+		}
+	}
+	public static function convert_meta_data_for_style( $meta_data_for_style ) {
+		/*BEGIN POLL*/
+		if ( false === isset( $meta_data_for_style['poll']['paddingLeftRight'] ) ) {
+			$meta_data_for_style['poll']['paddingLeftRight'] = $meta_data_for_style['poll']['padding'];
+		}
+		if ( false === isset( $meta_data_for_style['poll']['paddingTopBottom'] ) ) {
+			$meta_data_for_style['poll']['paddingTopBottom'] = $meta_data_for_style['poll']['padding'];
+		}
+		/*END POLL*/
+		/*BEGIN QUESTIONS*/
+		if ( true === in_array( $meta_data_for_style['questions']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+			switch( $meta_data_for_style['questions']['textSize'] ) {
+				case 'small': {
+					$meta_data_for_style['questions']['textSize'] = '14';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['questions']['textSize'] = '16';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['questions']['textSize'] = '18';
+					break;
+				}
+			}
+		}
+		if ( false === isset( $meta_data_for_style['questions']['textWeight'] ) ) {
+			$meta_data_for_style['questions']['textWeight'] = 'normal';
+		}
+		if ( false === isset( $meta_data_for_style['questions']['textAlign'] ) ) {
+			$meta_data_for_style['questions']['textAlign'] = 'left';
+		}
+		/*END QUESTIONS*/
+		/*BEGIN ANSWERS*/
+		if ( false === isset( $meta_data_for_style['answers']['paddingLeftRight'] ) ) {
+			$meta_data_for_style['answers']['paddingLeftRight'] = $meta_data_for_style['answers']['padding'];
+		}
+		if ( false === isset( $meta_data_for_style['answers']['paddingTopBottom'] ) ) {
+			$meta_data_for_style['answers']['paddingTopBottom'] = $meta_data_for_style['answers']['padding'];
+		}
+		if ( true === in_array( $meta_data_for_style['answers']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+			switch( $meta_data_for_style['answers']['textSize'] ) {
+				case 'small': {
+					$meta_data_for_style['answers']['textSize'] = '14';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['answers']['textSize'] = '16';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['answers']['textSize'] = '18';
+					break;
+				}
+			}
+		}
+		if ( false === isset( $meta_data_for_style['answers']['textWeight'] ) ) {
+			$meta_data_for_style['answers']['textWeight'] = 'normal';
+		}
+		/*END ANSWERS*/
+		/*BEGIN BUTTONS*/
+		if ( false === isset( $meta_data_for_style['buttons']['paddingLeftRight'] ) ) {
+			$meta_data_for_style['buttons']['paddingLeftRight'] = '10';
+		}
+		if ( false === isset( $meta_data_for_style['buttons']['paddingTopBottom'] ) ) {
+			$meta_data_for_style['buttons']['paddingTopBottom'] = '5';
+		}
+		if ( true === in_array( $meta_data_for_style['buttons']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+			switch( $meta_data_for_style['buttons']['textSize'] ) {
+				case 'small': {
+					$meta_data_for_style['buttons']['textSize'] = '14';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['buttons']['textSize'] = '16';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['buttons']['textSize'] = '18';
+					break;
+				}
+			}
+		}
+		if ( false === isset( $meta_data_for_style['buttons']['textWeight'] ) ) {
+			$meta_data_for_style['buttons']['textWeight'] = 'normal';
+		}
+		/*END BUTTONS*/
+		/*BEGIN ERRORS*/
+		if ( false === isset( $meta_data_for_style['errors']['borderLeftColorForSuccess'] ) ) {
+			$meta_data_for_style['errors']['borderLeftColorForSuccess'] = '#008000';
+		}
+		if ( false === isset( $meta_data_for_style['errors']['borderLeftColorForError'] ) ) {
+			$meta_data_for_style['errors']['borderLeftColorForError'] = '#ff0000';
+		}
+		if ( false === isset( $meta_data_for_style['errors']['borderLeftSize'] ) ) {
+			$meta_data_for_style['errors']['borderLeftSize'] = '10';
+		}
+		if ( false === isset( $meta_data_for_style['errors']['paddingTopBottom'] ) ) {
+			$meta_data_for_style['errors']['paddingTopBottom'] = $meta_data_for_style['errors']['padding'];
+		}
+		if ( true === in_array( $meta_data_for_style['errors']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+			switch( $meta_data_for_style['errors']['textSize'] ) {
+				case 'small': {
+					$meta_data_for_style['errors']['textSize'] = '14';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['errors']['textSize'] = '16';
+					break;
+				}
+				case 'small': {
+					$meta_data_for_style['errors']['textSize'] = '18';
+					break;
+				}
+			}
+		}
+		if ( false === isset( $meta_data_for_style['errors']['textWeight'] ) ) {
+			$meta_data_for_style['errors']['textWeight'] = 'normal';
+		}
+		/*END ERRORS*/
+		/*BEGIN CUSTOM*/
+		if ( false === isset( $meta_data_for_style['custom']['css'] ) ) {
+			$meta_data_for_style['custom']['css'] = '';
+		}
+		/*END CUSTOM*/
+		return $meta_data_for_style;
 	}
 	public static function is_ended_frontend( $poll ) {
         $today = date( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) ) );
@@ -2025,5 +2193,161 @@ class YOP_Poll_Polls {
 			}
 		}
 		return $accept_votes_from_user;
+	}
+	public static function accept_votes_from_anonymous( $poll, $voter_data ) {
+		$accept_votes_from_anonymous = true;
+		$should_continue = true;
+		$previous_vote = null;
+		if ( true === in_array( 'by-cookie', $poll->meta_data['options']['access']['blockVoters'] ) ) {
+			if ( '' !== $voter_data['c-data'] ) {
+				$previous_vote = YOP_Poll_Votes::get_vote( $poll->id, 'voter_id', $voter_data['c-data'] );
+			}
+		}
+		if ( null !== $previous_vote ) {
+			switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
+				case 'minutes': {
+					$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
+					break;
+				}
+				case 'hours': {
+					$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
+					break;
+				}
+				case 'days': {
+					$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
+					break;
+				}
+			}
+			$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+			$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
+			$previous_vote_date->add( new DateInterval( $block_for_period ) );
+			if ( $current_vote_date < $previous_vote_date ) {
+				$accept_votes_from_anonymous = false;
+				$should_continue = false;
+			}
+		}
+		if ( true === $should_continue ) {
+			$previous_vote = null;
+			if ( true === in_array( 'by-ip', $poll->meta_data['options']['access']['blockVoters'] ) ) {
+				if ( '' !== $voter_data['ipaddress'] ) {
+					$previous_vote = YOP_Poll_Votes::get_vote( $poll->id, 'ipaddress', $voter_data['ipaddress'] );
+				}
+			}
+			if ( null !== $previous_vote ) {
+				switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
+					case 'minutes': {
+						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
+						break;
+					}
+					case 'hours': {
+						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
+						break;
+					}
+					case 'days': {
+						$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
+						break;
+					}
+				}
+				$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+				$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
+				$previous_vote_date->add( new DateInterval( $block_for_period ) );
+				if ( $current_vote_date < $previous_vote_date ) {
+					$accept_votes_from_anonymous = false;
+					$should_continue = false;
+				}
+			}
+		}
+		if ( true === $should_continue ) {
+			$previous_vote = null;
+			if ( true === in_array( 'by-user-id', $poll->meta_data['options']['access']['blockVoters'] ) ) {
+				if ( '' !== $voter_data['user-id'] ) {
+					$previous_vote = YOP_Poll_Votes::get_vote( $poll->id, 'user_id', $voter_data['user-id'] );
+				}
+			}
+			if ( null !== $previous_vote ) {
+				switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
+					case 'minutes': {
+						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
+						break;
+					}
+					case 'hours': {
+						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
+						break;
+					}
+					case 'days': {
+						$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
+						break;
+					}
+				}
+				$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+				$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
+				$previous_vote_date->add( new DateInterval( $block_for_period ) );
+				if ( $current_vote_date < $previous_vote_date ) {
+					$accept_votes_from_anonymous = false;
+				}
+			}
+		}
+		return $accept_votes_from_anonymous;
+	}
+	public static function add_votes_manually( $poll_id, $elements_data ) {
+		$total_votes__to_be_added = 0;
+		$elements_votes = [];
+		$i = 0;
+		$votes = [];
+		$result = array();
+		if ( $poll_id > 0 ) {
+			foreach ( $elements_data as $element_data ) {
+				if ( intval( $element_data->id ) > 0 ) {
+					$elements_votes[$i] = 0;
+					foreach ( $element_data->answers as $answer_data ) {
+						if ( intval( $answer_data->id ) > 0 ) {
+							$elements_votes[$i] += intval( $answer_data->votes);
+						}
+					}
+					$i++;
+				}
+			}
+			if ( 1 === count( array_unique( $elements_votes ) ) ) {
+				$total_votes_to_be_added = $elements_votes[0];
+				for ( $i = 0; $i < $total_votes_to_be_added; $i++ ) {
+					$votes[$i] = new stdClass();
+					$votes[$i]->pollId = $poll_id;
+					$votes[$i]->trackingId = '';
+					$votes[$i]->data = array();
+					$j = 0;
+					foreach( $elements_data as $element_data ) {
+						if ( intval( $element_data->id ) > 0 ) {
+							$votes[$i]->data[$j] = new stdClass();
+							$votes[$i]->data[$j]->type = 'question';
+							$votes[$i]->data[$j]->id = $element_data->id;
+							foreach ( $element_data->answers as $answer_data ) {
+								if ( ( intval( $answer_data->id ) > 0 ) && ( intval( $answer_data->votes ) > 0 ) ) {
+									$votes[$i]->data[$j]->data = [];
+									$votes[$i]->data[$j]->data[0] = new stdClass();
+									$votes[$i]->data[$j]->data[0]->id = $answer_data->id;
+									$votes[$i]->data[$j]->data[0]->data = 1;
+									$answer_data->votes--;
+									break;
+								}
+							}
+							$j++;
+						}
+					}
+					$votes[$i]->user = new stdClass();
+					$votes[$i]->user->type = 'manually';
+					$votes[$i]->user->c_data = '';
+					$votes[$i]->user->f_data = '';
+					YOP_Poll_Votes::add_manually( $votes[$i] );
+				}
+				$result['success'] = true;
+			} else {
+				$result['success'] = false;
+				$result['error'] = __( 'Number of votes for each question should be the same', 'yop-poll' );
+			}
+		} else {
+			$result['success'] = false;
+			$result['error'] = __( 'Invalid Poll', 'yop-poll' );
+		}
+		return $result;
 	}
 }

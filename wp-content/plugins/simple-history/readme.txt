@@ -2,10 +2,10 @@
 Contributors: eskapism
 Donate link: http://eskapism.se/sida/donate/
 Tags: history, log, changes, changelog, audit, audit log, event log, user tracking, trail, pages, attachments, users, dashboard, admin, syslog, feed, activity, stream, audit trail, brute-force
-Requires at least: 4.5.1
+Requires at least: 5.2
 Tested up to: 5.2
-Requires PHP: 5.4
-Stable tag: 2.31.1
+Requires PHP: 5.6
+Stable tag: 2.32
 
 View changes made by users within WordPress. See who created a page, uploaded an attachment or approved an comment, and more.
 
@@ -191,6 +191,27 @@ Events in the log are stored for 60 days by default. Events older than this will
 
 ## Changelog
 
+= 2.32 (August 2019) =
+
+- Fix error in Beaver Builder logger. Fixes https://wordpress.org/support/topic/conflict-with-beaver-builder-plugin-4/.
+- Add filter `simple_history/admin_location` that makes is possible to move the main page from the dashboard menu to any other menu page, for example the Tools menu. Fixes https://github.com/bonny/WordPress-Simple-History/issues/140. Example usage of filter:
+
+```php
+// Move Simple History log sub page from the "Dashboard" menu to the "Tools" menu.
+add_filter('simple_history/admin_location', function ($location) {
+	$location = 'tools';
+	return $location;
+});
+```
+
+- Make it easier to extend SimplePostLogger by making `$old_post_data` protected instead of private. https://github.com/bonny/WordPress-Simple-History/pull/173.
+- Try to use taxonomy name instead of taxonomy slug when showing term additions or modifications. Fixes https://github.com/bonny/WordPress-Simple-History/issues/164.
+- Fix notice error when showing the log entry for a term that was deleted.
+- Remove unused old function `testlog_old()`.
+- Move helper functions to own file.
+- Move debug code into own dropin.
+- Bump required PHP version to 5.6.20 (same version that WordPress itself requires).
+
 = 2.31 (May 2019) =
 
 - Add support for plugin [Beaver Builder](https://wordpress.org/plugins/beaver-builder-lite-version/).
@@ -217,13 +238,16 @@ Events in the log are stored for 60 days by default. Events older than this will
 
 - Make log welcome message translateable.
 - Add two filters to make it more ease to control via filters if a logger and the combination logger + message should be logged. - `"simple_history/log/do_log/{$this->slug}"` controls if any messages for a specific logger should be logged. Simply return false to this filter to disable all logging to that logger. - `"simple_history/log/do_log/{$this->slug}/{$message_key}"` controls if a specific message for a specific logger should be logged. Simply return false to this filter to disable all logging to that logger. - Code examples for the two filters above:
-  ```
+
+  ````
   // Disable logging of any user message, i.e. any message from the logger SimpleUserLogger.
   add_filter( 'simple_history/log/do_log/SimpleUserLogger', '\_\_return_false' );
 
       		// Disable logging of updated posts, i.e. the message "post_updated" from the logger SimplePostLogger.
       		add_filter( 'simple_history/log/do_log/SimplePostLogger/post_updated', '__return_false' );
       		```
+
+  ````
 
 - add_filter('simple_history/log/do_log/SimpleUserLogger', '\_\_return_false');
 - Fix notice in Redirection plugin logger due because redirection plugin can have multiple target types. Props @MaximVanhove.

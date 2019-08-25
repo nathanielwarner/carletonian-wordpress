@@ -98,6 +98,22 @@ class YOP_Poll_Votes {
 			wp_send_json_error( self::$error_text );
 		}
 	}
+	public static function add_manually( $vote ) {
+		$poll = YOP_Poll_Polls::get_poll( $vote->pollId );
+		$vote->user->ipaddress = YOP_Poll_Votes::get_voter_ip( $poll );
+		$vote->added_date = current_time( 'mysql' );
+		if ( 'manually' == $vote->user->type ) {
+			$current_user = wp_get_current_user();
+			$vote->user->id = $current_user->ID;
+			$vote->user->first_name = $current_user->user_firstname;
+			$vote->user->last_name = $current_user->user_lastname;
+			$vote->user->email = $current_user->user_email;
+		}
+		$vote->pollAuthor = $poll->author;
+		self::create_meta_data( $vote );
+		self::record( $vote, $poll );
+		YOP_Poll_Logs::add( $vote, self::$errors_present, self::$error_text );
+	}
 	public static function validate_data( $vote, $poll ) {
 		foreach ( $poll->elements as $element ) {
 			switch ( $element->etype ) {
@@ -256,8 +272,8 @@ class YOP_Poll_Votes {
 					break;
 				}
 			}
-			$current_vote_date = new DateTime();
-			$previous_vote_date = new DateTime( $previous_vote->added_date );
+			$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+			$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
 			$previous_vote_date->add( new DateInterval( $block_for_period ) );
 			if ( $current_vote_date < $previous_vote_date ) {
 				self::$errors_present = true;
@@ -289,8 +305,8 @@ class YOP_Poll_Votes {
 						break;
 					}
 				}
-				$current_vote_date = new DateTime();
-				$previous_vote_date = new DateTime( $previous_vote->added_date );
+				$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+				$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
 				$previous_vote_date->add( new DateInterval( $block_for_period ) );
 				if ( $current_vote_date < $previous_vote_date ) {
 					self::$errors_present = true;
@@ -323,8 +339,8 @@ class YOP_Poll_Votes {
 						break;
 					}
 				}
-				$current_vote_date = new DateTime();
-				$previous_vote_date = new DateTime( $previous_vote->added_date );
+				$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+				$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
 				$previous_vote_date->add( new DateInterval( $block_for_period ) );
 				if ( $current_vote_date < $previous_vote_date ) {
 					self::$errors_present = true;
@@ -583,7 +599,7 @@ class YOP_Poll_Votes {
 	public static function generate_response( $vote ) {
 		$response = array();
 		$poll_results = '';
-		$poll = YOP_Poll_Polls::get_poll( $vote->pollId );
+		$poll = YOP_Poll_Polls::get_poll_for_results( $vote->pollId );
 		if ( true === YOP_Poll_Polls::is_show_results_after_vote( $poll ) ) {
 			$show_results = true;
 			$poll_results = YOP_Poll_Polls::generate_results_after_vote( $poll );

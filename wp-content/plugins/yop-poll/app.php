@@ -1,6 +1,17 @@
 <?php
 include( 'public/inc/Captcha.php' );
 include( 'public/inc/Session.php' );
+if ( !function_exists( 'getallheaders' ) ) {
+    function getallheaders() {
+        $headers = [];
+        foreach ( $_SERVER as $name => $value ) {
+            if ( 'HTTP_' == substr( $name, 0, 5 ) ) {
+                $headers[str_replace( ' ', '-', ucwords( strtolower( str_replace( '_', ' ', substr( $name, 5 ) )) ) )] = $value;
+            }
+        }
+        return $headers;
+    }
+}
 // Initialize Session
 session_cache_limiter( false );
 if ( '' === session_id() ) {

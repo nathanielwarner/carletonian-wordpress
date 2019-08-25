@@ -28,7 +28,7 @@ class YopPollUpgrade {
     private function before_buy() {
         $data['title'] = __( 'Before You Buy', 'yop-poll' );
         $data['poll_url'] = YOP_POLL_URL;
-        $template = YOP_POLL_PATH . 'admin/views/before-upgrade.php';
+        $template = YOP_POLL_PATH . 'admin/views/general/before-upgrade.php';
         echo YOP_Poll_View::render(
             $template,
             array(
@@ -129,7 +129,7 @@ class YopPollUpgrade {
         $result = json_decode( $result, true );
         if( isset( $result['error'] ) && 'Error' === $result['error'] ) {
             $data['error'] = $result['message'];
-            $template = YOP_POLL_PATH . 'admin/views/after-upgrade.php';
+            $template = YOP_POLL_PATH . 'admin/views/general/after-upgrade.php';
             echo YOP_Poll_View::render(
                 $template,
                 array(
@@ -144,7 +144,7 @@ class YopPollUpgrade {
             $download_link          = $result['download_link'] . "&huid={$huid}&rand={$rand}";
             update_option( 'yop_poll_pro', $pro_options );
             require_once YOP_POLL_PATH . '/upgrade.php';
-            $template = YOP_POLL_PATH . 'admin/views/after-upgrade.php';
+            $template = YOP_POLL_PATH . 'admin/views/general/after-upgrade.php';
             echo YOP_Poll_View::render(
                 $template,
                 array(
