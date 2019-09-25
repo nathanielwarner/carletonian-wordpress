@@ -176,6 +176,12 @@ su_add_shortcode(
 				'name'    => __( 'Images size (quality)', 'shortcodes-ultimate' ),
 				'desc'    => __( 'This option controls the size of carousel slide images. This option only affects image quality, not the actual slide size.', 'shortcodes-ultimate' ),
 			),
+			'outline'        => array(
+				'type'    => 'bool',
+				'default' => 'yes',
+				'name'    => __( 'Outline on focus', 'shortcodes-ultimate' ),
+				'desc'    => __( 'This option enables outline when carousel gets focus. The outline improves keyboard navigation.', 'shortcodes-ultimate' ),
+			),
 			'class'          => array(
 				'type'    => 'extra_css_class',
 				'name'    => __( 'Extra CSS class', 'shortcodes-ultimate' ),
@@ -283,6 +289,10 @@ function su_shortcode_image_carousel( $atts = null, $content = null ) {
 		$atts['class'] .= ' su-image-carousel-has-lightbox';
 	}
 
+	if ( 'yes' === $atts['outline'] ) {
+		$atts['class'] .= ' su-image-carousel-has-outline';
+	}
+
 	if ( 'yes' === $atts['adaptive'] ) {
 		$atts['class'] .= ' su-image-carousel-adaptive';
 	}
@@ -309,6 +319,7 @@ function su_shortcode_image_carousel( $atts = null, $content = null ) {
 		'prevNextButtons' => 'yes' === $atts['arrows'],
 		'pageDots'        => 'yes' === $atts['dots'],
 		'autoPlay'        => $atts['autoplay'] > 0 ? $atts['autoplay'] * 1000 : false,
+		'imagesLoaded'    => true,
 		// Disable 'contain' if slides have variable height
 		// @see: https://github.com/metafizzy/flickity/issues/554
 		'contain'         => 'none' !== $atts['crop'],
@@ -318,6 +329,8 @@ function su_shortcode_image_carousel( $atts = null, $content = null ) {
 		$flickity['selectedAttraction'] = $transitions[ $atts['speed'] ][0];
 		$flickity['friction']           = $transitions[ $atts['speed'] ][1];
 	}
+
+	$uniqid = uniqid( 'su_image_carousel_' );
 
 	$flickity = apply_filters(
 		'su/shortcode/image_carousel/flickity',
@@ -335,12 +348,19 @@ function su_shortcode_image_carousel( $atts = null, $content = null ) {
 	su_query_asset( 'css', 'flickity' );
 	su_query_asset( 'css', 'su-shortcodes' );
 
+	$script = sprintf(
+		'<script id="%1$s_script">if(window.SUImageCarousel){setTimeout(function() {window.SUImageCarousel.initGallery(document.getElementById("%1$s"))}, 0);}var %1$s_script=document.getElementById("%1$s_script");%s_script.parentNode.removeChild(%1$s_script);</script>',
+		esc_js( $uniqid )
+	);
+
 	return sprintf(
-		'<div class="su-image-carousel %1$s" style="%2$s" data-flickity=\'%3$s\'>%4$s</div>',
+		'<div class="su-image-carousel %1$s" style="%2$s" data-flickity-options=\'%3$s\' id="%4$s">%5$s</div>%6$s',
 		esc_attr( su_get_css_class( $atts ) ),
 		esc_attr( implode( ';', $styles ) ),
 		wp_json_encode( $flickity ),
-		implode( $items )
+		esc_attr( $uniqid ),
+		implode( $items ),
+		$script
 	);
 
 }

@@ -5,7 +5,7 @@ Donate link: https://paypal.me/anovladimir
 Tags: shortcode, toggle, columns, button, slider, video, map, visual, responsive, shortcodes, youtube, vimeo, audio, mp3, tabs, jquery, box, accordion, toggle, pullquote, list, image, gallery, navigation, permalink, feed, rss, members, membership, guests, carousel, icons, rtl, multilingual
 Requires at least: 3.5
 Requires PHP: 5.2.4
-Tested up to: 5.1
+Tested up to: 5.3
 Stable tag: trunk
 
 A comprehensive collection of visual components for your site
@@ -150,6 +150,28 @@ For help with premium add-ons, please [open new support ticket](https://getshort
 
 
 == Changelog ==
+
+= 5.5.0 =
+
+**What's new**
+
+- New option `outline` for `[su_image_carousel]` which allows disabling carousel outline (when it gets focus)
+- New option `mobile` for `[su_tabs]` which allows disabling tab stacking on mobile devices
+- New option `texttrack` for `[su_vimeo]` which allows enabling video subtitles
+
+**Improvements**
+
+- `[su_youtube_advanced]` is now always served through https
+- `[su_image_carousel]`: improved compatibility with various themes
+- `[su_image_carousel]`: the gallery can now be loaded through AJAX
+- `[su_image_carousel]`: improved keyboard navigation
+- Insert Shortcode window will now remain open if the dark background clicked
+
+**Fixes**
+
+- Fixed `[su_image_carousel]` issue with empty image captions (with whitespace)
+- Fixed `[su_image_carousel]` issue where images weren't shown when crop is disabled
+
 
 = 5.4.1 =
 
