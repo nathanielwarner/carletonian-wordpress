@@ -3698,3 +3698,8 @@ Wordpress Popular Posts customizations
   padding: 6px;
   border: 1px solid #DCDCDC;
 }
+
+.archive .post-author {
+  border-bottom: solid 1px #DCDCDC;
+  padding: 1.5em 0 1.5em;
+}
