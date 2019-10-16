@@ -49,26 +49,31 @@
 					<?php _e( 'Block Voters', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<?php
+				<?php
 			        $block_voters_no_block = '';
 			        $block_voters_by_cookie = '';
 			        $block_voters_by_ip = '';
-			        $block_voters_by_user_id = '';
-			        $block_time_section_class = 'hide';
-			        if ( true === in_array( 'no-block', $poll->meta_data['options']['access']['blockVoters'] ) ) {
-			            $block_voters_no_block = 'selected';
-			            $block_time_section_class = 'hide';
+					$block_voters_by_user_id = '';
+					$block_type_section_class = 'hide';
+					$block_time_section_class = 'hide';
+			        if ( ( true === in_array( 'no-block', $poll->meta_data['options']['access']['blockVoters'] ) ) || ( 0 === count( $poll->meta_data['options']['access']['blockVoters'] ) ) ) {
+						$block_voters_no_block = 'selected';
+						$block_type_section_class = 'hide';
+						$block_time_section_class = 'hide';
 			        }
 			        if ( true === in_array( 'by-cookie', $poll->meta_data['options']['access']['blockVoters'] ) ) {
-			            $block_voters_by_cookie = 'selected';
+						$block_voters_by_cookie = 'selected';
+						$block_type_section_class = '';
 			            $block_time_section_class = '';
 			        }
 			        if ( true === in_array( 'by-ip', $poll->meta_data['options']['access']['blockVoters'] ) ) {
-			            $block_voters_by_ip = 'selected';
+						$block_voters_by_ip = 'selected';
+						$block_type_section_class = '';
 			            $block_time_section_class = '';
 			        }
 			        if ( true === in_array( 'by-user-id', $poll->meta_data['options']['access']['blockVoters'] ) ) {
-			            $block_voters_by_user_id = 'selected';
+						$block_voters_by_user_id = 'selected';
+						$block_type_section_class = '';
 			            $block_time_section_class = '';
 			        }
 			        ?>
@@ -80,12 +85,55 @@
 			        </select>
 				</div>
 			</div>
-			<div class="form-group block-time-section <?php echo $block_time_section_class;?>">
+			<div class="form-group block-type-section <?php echo $block_type_section_class;?>">
 				<div class="col-md-3 field-caption">
-					<?php _e( 'Block For', 'yop-poll' );?>
+					<?php _e( 'Block Period', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<input type="text" class="form-control block-for-value" value="<?php echo $poll->meta_data['options']['access']['blockForValue'];?>"/>
+				<?php
+				$block_length_type_forever = '';
+				$block_length_type_limited = '';
+				if ( false === isset( $poll->meta_data['options']['access']['blockLengthType'] ) ) {
+					$poll->meta_data['options']['access']['blockLengthType'] = 'limited-time';
+				}
+				switch( $poll->meta_data['options']['access']['blockLengthType'] ) {
+					case 'forever':{
+						$block_length_type_forever = 'selected';
+						break;
+					}
+					case 'limited-time':{
+						$block_length_type_limited = 'selected';
+						break;
+					}
+					default: {
+						$block_length_type_forever = 'selected';
+						break;
+					}
+				}
+				?>
+					<select class="block-length-type" style="width:100%">
+						<option value="forever" <?php echo $block_length_type_forever;?>>
+							<?php _e( 'Forever', 'yop-poll' );?>
+						</option>
+						<option value="limited-time" <?php echo $block_length_type_limited;?>>
+							<?php _e( 'Limited Time', 'yop-poll' );?>
+						</option>
+					</select>
+				</div>
+			</div>
+			<?php
+			if ( ( 'forever' === $poll->meta_data['options']['access']['blockLengthType'] ) || ( true === in_array( 'no-block', $poll->meta_data['options']['access']['blockVoters'] ) ) || ( 0 === count( $poll->meta_data['options']['access']['blockVoters'] ) ) ) {
+				$block_time_section_class = 'hide';
+			} else {
+				$block_time_section_class = '';
+			}
+			?>
+			<div class="form-group block-length-section <?php echo $block_time_section_class;?>">
+				<div class="col-md-3 field-caption">
+					<?php _e( 'Period', 'yop-poll' );?>
+				</div>
+				<div class="col-md-2">
+					<input type="text" class="form-control block-length-1" value="<?php echo $poll->meta_data['options']['access']['blockForValue'];?>"/>
 					<?php
 		            $block_for_period_minutes = '';
 		            $block_for_period_hours = '';
@@ -105,7 +153,9 @@
 		                }
 		            }
 		            ?>
-		            <select class="block-for-period" style="width:100%">
+				</div>
+				<div class="col-md-7">
+		            <select class="block-length-2" style="width:100%">
 		                <option value="minutes" <?php echo $block_for_period_minutes?>><?php _e( 'Minutes', 'yop-poll' );?></option>
 		                <option value="hours" <?php echo $block_for_period_hours?>><?php _e( 'Hours', 'yop-poll' );?></option>
 		                <option value="days" <?php echo $block_for_period_days?>><?php _e( 'Days', 'yop-poll' );?></option>

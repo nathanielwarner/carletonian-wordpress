@@ -39,13 +39,30 @@
 		            </select>
 				</div>
 			</div>
-			<div class="form-group block-time-section hide">
+			<div class="form-group block-type-section hide">
 				<div class="col-md-3 field-caption">
-					<?php _e( 'Block For', 'yop-poll' );?>
+					<?php _e( 'Block Period', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<input type="text" class="form-control block-for-value" value=""/>
-					<select class="block-for-period" style="width:100%">
+					<select class="block-length-type" style="width:100%">
+						<option value="forever" selected>
+							<?php _e( 'Forever', 'yop-poll' );?>
+						</option>
+						<option value="limited-time">
+							<?php _e( 'Limited Time', 'yop-poll' );?>
+						</option>
+					</select>
+				</div>
+			</div>
+			<div class="form-group block-length-section hide">
+				<div class="col-md-3 field-caption">
+					<?php _e( 'Period', 'yop-poll' );?>
+				</div>
+				<div class="col-md-2">
+					<input type="text" class="form-control block-length-1" value=""/>
+				</div>
+				<div class="col-md-7">
+					<select class="block-length-2" style="width:100%;">
 	                    <option value="minutes" selected><?php _e( 'Minutes', 'yop-poll' );?></option>
 	                    <option value="hours"><?php _e( 'Hours', 'yop-poll' );?></option>
 	                    <option value="days"><?php _e( 'Days', 'yop-poll' );?></option>

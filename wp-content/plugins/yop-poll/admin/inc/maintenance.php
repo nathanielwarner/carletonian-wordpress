@@ -69,6 +69,9 @@ class YOP_POLL_Maintenance {
     public function update_to_version_6_0_8() {
 		update_option( 'yop_poll_version', '6.0.8' );
 	}
+	public function update_to_version_6_0_9() {
+		update_option( 'yop_poll_version', '6.0.9' );
+	}
     public function create_archive_page() {
         $poll_archive_page = get_page_by_path( 'yop-poll-archive', ARRAY_A );
         if ( ! $poll_archive_page ) {
@@ -89,14 +92,17 @@ class YOP_POLL_Maintenance {
         $default_options['yop_poll_archive_page_id'] = $poll_archive_page_id;
     }
     public function create_options() {
-        update_option( 'yop_poll_version', YOP_POLL_VERSION );
-        $old_poll_settings = get_option( 'yop_poll_options' );
-        if( $old_poll_settings ) {
-            update_option( 'yop_poll_settings', YOP_Poll_Settings::import_settings_from_5x( $old_poll_settings ) );
+		update_option( 'yop_poll_version', YOP_POLL_VERSION );
+		$plugin_old_settings = get_option( 'yop_poll_options' );
+		if( $plugin_old_settings ) {
+            update_option( 'yop_poll_settings', YOP_Poll_Settings::import_settings_from_5x( $plugin_old_settings ) );
         } else {
-            update_option( 'yop_poll_settings', YOP_Poll_Settings::create_settings() );
+			$plugin_current_settings = get_option( 'yop_poll_settings' );
+			if ( false === $plugin_current_settings) {
+				update_option( 'yop_poll_settings', YOP_Poll_Settings::create_settings() );
+			}
         }
-    }
+	}
     public function delete_options() {
         delete_option( 'yop_poll_version' );
         delete_option( 'yop_poll_old_version' );

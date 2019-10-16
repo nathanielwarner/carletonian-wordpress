@@ -118,6 +118,22 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.0.9 =
+* fixed issue with cloning polls
+* fixed issue with editing poll duplicating new elements
+* fixed issue with display results tag
+* fixed issue with resetting settings when plugin was disabled
+* fixed issue with customizing skin throwing an error on saving poll
+* fixed issue with results not sorting "View Results" option
+* fixed issue with recaptcha
+* fixed issue with font size
+* fixed issue with color for messages
+* fixed issue with tracking ids
+* improved email notifications
+* added a new option for blocks
+* added labels to answers for better user experience
+
+= 6.0.8 =
 * added ability to manually add votes
 * added support for multisite
 * fixed issue with built in captcha not working on nginx environments

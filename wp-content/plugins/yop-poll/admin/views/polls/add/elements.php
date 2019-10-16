@@ -9,7 +9,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 <div class="row">
 	<div class="col-md-12 buttons-row">
 		<span class="regular-buttons">
-			<a class="btn btn-primary add-custom-field" href="#" role="button">
+			<a class="btn btn-primary poll-element-add add-custom-field" href="#" role="button">
 				<i class="glyphicon glyphicon-asterisk" aria-hidden="true"></i>
 				<br>
 				<?php _e( 'Custom Field', 'yop-poll' );?>
@@ -43,6 +43,41 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 			</a>
 			</span>
 		<hr>
+	</div>
+	<div id="modal-poll-elements-add" class="modal fade" role="dialog">
+		<div class="modal-dialog">
+			<!-- Modal content-->
+			<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">
+						<?php _e( 'Add Elements To Poll' );?>
+						</h4>
+					</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<script src="https://fast.wistia.com/embed/medias/xrh7e7pvxe.jsonp" async></script>
+							<script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+							<div class="wistia_responsive_padding" style="padding:45.63% 0 0 0;position:relative;">
+								<div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">
+									<div class="wistia_embed wistia_async_xrh7e7pvxe videoFoam=true" style="height:100%;position:relative;width:100%">
+										<div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;">
+											<img src="https://fast.wistia.com/embed/medias/xrh7e7pvxe/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" aria-hidden="true" onload="this.parentNode.style.opacity=1;" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						<?php _e( 'Close', 'yop-poll' );?>
+					</button>
+				</div>
+			</div>
+		</div>
 	</div>
 </div>
 <div class="row">

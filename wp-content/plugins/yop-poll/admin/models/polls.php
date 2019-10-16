@@ -579,6 +579,7 @@ class YOP_Poll_Polls {
 			'name' => $cloned_poll->name . ' ' . __( 'clone', 'yop-poll' ),
 			'template' => $cloned_poll->template,
 			'template_base' => $cloned_poll->template_base,
+			'skin_base' => $cloned_poll->skin_base,
 			'author' => $current_user->ID,
 			'stype' => 'poll',
 			'status' => $cloned_poll->status,
@@ -744,6 +745,7 @@ class YOP_Poll_Polls {
 					'votePermissions' => $poll->options->access->votePermissions,
 					/*'allowWordpressVotes' => $poll->options->access->allowWordpressVotes,*/
 					'blockVoters' => $poll->options->access->blockVoters,
+					'blockLengthType' => $poll->options->access->blockLengthType,
 					'blockForValue' => $poll->options->access->blockForValue,
 					'blockForPeriod' => $poll->options->access->blockForPeriod,
 					'limitVotesPerUser' => $poll->options->access->limitVotesPerUser,
@@ -1607,7 +1609,7 @@ class YOP_Poll_Polls {
 			*/
 			if (
 				( false === self::$errors_present ) &&
-				( 0 < count( $poll->options->access->blockVoters ) ) &&
+				( count( $poll->options->access->blockVoters ) > 0 ) &&
 				( 0 === count( array_intersect($poll->options->access->blockVoters, self::$block_voters_allowed) ) )
 			) {
 				self::$errors_present = true;
@@ -1615,14 +1617,15 @@ class YOP_Poll_Polls {
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( 0 < count( $poll->options->access->blockVoters ) ) &&
+				( count( $poll->options->access->blockVoters ) > 0 ) &&
 				( !in_array( 'no-block', $poll->options->access->blockVoters ) ) &&
+				( 'limited-time' === $poll->options->access->blockLengthType ) &&
 				( ( !isset( $poll->options->access->blockForValue ) ||
 				( 0 === intval( $poll->options->access->blockForValue ) ) ) ||
 				( !in_array( $poll->options->access->blockForPeriod, self::$block_voters_period_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Block For" is invalid', 'yop-poll' );
+				self::$error_text = __( 'Data for "Block Period" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -2198,42 +2201,19 @@ class YOP_Poll_Polls {
 		$accept_votes_from_anonymous = true;
 		$should_continue = true;
 		$previous_vote = null;
+		if ( false === isset( $poll->meta_data['options']['access']['blockLengthType'] ) ) {
+			$poll->meta_data['options']['access']['blockLengthType'] = 'limited-time';
+		}
 		if ( true === in_array( 'by-cookie', $poll->meta_data['options']['access']['blockVoters'] ) ) {
 			if ( '' !== $voter_data['c-data'] ) {
 				$previous_vote = YOP_Poll_Votes::get_vote( $poll->id, 'voter_id', $voter_data['c-data'] );
 			}
 		}
 		if ( null !== $previous_vote ) {
-			switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
-				case 'minutes': {
-					$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
-					break;
-				}
-				case 'hours': {
-					$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
-					break;
-				}
-				case 'days': {
-					$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
-					break;
-				}
-			}
-			$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
-			$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
-			$previous_vote_date->add( new DateInterval( $block_for_period ) );
-			if ( $current_vote_date < $previous_vote_date ) {
+			if ( 'forever' === $poll->meta_data['options']['access']['blockLengthType'] ) {
 				$accept_votes_from_anonymous = false;
 				$should_continue = false;
-			}
-		}
-		if ( true === $should_continue ) {
-			$previous_vote = null;
-			if ( true === in_array( 'by-ip', $poll->meta_data['options']['access']['blockVoters'] ) ) {
-				if ( '' !== $voter_data['ipaddress'] ) {
-					$previous_vote = YOP_Poll_Votes::get_vote( $poll->id, 'ipaddress', $voter_data['ipaddress'] );
-				}
-			}
-			if ( null !== $previous_vote ) {
+			} else {
 				switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
 					case 'minutes': {
 						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
@@ -2259,31 +2239,72 @@ class YOP_Poll_Polls {
 		}
 		if ( true === $should_continue ) {
 			$previous_vote = null;
+			if ( true === in_array( 'by-ip', $poll->meta_data['options']['access']['blockVoters'] ) ) {
+				if ( '' !== $voter_data['ipaddress'] ) {
+					$previous_vote = YOP_Poll_Votes::get_vote( $poll->id, 'ipaddress', $voter_data['ipaddress'] );
+				}
+			}
+			if ( null !== $previous_vote ) {
+				if ( 'forever' === $poll->meta_data['options']['access']['blockLengthType'] ) {
+					$accept_votes_from_anonymous = false;
+					$should_continue = false;
+				} else {
+					switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
+						case 'minutes': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
+							break;
+						}
+						case 'hours': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
+							break;
+						}
+						case 'days': {
+							$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
+							break;
+						}
+					}
+					$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date->add( new DateInterval( $block_for_period ) );
+					if ( $current_vote_date < $previous_vote_date ) {
+						$accept_votes_from_anonymous = false;
+						$should_continue = false;
+					}
+				}
+			}
+		}
+		if ( true === $should_continue ) {
+			$previous_vote = null;
 			if ( true === in_array( 'by-user-id', $poll->meta_data['options']['access']['blockVoters'] ) ) {
 				if ( '' !== $voter_data['user-id'] ) {
 					$previous_vote = YOP_Poll_Votes::get_vote( $poll->id, 'user_id', $voter_data['user-id'] );
 				}
 			}
 			if ( null !== $previous_vote ) {
-				switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
-					case 'minutes': {
-						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
-						break;
-					}
-					case 'hours': {
-						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
-						break;
-					}
-					case 'days': {
-						$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
-						break;
-					}
-				}
-				$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
-				$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
-				$previous_vote_date->add( new DateInterval( $block_for_period ) );
-				if ( $current_vote_date < $previous_vote_date ) {
+				if ( 'forever' === $poll->meta_data['options']['access']['blockLengthType'] ) {
 					$accept_votes_from_anonymous = false;
+					$should_continue = false;
+				} else {
+					switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
+						case 'minutes': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
+							break;
+						}
+						case 'hours': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
+							break;
+						}
+						case 'days': {
+							$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
+							break;
+						}
+					}
+					$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date->add( new DateInterval( $block_for_period ) );
+					if ( $current_vote_date < $previous_vote_date ) {
+						$accept_votes_from_anonymous = false;
+					}
 				}
 			}
 		}

@@ -210,7 +210,7 @@ class YOP_Poll_Votes {
 				$curl_link = 'https://www.google.com/recaptcha/api/siteverify';
 				$integrations = YOP_Poll_Settings::get_integrations();
 				$data = array(
-					'secret' => $integrations['reCaptcha']['secret_key'],
+					'secret' => $integrations['reCaptcha']['secret-key'],
 					'response' => $vote->reCaptcha
 				);
 				$curl_con = curl_init();
@@ -252,45 +252,22 @@ class YOP_Poll_Votes {
 	}
 	public static function validate_voter_against_blocks( $vote, $poll ) {
 		$previous_vote = null;
+		if ( false === isset( $poll->meta_data['options']['access']['blockLengthType'] ) ) {
+			$poll->meta_data['options']['access']['blockLengthType'] = 'limited-time';
+		}
 		if ( true === in_array( 'by-cookie', $poll->meta_data['options']['access']['blockVoters'] ) ) {
 			if ( '' !== $vote->user->c_data ) {
 				$previous_vote = self::get_vote( $vote->pollId, 'voter_id', $vote->user->c_data );
 			}
 		}
 		if ( null !== $previous_vote ) {
-			switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
-				case 'minutes': {
-					$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
-					break;
-				}
-				case 'hours': {
-					$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
-					break;
-				}
-				case 'days': {
-					$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
-					break;
-				}
-			}
-			$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
-			$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
-			$previous_vote_date->add( new DateInterval( $block_for_period ) );
-			if ( $current_vote_date < $previous_vote_date ) {
+			if ( 'forever' === $poll->meta_data['options']['access']['blockLengthType'] ) {
 				self::$errors_present = true;
 				array_push(
 					self::$error_text,
-                    self::$settings_messages['voting']['not-allowed-by-block']
+					self::$settings_messages['voting']['not-allowed-by-block']
 				);
-			}
-		}
-		if ( false === self::$errors_present ) {
-			$previous_vote = null;
-			if ( true === in_array( 'by-ip', $poll->meta_data['options']['access']['blockVoters'] ) ) {
-				if ( '' !== $vote->user->ipaddress ) {
-					$previous_vote = self::get_vote( $vote->pollId, 'ipaddress', $vote->user->ipaddress );
-				}
-			}
-			if ( null !== $previous_vote ) {
+			} else {
 				switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
 					case 'minutes': {
 						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
@@ -312,8 +289,50 @@ class YOP_Poll_Votes {
 					self::$errors_present = true;
 					array_push(
 						self::$error_text,
-                        self::$settings_messages['voting']['not-allowed-by-block']
+						self::$settings_messages['voting']['not-allowed-by-block']
 					);
+				}
+			}
+		}
+		if ( false === self::$errors_present ) {
+			$previous_vote = null;
+			if ( true === in_array( 'by-ip', $poll->meta_data['options']['access']['blockVoters'] ) ) {
+				if ( '' !== $vote->user->ipaddress ) {
+					$previous_vote = self::get_vote( $vote->pollId, 'ipaddress', $vote->user->ipaddress );
+				}
+			}
+			if ( null !== $previous_vote ) {
+				if ( 'forever' === $poll->meta_data['options']['access']['blockLengthType'] ) {
+					self::$errors_present = true;
+					array_push(
+						self::$error_text,
+						self::$settings_messages['voting']['not-allowed-by-block']
+					);
+				} else {
+					switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
+						case 'minutes': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
+							break;
+						}
+						case 'hours': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
+							break;
+						}
+						case 'days': {
+							$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
+							break;
+						}
+					}
+					$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date->add( new DateInterval( $block_for_period ) );
+					if ( $current_vote_date < $previous_vote_date ) {
+						self::$errors_present = true;
+						array_push(
+							self::$error_text,
+							self::$settings_messages['voting']['not-allowed-by-block']
+						);
+					}
 				}
 			}
 		}
@@ -325,29 +344,37 @@ class YOP_Poll_Votes {
 				}
 			}
 			if ( null !== $previous_vote ) {
-				switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
-					case 'minutes': {
-						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
-						break;
-					}
-					case 'hours': {
-						$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
-						break;
-					}
-					case 'days': {
-						$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
-						break;
-					}
-				}
-				$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
-				$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
-				$previous_vote_date->add( new DateInterval( $block_for_period ) );
-				if ( $current_vote_date < $previous_vote_date ) {
+				if ( 'forever' === $poll->meta_data['options']['access']['blockLengthType'] ) {
 					self::$errors_present = true;
 					array_push(
 						self::$error_text,
-                        self::$settings_messages['voting']['not-allowed-by-block']
+						self::$settings_messages['voting']['not-allowed-by-block']
 					);
+				} else {
+					switch ( $poll->meta_data['options']['access']['blockForPeriod'] ) {
+						case 'minutes': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'M';
+							break;
+						}
+						case 'hours': {
+							$block_for_period = 'PT' . $poll->meta_data['options']['access']['blockForValue'] . 'H';
+							break;
+						}
+						case 'days': {
+							$block_for_period = 'P' . $poll->meta_data['options']['access']['blockForValue'] . 'D';
+							break;
+						}
+					}
+					$current_vote_date = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date = new DateTime( get_gmt_from_date( $previous_vote->added_date ), new DateTimeZone( 'UTC' ) );
+					$previous_vote_date->add( new DateInterval( $block_for_period ) );
+					if ( $current_vote_date < $previous_vote_date ) {
+						self::$errors_present = true;
+						array_push(
+							self::$error_text,
+							self::$settings_messages['voting']['not-allowed-by-block']
+						);
+					}
 				}
 			}
 		}
@@ -732,25 +759,39 @@ class YOP_Poll_Votes {
         $email_from_email = isset( $poll->meta_data['options']['poll']['emailNotificationsFromEmail'] ) ?
             $poll->meta_data['options']['poll']['emailNotificationsFromEmail'] : '';
         $email_headers = array (
-            'From: ' . $email_from_name . '<' . $email_from_email . '>'
+			'From: ' . $email_from_name . ' <' . $email_from_email . '>',
+			'Content-Type: text/plain'
         );
-
-		$email_body = str_replace( '%VOTE_DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_body);
+		/* BEGIN Email-Subject*/
+		$email_subject = str_replace( '%VOTE-DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_subject );
+		$email_subject = str_replace( '%POLL-NAME%', $poll->name, $email_subject );
+		$email_subject = str_replace( '%VOTE_DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_subject );
+		$email_subject = str_replace( '%POLL_NAME%', $poll->name, $email_subject );
+		/* END Email-Subject*/
+		$email_body = str_replace( '%VOTE-DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_body );
+		$email_body = str_replace( '%POLL-NAME%', $poll->name, $email_body );
+		$email_body = str_replace( '%VOTE_DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_body );
 		$email_body = str_replace( '%POLL_NAME%', $poll->name, $email_body );
 		$questions_tag = self::get_content_between_tags( $email_body, '[QUESTION]', '[/QUESTION]' );
 		$custom_fields_tag = self::get_content_between_tags( $email_body, '[CUSTOM_FIELDS]', '[/CUSTOM_FIELDS]' );
 		$questions_block = '';
 		$custom_fields_block = '';
 		$vote_results = self::prepare_for_mail( $vote, $poll );
-		foreach( $vote_results['questions'] as $question_result ) {
-			$question_block = str_replace( '%QUESTION_TEXT%', $question_result['text'], $questions_tag );
-			$question_block = str_replace( '%ANSWER_VALUE%', implode( "\n", $question_result['answers'] ), $question_block );
-			$questions_block .= $question_block;
+		if ( true === isset( $vote_results['questions'] ) ) {
+			foreach( $vote_results['questions'] as $question_result ) {
+				$question_block = str_replace( '%QUESTION-TEXT%', $question_result['text'], $questions_tag );
+				$question_block = str_replace( '%ANSWER-VALUE%', implode( "\r\n", $question_result['answers'] ), $question_block );
+				$question_block = str_replace( '%QUESTION_TEXT%', $question_result['text'], $question_block );
+				$question_block = str_replace( '%ANSWER_VALUE%', implode( "\r\n", $question_result['answers'] ), $question_block );
+				$questions_block .= $question_block;
+			}
 		}
-		foreach( $vote_results['custom-fields'] as $custom_field_result ) {
-			$custom_field_block = str_replace( '%CUSTOM_FIELD_NAME%', $custom_field_result['text'], $custom_fields_tag );
-			$custom_field_block = str_replace( '%CUSTOM_FIELD_VALUE%', $custom_field_result['answer'], $custom_field_block );
-			$custom_fields_block .= $custom_field_block;
+		if ( true === isset( $vote_results['custom-fields'] ) ) {
+			foreach( $vote_results['custom-fields'] as $custom_field_result ) {
+				$custom_field_block = str_replace( '%CUSTOM_FIELD_NAME%', $custom_field_result['text'], $custom_fields_tag );
+				$custom_field_block = str_replace( '%CUSTOM_FIELD_VALUE%', $custom_field_result['answer'], $custom_field_block );
+				$custom_fields_block .= $custom_field_block;
+			}
 		}
 		$questions_block = str_replace(
 			array(
@@ -767,8 +808,8 @@ class YOP_Poll_Votes {
 			),
 			$questions_block
 		);
-		$email_body = str_replace( $questions_tag, $questions_block, $email_body );
-		$email_body = str_replace( $custom_fields_tag, $custom_fields_block, $email_body );
+		$email_body = str_replace( $questions_tag, trim( $questions_block ), $email_body );
+		$email_body = str_replace( $custom_fields_tag, trim( $custom_fields_block ), $email_body );
 		$email_body = str_replace(
 			array(
 				'[QUESTION]',

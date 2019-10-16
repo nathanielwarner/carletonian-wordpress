@@ -99,7 +99,7 @@ class YOP_Poll_Public {
 			array(
                 'id'      => - 1,
                 'results' => 0,
-                'tid'   => '',
+                'tracking_id'   => '',
                 'show_results' => ''
             ),
 			$atts, 'yop_poll' );
@@ -115,7 +115,7 @@ class YOP_Poll_Public {
 		            array(
 			            'id'      => $p['id'],
 			            'results' => 0,
-			            'tid'   => '',
+			            'tracking_id'   => '',
 			            'show_results' => ''
 		            ),
 		            $atts, 'yop_poll' );
@@ -125,7 +125,7 @@ class YOP_Poll_Public {
         return $content;
     }
 	public function generate_poll( $params ){
-		if ( isset( $params['id'] ) && ( '' !== $params['id'] ) && ( '0' != $params['id'] ) ) {
+		if ( isset( $params['id'] ) && ( '' !== $params['id'] ) && ( '0' != $params['id'] )  ) {
 			$poll = '';
 			$poll_ready_for_output = '';
 			switch ( $params['id'] ) {
@@ -155,11 +155,19 @@ class YOP_Poll_Public {
 			if ( false !== $poll ) {
 				switch ( $poll->template_base ) {
 					case 'basic': {
-						$poll_ready_for_output = YOP_Poll_Basic::create_poll_view( $poll, $params );
+						if ( ( true === isset( $params['show_results'] ) ) && ( '1' == $params['show_results'] ) ) {
+							$poll_ready_for_output = YOP_Poll_Basic::create_poll_view_for_results( $poll, $params );
+						} else {
+							$poll_ready_for_output = YOP_Poll_Basic::create_poll_view( $poll, $params );
+						}
 						break;
 					}
-					default: {
-						$poll_ready_for_output = YOP_Poll_Basic::create_poll_view( $poll, $params );
+					case 'basic-pretty': {
+						if ( ( true === isset( $params['show_results'] ) ) && ( '1' == $params['show_results'] ) ) {
+							$poll_ready_for_output = YOP_Poll_Basic::create_poll_view_for_results( $poll, $params );
+						} else {
+							$poll_ready_for_output = YOP_Poll_Basic::create_poll_view( $poll, $params );
+						}
 						break;
 					}
 				}

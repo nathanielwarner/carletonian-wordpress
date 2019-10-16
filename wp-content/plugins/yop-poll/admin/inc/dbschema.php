@@ -6861,18 +6861,35 @@ class Yop_Poll_DbSchema {
 					</div><!-- end row -->
 				</div><!-- end basic-yop-poll-container -->'
 		);
-		$alter_query = "ALTER TABLE `{$GLOBALS['wpdb']->yop_poll_templates}` DROP `image_preview`, DROP `html_vertical`, DROP `html_horizontal`, DROP `html_columns`";
-		$GLOBALS['wpdb']->query( $alter_query );
+		if (  ( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'image_preview' ) ) &&
+			( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'html_vertical' ) ) &&
+			( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'html_horizontal' ) ) &&
+			( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'html_columns' ) )
+		 ) {
+			$alter_query = "ALTER TABLE `{$GLOBALS['wpdb']->yop_poll_templates}` DROP `image_preview`, DROP `html_vertical`, DROP `html_horizontal`, DROP `html_columns`";
+			$GLOBALS['wpdb']->query( $alter_query );
+		}
 		$update_query = "UPDATE `{$GLOBALS['wpdb']->yop_poll_templates}` SET `html_preview` = '" . $templates_preview['basic'] . "' WHERE `base` = 'basic'";
 		$GLOBALS['wpdb']->query( $update_query );
 		$update_query = "UPDATE `{$GLOBALS['wpdb']->yop_poll_templates}` SET `html_preview` = '" . $templates_preview['basic-pretty'] . "' WHERE `base` = 'basic-pretty'";
 		$GLOBALS['wpdb']->query( $update_query );
 	}
 	public function update_table_polls_add_skin_field() {
-		$alter_query = "ALTER TABLE `{$GLOBALS['wpdb']->yop_poll_polls}` ADD `skin_base` varchar(255) AFTER `template_base`";
-		$GLOBALS['wpdb']->query( $alter_query );
+		if ( false === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_polls, 'skin_base' ) ) {
+			$alter_query = "ALTER TABLE `{$GLOBALS['wpdb']->yop_poll_polls}` ADD `skin_base` varchar(255) AFTER `template_base`";
+			$GLOBALS['wpdb']->query( $alter_query );
+		}
 		$update_query = "UPDATE `{$GLOBALS['wpdb']->yop_poll_polls}` SET `skin_base` = 'orange-def'";
 		$GLOBALS['wpdb']->query( $update_query );
+	}
+	private function check_if_column_exists( $table_name, $column_name ) {
+		if ( 0 == $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare(
+				"SELECT count(1) FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = %s AND `TABLE_NAME` = %s AND `COLUMN_NAME` = %s ",
+				DB_NAME, $table_name, $column_name
+			) ) ) {
+			return false;
+		}
+		return true;
 	}
 	public function delete_tables() {
 		$query = 'DROP TABLE IF EXISTS ' . $GLOBALS['wpdb']->yop_poll_polls;

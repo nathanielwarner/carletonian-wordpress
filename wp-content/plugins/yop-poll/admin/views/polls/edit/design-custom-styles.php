@@ -115,22 +115,20 @@
 									<?php _e( 'Text size', 'yop-poll' );?>
 								</div>
 								<?php
-								switch ( $poll->meta_data['style']['questions']['textSize'] ) {
-									case 'small': {
-										$poll->meta_data['style']['questions']['textSize'] = '12';
-										break;
-									}
-									case 'medium': {
-										$poll->meta_data['style']['questions']['textSize'] = '16';
-										break;
-									}
-									case 'large': {
-										$poll->meta_data['style']['questions']['textSize'] = '20';
-										break;
-									}
-									default: {
-										$poll->meta_data['style']['questions']['textSize'] = '16';
-										break;
+								if ( true === in_array( $poll->meta_data['style']['questions']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+									switch ( $poll->meta_data['style']['questions']['textSize'] ) {
+										case 'small': {
+											$poll->meta_data['style']['questions']['textSize'] = '12';
+											break;
+										}
+										case 'medium': {
+											$poll->meta_data['style']['questions']['textSize'] = '16';
+											break;
+										}
+										case 'large': {
+											$poll->meta_data['style']['questions']['textSize'] = '20';
+											break;
+										}
 									}
 								}
 								?>
@@ -380,22 +378,20 @@
 									<?php _e( 'Text size', 'yop-poll' );?>
 								</div>
 								<?php
-								switch ( $poll->meta_data['style']['answers']['textSize'] ) {
-									case 'small': {
-										$poll->meta_data['style']['answers']['textSize'] = '12';
-										break;
-									}
-									case 'medium': {
-										$poll->meta_data['style']['answers']['textSize'] = '16';
-										break;
-									}
-									case 'large': {
-										$poll->meta_data['style']['answers']['textSize'] = '20';
-										break;
-									}
-									default: {
-										$poll->meta_data['style']['answers']['textSize'] = '16';
-										break;
+								if ( true === in_array( $poll->meta_data['style']['answers']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+									switch ( $poll->meta_data['style']['answers']['textSize'] ) {
+										case 'small': {
+											$poll->meta_data['style']['answers']['textSize'] = '12';
+											break;
+										}
+										case 'medium': {
+											$poll->meta_data['style']['answers']['textSize'] = '16';
+											break;
+										}
+										case 'large': {
+											$poll->meta_data['style']['answers']['textSize'] = '20';
+											break;
+										}
 									}
 								}
 								?>
@@ -529,22 +525,20 @@
 									<?php _e( 'Text size', 'yop-poll' );?>
 								</div>
 								<?php
-								switch ( $poll->meta_data['style']['buttons']['textSize'] ) {
-									case 'small': {
-										$poll->meta_data['style']['buttons']['textSize'] = '12';
-										break;
-									}
-									case 'medium': {
-										$poll->meta_data['style']['buttons']['textSize'] = '16';
-										break;
-									}
-									case 'large': {
-										$poll->meta_data['style']['buttons']['textSize'] = '20';
-										break;
-									}
-									default: {
-										$poll->meta_data['style']['buttons']['textSize'] = '12';
-										break;
+								if ( true === in_array( $poll->meta_data['style']['buttons']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+									switch ( $poll->meta_data['style']['buttons']['textSize'] ) {
+										case 'small': {
+											$poll->meta_data['style']['buttons']['textSize'] = '12';
+											break;
+										}
+										case 'medium': {
+											$poll->meta_data['style']['buttons']['textSize'] = '16';
+											break;
+										}
+										case 'large': {
+											$poll->meta_data['style']['buttons']['textSize'] = '20';
+											break;
+										}
 									}
 								}
 								?>
@@ -666,22 +660,20 @@
 									<?php _e( 'Text size', 'yop-poll' );?>
 								</div>
 								<?php
-								switch ( $poll->meta_data['style']['errors']['textSize'] ) {
-									case 'small': {
-										$poll->meta_data['style']['errors']['textSize'] = '12';
-										break;
-									}
-									case 'medium': {
-										$poll->meta_data['style']['errors']['textSize'] = '16';
-										break;
-									}
-									case 'large': {
-										$poll->meta_data['style']['errors']['textSize'] = '20';
-										break;
-									}
-									default: {
-										$poll->meta_data['style']['errors']['textSize'] = '12';
-										break;
+								if ( true === in_array( $poll->meta_data['style']['errors']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
+									switch ( $poll->meta_data['style']['errors']['textSize'] ) {
+										case 'small': {
+											$poll->meta_data['style']['errors']['textSize'] = '12';
+											break;
+										}
+										case 'medium': {
+											$poll->meta_data['style']['errors']['textSize'] = '16';
+											break;
+										}
+										case 'large': {
+											$poll->meta_data['style']['errors']['textSize'] = '20';
+											break;
+										}
 									}
 								}
 								?>

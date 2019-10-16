@@ -80,7 +80,11 @@
 						>
 							<?php _e( 'Use as is', 'yop-poll');?>
 						</button>
-						<button class="btn btn-primary customize-skin" data-temp="basic">
+						<button class="btn btn-primary customize-skin"
+							data-temp="basic"
+							data-skin-id="<?php echo $skin->id;?>"
+							data-skin-base="<?php echo $skin->base;?>"
+						>
 							<?php _e( 'Customize', 'yop-poll');?>
 						</button>
 					</figcaption>
@@ -150,7 +154,11 @@
 						>
 							<?php _e( 'Use as is', 'yop-poll');?>
 						</button>
-						<button class="btn btn-primary customize-skin" data-temp="basic-pretty">
+						<button class="btn btn-primary customize-skin" 
+							data-temp="basic-pretty"
+							data-skin-id="<?php echo $skin->id;?>"
+							data-skin-base="<?php echo $skin->base;?>"
+						>
 							<?php _e( 'Customize', 'yop-poll');?>
 						</button>
 					</figcaption>
