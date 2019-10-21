@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: WP Extended Search
-Plugin URI: http://www.secretsofgeeks.com/2014/09/wordpress-search-tags-and-categories.html
+Plugin URI: https://www.secretsofgeeks.com/2014/09/wordpress-search-tags-and-categories.html
 Author: 5um17
-Author URI: http://www.secretsofgeeks.com
+Author URI: https://www.secretsofgeeks.com
 Text Domain: wp-extended-search
-Version: 1.2
+Version: 1.3
 Description: Extend default search to search in selected post meta, taxonomies, post types and all authors.
 */
 
@@ -20,9 +20,9 @@ if (!defined('WP_ES_URL')) {
     define('WP_ES_URL', plugin_dir_url(__FILE__));
 }
 
-if (!defined('WP_ES_VERSION')) {
-    //Plugin Version
-    define('WP_ES_VERSION', '1.2');
+if ( ! defined( 'WP_ES_Filename' ) ) {
+    //Plugin Filename
+    define( 'WP_ES_Filename', plugin_basename( __FILE__ ) );
 }
 
 /* Includes library files */

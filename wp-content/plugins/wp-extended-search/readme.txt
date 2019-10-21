@@ -1,9 +1,9 @@
 === WP Extended Search ===
 Contributors: 5um17
-Tags: search, postmeta, taxonomy, advance search, category search, page search, tag search, author search, search results, posts per page
+Tags: search, postmeta, taxonomy, advance search, category search, page search, tag search, author search, search results, posts per page, exact search
 Requires at least: 4.0
-Tested up to: 4.9.8
-Stable tag: 1.2
+Tested up to: 5.2.4
+Stable tag: 1.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -24,10 +24,15 @@ You can include or exclude post types to appear in search results.
 * Exclude old content from search results (Older than admin specified date)
 * Customize the number of posts to display on search results page
 * Customize SQL relation (AND/OR) between search terms
+* Customize order of search results
+* Control whether to match search query exactly or partially
 * Translation ready
 * Compatible with WPML
 
-[Complete documentation](http://www.secretsofgeeks.com/2014/09/wordpress-search-tags-and-categories.html)
+= Links =
+
+* [Complete documentation](https://www.secretsofgeeks.com/2014/09/wordpress-search-tags-and-categories.html)
+* [GitHub repository](https://github.com/5um17/wp-extended-search)
 
 == Installation ==
 
@@ -40,12 +45,19 @@ You can include or exclude post types to appear in search results.
 
 = Do you have any question? =
 
-Please use plugin [support forum](http://wordpress.org/support/plugin/wp-extended-search) 
+Please use plugin [support forum](https://wordpress.org/support/plugin/wp-extended-search) 
 
 == Screenshots ==
 1. WP Extented Search settings page
 
 == Changelog ==
+
+= 1.3 - 2019-10-21 =
+* Fixed media search issue
+* Fixed conflict with search when adding new menu item in backend
+* Added setting link in plugin action links
+* Added feature to modify search results order
+* Added feature to match search query exactly or partially
 
 = 1.2 - 2018-08-17 =
 * Fixed bbPress forum posts dissappear
