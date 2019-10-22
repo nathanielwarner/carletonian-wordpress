@@ -2515,7 +2515,7 @@
   .su-tabs-vertical .su-tabs-panes .su-tabs-pane {
     border-radius: 3px;
   }
-  .su-tabs-mobile-stack span {
+  .su-tabs-mobile-stack .su-tabs-nav span {
     display: block;
   }
   .su-tabs-mobile-scroll .su-tabs-nav {
