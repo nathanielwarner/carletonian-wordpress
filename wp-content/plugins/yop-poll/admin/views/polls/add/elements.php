@@ -304,6 +304,16 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 										</select>
 									</div>
 								</div>
+								<div class="other-answers-results-color-section hide">
+									<div class="form-group">
+										<div class="col-md-3">
+											<?php _e( 'Results Color', 'yop-poll' );?>
+										</div>
+										<div class="col-md-9">
+											<input type="text" value="#000" class="form-control other-answers-results-color" />
+										</div>
+									</div>
+								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-3">

@@ -3,7 +3,7 @@
 Plugin Name: YOP Poll
 Plugin URI:  https://yop-poll.com
 Description: Use a full option polling functionality to get the answers you need. YOP Poll is the perfect, easy to use poll plugin for your WordPress website.
-Version:     6.0.9
+Version:     6.1.0
 Author:      yourownprogrammer
 Author URI:  https://yop-poll.com
 License:     GPL2
@@ -11,7 +11,7 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Domain Path: /languages
 Text Domain: yop-poll
 */
-define ( 'YOP_POLL_VERSION', '6.0.9' );
+define ( 'YOP_POLL_VERSION', '6.1.0' );
 define ( 'YOP_POLL_URL', plugin_dir_url( __FILE__ ) );
 define ( 'YOP_POLL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'YOP_POLL_TEST_MODE', false );
@@ -52,6 +52,7 @@ if ( true === is_admin() ) {
     require_once( 'public/inc/Captcha.php' );
     require_once( 'public/inc/Session.php' );
     require_once( 'admin/models/subelements.php' );
+    require_once( 'admin/models/OtherAnswers.php' );
     $yop_poll_admin = new YOP_Poll_Admin;
 } else {
     require_once( 'public/public.php' );
@@ -62,6 +63,7 @@ if ( true === is_admin() ) {
     require_once( 'admin/models/elements.php' );
     require_once( 'admin/models/templates.php' );
     require_once( 'admin/models/subelements.php' );
+    require_once( 'admin/models/OtherAnswers.php' );
     $yop_poll_public = new YOP_Poll_Public;
 }
 add_action( 'widgets_init', 'YOP_Poll_Widget' );

@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.3.4
+  Version: 6.3.5
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -28,8 +28,7 @@
 
  */
 
-// Used as dummy parameter on css and js links
-define('NEWSLETTER_VERSION', '6.3.4');
+define('NEWSLETTER_VERSION', '6.3.5');
 
 global $newsletter, $wpdb;
 
@@ -345,7 +344,6 @@ class Newsletter extends NewsletterModule {
         if (current_user_can('administrator')) {
             return true;
         }
-        //if (!empty($this->options['editor']) && current_user_can('editor')) return true;
         if (!empty($this->options['roles'])) {
             foreach ($this->options['roles'] as $role) {
                 if (current_user_can($role)) {
@@ -1020,8 +1018,9 @@ class Newsletter extends NewsletterModule {
 
         $extensions = $this->getTnpExtensions();
 
-        if (!$extensions)
+        if (!$extensions) {
             return $value;
+        }
 
         foreach ($extensions as $extension) {
             unset($value->response[$extension->wp_slug]);
@@ -1149,6 +1148,10 @@ class Newsletter extends NewsletterModule {
         $extensions = json_decode($extensions_json);
 
         return $extensions;
+    }
+    
+    function clear_extensions_cache() {
+        delete_transient('tnp_extensions_json');
     }
 
     function hook_plugins_loaded() {

@@ -557,6 +557,7 @@ class YOP_Poll_Votes {
 		setcookie( 'ypdt', $vote->user->c_data, time() + 60 * 60 * 24 * 365, COOKIEPATH, COOKIE_DOMAIN );
 	}
 	public static function record( $vote, $poll ) {
+		$vote_id = 0;
 		$vote_total_answers = 0;
 		$data = array(
 			'poll_id' => $vote->pollId,
@@ -572,6 +573,7 @@ class YOP_Poll_Votes {
 			'added_date' => $vote->added_date
 		);
 		$GLOBALS['wpdb']->insert( $GLOBALS['wpdb']->yop_poll_votes, $data );
+		$vote_id = $GLOBALS['wpdb']->insert_id;
 		foreach ( $vote->data as $vote_element ) {
 			if ( 'question' === $vote_element->type ) {
 				foreach ( $vote_element->data as $vote_subelement ) {
@@ -613,6 +615,9 @@ class YOP_Poll_Votes {
 										$sub_element_data->options->resultsColor = '#000000';
 										YOP_Poll_SubElements::add_single( $sub_element_data );
 									}
+								}
+								if ( 'yes' === $poll_element->meta_data['displayOtherAnswersInResults'] ) {
+									YOP_Poll_Other_Answers::add( $vote->pollId, $poll_element->id, $vote_id, $vote_subelement->data );
 								}
 							}
 						}
@@ -657,6 +662,7 @@ class YOP_Poll_Votes {
 		}
 		$rebuild_elements = false;
 		$elements_code = array();
+		$elements_other_answers = array();
 		foreach ( $poll->elements as $element ) {
 			if ( true === in_array( $element->etype, array( 'text-question', 'media-question' ) ) ) {
 				if ( ( 'yes' === $element->meta_data['allowOtherAnswers'] ) && ( 'yes' === $element->meta_data['addOtherAnswers'] ) ) {
@@ -666,14 +672,26 @@ class YOP_Poll_Votes {
 							$element_html = YOP_Poll_Basic::do_text_question( $element, $poll->meta_data, array() );
 							break;
 						}
-						case 'media-question': {
-							$element_html = YOP_Poll_Basic::do_media_question( $element, $poll->meta_data, array() );
-							break;
-						}
 					}
 					$elements_code[] = array(
 						'id' => $element->id,
 						'code' => $element_html
+					);
+				}
+				if ( ( 'yes' === $element->meta_data['allowOtherAnswers'] ) && ( 'yes' === $element->meta_data['displayOtherAnswersInResults'] ) ) {
+					$element_others = YOP_Poll_Other_Answers::get_for_element( $element->id );
+					$element_others_processed = array();
+					if ( count( $element_others ) > 0 ) {
+						foreach( $element_others as $other_answer ) {
+							$element_others_processed[] = array(
+								'an' => $other_answer->answer,
+								'vn' => $other_answer->total_submits
+							);
+						}
+					}
+					$elements_other_answers[] = array(
+						'id' => $element->id,
+						'others' => json_encode( $element_others_processed )
 					);
 				}
 			}
@@ -688,6 +706,7 @@ class YOP_Poll_Votes {
 			'total_answers' => $total_answers,
 			'rebuild' => $rebuild_elements,
 			'elements' => json_encode( $elements_code ),
+			'others' => json_encode( $elements_other_answers ),
 			'results' => json_encode( $poll_results )
 		);
 		return $response;
@@ -1380,11 +1399,17 @@ class YOP_Poll_Votes {
 			"UPDATE {$GLOBALS['wpdb']->yop_poll_votes} SET `status` = 'deleted' WHERE `poll_id` = %s", $poll_id
 		);
 		$GLOBALS['wpdb']->query( $query );
+		$query = $GLOBALS['wpdb']->prepare(
+			"UPDATE {$GLOBALS['wpdb']->yop_poll_other_answers} SET `status` = 'deleted' WHERE `poll_id` = %s", $poll_id
+		);
+		$GLOBALS['wpdb']->query( $query );
 	}
     public static function delete_vote( $vote_id, $poll_id ) {
         if ( $vote_id > 0 ) {
             $query = $GLOBALS['wpdb']->prepare( "UPDATE {$GLOBALS['wpdb']->yop_poll_votes} SET `status` = 'deleted' WHERE `id` =%d", $vote_id);
-            $result = $GLOBALS['wpdb']->query( $query );
+			$result = $GLOBALS['wpdb']->query( $query );
+			$query = $GLOBALS['wpdb']->prepare( "UPDATE {$GLOBALS['wpdb']->yop_poll_other_answers} SET `status` = 'deleted' WHERE `poll_id` = %d AND `vote_id` =%d", $poll_id, $vote_id);
+            $GLOBALS['wpdb']->query( $query );
             $vote_query = $GLOBALS['wpdb']->prepare( "SELECT `vote_data` FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `id` = %d", $vote_id );
             $vote_data = $GLOBALS['wpdb']->get_var( $vote_query );
             $total_submit_answers_delete = 0;

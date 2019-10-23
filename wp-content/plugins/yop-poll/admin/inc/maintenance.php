@@ -72,6 +72,11 @@ class YOP_POLL_Maintenance {
 	public function update_to_version_6_0_9() {
 		update_option( 'yop_poll_version', '6.0.9' );
 	}
+	public function update_to_version_6_1_0() {
+		$db_schema_object = new Yop_Poll_DbSchema();
+		$db_schema_object->create_table_other_answers();
+		update_option( 'yop_poll_version', '6.1.0' );
+	}
     public function create_archive_page() {
         $poll_archive_page = get_page_by_path( 'yop-poll-archive', ARRAY_A );
         if ( ! $poll_archive_page ) {

@@ -122,6 +122,12 @@ function tnp_media_resize($media_id, $size) {
             //return $editor;
             //return $uploads['baseurl'] . '/' . $relative_file;
         }
+        
+        $original_size = $editor->get_size();
+        if ($width > $original_size['width'] || $height > $original_size['height']) {
+            $src = wp_get_attachment_image_src($media_id, $size);
+            return $src[0];
+        }
 
         $editor->set_quality(80);
         $resized = $editor->resize($width, $height, $crop);

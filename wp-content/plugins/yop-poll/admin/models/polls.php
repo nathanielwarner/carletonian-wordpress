@@ -1771,6 +1771,34 @@ class YOP_Poll_Polls {
 						$poll_element->answers[] = $poll_sub_element;
 					}
 				}
+				if ( 'yes' === $poll_element->meta_data['displayOtherAnswersInResults'] ) {
+					$element_other_answers = YOP_Poll_Other_Answers::get_for_element( $poll_element->id );
+					if ( count( $element_other_answers ) > 0 ) {
+						$i = 1;
+						foreach( $element_other_answers as $other_answer ) {
+							$poll_element->answers[] = ( object ) array(
+								'id' => 0,
+								'poll_id' => $poll_id,
+								'element_id' => $poll_element->id,
+								'stext' => $other_answer->answer,
+								'author' => '',
+								'textExtra' => '',
+								'stype' => 'text',
+								'status' => 'active',
+								'sorder' => count( $poll_element->answers ) + $i,
+								'meta_data' => array(
+									'makeDefault' => '',
+									'makeLink' => '',
+									'link' => '',
+									'resultsColor' => isset( $poll_element->meta_data['resultsColorForOtherAnswers'] ) ? $poll_element->meta_data['resultsColorForOtherAnswers'] : '#000000'
+								),
+								'total_submits' => $other_answer->total_submits
+							);
+							$i++;
+						}
+					}
+					$poll_element->answers = YOP_POLL_Elements::order_subelements( $poll_element->answers, $poll->meta_data['options']['results']['sortResults'], $poll->meta_data['options']['results']['sortResultsRule'] );
+				}
 			}
 			$poll->elements = $poll_elements;
 			return $poll;

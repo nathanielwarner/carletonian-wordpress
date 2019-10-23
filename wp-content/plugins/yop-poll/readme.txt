@@ -118,6 +118,12 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.1.0 =
+* fixed issue with limit votes
+* fixed issue with other answers when "Show in results" is set to Yes
+* fixed issue with fingerprint
+* removed extra space on results page when an answer has no votes
+
 = 6.0.9 =
 * fixed issue with cloning polls
 * fixed issue with editing poll duplicating new elements

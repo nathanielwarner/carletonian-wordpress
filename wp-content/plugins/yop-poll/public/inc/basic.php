@@ -264,6 +264,28 @@ class YOP_Poll_Basic {
 				break;
 			}
 		}
+		if ( ( 'yes' === $element->meta_data['allowOtherAnswers'] ) && ( 'yes' === $element->meta_data['displayOtherAnswersInResults'] ) ) {
+			$display_other_answers_in_results = 'yes';
+			$other_answers_results_color = isset( $element->meta_data['resultsColorForOtherAnswers'] ) ? $element->meta_data['resultsColorForOtherAnswers'] : '#000000';
+			$other_answers = YOP_Poll_Other_Answers::get_for_element( $element->id );
+			$other_answers_processed = array();
+			$other_answers_as_string = '';
+			if ( null !== $other_answers ) {
+				foreach ( $other_answers as $other_answer ) {
+					$other_answers_processed[] = array(
+						'an' => $other_answer->answer,
+						'vn' => $other_answer->total_submits
+					);
+				}
+				if ( count( $other_answers_processed ) > 0 ) {
+					$other_answers_as_string = json_encode( $other_answers_processed );
+				}
+			}
+		} else {
+			$display_other_answers_in_results = 'no';
+			$other_answers_as_string = '';
+			$other_answers_results_color = '';
+		}
 		$element_code = '<div class="basic-element basic-question ' . $element_class_type . '" '
 							. 'data-id="' . esc_attr( $element->id ) . '"'
 							. ' data-uid="' . esc_attr( self::generate_uid() ) . '"'
@@ -272,7 +294,10 @@ class YOP_Poll_Basic {
 							. ' data-min="' . esc_attr( $element->meta_data['multipleAnswersMinim'] ) . '"'
 							. ' data-max="' . esc_attr( $element->meta_data['multipleAnswersMaxim'] ) . '"'
 		                    . ' data-display="' .esc_attr( $element->meta_data['answersDisplay'] ) . '"'
-		                    . ' data-colnum="' . esc_attr( $element->meta_data['answersColumns']) . '"'
+							. ' data-colnum="' . esc_attr( $element->meta_data['answersColumns']) . '"'
+							. ' data-display-others="' . $display_other_answers_in_results . '"'
+							. ' data-others-color="' . $other_answers_results_color . '"'
+							. ' data-others=\'' . $other_answers_as_string . '\''
 						. '>'
 						. '<div class="basic-question-title">'
 								. '<h5 style="'
@@ -917,7 +942,7 @@ class YOP_Poll_Basic {
 						if ( true === self::should_display_results( $poll ) ) {
 							$poll_for_display = YOP_Poll_Polls::get_poll_for_results( $poll->id );
 							$params['show_results'] = '1';
-							$poll_ready_for_output = self::prepare_regular_view_for_display( $poll, $params );
+							$poll_ready_for_output = self::prepare_regular_view_for_display( $poll_for_display, $params );
 						} else {
 							$poll_ready_for_output = self::prepare_thankyou_view_for_display( $poll, $params );
 						}

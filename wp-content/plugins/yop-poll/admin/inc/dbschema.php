@@ -17,6 +17,7 @@ class Yop_Poll_DbSchema {
 		$this->create_table_bans();
 		$this->create_table_votes();
 		$this->create_table_logs();
+		$this->create_table_other_answers();
 	}
 	public static function initialize_tables_names() {
 		$GLOBALS['wpdb']->yop_poll_polls = $GLOBALS['wpdb']->prefix . 'yoppoll_polls';
@@ -27,6 +28,7 @@ class Yop_Poll_DbSchema {
 		$GLOBALS['wpdb']->yop_poll_logs = $GLOBALS['wpdb']->prefix . 'yoppoll_logs';
 		$GLOBALS['wpdb']->yop_poll_templates = $GLOBALS['wpdb']->prefix . 'yoppoll_templates';
 		$GLOBALS['wpdb']->yop_poll_skins = $GLOBALS['wpdb']->prefix . 'yoppoll_skins';
+		$GLOBALS['wpdb']->yop_poll_other_answers = $GLOBALS['wpdb']->prefix . 'yoppoll_other_answers';
 	}
 	public function create_table_polls() {
 		$create_table_sql = "CREATE TABLE `{$GLOBALS['wpdb']->yop_poll_polls}` (
@@ -290,6 +292,20 @@ class Yop_Poll_DbSchema {
 				$GLOBALS['wpdb']->insert( $table, $template );
 			}
 		}
+	}
+	public function create_table_other_answers() {
+		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
+		$create_table_sql = "CREATE TABLE `{$GLOBALS['wpdb']->yop_poll_other_answers}` (
+			id INT(11) NOT NULL AUTO_INCREMENT,
+			poll_id INT(11) NOT NULL,
+			element_id INT(11) NOT NULL,
+			vote_id INT(11) NOT NULL,
+			answer LONGTEXT NOT NULL,
+			status VARCHAR(10) NOT NULL,
+			added_date DATETIME NOT NULL,
+			PRIMARY KEY ( id )
+		) {$this->charset};";
+		dbDelta( $create_table_sql );
 	}
 	public function install_skins() {
 		$table = $GLOBALS['wpdb']->yop_poll_skins;
@@ -6907,6 +6923,8 @@ class Yop_Poll_DbSchema {
 		$query = 'DROP TABLE IF EXISTS ' . $GLOBALS['wpdb']->yop_poll_templates;
 		$GLOBALS['wpdb']->query( $query );
 		$query = 'DROP TABLE IF EXISTS ' . $GLOBALS['wpdb']->yop_poll_skins;
+		$GLOBALS['wpdb']->query( $query );
+		$query = 'DROP TABLE IF EXISTS ' . $GLOBALS['wpdb']->yop_poll_other_answers;
 		$GLOBALS['wpdb']->query( $query );
 	}
 }
