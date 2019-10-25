@@ -26,6 +26,11 @@ if ( defined( 'WC_PLUGIN_FILE' ) ) {
 	$cme_extensions->add( new CME_WooCommerce() );
 }
 
+if (!defined('CME_DISABLE_WP_EDIT_PUBLISHED_WORKAROUND')) {
+	require_once (dirname(__FILE__) . '/filters-wp_rest_workarounds.php');
+	new PublishPress\Capabilities\WP_REST_Workarounds();
+}
+
 if ( is_admin() ) {
 	global $pagenow;
 	if ( 'edit.php' == $pagenow ) {
@@ -33,6 +38,8 @@ if ( is_admin() ) {
 		new CME_AdminMenuNoPrivWorkaround();
 	}
 }
+
+add_filter('plugin_action_links_' . plugin_basename(CME_FILE), '_cme_fltPluginActionLinks', 10, 2);
 
 // allow edit_terms, delete_terms, assign_terms capabilities to function separately from manage_terms
 function _cme_remap_term_meta_cap ( $caps, $cap, $user_id, $args ) {
@@ -165,4 +172,15 @@ function _cme_get_plural( $slug, $type_obj = false ) {
 		require_once ( dirname(__FILE__) . '/inflect-cme.php' );
 		return sanitize_key( CME_Inflect::pluralize( $slug ) );	
 	}
+}
+
+function _cme_fltPluginActionLinks($links, $file)
+{
+	if ($file == plugin_basename(CME_FILE)) {
+		if (!is_network_admin()) {
+			$links[] = "<a href='" . admin_url("admin.php?page=capsman") . "'>" . __('Edit Roles', 'capsman-enhanced') . "</a>";
+		}
+	}
+
+	return $links;
 }
