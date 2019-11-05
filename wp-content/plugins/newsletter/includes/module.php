@@ -138,6 +138,10 @@ class NewsletterAddon {
         
     }
 
+    /**
+     * 
+     * @return NewsletterLogger
+     */
     function get_logger() {
         if (!$this->logger) {
             $this->logger = new NewsletterLogger($this->name);
@@ -567,6 +571,17 @@ class NewsletterModule {
         }
         return $r;
     }
+    
+    function get_results($query) {
+        global $wpdb;
+        $r = $wpdb->get_results($query);
+        if ($r === false) {
+            $logger = $this->get_logger();
+            $logger->fatal($query);
+            $logger->fatal($wpdb->last_error);
+        }
+        return $r;
+    }    
 
     /**
      * 

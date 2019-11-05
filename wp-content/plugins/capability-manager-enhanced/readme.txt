@@ -3,7 +3,7 @@ Contributors: publishpress, kevinB, stevejburge, andergmartins
 Tags: role, capabilities, post types, taxonomies, editor, network, woocommerce
 Requires at least: 4.1
 Tested up to: 5.2.4
-Stable tag: 1.8
+Stable tag: 1.8.1
 License: GPLv3
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
 
@@ -67,6 +67,12 @@ Yes. Users with the 'manage_capabilities' capability can edit roles. This Capabi
 * Feel free to <a href="https://publishpress.com/contact/">submit a help ticket</a> if you can't find an answer in the <a href="https://publishpress.com/knowledge-base/how-to-use-capability-manager/">documentation</a>. 
 
 == Changelog ==
+
+= 1.8.2-beta =
+  * Change : Reinstate support for users who can edit_published_posts but not publish_posts (with correct status filtering)
+
+= 1.8.1 - 25 Oct 2019 =
+  * Fixed : Automatic publication of blank auto-drafts, WooCommerce posts save with incorrect post status (since 1.8)
 
 = 1.8 - 24 Oct 2019 =
   * Feature : WooCommerce, PublishPress, PressPermit capabilities grouped in sections on role editor screen

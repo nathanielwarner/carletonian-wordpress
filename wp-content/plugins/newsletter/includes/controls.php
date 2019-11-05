@@ -1554,7 +1554,7 @@ class NewsletterControls {
         if ($time == false) {
             $buffer = 'none';
         } else {
-            $buffer = gmdate(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
+            $buffer = date_i18n(get_option('date_format') . ' ' . get_option('time_format'), $time + get_option('gmt_offset') * 3600);
         }
         if ($now) {
             $buffer .= ' (now: ' . gmdate(get_option('date_format') . ' ' .

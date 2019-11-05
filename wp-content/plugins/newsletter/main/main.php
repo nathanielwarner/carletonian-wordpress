@@ -351,6 +351,17 @@ if (!empty($return_path)) {
                                 <?php $controls->help('https://www.thenewsletterplugin.com/plugins/newsletter/newsletter-configuration#encoding') ?>
                             </td>
                         </tr>
+                        
+                        <tr>
+                            <th>
+                                <?php _e('Execute shortcodes on newsletters', 'newsletter') ?>
+                                <?php $controls->field_help("https://www.thenewsletterplugin.com/documentation/newsletter-configuration#shortcodes")?>
+                            </th>
+                            <td>
+                                <?php $controls->yesno('do_shortcodes', 40); ?>
+                                <?php $controls->field_help("https://www.thenewsletterplugin.com/documentation/newsletter-configuration#shortcodes")?>
+                            </td>
+                        </tr>
                     </table>
 
                 </div>

@@ -106,7 +106,7 @@ class SB_Instagram_Settings {
 				'customtemplates'    => isset( $db['custom_template'] ) ? $db['custom_template'] : '',
 
 			), $atts );
-		
+
 		$this->settings['customtemplates'] = $this->settings['customtemplates'] === 'true' || $this->settings['customtemplates'] === 'on';
 		if ( isset( $_GET['sbi_debug'] ) ) {
 			$this->settings['customtemplates'] = false;
@@ -115,6 +115,9 @@ class SB_Instagram_Settings {
 		$this->settings['showbio'] = $this->settings['showbio'] === 'true' || $this->settings['showbio'] === 'on' || $this->settings['showbio'] === true;
 		if ( isset( $atts['showbio'] ) && $atts['showbio'] === 'false' ) {
 			$this->settings['showbio'] = false;
+		}
+		if ( isset( $atts['showheader'] ) && $atts['showheader'] === 'false' ) {
+			$this->settings['showheader'] = false;
 		}
 		$this->settings['disable_resize'] = isset( $db['sb_instagram_disable_resize'] ) && ($db['sb_instagram_disable_resize'] === 'on');
 		$this->settings['favor_local'] = isset( $db['sb_instagram_favor_local'] ) && ($db['sb_instagram_favor_local'] === 'on');

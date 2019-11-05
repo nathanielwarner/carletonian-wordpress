@@ -1,8 +1,8 @@
 === Newsletter ===
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
-Tested up to: 5.2.3
-Stable tag: 6.3.5
+Tested up to: 5.2.4
+Stable tag: 6.3.6
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -108,6 +108,13 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 6.3.6 =
+
+* Improved error detection
+* Fixed stats collection for Autoresponder
+* Changed the init sequence to grant full load of other plugins (newsletter preview problems on some installations)
+* Better reporting on tests
 
 = 6.3.5 =
 
