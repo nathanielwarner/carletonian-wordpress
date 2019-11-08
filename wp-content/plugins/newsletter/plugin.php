@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.3.6
+  Version: 6.3.7
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -28,7 +28,7 @@
 
  */
 
-define('NEWSLETTER_VERSION', '6.3.6');
+define('NEWSLETTER_VERSION', '6.3.7');
 
 global $newsletter, $wpdb;
 
@@ -135,7 +135,7 @@ class Newsletter extends NewsletterModule {
         $this->time_start = time();
 
         // Here because the upgrade is called by the parent constructor and uses the scheduler
-        add_filter('cron_schedules', function () {
+        add_filter('cron_schedules', function ($schedules) {
             $schedules['newsletter'] = array(
                 'interval' => NEWSLETTER_CRON_INTERVAL, // seconds
                 'display' => 'Every ' . NEWSLETTER_CRON_INTERVAL . ' seconds by Newsletter'
