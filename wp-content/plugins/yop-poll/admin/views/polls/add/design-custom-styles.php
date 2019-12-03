@@ -43,7 +43,7 @@
 	<div class="col-md-12">
 		<div class="panel-group" id="poll-style-accordion" role="tablist" aria-multiselectable="true">
 			<div class="panel panel-default poll-style-settings">
-				<div class="panel-heading" role="tab" id="style-poll-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-poll-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-poll-container-content" aria-expanded="true" aria-controls="style-poll-container-content">
 							Poll Container
@@ -118,7 +118,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default questions-style-settings">
-				<div class="panel-heading" role="tab" id="style-questions-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-questions-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-questions-container-content" aria-expanded="true" aria-controls="style-questions-container-content">
 							Questions
@@ -175,7 +175,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default answers-style-settings">
-				<div class="panel-heading" role="tab" id="style-answers-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-answers-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-answers-container-content" aria-expanded="true" aria-controls="style-answers-container-content">
 							Answers
@@ -273,7 +273,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default buttons-style-settings">
-				<div class="panel-heading" role="tab" id="style-buttons-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-buttons-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-buttons-container-content" aria-expanded="true" aria-controls="style-buttons-container-content">
 							Buttons
@@ -378,7 +378,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default errors-style-settings">
-				<div class="panel-heading" role="tab" id="style-errors-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-errors-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-errors-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
 							<?php _e( 'Messages', 'yop-poll' );?>
@@ -461,7 +461,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default custom-code-settings">
-				<div class="panel-heading" role="tab" id="custom-styles-custom-code-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="custom-styles-custom-code-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#custom-styles-custom-code-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
 							<?php _e( 'Advanced', 'yop-poll' );?>

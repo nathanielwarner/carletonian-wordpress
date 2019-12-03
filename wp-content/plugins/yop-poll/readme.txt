@@ -3,7 +3,7 @@ Contributors: yourownprogrammer
 Donate Link: https://www.yop-poll.com
 Tags: booth, create poll, poll plugin, poll, polls, wordpress poll, vote, voting, survey, polling, yop poll, yop
 Requires at least: 3.3
-Tested up to: 5.2
+Tested up to: 5.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.htm
@@ -117,6 +117,13 @@ You can have only one question per poll.
 12. Poll With Vertical Display Showing Results Before Vote
 
 == Changelog ==
+
+= 6.1.1 =
+* fixed display issue for Sort Results when "As Defined" is choosed
+* removed select2 controls
+* improved polls display when a start/end date is choosed
+* added option to load polls via ajax
+* added support for reCaptcha v2 Invisible
 
 = 6.1.0 =
 * fixed issue with limit votes

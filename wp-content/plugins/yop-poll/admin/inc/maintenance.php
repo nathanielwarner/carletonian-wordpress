@@ -77,6 +77,9 @@ class YOP_POLL_Maintenance {
 		$db_schema_object->create_table_other_answers();
 		update_option( 'yop_poll_version', '6.1.0' );
 	}
+	public function update_to_version_6_1_1() {
+		update_option( 'yop_poll_version', '6.1.1' );
+	}
     public function create_archive_page() {
         $poll_archive_page = get_page_by_path( 'yop-poll-archive', ARRAY_A );
         if ( ! $poll_archive_page ) {

@@ -12,7 +12,7 @@
 				</h4>
 			</div>
 		</div>
-		<div class="form-horizontal">
+		<div class="form-horizontal poll-vote-button">
 			<div class="form-group">
 				<div class="col-md-3 field-caption">
 					<?php _e( 'Vote Button Label', 'yop-poll' );?>
@@ -71,6 +71,17 @@
 			</div>
 		</div>
 		<div class="form-horizontal poll-preferences">
+			<div class="form-group">
+				<div class="col-md-3">
+					<?php _e( 'Load using AJAX' );?>
+				</div>
+				<div class="col-md-9">
+					<select class="load-with-ajax" style="width:90%">
+						<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
+						<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
+					</select>
+				</div>
+			</div>
 			<div class="form-group">
 				<div class="col-md-3">
 					<?php _e( 'Start Date', 'yop-poll' );?>
@@ -192,9 +203,12 @@
 				</div>
 				<div class="col-md-9">
 					<select class="use-captcha" style="width:100%">
-			            <option value="yes"><?php _e( 'Yes, use built in Captcha', 'yop-poll' );?></option>
-						<option value="yes-recaptcha"><?php _e( 'Yes, use reCaptcha', 'yop-poll' );?></option>
-			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
+						<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
+			            <optgroup label="<?php _e( 'Yes', 'yop-poll' );?>">
+							<option value="yes"><?php _e( 'Use built in Captcha', 'yop-poll' );?></option>
+							<option value="yes-recaptcha"><?php _e( 'Use reCaptcha v2 Checkbox', 'yop-poll' );?></option>
+							<option value="yes-recaptcha-invisible"><?php _e( 'Use reCaptcha v2 Invisible', 'yop-poll' );?></option>
+						</optgroup>
 			        </select>
 				</div>
 			</div>

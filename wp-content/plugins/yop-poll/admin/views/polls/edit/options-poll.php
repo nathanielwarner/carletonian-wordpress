@@ -12,7 +12,7 @@
 				</h4>
 			</div>
 		</div>
-		<div class="form-horizontal">
+		<div class="form-horizontal poll-vote-button">
 			<div class="form-group">
 				<div class="col-md-3 field-caption">
 					<?php _e( 'Vote Button Label', 'yop-poll' );?>
@@ -100,6 +100,31 @@
 			</div>
 		</div>
 		<div class="form-horizontal poll-preferences">
+			<div class="form-group">
+				<div class="col-md-3">
+					<?php _e( 'Load using AJAX' );?>
+				</div>
+				<div class="col-md-9">
+					<?php
+					if ( true === isset( $poll->meta_data['options']['poll']['loadWithAjax'] ) ) {
+						if ( 'yes' === $poll->meta_data['options']['poll']['loadWithAjax'] ) {
+							$load_with_ajax_yes = 'selected';
+							$load_with_ajax_no = '';
+						} else {
+							$load_with_ajax_yes = '';
+							$load_with_ajax_no = 'selected';
+						}
+					} else {
+						$load_with_ajax_yes = '';
+						$load_with_ajax_no = 'selected';
+					}
+					?>
+					<select class="load-with-ajax" style="width:100%">
+			            <option value="yes" <?php echo $load_with_ajax_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
+			            <option value="no" <?php echo $load_with_ajax_no;?>><?php _e( 'No', 'yop-poll' );?></option>
+			        </select>
+				</div>
+			</div>
 			<div class="form-group">
 				<div class="col-md-3">
 					<?php _e( 'Start Date', 'yop-poll' );?>
@@ -292,16 +317,21 @@
 				</div>
 				<div class="col-md-9">
 					<?php
-					$use_captcha_yes = '';
-					$use_reCaptcha_yes = '';
+					$use_captcha_built_in_yes = '';
+					$use_reCaptcha_v2_checkbox_yes = '';
+					$use_reCaptcha_v2_invisible_yes = '';
 					$use_captcha_no = '';
 					switch ( $poll->meta_data['options']['poll']['useCaptcha'] ) {
 						case 'yes': {
-							$use_captcha_yes = 'selected';
+							$use_captcha_built_in_yes = 'selected';
 							break;
 						}
 						case 'yes-recaptcha': {
-							$use_reCaptcha_yes = 'selected';
+							$use_reCaptcha_v2_checkbox_yes = 'selected';
+							break;
+						}
+						case 'yes-recaptcha-invisible': {
+							$use_reCaptcha_v2_invisible_yes = 'selected';
 							break;
 						}
 						case 'no': {
@@ -311,9 +341,12 @@
 					}
 			        ?>
 			        <select class="use-captcha" style="width:100%">
-			            <option value="yes" <?php echo $use_captcha_yes;?>><?php _e( 'Yes, use built in Captcha', 'yop-poll' );?></option>
-						<option value="yes-recaptcha"  <?php echo $use_reCaptcha_yes;?>><?php _e( 'Yes, use reCaptcha', 'yop-poll' );?></option>
-			            <option value="no" <?php echo $use_captcha_no;?>><?php _e( 'No', 'yop-poll' );?></option>
+						<option value="no" <?php echo $use_captcha_no;?>><?php _e( 'No', 'yop-poll' );?></option>
+						<optgroup label="<?php _e( 'Yes', 'yop-poll' );?>">
+							<option value="yes" <?php echo $use_captcha_built_in_yes;?>><?php _e( 'Use built in Captcha', 'yop-poll' );?></option>
+							<option value="yes-recaptcha"  <?php echo $use_reCaptcha_v2_checkbox_yes;?>><?php _e( 'Use reCaptcha v2 Checkbox', 'yop-poll' );?></option>
+							<option value="yes-recaptcha-invisible"  <?php echo $use_reCaptcha_v2_invisible_yes;?>><?php _e( 'Use reCaptcha v2 Invisible', 'yop-poll' );?></option>
+						</optgroup>
 			        </select>
 				</div>
 			</div>

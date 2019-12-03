@@ -49,7 +49,7 @@
                     $x = 0;
                     foreach( $poll->elements as $element ) {
                         if ( ('text-question' === $element->etype ) || ( 'media-question' === $element->etype )) {
-                            $answersArray = Helper::objectToArray( $element->answers );
+                            $answersArray = YOP_Poll_Helper::objectToArray( $element->answers );
                             usort($answersArray, function($a, $b) {
                                 return $b['total_submits'] - $a['total_submits'];
                             });
@@ -98,7 +98,7 @@
                             }
                             ?>
                             <div class="panel panel-default" id="panel<?php echo $element->id; ?>">
-                                <div class="panel-heading">
+                                <div class="panel-heading element-results-header">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-target="#collapse<?php echo $element->id; ?>"
                                            href="#collapse<?php echo $element->id; ?>">
@@ -320,7 +320,7 @@
                     if ( count( $custom_fields ) > 0 ) {
                         ?>
                         <div class="panel panel-default" id="panelCustomFields">
-                            <div class="panel-heading">
+                            <div class="panel-heading element-results-header">
                                 <h4 class="panel-title">
                                     <a data-toggle="collapse" data-target="#collapseCustomFields"
                                        href="#collapseCustomFields" <?php if (0 < $x) echo 'class="collapsed"'; ?>>

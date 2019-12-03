@@ -7,7 +7,7 @@
 	<div class="col-md-12">
 		<div class="panel-group" id="poll-style-accordion" role="tablist" aria-multiselectable="true">
 			<div class="panel panel-default poll-style-settings">
-				<div class="panel-heading" role="tab" id="style-poll-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-poll-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-poll-container-content" aria-expanded="true" aria-controls="style-poll-container-content">
 							<?php _e( 'Poll Container', 'yop-poll' );?>
@@ -92,7 +92,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default questions-style-settings">
-				<div class="panel-heading" role="tab" id="style-questions-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-questions-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-questions-container-content" aria-expanded="true" aria-controls="style-questions-container-content">
 							<?php _e( 'Questions', 'yop-poll' );?>
@@ -215,7 +215,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default answers-style-settings">
-				<div class="panel-heading" role="tab" id="style-answers-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-answers-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-answers-container-content" aria-expanded="true" aria-controls="style-answers-container-content">
 							<?php _e( 'Answers', 'yop-poll' );?>
@@ -225,7 +225,7 @@
 				<div id="style-answers-container-content" class="panel-collapse collapse" role="tabpanel" aria-labelledby="style-answers-container-header">
 					<div class="panel-body">
 						<div class="form-horizontal">
-							<div class="form-group">
+							<div class="form-group hide">
 								<div class="col-md-2 field-caption">
 									<?php _e( 'Skin', 'yop-poll' );?>
 								</div>
@@ -256,7 +256,7 @@
 						            </select>
 								</div>
 							</div>
-							<div class="form-group">
+							<div class="form-group hide">
 								<div class="col-md-2 field-caption">
 									<?php _e( 'Color Scheme', 'yop-poll' );?>
 								</div>
@@ -344,7 +344,7 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['answers']['paddingLeftRight'] );?>" class="form-control answers-padding-left-right" />
+										<input type="text" name="answers[padding-left-right]" value="<?php echo esc_html( $poll->meta_data['style']['answers']['paddingLeftRight'] );?>" class="form-control answers-padding-left-right" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
@@ -360,7 +360,7 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['answers']['paddingTopBottom'] );?>" class="form-control answers-padding-top-bottom" />
+										<input type="text" name="answers[padding-top-bottom]" value="<?php echo esc_html( $poll->meta_data['style']['answers']['paddingTopBottom'] );?>" class="form-control answers-padding-top-bottom" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
@@ -370,7 +370,7 @@
 									<?php _e( 'Text color', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['answers']['textColor'] );?>" class="form-control answers-text-color" />
+									<input type="text" name="answers[text-color]" value="<?php echo esc_html( $poll->meta_data['style']['answers']['textColor'] );?>" class="form-control answers-text-color" />
 								</div>
 							</div>
 							<div class="form-group">
@@ -432,7 +432,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default buttons-style-settings">
-				<div class="panel-heading" role="tab" id="style-buttons-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-buttons-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-buttons-container-content" aria-expanded="true" aria-controls="style-buttons-container-content">
 							<?php _e( 'Buttons', 'yop-poll' );?>
@@ -447,7 +447,7 @@
 									<?php _e( 'Background color', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['backgroundColor'] );?>" class="form-control buttons-background-color" />
+									<input type="text" name="buttons[background-color]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['backgroundColor'] );?>" class="form-control buttons-background-color" />
 								</div>
 							</div>
 							<div class="form-group">
@@ -456,7 +456,7 @@
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderSize'] );?>" class="form-control buttons-border-size" />
+										<input type="text" name="buttons[border-size]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderSize'] );?>" class="form-control buttons-border-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
@@ -466,7 +466,7 @@
 									<?php _e( 'Border color', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderColor'] );?>" class="form-control buttons-border-color" />
+									<input type="text" name="buttons[border-color]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderColor'] );?>" class="form-control buttons-border-color" />
 								</div>
 							</div>
 							<div class="form-group">
@@ -475,7 +475,7 @@
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderRadius'] );?>" class="form-control buttons-border-radius" />
+										<input type="text" name="buttons[border-radius]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderRadius'] );?>" class="form-control buttons-border-radius" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
@@ -491,7 +491,7 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['paddingLeftRight'] );?>" class="form-control buttons-padding-left-right" />
+										<input type="text" name="buttons[padding-left-right]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['paddingLeftRight'] );?>" class="form-control buttons-padding-left-right" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
@@ -507,7 +507,7 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['paddingTopBottom'] );?>" class="form-control buttons-padding-top-bottom" />
+										<input type="text" name="buttons[padding-top-bottom]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['paddingTopBottom'] );?>" class="form-control buttons-padding-top-bottom" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
@@ -517,7 +517,7 @@
 									<?php _e( 'Text color', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['textColor'] );?>" class="form-control buttons-text-color" />
+									<input type="text" name="buttons[text-color]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['textColor'] );?>" class="form-control buttons-text-color" />
 								</div>
 							</div>
 							<div class="form-group">
@@ -579,7 +579,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default errors-style-settings">
-				<div class="panel-heading" role="tab" id="style-errors-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="style-errors-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-errors-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
 							<?php _e( 'Messages', 'yop-poll' );?>
@@ -714,7 +714,7 @@
 				</div>
 			</div>
 			<div class="panel panel-default custom-code-settings">
-				<div class="panel-heading" role="tab" id="custom-styles-custom-code-container-header">
+				<div class="panel-heading poll-style-header" role="tab" id="custom-styles-custom-code-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#custom-styles-custom-code-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
 							<?php _e( 'Advanced', 'yop-poll' );?>

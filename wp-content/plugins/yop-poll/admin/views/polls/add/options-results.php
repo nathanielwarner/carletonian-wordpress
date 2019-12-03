@@ -22,7 +22,8 @@
 			            <option value="before-vote"><?php _e( 'Before vote', 'yop-poll' );?></option>
 			            <option value="after-vote"><?php _e( 'After vote', 'yop-poll' );?></option>
 			            <option value="after-end-date"><?php _e( 'After poll end date', 'yop-poll' );?></option>
-			            <option value="custom-date"><?php _e( 'Custom Date', 'yop-poll' );?></option>
+						<option value="custom-date"><?php _e( 'Custom Date', 'yop-poll' );?></option>
+						<option data-divider="true"></option>
 			            <option value="never"><?php _e( 'Never', 'yop-poll' );?></option>
 			        </select>
 				</div>

@@ -40,7 +40,7 @@
 			            <option value="guest" <?php echo $vote_permissions_guest;?>><?php _e( 'Guest', 'yop-poll' );?></option>
 			            <option value="wordpress" <?php echo $vote_permissions_wordpress;?>><?php _e( 'Wordpress', 'yop-poll' );?></option>
 			            <option value="facebook" <?php echo $vote_permissions_facebook;?>><?php _e( 'Facebook', 'yop-poll' );?></option>
-			            <option value="google" <?php echo $vote_permissions_google;?>><?php _e( 'Google+', 'yop-poll' );?></option>
+			            <option value="google" <?php echo $vote_permissions_google;?>><?php _e( 'Google', 'yop-poll' );?></option>
 			        </select>
 				</div>
 			</div>
@@ -79,9 +79,11 @@
 			        ?>
 			        <select name="block-voters" class="block-voters" style="width:100%" multiple="multiple">
 			            <option value="no-block" <?php echo $block_voters_no_block;?>><?php _e( 'Don\'t Block', 'yop-poll' );?></option>
-			            <option value="by-cookie" <?php echo $block_voters_by_cookie;?>><?php _e( 'By Cookie', 'yop-poll' );?></option>
-			            <option value="by-ip" <?php echo $block_voters_by_ip;?>><?php _e( 'By Ip', 'yop-poll' );?></option>
-			            <option value="by-user-id" <?php echo $block_voters_by_user_id;?>><?php _e( 'By User Id', 'yop-poll' );?></option>
+						<optgroup label="<?php _e( 'Block By', 'yop-poll' );?>">
+							<option value="by-cookie" <?php echo $block_voters_by_cookie;?>><?php _e( 'Cookie', 'yop-poll' );?></option>
+							<option value="by-ip" <?php echo $block_voters_by_ip;?>><?php _e( 'Ip', 'yop-poll' );?></option>
+							<option value="by-user-id" <?php echo $block_voters_by_user_id;?>><?php _e( 'User Id', 'yop-poll' );?></option>
+						</optgroup>
 			        </select>
 				</div>
 			</div>

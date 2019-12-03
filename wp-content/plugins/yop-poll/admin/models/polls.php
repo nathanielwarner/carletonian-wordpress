@@ -6,8 +6,9 @@ class YOP_Poll_Polls {
 			$text_weight_allowed = array( 'normal', 'bold' ),
 			$text_align_allowed = array( 'left', 'center', 'right' ),
 			$yes_no_allowed = array( 'yes', 'no' ),
-			$captcha_allowed = array( 'yes', 'yes-recaptcha', 'no' ),
+			$captcha_allowed = array( 'yes', 'yes-recaptcha', 'yes-recaptcha-invisible', 'no' ),
 			$answers_display_allowed = array( 'vertical', 'horizontal', 'columns' ),
+			$answers_sort_allowed = array( 'as-defined' ),
 			$date_values_allowed = array( 'now', 'custom', 'never', 'custom-date' ),
 			$reset_stats_allowed = array( 'hours', 'days' ),
 			$show_results_allowed = array( 'before-vote', 'after-vote', 'after-end-date', 'never', 'custom-date' ),
@@ -729,6 +730,7 @@ class YOP_Poll_Polls {
 					'enableGdpr' => $poll->options->poll->enableGdpr,
 					'gdprSolution' => $poll->options->poll->gdprSolution,
 					'gdprConsentText' => $poll->options->poll->gdprConsentText,
+					'loadWithAjax' => $poll->options->poll->loadWithAjax
 				),
 				'results' => array(
 					'showResultsMoment' => $poll->options->results->showResultsMoment,
@@ -1184,7 +1186,7 @@ class YOP_Poll_Polls {
 								( !in_array( $element->options->answersDisplay, self::$answers_display_allowed ) )
 							){
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Display answers " is invalid', 'yop-poll' );
+								self::$error_text = __( 'Data for "Display answers" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
@@ -1195,6 +1197,13 @@ class YOP_Poll_Polls {
 							){
 								self::$errors_present = true;
 								self::$error_text = __( 'Data for "Maximum answers required" is invalid', 'yop-poll' );
+							}
+							if (
+								( false === self::$errors_present ) &&
+								( !in_array( $element->options->answersSort, self::$answers_sort_allowed ) )
+							){
+								self::$errors_present = true;
+								self::$error_text = __( 'Data for "Sort Answers" is invalid', 'yop-poll' );
 							}
 							break;
 						}
@@ -1213,142 +1222,6 @@ class YOP_Poll_Polls {
 							){
 								self::$errors_present = true;
 								self::$error_text = __( 'Data for "Make Required" is invalid', 'yop-poll' );
-							}
-							break;
-						}
-						case 'media-question': {
-							if (
-								( false === self::$errors_present ) &&
-								( !isset( $element->text ) ||
-								( '' === trim( $element->text ) ) )
-							) {
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Question" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( 0 === count( $element->answers ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'At least one answer per question is required', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present )
-							){
-								foreach( $element->answers as $answer ) {
-									if (
-										( false === self::$errors_present ) &&
-										( !isset( $answer->text ) ||
-										( '' === trim( $answer->text ) ) )
-									){
-										self::$errors_present = true;
-										self::$error_text = __( 'Answer is invalid', 'yop-poll');
-									}
-									if (
-										( false === self::$errors_present ) &&
-										!in_array( $answer->options->makeDefault, self::$yes_no_allowed )
-									) {
-										self::$errors_present = true;
-										self::$error_text = __( 'Data for default answer is invalid', 'yop-poll' );
-									}
-									if (
-										( false === self::$errors_present ) &&
-										!in_array( $answer->options->addText, self::$yes_no_allowed )
-									) {
-										self::$errors_present = true;
-										self::$error_text = __( ' Data for "Answer Text" is invalid', 'yop-poll' );
-									}
-								}
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !in_array( $element->options->allowOtherAnswers, self::$yes_no_allowed ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Allow other options" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !isset( $element->options->otherAnswersLabel ) ||
-								( '' === trim( $element->options->otherAnswersLabel ) ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Label for Other Answers" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !in_array( $element->options->addOtherAnswers, self::$yes_no_allowed ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Add other answers in answer list" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !in_array( $element->options->displayOtherAnswersInResults, self::$yes_no_allowed ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Display other answers in results list" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !in_array( $element->options->allowMultipleAnswers, self::$yes_no_allowed ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Allow multiple answers " is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !isset( $element->options->multipleAnswersMinim ) ||
-								( '' === trim( $element->options->multipleAnswersMinim ) ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Minimum answers required" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !isset( $element->options->multipleAnswersMaxim ) ||
-								( '' === trim( $element->options->multipleAnswersMaxim ) ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Maximum answers required" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( intval( $element->options->multipleAnswersMinim ) > intval( $element->options->multipleAnswersMaxim ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Minimum answers required" is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( !in_array( $element->options->answersDisplay, self::$answers_display_allowed ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Display answers " is invalid', 'yop-poll' );
-							}
-							if (
-								( false === self::$errors_present ) &&
-								( 'columns' === $element->options->answersDisplay ) &&
-								( !isset( $element->options->answersColumns ) ||
-								( '' === trim( $element->options->answersColumns ) ) ||
-								( 0 === intval( $element->options->answersColumns ) ) )
-							){
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Maximum answers required" is invalid', 'yop-poll' );
-							}
-							break;
-						}
-						case 'space-separator': {
-							break;
-						}
-						case 'text-block': {
-							if(
-								( false === self::$errors_present ) &&
-								( !isset( $element->text ) ) ||
-								( '' === trim( $element->text ) )
-							) {
-								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Text Block" is invalid', 'yop-poll' );
 							}
 							break;
 						}
@@ -1684,7 +1557,7 @@ class YOP_Poll_Polls {
 		    return false;
         }
 	}
-	public static function get_poll(
+	public static function get_poll_for_admin(
 			$poll_id,
 			$elements_order_by = 'sorder',
 			$elements_sort_rule = 'ASC',
@@ -1712,6 +1585,56 @@ class YOP_Poll_Polls {
 			}
 			$poll->elements = $poll_elements;
 			return $poll;
+		} else {
+			return false;
+		}
+	}
+	public static function get_poll_for_voting( $poll_id ) {
+		if ( true === isset( $poll_id ) ) {
+			$query = $GLOBALS['wpdb']->prepare(
+				"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %s AND `status` !='deleted'", $poll_id
+			);
+			$poll = $GLOBALS['wpdb']->get_row( $query, OBJECT );
+			if ( null !== $poll ){
+				$poll_meta_data = unserialize( $poll->meta_data );
+				$poll->meta_data = array(
+					'style' => self::convert_meta_data_for_style( $poll_meta_data['style'] ),
+					'options' => $poll_meta_data['options']
+				);
+				$poll_elements = YOP_Poll_Elements::get_all_for_poll( $poll_id );
+				foreach( $poll_elements as $poll_element ) {
+					if ( true === isset( $poll_element->meta_data['answersSort'] ) ) {
+						switch( $poll_element->meta_data['answersSort'] ) {
+							case 'as-defined': {
+								$sub_elements_order_by = 'sorder';
+								$sub_elements_order_rule = 'ASC';
+								break;
+							}
+							case 'alphabetically-asc': {
+								$sub_elements_order_by = 'stext';
+								$sub_elements_order_rule = 'ASC';
+								break;
+							}
+							case 'alphabetically-desc': {
+								$sub_elements_order_by = 'stext';
+								$sub_elements_order_rule = 'DESC';
+								break;
+							}
+							case 'random': {
+								$sub_elements_order_by = 'random';
+								$sub_elements_order_rule = 'ASC';
+								break;
+							}
+						}
+					} else {
+						$sub_elements_order_by = 'sorder';
+						$sub_elements_order_rule = 'ASC';
+					}
+					$poll_element->answers = YOP_Poll_SubElements::get_all_for_element( $poll_element->id, $sub_elements_order_by, $sub_elements_order_rule );
+				}
+				$poll->elements = $poll_elements;
+				return $poll;
+			}
 		} else {
 			return false;
 		}
@@ -1771,7 +1694,7 @@ class YOP_Poll_Polls {
 						$poll_element->answers[] = $poll_sub_element;
 					}
 				}
-				if ( 'yes' === $poll_element->meta_data['displayOtherAnswersInResults'] ) {
+				if ( ( true === isset( $poll_element->meta_data['displayOtherAnswersInResults'] ) ) && ( 'yes' === $poll_element->meta_data['displayOtherAnswersInResults'] ) ) {
 					$element_other_answers = YOP_Poll_Other_Answers::get_for_element( $poll_element->id );
 					if ( count( $element_other_answers ) > 0 ) {
 						$i = 1;
@@ -1970,7 +1893,7 @@ class YOP_Poll_Polls {
 		/*END CUSTOM*/
 		return $meta_data_for_style;
 	}
-	public static function is_ended_frontend( $poll ) {
+	public static function has_ended_frontend( $poll ) {
         $today = date( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) ) );
 		if ( 'custom' === $poll->meta_data['options']['poll']['endDateOption'] ) {
             $end_date = date( 'Y-m-d H:i:s', strtotime( $poll->meta_data['options']['poll']['endDateCustom'] ) );
@@ -2398,5 +2321,19 @@ class YOP_Poll_Polls {
 			$result['error'] = __( 'Invalid Poll', 'yop-poll' );
 		}
 		return $result;
+	}
+	public static function has_other_answers( $poll ) {
+		if ( true === isset( $poll->elements ) ) {
+			foreach( $poll->elements as $element ) {
+				if ( 
+					( true === in_array( $element->etype, array( 'text-question', 'media-question' ) ) ) &&
+					( 'yes' === $element->meta_data['allowOtherAnswers'] )
+					) {
+						return true;
+				}
+			}
+		} else {
+			return false;
+		}
 	}
 }

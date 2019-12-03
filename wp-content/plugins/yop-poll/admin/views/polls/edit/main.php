@@ -36,17 +36,17 @@ if ( 'custom' === $poll->meta_data['options']['poll']['startDateOption'] ) {
 						<div class="tabs-container">
 							<!-- Nav tabs -->
 							<ul class="main nav nav-tabs poll-steps" role="tablist">
-								<li role="presentation" class="active">
+                                <li role="presentation" class="step-design active">
 									<a href="#poll-design" aria-controls="design" role="tab" data-toggle="tab">
 										<?php _e( 'Design', 'yop-poll' );?>
 									</a>
 								</li>
-								<li role="presentation">
+								<li role="presentation" class="step-elements">
 									<a href="#poll-questions" aria-controls="questions" role="tab" data-toggle="tab">
 										<?php _e( 'Question & Answers', 'yop-poll' );?>
 									</a>
 								</li>
-								<li role="presentation">
+								<li role="presentation" class="step-options">
 									<a href="#poll-options" aria-controls="options" role="tab" data-toggle="tab">
 										<?php _e( 'Options', 'yop-poll' );?>
 									</a>

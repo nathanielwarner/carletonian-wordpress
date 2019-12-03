@@ -22,7 +22,7 @@
 				}
 				?>
 				<div class="col-xs-6 col-sm-6">
-					<h4 class="text-center">
+					<h4 class="template-name text-center">
 						<?php
 							echo $template->name;
 						?>

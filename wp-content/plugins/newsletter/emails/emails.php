@@ -92,6 +92,9 @@ class NewsletterEmails extends NewsletterModule {
             include NEWSLETTER_INCLUDES_DIR . '/controls.php';
         }
         $options = $this->options_decode(stripslashes_deep($_REQUEST['options']));
+        
+        $context = array('type'=>'');
+        if (isset($_REQUEST['context_type'])) $context['type'] = $_REQUEST['context_type'];
 
 //        $defaults = array(
 //            'block_padding_top' => 15,
@@ -213,6 +216,9 @@ class NewsletterEmails extends NewsletterModule {
 
             ob_start();
             $out = $this->render_block($options['block_id'], true, $options, $context);
+            if ($out['return_empty_message']) {
+                return '';
+            }
             if (empty($subject) && !empty($out['subject'])) {
                 $subject = $out['subject'];
             }
@@ -289,7 +295,7 @@ class NewsletterEmails extends NewsletterModule {
             return;
         }
 
-        $out = array('subject' => '');
+        $out = array('subject' => '', 'return_empty_message'=>false);
 
 
         ob_start();

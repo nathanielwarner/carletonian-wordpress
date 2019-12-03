@@ -166,7 +166,8 @@ class YOP_POLL_Elements {
 					'multipleAnswersMinim' => $element->options->multipleAnswersMinim,
 					'multipleAnswersMaxim' => $element->options->multipleAnswersMaxim,
 					'answersDisplay' => $element->options->answersDisplay,
-					'answersColumns' => $element->options->answersColumns
+					'answersColumns' => $element->options->answersColumns,
+					'answersSort' => $element->options->answersSort
 				);
 				break;
 			}
@@ -174,11 +175,13 @@ class YOP_POLL_Elements {
 			    if( property_exists( $element->options, 'old_id' ) ) {
                     $return_data = array(
                         'makeRequired' => $element->options->makeRequired,
-                        'old_id'       => $element->options->old_id
+						'old_id'       => $element->options->old_id,
+						'cType' => $element->options->cType
                     );
                 } else {
                     $return_data = array(
-                        'makeRequired' => $element->options->makeRequired
+						'makeRequired' => $element->options->makeRequired,
+						'cType' => $element->options->cType
                     );
                 }
 				break;
@@ -196,6 +199,22 @@ class YOP_POLL_Elements {
 		$query = $GLOBALS['wpdb']->prepare(
 			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_elements} WHERE `poll_id` = %s
 			AND `status` = 'active' ORDER BY {$order_by} {$sort_rule} ",
+			$poll_id
+		);
+		$elements = $GLOBALS['wpdb']->get_results( $query, OBJECT );
+		if ( null !== $elements ) {
+			foreach ( $elements as $element ) {
+				$element->meta_data = unserialize( $element->meta_data );
+			}
+			return $elements;
+		} else {
+			return false;
+		}
+	}
+	public static function get_all_for_poll( $poll_id ) {
+		$query = $GLOBALS['wpdb']->prepare(
+			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_elements} WHERE `poll_id` = %s
+			AND `status` = 'active' ORDER BY `sorder` ASC ",
 			$poll_id
 		);
 		$elements = $GLOBALS['wpdb']->get_results( $query, OBJECT );

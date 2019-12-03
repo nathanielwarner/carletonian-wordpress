@@ -3,10 +3,10 @@ Contributors: gn_themes
 License: GPLv3
 Donate link: https://paypal.me/anovladimir
 Tags: shortcode, toggle, columns, button, slider, video, map, visual, responsive, shortcodes, youtube, vimeo, audio, mp3, tabs, jquery, box, accordion, toggle, pullquote, list, image, gallery, navigation, permalink, feed, rss, members, membership, guests, carousel, icons, rtl, multilingual
-Requires at least: 3.5
-Requires PHP: 5.2.4
+Requires at least: 4.5
+Requires PHP: 5.3
 Tested up to: 5.3
-Stable tag: trunk
+Stable tag: 5.6.1
 
 A comprehensive collection of visual components for your site
 
@@ -150,6 +150,20 @@ For help with premium add-ons, please [open new support ticket](https://getshort
 
 
 == Changelog ==
+
+= 5.6.1 =
+
+**What's new**
+
+- Comments in the `[su_posts]` shortcode can now be disabled from post editing screen or, using the Disable Comments plugin. Thanks to [Jörn Lund](https://github.com/vanokhin/shortcodes-ultimate/pull/98).
+- `[su_image_carousel]` will now display post titles instead of image captions, where applicable. [Details & How to disable it](https://getshortcodes.com/docs/display-image-captions-instead-of-post-titles-in-the-image-carousel-shortcode/).
+
+**Fixes**
+
+- Fixed `Warning: A non-numeric value encountered` in `[su_slider]`, `[su_carousel]`, and `[su_custom_gallery]`
+- Fixed `download` attribute of the `[su_button]` shortcode
+- Fixed issue with `[su_spoiler]` where nested `[su_youtube]` remains clickable if spoiler is closed
+
 
 = 5.6.0 =
 

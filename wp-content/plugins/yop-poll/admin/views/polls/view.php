@@ -840,7 +840,7 @@ switch( $params['order_by'] ) {
                                 <?php _e( 'Display Results Only', 'yop-poll' );?>
                             </label>
                             <div class="col-md-8">
-                                <select class="form-control shortcode-show-results" style="width:100%">
+                                <select class="shortcode-show-results" style="width:100%">
                                     <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
                                     <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
                                 </select>

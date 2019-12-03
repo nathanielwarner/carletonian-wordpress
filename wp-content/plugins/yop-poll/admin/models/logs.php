@@ -396,7 +396,7 @@ class YOP_Poll_Logs {
             header( 'Expires: 0' );
             ob_start();
             $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop_poll' ) );
-            if ( !Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop_poll' );
+            if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop_poll' );
             $logs_for_csv = [];
             if ( count( $logs ) > 0 ){
                  foreach ( $logs as $log ) {
@@ -424,7 +424,7 @@ class YOP_Poll_Logs {
                          stripslashes( $details_string )
                      ];
                      $logs_for_csv[] = $logs_data;
-                     if ( !Helper::yop_fputcsv( $f, $logs_data, ',', '"' ) ) _e( "Can't write logs!", 'yop_poll' );
+                     if ( !YOP_Poll_Helper::yop_fputcsv( $f, $logs_data, ',', '"' ) ) _e( "Can't write logs!", 'yop_poll' );
                  }
              }
             fclose( $f ) or show_error( __( "Can't close php://output!", 'yop_poll' ) );

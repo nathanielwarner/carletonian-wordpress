@@ -35,6 +35,24 @@
 				</div>
 				<div class="custom-field-options">
 					<div class="form-group">
+						<div class="col-md-2">
+							<a href="#" class="upgrade-to-pro" data-screen="pie-results">
+								<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
+							</a>
+							<?php _e( 'Type', 'yop-poll' ); ?>
+						</div>
+						<div class="col-md-10">
+							<select class="custom-field-type" style="width: 100%">
+								<option value="textfield" selected>
+									<?php _e( 'Textfield', 'yop-poll' );?>
+								</option>
+								<option value="textarea">
+									<?php _e( 'Textarea', 'yop-poll' );?>
+								</option>
+							</select>
+						</div>
+					</div>
+					<div class="form-group">
 						<div class="row">
 							<div class="col-md-4">
 								<div class="checkbox">

@@ -254,7 +254,8 @@ class ClassYopPollImporter5x {
 									isset( $unserialized_meta['email_notifications_body'] ) ? $unserialized_meta['email_notifications_body'] : 'New Vote',
 								'enableGdpr' => 'no',
 								'gdprSolution' => 'consent',
-								'gdprConsentText' => ''
+								'gdprConsentText' => '',
+								'loadWithAjax' => 'no'
 							],
 							'access'  => [
 								'votePermissions'     => $vote_perms,
@@ -372,6 +373,7 @@ class ClassYopPollImporter5x {
 												isset( $unserialized_q_meta['add_other_answers_to_default_answers'] ) ? $unserialized_q_meta['add_other_answers_to_default_answers'] : 'no',
 											'displayOtherAnswersInResults' =>
 												isset( $unserialized_q_meta['display_other_answers_values'] ) ? $unserialized_q_meta['display_other_answers_values'] : 'no',
+											'resultsColorForOtherAnswers' => '#000000',
 											'allowMultipleAnswers'         =>
 												isset( $unserialized_q_meta['allow_multiple_answers'] ) && '' != $unserialized_q_meta['allow_multiple_answers'] ? $unserialized_q_meta['allow_multiple_answers'] : 'no',
 											'multipleAnswersMinim'         =>
@@ -379,7 +381,8 @@ class ClassYopPollImporter5x {
 											'multipleAnswersMaxim'         => isset( $unserialized_q_meta['allow_multiple_answers_number'] ) && '' !== $unserialized_q_meta['allow_multiple_answers_number'] ? $unserialized_q_meta['allow_multiple_answers_number'] : 3,
 											'answersDisplay'               => $answersDisplay,
 											'answersColumns'               =>
-												isset( $unserialized_q_meta['display_answers_tabulated_cols'] ) && '' !== $unserialized_q_meta['display_answers_tabulated_cols'] ? $unserialized_q_meta['display_answers_tabulated_cols'] : 2
+												isset( $unserialized_q_meta['display_answers_tabulated_cols'] ) && '' !== $unserialized_q_meta['display_answers_tabulated_cols'] ? $unserialized_q_meta['display_answers_tabulated_cols'] : 2,
+											'answersSort'                  => 'as-defined'
 										]
 									];
 									break;
@@ -447,6 +450,7 @@ class ClassYopPollImporter5x {
 												isset( $unserialized_q_meta['add_other_answers_to_default_answers'] ) ? $unserialized_q_meta['add_other_answers_to_default_answers'] : 'no',
 											'displayOtherAnswersInResults' =>
 												isset( $unserialized_q_meta['display_other_answers_values'] ) ? $unserialized_q_meta['display_other_answers_values'] : 'no',
+											'resultsColorForOtherAnswers' => '#000000',
 											'allowMultipleAnswers'         =>
 												isset( $unserialized_q_meta['allow_multiple_answers'] ) ? $unserialized_q_meta['allow_multiple_answers'] : 'no',
 											'multipleAnswersMinim'         =>
@@ -454,7 +458,8 @@ class ClassYopPollImporter5x {
 											'multipleAnswersMaxim'         => isset( $unserialized_q_meta['allow_multiple_answers_number'] ) && '' != $unserialized_q_meta['allow_multiple_answers_number'] ? $unserialized_q_meta['allow_multiple_answers_number'] : 3,
 											'answersDisplay'               => $answersDisplay,
 											'answersColumns'               =>
-												isset( $unserialized_q_meta['display_answers_tabulated_cols'] ) && '' !== $unserialized_q_meta['display_answers_tabulated_cols'] ? $unserialized_q_meta['display_answers_tabulated_cols'] : 2
+												isset( $unserialized_q_meta['display_answers_tabulated_cols'] ) && '' !== $unserialized_q_meta['display_answers_tabulated_cols'] ? $unserialized_q_meta['display_answers_tabulated_cols'] : 2,
+											'answersSort'                  => 'as-defined'
 										]
 									];
 									break;
@@ -467,7 +472,8 @@ class ClassYopPollImporter5x {
 									'type'    => 'custom-field',
 									'text'    => stripslashes( $pQC->custom_field ),
 									'options' => [
-										'makeRequired' => 'yes' === $pQC->required ? 'yes' : 'no'
+										'makeRequired' => 'yes' === $pQC->required ? 'yes' : 'no',
+										'cType' => 'textfield'
 									]
 								];
 								self::$maxElementID++;
@@ -501,7 +507,7 @@ class ClassYopPollImporter5x {
 					break;
 				}
 				case 'anonymize': {
-					$compliant_ipaddress = Helper::anonymize_ip( $ipaddress );
+					$compliant_ipaddress = YOP_Poll_Helper::anonymize_ip( $ipaddress );
 					break;
 				}
 				case 'nostore': {

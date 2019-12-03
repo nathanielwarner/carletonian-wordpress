@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.3.7
+  Version: 6.3.9
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -28,7 +28,7 @@
 
  */
 
-define('NEWSLETTER_VERSION', '6.3.7');
+define('NEWSLETTER_VERSION', '6.3.9');
 
 global $newsletter, $wpdb;
 
@@ -143,7 +143,7 @@ class Newsletter extends NewsletterModule {
             return $schedules;
         }, 1000);
 
-        parent::__construct('main', '1.5.1', null, array('info', 'smtp'));
+        parent::__construct('main', '1.5.2', null, array('info', 'smtp'));
 
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max)) {
@@ -230,17 +230,6 @@ class Newsletter extends NewsletterModule {
 
     function hook_wp_loaded() {
         if (empty($this->action)) {
-            return;
-        }
-
-        if ($this->action == 'fu') {
-            $user = $this->check_user();
-            if ($user == null) {
-                die('No user');
-            }
-            $wpdb->query("update " . NEWSLETTER_USERS_TABLE . " set followup=2 where id=" . $user->id);
-            $options_followup = get_option('newsletter_followup');
-            $this->message = $options_followup['unsubscribed_text'];
             return;
         }
 
@@ -680,15 +669,15 @@ class Newsletter extends NewsletterModule {
                 $this->logger->debug(__METHOD__ . '> Processing user ID: ' . $user->id);
                 $user = apply_filters('newsletter_send_user', $user);
                 $message = $this->build_message($email, $user);
-
+                $this->save_sent_message($message);
+                
                 if (!$test) {
-                    $this->save_sent_message($message);
                     $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set sent=sent+1, last_id=" . $user->id . " where id=" . $email->id . " limit 1");
                 }
 
                 $r = $mailer->send($message);
 
-                if (!$test && !empty($message->error)) {
+                if (!empty($message->error)) {
                     $this->save_sent_message($message);
                 }
 
@@ -718,11 +707,10 @@ class Newsletter extends NewsletterModule {
                     $this->logger->debug(__METHOD__ . '> Processing user ID: ' . $user->id);
                     $user = apply_filters('newsletter_send_user', $user);
                     $message = $this->build_message($email, $user);
-
+                    $this->save_sent_message($message);
                     $messages[] = $message;
-
+                    
                     if (!$test) {
-                        $this->save_sent_message($message);
                         $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set sent=sent+1, last_id=" . $user->id . " where id=" . $email->id . " limit 1");
                     }
                     $this->email_limit--;
@@ -732,7 +720,7 @@ class Newsletter extends NewsletterModule {
                 $r = $mailer->send_batch($messages);
 
                 foreach ($messages as $message) {
-                    if (!$test && !empty($message->error)) {
+                    if (!empty($message->error)) {
                         $this->save_sent_message($message);
                     }
                 }
@@ -1143,9 +1131,9 @@ class Newsletter extends NewsletterModule {
         $extensions_json = get_transient('tnp_extensions_json');
 
         if (empty($extensions_json)) {
-            $url = "http://www.thenewsletterplugin.com/wp-content/extensions.json";
+            $url = "http://www.thenewsletterplugin.com/wp-content/extensions.json?ver=" . NEWSLETTER_VERSION;
             if (!empty($this->options['contract_key'])) {
-                $url = "http://www.thenewsletterplugin.com/wp-content/plugins/file-commerce-pro/extensions.php?k=" . $this->options['contract_key'];
+                $url = "http://www.thenewsletterplugin.com/wp-content/plugins/file-commerce-pro/extensions.php?k=" . $this->options['contract_key'] . '&ver=' . NEWSLETTER_VERSION;
             }
             $extensions_response = wp_remote_get($url);
             $extensions_json = wp_remote_retrieve_body($extensions_response);

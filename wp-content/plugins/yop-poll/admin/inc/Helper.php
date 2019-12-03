@@ -1,5 +1,5 @@
 <?php
-class Helper {
+class YOP_Poll_Helper {
     public static $ipv4NetMask = "255.255.255.0";
     public static $ipv6NetMask = "ffff:ffff:ffff:ffff:ffff:ffff:0:0";
     public static function objectToArray( $d ) {

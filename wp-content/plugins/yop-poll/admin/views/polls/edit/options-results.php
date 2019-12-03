@@ -52,7 +52,8 @@
 			            <option value="before-vote" <?php echo $show_results_moment_before_vote;?>><?php _e( 'Before vote', 'yop-poll' );?></option>
 			            <option value="after-vote" <?php echo $show_results_moment_after_vote;?>><?php _e( 'After vote', 'yop-poll' );?></option>
 			            <option value="after-end-date" <?php echo $show_results_moment_after_end_date;?>><?php _e( 'After poll end date', 'yop-poll' );?></option>
-			            <option value="custom-date" <?php echo $show_results_moment_custom_date;?>><?php _e( 'Custom Date', 'yop-poll' );?></option>
+						<option value="custom-date" <?php echo $show_results_moment_custom_date;?>><?php _e( 'Custom Date', 'yop-poll' );?></option>
+						<option data-divider="true"></option>
 			            <option value="never" <?php echo $show_results_moment_never;?>><?php _e( 'Never', 'yop-poll' );?></option>
 			        </select>
 				</div>
@@ -78,12 +79,14 @@
 					<?php
 			        $show_results_to_guest = '';
 			        $show_results_to_registered = '';
-			        if ( true === in_array( 'guest', $poll->meta_data['options']['results']['showResultsTo'] ) ) {
-			            $show_results_to_guest = 'selected';
-			        }
-			        if ( true === in_array( 'registered', $poll->meta_data['options']['results']['showResultsTo'] ) ) {
-			            $show_results_to_registered = 'selected';
-			        }
+					if ( true === is_array( $poll->meta_data['options']['results']['showResultsTo'] ) ) {
+						if ( true === in_array( 'guest', $poll->meta_data['options']['results']['showResultsTo'] ) ) {
+							$show_results_to_guest = 'selected';
+						}
+						if ( true === in_array( 'registered', $poll->meta_data['options']['results']['showResultsTo'] ) ) {
+							$show_results_to_registered = 'selected';
+						}
+					}
 			        ?>
 			        <select name="show-results-to" class="show-results-to" style="width:100%" multiple="multiple">
 			            <option value="guest" <?php echo $show_results_to_guest;?>><?php _e( 'Guest', 'yop-poll' );?></option>
@@ -153,7 +156,7 @@
 			                $sort_results_as_defined = 'selected';
 			                $sort_results_as_alphabetical = '';
 			                $sort_results_as_number_of_votes = '';
-			                $sort_results_rule_class = '';
+			                $sort_results_rule_class = 'hide';
 			                break;
 			            }
 			            case 'alphabetical': {

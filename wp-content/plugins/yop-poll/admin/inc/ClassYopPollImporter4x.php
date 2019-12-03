@@ -49,7 +49,7 @@ class ClassYopPollImporter4x {
 					break;
 				}
 				case 'anonymize': {
-					$compliant_ipaddress = Helper::anonymize_ip( $ipaddress );
+					$compliant_ipaddress = YOP_Poll_Helper::anonymize_ip( $ipaddress );
 					break;
 				}
 				case 'nostore': {

@@ -29,7 +29,8 @@ class YOP_Poll_Admin {
             add_action( 'wp_ajax_delete_bulk_yop_poll_log', array( &$this, 'delete_bulk_log' ) );
             add_action( 'wp_ajax_yop_poll_is_user_logged_in', array( &$this, 'is_user_logged_in' ) );
             add_action( 'wp_ajax_yop_poll_record_vote', array( &$this, 'record_vote' ) );
-            add_action( 'wp_ajax_yop_poll_record_wordpress_vote', array( &$this, 'record_wordpress_vote' ) );
+			add_action( 'wp_ajax_yop_poll_record_wordpress_vote', array( &$this, 'record_wordpress_vote' ) );
+			add_action( 'wp_ajax_yop_poll_get_poll_for_frontend', array( &$this, 'create_poll_for_frontend' ) );
             add_action( 'wp_ajax_get_yop_poll_votes_customs', array( &$this, 'get_yop_poll_votes_customs' ) );
             add_action( 'wp_ajax_yop-poll-get-vote-details', array( &$this, 'get_vote_details' ) );
             add_action( 'wp_ajax_yop_poll_delete_vote', array( &$this, 'delete_single_vote' ) );
@@ -46,6 +47,7 @@ class YOP_Poll_Admin {
 			add_action( 'wp_ajax_nopriv_yop_poll_is_user_logged_in', array( &$this, 'is_user_logged_in' ) );
 			add_action( 'wp_ajax_nopriv_yop_poll_record_vote', array( &$this, 'record_vote' ) );
 			add_action( 'wp_ajax_nopriv_yop_poll_record_wordpress_vote', array( &$this, 'record_wordpress_vote' ) );
+			add_action( 'wp_ajax_nopriv_yop_poll_get_poll_for_frontend', array( &$this, 'create_poll_for_frontend' ) );
 		}
 		Yop_Poll_DbSchema::initialize_tables_names();
 	}
@@ -60,7 +62,7 @@ class YOP_Poll_Admin {
         if ( $installed_version ) {
             if ( true === version_compare( $installed_version, '6.0.0', '<' ) ) {
                 $maintenance = new YOP_POLL_Maintenance();
-                $maintenance->activate();
+                $maintenance->activate( false );
             }
             if ( true === version_compare( $installed_version, '6.0.4', '<' ) ) {
                 $maintenance  = new YOP_POLL_Maintenance();
@@ -89,6 +91,10 @@ class YOP_Poll_Admin {
 			if ( true === version_compare( $installed_version, '6.1.0', '<' ) ) {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_1_0();
+			}
+			if ( true === version_compare( $installed_version, '6.1.1', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_1_1();
 			}
         }
 	}
@@ -236,10 +242,10 @@ class YOP_Poll_Admin {
         wp_enqueue_script('jquery-ui-draggable', array('jquery-ui-core'));
 		wp_enqueue_script('jquery-ui-droppable', array('jquery-ui-core'));
 		if ( TRUE === YOP_POLL_TEST_MODE ) {
-			$plugin_admin_js_file = 'admin.js';
+			$plugin_admin_js_file = 'admin-' . YOP_POLL_VERSION . '.js';
 
 		} else {
-			$plugin_admin_js_file = 'admin.min.js';
+			$plugin_admin_js_file = 'admin-' . YOP_POLL_VERSION . '.min.js';
 		}
 		wp_enqueue_script( 'yop', YOP_POLL_URL . 'admin/assets/js/' . $plugin_admin_js_file , array( 'jquery',
 			'jquery-ui-sortable',
@@ -398,8 +404,8 @@ class YOP_Poll_Admin {
 		) );
 	}
 	public function load_styles() {
-		wp_enqueue_style( 'yop-admin', YOP_POLL_URL . 'admin/assets/css/admin.css' );
-		wp_enqueue_style( 'yop-public', YOP_POLL_URL . 'public/assets/css/yop-poll-public.css' );
+		wp_enqueue_style( 'yop-admin', YOP_POLL_URL . 'admin/assets/css/admin-' . YOP_POLL_VERSION . '.css' );
+		wp_enqueue_style( 'yop-public', YOP_POLL_URL . 'public/assets/css/yop-poll-public-' . YOP_POLL_VERSION . '.css' );
 	}
 	public function change_page_title( $title ) {
 		$_page = isset( $_GET['page'] ) ? $_GET['page'] : '';
@@ -527,7 +533,7 @@ class YOP_Poll_Admin {
 				( ( $poll_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_edit_own' ) ) ) ||
 				( ( $poll_owner !== $current_user->ID ) && ( current_user_can( 'yop_poll_edit_others' ) ) )
 			) {
-				$poll = YOP_Poll_Polls::get_poll( $poll_id );
+				$poll = YOP_Poll_Polls::get_poll_for_admin( $poll_id );
 				if ( false !== $poll ) {
 					$template = YOP_POLL_PATH . 'admin/views/polls/edit/main.php';
 					$templates = YOP_Poll_Templates::get_templates();
@@ -728,7 +734,7 @@ class YOP_Poll_Admin {
 	public function display_results( $poll_id ) {
 		if ( current_user_can( 'yop_poll_results_own' ) ) {
 			$template = YOP_POLL_PATH . 'admin/views/results/view.php';
-			$poll = YOP_Poll_Polls::get_poll( $poll_id );
+			$poll = YOP_Poll_Polls::get_poll_for_admin( $poll_id );
 			echo YOP_Poll_View::render(
 				$template,
 				array(
@@ -744,7 +750,7 @@ class YOP_Poll_Admin {
             $params['sort_order'] = isset( $_GET['sort_order'] ) ? $_GET['sort_order'] : 'asc';
             $params['page_no'] = isset( $_GET['page_no'] ) ? $_GET['page_no'] : '1';
             $template = YOP_POLL_PATH . 'admin/views/results/view.php';
-            $poll = YOP_Poll_Polls::get_poll( $poll_id );
+            $poll = YOP_Poll_Polls::get_poll_for_admin( $poll_id );
             if ( $poll ) {
                 $voters = YOP_Poll_Votes::get_poll_voters_sorted( $poll_id );
                 $limit = 10;
@@ -790,7 +796,7 @@ class YOP_Poll_Admin {
                         }
                     }
                 }
-                $other_answers = Helper::group_other_answers( $other_answers );
+                $other_answers = YOP_Poll_Helper::group_other_answers( $other_answers );
                 if( count( $votes ) > 0 ) {
                     $cf_hidden .= '<input type="hidden" name="cf_total_pages" id="cf-total-pages" value="' . $total_pages . '">';
                     $cf_hidden .= '<input type="hidden" name="cf_page" id="cf-page" value="' . $page . '">';
@@ -853,7 +859,7 @@ class YOP_Poll_Admin {
             $params['poll_id'] = isset( $_GET['poll_id'] ) ? $_GET['poll_id'] : '';
             $params['action'] = isset( $_GET['action'] ) ? $_GET['action'] : '';
             $template = YOP_POLL_PATH . 'admin/views/results/votes.php';
-            $poll = YOP_Poll_Polls::get_poll( $poll_id );
+            $poll = YOP_Poll_Polls::get_poll_for_admin( $poll_id );
             if ( $poll ) {
                 $votes = YOP_Poll_Votes::get_votes_to_display( $params );
                 echo YOP_Poll_View::render(
@@ -1378,6 +1384,21 @@ class YOP_Poll_Admin {
 			}
 		} else {
 			wp_send_json_error( __( 'Invalid data 2', 'yop-poll' ) );
+		}
+	}
+	public function create_poll_for_frontend() {
+		if ( ( true === isset( $_POST['poll_id'] ) ) && ( '' !== $_POST['poll_id'] )  ) {
+			$params = array();
+			$poll_id = sanitize_text_field( $_POST['poll_id'] );
+			$params['tracking_id'] = sanitize_text_field( $_POST['tracking_id'] );
+			$params['show_results'] = sanitize_text_field( $_POST['show_results'] );
+			$poll_for_output = YOP_Poll_Public::generate_poll_for_ajax( $poll_id, $params );
+			if ( false !== $poll_for_output ) {
+				wp_send_json_success( $poll_for_output );
+			} else {
+				wp_send_json_error( __( 'Error generating poll', 'yop-poll' ) );
+				wp_die();
+			}
 		}
 	}
 }

@@ -42,6 +42,7 @@ class YOP_Poll_Basic {
 		} else {
 			$answer_text = esc_html( $answer->stext );
 		}
+		$answer_text = str_replace( '[br]', '<br/>', $answer_text );
 		return $answer_text;
 	}
 	public static function get_answers_count( $question ) {
@@ -56,8 +57,8 @@ class YOP_Poll_Basic {
 		if ( 'yes' === $poll->meta_data['options']['poll']['enableGdpr'] ) {
 			if ( 'consent' === $poll->meta_data['options']['poll']['gdprSolution'] ) {
 				$gdpr_html = '<div class="basic-gdpr">'
-					. '<input type="checkbox" name="gdpr-consent" class="gdpr-consent" value="agree">'
-					. '<label class="basic-gdpr-consent-text">' . $poll->meta_data['options']['poll']['gdprConsentText'] . '</label>'
+					. '<input type="checkbox" name="gdpr-consent" id="gdpr-consent" class="gdpr-consent" value="agree">'
+					. '<label class="basic-gdpr-consent-text" for="gdpr-consent">' . $poll->meta_data['options']['poll']['gdprConsentText'] . '</label>'
 					. '</div>';
 			}
 		}
@@ -80,6 +81,12 @@ class YOP_Poll_Basic {
 				}
 				case 'yes-recaptcha': {
 					$use_captcha[0] = '2';
+					$use_captcha[1] = '<div id="yop-poll-captcha-' . $uid . '" class="basic-captcha"></div>';
+					$use_captcha[2] = $uid;
+					break;
+				}
+				case 'yes-recaptcha-invisible': {
+					$use_captcha[0] = '3';
 					$use_captcha[1] = '<div id="yop-poll-captcha-' . $uid . '" class="basic-captcha"></div>';
 					$use_captcha[2] = $uid;
 					break;
@@ -117,7 +124,7 @@ class YOP_Poll_Basic {
 	public static function do_show_back_to_vote_link( $poll ) {
 		$poll_show_back_to_vote_link = '';
 		if ( 'yes' === $poll->meta_data['options']['results']['backToVoteOption'] ) {
-			$poll_show_back_to_vote_link = '<a href="#" class="button basic-back-to-vote-button" style="'
+			$poll_show_back_to_vote_link = '<button class="basic-back-to-vote-button" style="'
 											. 'background:' . esc_attr( $poll->meta_data['style']['buttons']['backgroundColor'] ) . ';'
 											. ' border:' . esc_attr( $poll->meta_data['style']['buttons']['borderSize'] ) . 'px;'
 											. ' border-style: solid;'
@@ -131,7 +138,7 @@ class YOP_Poll_Basic {
 											. ' display:none;'
 										. '">'
 											. $poll->meta_data['options']['results']['backToVoteCaption']
-										. '</a>';
+										. '</button>';
 		}
 		return $poll_show_back_to_vote_link;
 	}
@@ -158,55 +165,53 @@ class YOP_Poll_Basic {
 		if ( ( '' === $total_submited_answers_text ) && ( (int)$poll->total_submited_answers > 1 ) ) {
 			$total_submited_answers_text = $messages['results']['multiple-answers'];
 		}
-		if ( ( true === isset( $params['show_results'] ) ) && ( '1' !== $params['show_results'] ) ) {
-			if (
-				( 'yes' === $poll->meta_data['options']['poll']['showTotalVotes'] ) &&
-				( 'yes' === $poll->meta_data['options']['poll']['showTotalAnswers'] )
-				) {
-					$total_votes_and_answers = '<div class="basic-stats text-center">'
-													. '<span class="basic-stats-votes">'
-														. '<span class="basic-stats-votes-number">'
-															. $poll->total_submits
-														. '</span>'
-														. '<span class="basic-stats-votes-text">'
-															 . '&nbsp;' . $total_submits_text
-														. '</span>'
+		if (
+			( 'yes' === $poll->meta_data['options']['poll']['showTotalVotes'] ) &&
+			( 'yes' === $poll->meta_data['options']['poll']['showTotalAnswers'] )
+			) {
+				$total_votes_and_answers = '<div class="basic-stats text-center">'
+												. '<span class="basic-stats-votes">'
+													. '<span class="basic-stats-votes-number">'
+														. $poll->total_submits
 													. '</span>'
-													. '<span class="basic-stats-separator">'
-														. '&nbsp;&middot;&nbsp;'
-													. '</span>'
-													. '<span class="basic-stats-answers">'
-														. '<span class="basic-stats-answers-number">'
-															. $poll->total_submited_answers
-														. '</span>'
-														. '<span class="basic-stats-answers-text">'
-															 . '&nbsp;' . $total_submited_answers_text
-														. '</span>'
-													. '</span>'
-			        							. '</div>';
-				} else if ( 'yes' === $poll->meta_data['options']['poll']['showTotalVotes'] ) {
-					$total_votes_and_answers = '<div class="basic-stats text-center">'
-													. '<span class="basic-stats-votes">'
-														. '<span class="basic-stats-votes-number">'
-															. $poll->total_submits
-														. '</span>'
-														. '<span class="basic-stats-votes-text">'
+													. '<span class="basic-stats-votes-text">'
 															. '&nbsp;' . $total_submits_text
-														. '</span>'
 													. '</span>'
-			        							. '</div>';
-				} else if ( 'yes' === $poll->meta_data['options']['poll']['showTotalAnswers'] ) {
-					$total_votes_and_answers = '<div class="basic-stats text-center">'
-													. '<span class="basic-stats-answers">'
-														. '<span class="basic-stats-answers-number">'
-															. $poll->total_submited_answers
-														. '</span>'
-														. '<span class="basic-stats-answers-text">'
+												. '</span>'
+												. '<span class="basic-stats-separator">'
+													. '&nbsp;&middot;&nbsp;'
+												. '</span>'
+												. '<span class="basic-stats-answers">'
+													. '<span class="basic-stats-answers-number">'
+														. $poll->total_submited_answers
+													. '</span>'
+													. '<span class="basic-stats-answers-text">'
 															. '&nbsp;' . $total_submited_answers_text
-														. '</span>'
 													. '</span>'
-			        							. '</div>';
-				}
+												. '</span>'
+											. '</div>';
+			} else if ( 'yes' === $poll->meta_data['options']['poll']['showTotalVotes'] ) {
+				$total_votes_and_answers = '<div class="basic-stats text-center">'
+												. '<span class="basic-stats-votes">'
+													. '<span class="basic-stats-votes-number">'
+														. $poll->total_submits
+													. '</span>'
+													. '<span class="basic-stats-votes-text">'
+														. '&nbsp;' . $total_submits_text
+													. '</span>'
+												. '</span>'
+											. '</div>';
+			} else if ( 'yes' === $poll->meta_data['options']['poll']['showTotalAnswers'] ) {
+				$total_votes_and_answers = '<div class="basic-stats text-center">'
+												. '<span class="basic-stats-answers">'
+													. '<span class="basic-stats-answers-number">'
+														. $poll->total_submited_answers
+													. '</span>'
+													. '<span class="basic-stats-answers-text">'
+														. '&nbsp;' . $total_submited_answers_text
+													. '</span>'
+												. '</span>'
+											. '</div>';
 			}
 			return $total_votes_and_answers;
 	}
@@ -232,7 +237,6 @@ class YOP_Poll_Basic {
 				$messages = YOP_Poll_Settings::get_messages();
 				$wordpress_vote_code .= '<div class="basic-wordpress">'
 										. '<button type="button" class="btn btn-default">'
-											. '<i class="fa fa-wordpress" aria-hidden="true"></i>'
 											. $messages['buttons']['wordpress']
 										. '</button>'
 									. '</div>';
@@ -502,7 +506,7 @@ class YOP_Poll_Basic {
 											. '<span class="basic-text" style="'
 												. 'color: ' . esc_attr( $poll_meta_data['style']['answers']['textColor'] ) . '; '
 												. 'font-size: ' . esc_attr( $poll_meta_data['style']['answers']['textSize'] ) . 'px; '
-												. 'font-weight: ' . esc_attr( $poll_meta_data['style']['answers']['textWeight'] ) . ';'
+											. 'font-weight: ' . esc_attr( $poll_meta_data['style']['answers']['textWeight'] ) . ';'
 											. '">'
 												. $answer_text
 											. '</span>'
@@ -537,6 +541,25 @@ class YOP_Poll_Basic {
 	}
 	public static function do_custom_field( $element, $poll_meta_data, $params ) {
 		if ( ( true === isset( $params['show_results'] ) ) && ( '1' !== $params['show_results'] ) ) {
+			$element_html = '';
+			if ( true === isset( $element->meta_data['cType'] ) ) {
+				switch( $element->meta_data['cType'] ){
+					case 'textfield': {
+						$element_html = '<input type="text" name="cfield[' . $element->id . ']" class="basic-input-text form-control" data-type="cfield">';
+						break;
+					}
+					case 'textarea': {
+						$element_html = '<textarea name="cfield[' . $element->id . ']" class="basic-input-text form-control" data-type="cfield"></textarea>';
+						break;
+					}
+					default: {
+						$element_html = '<input type="text" name="cfield[' . $element->id . ']" class="basic-input-text form-control" data-type="cfield">';
+						break;
+					}
+				}
+			} else {
+				$element_html = '<input type="text" name="cfield[' . $element->id . ']" class="basic-input-text form-control" data-type="cfield">';
+			}
 			$poll_elements = '<div class="basic-element basic-custom-field"'
 								. ' data-id="' .$element->id . '"'
 								. ' data-type="custom-field"'
@@ -547,8 +570,8 @@ class YOP_Poll_Basic {
 										. esc_html( $element->etext )
 									. '</label>'
 								. '</div>'
-								. '<div class="col-md-6 col-sm-6 col-xs-12">'
-									. '<input type="text" name="cfield[' . $element->id . ']" class="basic-input-text form-control" data-type="cfield">'
+								. '<div class="col-md-6 col-sm-12 col-xs-12">'
+									. $element_html
 								. '</div>'
 							. '</div>'
 							. '<div class="clearfix"></div>';
@@ -616,7 +639,7 @@ class YOP_Poll_Basic {
 			$should_continue = false;
 		}
 		if ( ( true === $should_continue ) && ( true === in_array( 'after-end-date', $poll->meta_data['options']['results']['showResultsMoment'] ) ) ) {
-			if ( true === YOP_Poll_Polls::is_ended( $poll, true ) ) {
+			if ( true === YOP_Poll_Polls::has_ended_frontend( $poll ) ) {
 				$should_display_results = true;
 				$should_continue = false;
 			} else {
@@ -625,7 +648,7 @@ class YOP_Poll_Basic {
 			}
 		}
 		if ( ( true === $should_continue ) && ( true === in_array( 'custom-date', $poll->meta_data['options']['results']['showResultsMoment'] ) ) ) {
-			$today = new DateTime( current_time( 'mysql' ) );
+			$today = new DateTime( get_gmt_from_date( current_time( 'mysql' ) ), new DateTimeZone( 'UTC' ) );
 			$custom_date = new DateTime( $poll->meta_data['options']['results']['customDateResults'] );
 			if ( $today >= $custom_date ) {
 				$should_display_results = true;
@@ -636,98 +659,6 @@ class YOP_Poll_Basic {
 			}
 		}
 		return $should_display_results;
-	}
-	public static function prepare_ended_poll_for_display( $poll, $params ) {
-		$messages = YOP_Poll_Settings::get_messages();
-		$poll_ready_for_output = '<div class="basic-yop-poll-container" style="'
-									. 'background-color:' . esc_attr( $poll->meta_data['style']['poll']['backgroundColor'] ) . ';'
-									. ' border:' . esc_attr( $poll->meta_data['style']['poll']['borderSize'] ) .'px;'
-									. ' border-style:solid;'
-									. ' border-color:' . esc_attr( $poll->meta_data['style']['poll']['borderColor'] ) .';'
-									. ' border-radius:' . esc_attr( $poll->meta_data['style']['poll']['borderRadius'] ) .'px;'
-									. ' padding:' . esc_attr( $poll->meta_data['style']['poll']['paddingTopBottom'] ) .'px '
-									. esc_attr( $poll->meta_data['style']['poll']['paddingLeftRight'] ) .'px;"'
-									. ' data-id="' . esc_attr( $poll->id ) . '"'
-									. ' data-temp="' . esc_html( $poll->template_base ) .'"'
-									. ' data-skin="' . esc_html( $poll->meta_data['style']['answers']['skin'] ) . '"'
-									. ' data-cscheme="' . esc_html( $poll->meta_data['style']['answers']['colorScheme'] ) . '"'
-									. ' data-cap="0"'
-									. ' data-access="' . esc_attr( implode( ',', $poll->meta_data['options']['access']['votePermissions'] ) ) . '"'
-									. ' data-tid="' . esc_attr( $params['tracking_id'] ) . '"'
-									. ' data-uid="0"'
-									. ' data-resdet="' . esc_attr( implode( ',', $poll->meta_data['options']['results']['resultsDetails'] ) ) . '"'
-									. ' data-gdpr="' . $poll->meta_data['options']['poll']['enableGdpr'] . '"'
-									. ' data-gdpr-sol="' . $poll->meta_data['options']['poll']['gdprSolution'] . '"'
-									. ' data-css="' . esc_attr( $poll->meta_data['style']['custom']['css'] ) . '"'
-									. '>'
-									. '<div class="row">'
-										. '<div class="col-md-12">'
-											. '<div class="basic-inner">'
-												. '<div class="basic-message" style="'
-													. 'border-left: ' . $poll->meta_data['style']['errors']['borderLeftSize'] . 'px solid ' . $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . ';'
-													. ' padding: ' . $poll->meta_data['style']['errors']['paddingTopBottom'] . 'px 10px;"'
-													. ' data-error="' . $poll->meta_data['style']['errors']['borderLeftColorForError'] . '"'
-													. ' data-success="' . $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . '"'
-													. '>'
-													. '<p class="basic-message-text" style="'
-														. 'color:' . esc_attr( $poll->meta_data['style']['errors']['textColor'] ) . ';'
-														. ' font-size:' . esc_attr( $poll->meta_data['style']['errors']['textSize'] ) . 'px;'
-														. ' font-weight:' . esc_attr( $poll->meta_data['style']['errors']['textWeight'] ) . ';'
-														. '">'
-														. $messages['voting']['poll-ended']
-													. '</p>'
-												. '</div>'
-											. '</div>'
-										. '</div>'
-									. '</div>'
-								. '</div>';
-		return $poll_ready_for_output;
-	}
-	public static function prepare_not_started_poll_for_display( $poll, $params ) {
-		$messages = YOP_Poll_Settings::get_messages();
-		$poll_ready_for_output = '<div class="basic-yop-poll-container" style="'
-									. 'background-color:' . esc_attr( $poll->meta_data['style']['poll']['backgroundColor'] ) . ';'
-									. ' border:' . esc_attr( $poll->meta_data['style']['poll']['borderSize'] ) .'px;'
-									. ' border-style:solid;'
-									. ' border-color:' . esc_attr( $poll->meta_data['style']['poll']['borderColor'] ) .';'
-									. ' border-radius:' . esc_attr( $poll->meta_data['style']['poll']['borderRadius'] ) .'px;'
-									. ' padding:' . esc_attr( $poll->meta_data['style']['poll']['paddingTopBottom'] ) .'px '
-									. esc_attr( $poll->meta_data['style']['poll']['paddingLeftRight'] ) .'px;"'
-									. ' data-id="' . esc_attr( $poll->id ) . '"'
-									. ' data-temp="' . esc_html( $poll->template_base ) .'"'
-									. ' data-skin="' . esc_html( $poll->meta_data['style']['answers']['skin'] ) . '"'
-									. ' data-cscheme="' . esc_html( $poll->meta_data['style']['answers']['colorScheme'] ) . '"'
-									. ' data-cap="0"'
-									. ' data-access="' . esc_attr( implode( ',', $poll->meta_data['options']['access']['votePermissions'] ) ) . '"'
-									. ' data-tid="' . esc_attr( $params['tracking_id'] ) . '"'
-									. ' data-uid="0"'
-									. ' data-resdet="' . esc_attr( implode( ',', $poll->meta_data['options']['results']['resultsDetails'] ) ) . '"'
-									. ' data-gdpr="' . $poll->meta_data['options']['poll']['enableGdpr'] . '"'
-									. ' data-gdpr-sol="' . $poll->meta_data['options']['poll']['gdprSolution'] . '"'
-									. ' data-css="' . esc_attr( $poll->meta_data['style']['custom']['css'] ) . '"'
-									. '>'
-									. '<div class="row">'
-										. '<div class="col-md-12">'
-											. '<div class="basic-inner">'
-												. '<div class="basic-message" style="'
-													. 'border-left: ' . $poll->meta_data['style']['errors']['borderLeftSize'] . 'px solid ' . $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . ';'
-													. ' padding: ' . $poll->meta_data['style']['errors']['paddingTopBottom'] . 'px 10px;"'
-													. ' data-error="' . $poll->meta_data['style']['errors']['borderLeftColorForError'] . '"'
-													. ' data-success="' . $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . '"'
-													. '>'
-													. '<p class="basic-message-text" style="'
-														. 'color:' . esc_attr( $poll->meta_data['style']['errors']['textColor'] ) . ';'
-														. ' font-size:' . esc_attr( $poll->meta_data['style']['errors']['textSize'] ) . 'px;'
-														. ' font-weight:' . esc_attr( $poll->meta_data['style']['errors']['textWeight'] ) . ';'
-														. '">'
-														. $messages['voting']['poll-not-started']
-													. '</p>'
-												. '</div>'
-											. '</div>'
-										. '</div>'
-									. '</div>'
-								. '</div>';
-		return $poll_ready_for_output;
 	}
 	public static function prepare_regular_view_for_display( $poll, $params ) {
 		$poll_elements = '';
@@ -756,13 +687,37 @@ class YOP_Poll_Basic {
 			$show_results_only = 'false';
 			$show_results_only_class = '';
 		}
+		if ( true === isset( $params['show_thank_you_message'] ) && ( '1' === $params['show_thank_you_message'] ) ) {
+			$show_thank_you_message = 'true';
+		} else {
+			$show_thank_you_message = 'false';
+		}
+		if ( false === isset( $params['loaded_with'] ) ) {
+			$params['loaded_with'] = '1';
+		}
+		if ( false === is_array( $poll->meta_data['options']['results']['showResultsTo'] ) ) {
+			$poll->meta_data['options']['results']['showResultsTo'] = [];
+		}
 		$results_before_vote_data = ' data-show-results-to="' . implode( ',', $poll->meta_data['options']['results']['showResultsTo'] ) . '"'
 			. ' data-show-results-moment="' . implode( ',', $poll->meta_data['options']['results']['showResultsMoment'] ) . '"'
 			. ' data-show-results-only="' . $show_results_only . '"'
+			. ' data-show-message="' . $show_thank_you_message . '"'
 			. ' data-show-results-as="' . $poll->meta_data['options']['results']['displayResultsAs'] . '"'
 			. ' data-sort-results-by="' . $poll->meta_data['options']['results']['sortResults'] . '"'
 			. ' data-sort-results-rule="' . $poll->meta_data['options']['results']['sortResultsRule'] . '"';
 		$use_captcha = self::has_captcha( $poll, $params );
+		$text_for_message_section = '';
+		$class_for_message_section = 'hide';
+		if ( ( true === isset( $params['started'] ) && ( '0' === $params['started'] ) ) ) {
+			$messages = YOP_Poll_Settings::get_messages();
+			$text_for_message_section = $messages['voting']['poll-not-started'];
+			$class_for_message_section = '';
+		}
+		if ( ( true === isset( $params['ended'] ) && ( '1' === $params['ended'] ) ) ) {
+			$messages = YOP_Poll_Settings::get_messages();
+			$text_for_message_section = $messages['voting']['poll-ended'];
+			$class_for_message_section = '';
+		}
 		$poll_ready_for_output = '<div class="basic-yop-poll-container" style="'
 									. 'background-color:' . esc_attr( $poll->meta_data['style']['poll']['backgroundColor'] ) . ';'
 									. ' border:' . esc_attr( $poll->meta_data['style']['poll']['borderSize'] ) .'px;'
@@ -784,21 +739,26 @@ class YOP_Poll_Basic {
 									. ' data-gdpr="' . $poll->meta_data['options']['poll']['enableGdpr'] . '"'
 									. ' data-gdpr-sol="' . $poll->meta_data['options']['poll']['gdprSolution'] . '"'
 									. ' data-css="' . esc_attr( $poll->meta_data['style']['custom']['css'] ) . '"'
+									. ' data-counter="0"'
+									. ' data-load-with="' . $params['loaded_with'] . '"'
 									. '>'
 									. '<div class="row">'
 										. '<div class="col-md-12">'
 											. '<div class="basic-inner">'
-												. '<div class="basic-message hide" style="'
-													. 'border-left: ' . $poll->meta_data['style']['errors']['borderLeftSize'] . 'px solid;'
-													. ' padding: ' . $poll->meta_data['style']['errors']['paddingTopBottom'] . 'px 10px;"'
+												. '<div class="basic-message ' . $class_for_message_section . '" style="'
+													. 'border-left: ' . $poll->meta_data['style']['errors']['borderLeftSize'] . 'px solid '
+													. $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . ';'
+													. ' padding: ' . $poll->meta_data['style']['errors']['paddingTopBottom'] . 'px 10px;'
+													. '"'
 													. ' data-error="' . $poll->meta_data['style']['errors']['borderLeftColorForError'] . '"'
 													. ' data-success="' . $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . '"'
-													. '">'
+													. '>'
 													. '<p class="basic-message-text" style="'
 														. 'color:' . esc_attr( $poll->meta_data['style']['errors']['textColor'] ) . ';'
 														. ' font-size:' . esc_attr( $poll->meta_data['style']['errors']['textSize'] ) . 'px;'
 														. ' font-weight:' . esc_attr( $poll->meta_data['style']['errors']['textWeight'] ) . ';'
 														. '">'
+														. $text_for_message_section
 													. '</p>'
 												. '</div>'
 												. '<div class="basic-overlay hide">'
@@ -807,24 +767,24 @@ class YOP_Poll_Basic {
 														. self::do_wordpress_vote( $poll )
 													. '</div>'
 													. '<div class="basic-preloader">'
-                                                    	. '<div class="basic-windows8">'
-                                                        	. '<div class="basic-wBall basic-wBall_1">'
-                                                            	. '<div class="basic-wInnerBall"></div>'
-                                                        	. '</div>'
-                                                        	. '<div class="basic-wBall basic-wBall_2">'
-                                                            	. '<div class="basic-wInnerBall"></div>'
-                                                        	.'</div>'
-                                                        	. '<div class="basic-wBall basic-wBall_3">'
-                                                            	. '<div class="basic-wInnerBall"></div>'
-                                                        	. '</div>'
-                                                        	. '<div class="basic-wBall basic-wBall_4">'
-                                                            	. '<div class="basic-wInnerBall"></div>'
-                                                        	. '</div>'
-                                                        	. '<div class="basic-wBall basic-wBall_5">'
-                                                            	. '<div class="basic-wInnerBall"></div>'
-                                                        	. '</div>'
-                                                    	. '</div>'
-                                                	. '</div>'
+														. '<div class="basic-windows8">'
+															. '<div class="basic-wBall basic-wBall_1">'
+																. '<div class="basic-wInnerBall"></div>'
+															. '</div>'
+															. '<div class="basic-wBall basic-wBall_2">'
+																. '<div class="basic-wInnerBall"></div>'
+															.'</div>'
+															. '<div class="basic-wBall basic-wBall_3">'
+																. '<div class="basic-wInnerBall"></div>'
+															. '</div>'
+															. '<div class="basic-wBall basic-wBall_4">'
+																. '<div class="basic-wInnerBall"></div>'
+															. '</div>'
+															. '<div class="basic-wBall basic-wBall_5">'
+																. '<div class="basic-wInnerBall"></div>'
+															. '</div>'
+														. '</div>'
+													. '</div>'
 												. '</div>'
 												. '<form class="basic-form">'
 													. '<input type="hidden" name="_token" value="' . wp_create_nonce( 'yop-poll-vote-' . $poll->id ) . '">'
@@ -881,12 +841,14 @@ class YOP_Poll_Basic {
 									. ' data-gdpr="' . $poll->meta_data['options']['poll']['enableGdpr'] . '"'
 									. ' data-gdpr-sol="' . $poll->meta_data['options']['poll']['gdprSolution'] . '"'
 									. ' data-css="' . esc_attr( $poll->meta_data['style']['custom']['css'] ) . '"'
+									. ' data-counter="0"'
 									. '>'
 									. '<div class="row">'
 										. '<div class="col-md-12">'
 											. '<div class="basic-inner">'
 												. '<div class="basic-message" style="'
-													. 'border-left: ' . $poll->meta_data['style']['errors']['borderLeftSize'] . 'px solid ' . $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . ';'
+													. 'border-left: ' . $poll->meta_data['style']['errors']['borderLeftSize'] . 'px solid '
+													. $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . ';'
 													. ' padding: ' . $poll->meta_data['style']['errors']['paddingTopBottom'] . 'px 10px;"'
 													. ' data-error="' . $poll->meta_data['style']['errors']['borderLeftColorForError'] . '"'
 													. ' data-success="' . $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] . '"'
@@ -909,20 +871,24 @@ class YOP_Poll_Basic {
 		$poll_ready_for_output = '';
 		$should_continue = true;
 		$current_user = wp_get_current_user();
-		if ( ( true === $should_continue ) && ( true === YOP_Poll_Polls::is_ended_frontend( $poll ) ) ) {
+		if ( ( true === $should_continue ) && ( false === YOP_Poll_Polls::has_started_frontend( $poll ) ) ) {
+			//not started yet
+			$params['started'] = '0';
+			$poll = YOP_Poll_Polls::get_poll_for_voting( $poll->id );
+			$poll_ready_for_output = self::prepare_regular_view_for_display( $poll, $params );
+			$should_continue = false;
+		}
+		if ( ( true === $should_continue ) && ( true === YOP_Poll_Polls::has_ended_frontend( $poll ) ) ) {
 			//poll has ended
 			if ( true === self::should_display_results( $poll ) ) {
 				$poll_for_display = YOP_Poll_Polls::get_poll_for_results( $poll->id );
 				$params['show_results'] = '1';
 				$poll_ready_for_output = self::prepare_regular_view_for_display( $poll_for_display, $params );
 			} else {
-				$poll_ready_for_output = self::prepare_ended_poll_for_display( $poll, $params );
+				$params['ended'] = '1';
+				$poll = YOP_Poll_Polls::get_poll_for_voting( $poll->id );
+				$poll_ready_for_output = self::prepare_regular_view_for_display( $poll, $params );
 			}
-			$should_continue = false;
-		}
-		if ( ( true === $should_continue ) && ( false === YOP_Poll_Polls::has_started_frontend( $poll ) ) ) {
-			//not started yet
-			$poll_ready_for_output = self::prepare_not_started_poll_for_display( $poll, $params );
 			$should_continue = false;
 		}
 		if ( true === $should_continue ) {
@@ -935,8 +901,8 @@ class YOP_Poll_Basic {
 					$accept_votes_from_user = YOP_Poll_Polls::accept_votes_from_user( $poll, $current_user->ID, 'wordpress' );
 					if ( true === $accept_votes_from_user ) {
 						//accepting votes from this user. showing regular poll
-						$poll_for_display = YOP_Poll_Polls::get_poll( $poll->id );
-						$poll_ready_for_output = self::prepare_regular_view_for_display( $poll_for_display, $params );
+						$poll = YOP_Poll_Polls::get_poll_for_voting( $poll->id );
+						$poll_ready_for_output = self::prepare_regular_view_for_display( $poll, $params );
 					} else {
 						//no longer accepting votes from this user. need to decide what to do
 						if ( true === self::should_display_results( $poll ) ) {
@@ -948,7 +914,7 @@ class YOP_Poll_Basic {
 						}
 					}
 				} else {
-					$poll_for_display = YOP_Poll_Polls::get_poll( $poll->id );
+					$poll_for_display = YOP_Poll_Polls::get_poll_for_voting( $poll->id );
 					$poll_ready_for_output = self::prepare_regular_view_for_display( $poll_for_display, $params );
 				}
 			} elseif ( ( true === in_array( 'by-cookie',  $poll->meta_data['options']['access']['blockVoters'] ) ) ||
@@ -960,7 +926,7 @@ class YOP_Poll_Basic {
 				$voter_data['user-id'] = ( $current_user->ID != 0 ) ? $current_user->ID : '';
 				$accept_votes_from_anonymous = YOP_Poll_Polls::accept_votes_from_anonymous( $poll, $voter_data );
 				if ( true === $accept_votes_from_anonymous ) {
-					$poll_for_display = YOP_Poll_Polls::get_poll( $poll->id );
+					$poll_for_display = YOP_Poll_Polls::get_poll_for_voting( $poll->id );
 					$poll_ready_for_output = self::prepare_regular_view_for_display( $poll_for_display, $params );
 				} else {
 					if ( true === self::should_display_results( $poll ) ) {
@@ -972,10 +938,25 @@ class YOP_Poll_Basic {
 					}
 				}
 			} else {
-				$poll_for_display = YOP_Poll_Polls::get_poll( $poll->id );
+				$poll_for_display = YOP_Poll_Polls::get_poll_for_voting( $poll->id );
 				$poll_ready_for_output = self::prepare_regular_view_for_display( $poll_for_display, $params );
 			}
 		}
+		return $poll_ready_for_output;
+	}
+	public static function create_poll_view_for_ajax( $poll, $params ) {
+		if ( true === isset( $params['show_results'] ) && ( '1' === $params['show_results'] ) ) {
+			$show_results_only = 'true';
+		} else {
+			$show_results_only = 'false';
+		}
+		$poll_ready_for_output = '<div class="basic-yop-poll-container"'
+										. ' data-id="' . esc_attr( $poll->id ) . '"'
+										. ' data-ajax="1"'
+										. ' data-tid="' . esc_attr( $params['tracking_id'] ) . '"'
+										. ' data-show-results-only="' . $show_results_only . '"'
+										. '>'
+										. '</div>';
 		return $poll_ready_for_output;
 	}
 	public static function create_poll_view_for_results( $poll, $params ) {

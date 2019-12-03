@@ -395,6 +395,63 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 												<input type="text" name="button-label" value="<?php echo esc_html( $element->meta_data['answersColumns'] );?>" class="form-control answers-columns"/>&nbsp;<?php _e( 'columns', 'yop-poll' );?>
 											</div>
 										</div>
+										<div class="form-group">
+											<div class="col-md-3">
+												<a href="#" class="upgrade-to-pro" data-screen="sort-answers">
+													<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
+												</a>
+												<?php _e( 'Sort Answers', 'yop-poll' ); ?>
+											</div>
+											<div class="col-md-9">
+												<?php
+												$element_answers_sort_as_defined = '';
+												$element_answers_sort_alphabetically_asc = '';
+												$element_answers_sort_alphabetically_desc = '';
+												$element_answers_sort_random = '';
+												if ( false === isset( $element->meta_data['answersSort'] ) ) {
+													$element->meta_data['answersSort'] = 'as-defined';
+													$element_answers_sort_as_defined = 'selected';
+												} else {
+													switch( $element->meta_data['answersSort'] ) {
+														case 'as-defined': {
+															$element_answers_sort_as_defined = 'selected';
+															break;
+														}
+														case 'alphabetically-asc': {
+															$element_answers_sort_alphabetically_asc = 'selected';
+															break;
+														}
+														case 'alphabetically-desc': {
+															$element_answers_sort_alphabetically_desc = 'selected';
+															break;
+														}
+														case 'random': {
+															$element_answers_sort_random = 'selected';
+															break;
+														}
+														default: {
+															$element_answers_sort_as_defined = 'selected';
+															break;
+														}
+													}
+												}
+												?>
+												<select class="answers-sort" style="width:100%">
+													<option value="as-defined" <?php echo $element_answers_sort_as_defined;?>>
+														<?php _e( 'As Defined', 'yop-poll' );?>
+													</option>
+													<option value="alphabetically-asc" <?php echo $element_answers_sort_alphabetically_asc;?>>
+														<?php _e( 'Alphabetically Ascending', 'yop-poll' );?>
+													</option>
+													<option value="alphabetically-desc" <?php echo $element_answers_sort_alphabetically_desc;?>>
+														<?php _e( 'Alphabetically Descending', 'yop-poll' );?>
+													</option>
+													<option value="random" <?php echo $element_answers_sort_random;?>>
+														<?php _e( 'Randomly', 'yop-poll' );?>
+													</option>
+												</select>
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>
@@ -445,6 +502,46 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 									</div>
 								</div>
 								<div class="custom-field-options">
+									<div class="form-group">
+										<div class="col-md-2">
+											<a href="#" class="upgrade-to-pro" data-screen="pie-results">
+												<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
+											</a>
+											<?php _e( 'Type', 'yop-poll' ); ?>
+										</div>
+										<div class="col-md-10">
+											<?php
+											$custom_field_type_textfield = '';
+											$custom_field_type_textarea = '';
+											if ( true === isset( $element->meta_data['cType'] ) ) {
+												switch( $element->meta_data['cType'] ){
+													case 'textfield': {
+														$custom_field_type_textfield = 'selected';
+														break;
+													}
+													case 'textarea': {
+														$custom_field_type_textarea = 'selected';
+														break;
+													}
+													default: {
+														$custom_field_type_textfield = 'selected';
+														break;
+													}
+												}
+											} else {
+												$custom_field_type_textfield = 'selected';
+											}
+											?>
+											<select class="custom-field-type" style="width: 100%">
+												<option value="textfield" <?php echo $custom_field_type_textfield;?>>
+													<?php _e( 'Textfield', 'yop-poll' );?>
+												</option>
+												<option value="textarea" <?php echo $custom_field_type_textarea;?>>
+													<?php _e( 'Textarea', 'yop-poll' );?>
+												</option>
+											</select>
+										</div>
+									</div>
 									<div class="form-group">
 										<div class="row">
 											<div class="col-md-4">

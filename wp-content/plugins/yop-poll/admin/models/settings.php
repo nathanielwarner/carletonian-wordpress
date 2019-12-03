@@ -21,6 +21,11 @@ class YOP_Poll_Settings {
                     'site-key' => '',
                     'secret-key' => ''
                 ),
+                'reCaptchaV2Invisible' => array(
+					'enabled' => 'no',
+					'site-key' => '',
+					'secret-key' => ''
+				),
                 'facebook' => array(
                     'enabled' => 'no',
                     'app-id'      => '',
@@ -91,6 +96,11 @@ class YOP_Poll_Settings {
                     'site-key' => '',
                     'secret-key' => ''
                 ),
+                'reCaptchaV2Invisible' => array(
+					'enabled' => 'no',
+					'site-key' => '',
+					'secret-key' => ''
+				),
                 'facebook' => array(
                     'enabled'  => isset( $old_settings['facebook_integration'] ) ? $old_settings['facebook_integration'] : 'no',
                     'app-id'     => isset( $old_settings['facebook_appID'] ) ? $old_settings['facebook_appID'] : '',
@@ -264,6 +274,11 @@ class YOP_Poll_Settings {
                     'site-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptcha'] ) && isset( $unserialized_settings['integrations']['reCaptcha']['site-key'] ) ) ? $unserialized_settings['integrations']['reCaptcha']['site-key'] : '',
                     'secret-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptcha'] ) && isset( $unserialized_settings['integrations']['reCaptcha']['secret-key'] ) ) ? $unserialized_settings['integrations']['reCaptcha']['secret-key'] : ''
                 ),
+                'reCaptchaV2Invisible' => array(
+					'enabled' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible']['enabled'] ) ) ? $unserialized_settings['integrations']['reCaptchaV2Invisible']['enabled'] : '',
+	                'site-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible']['site-key'] ) ) ? $unserialized_settings['integrations']['reCaptchaV2Invisible']['site-key'] : '',
+					'secret-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible']['secret-key'] ) ) ? $unserialized_settings['integrations']['reCaptchaV2Invisible']['secret-key'] : ''
+				),
                 'facebook' => array(
                     'enabled' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['facebook'] ) && isset( $unserialized_settings['integrations']['facebook']['enabled'] ) ) ? $unserialized_settings['integrations']['facebook']['enabled'] : '',
                     'app-id' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['facebook'] ) && isset( $unserialized_settings['integrations']['facebook']['app-id'] ) ) ? $unserialized_settings['integrations']['facebook']['app-id'] : ''
@@ -349,6 +364,16 @@ class YOP_Poll_Settings {
                     self::$error_text = __( 'Data for "Secret Key" is invalid', 'yop-poll' );
                 }
             }
+            if ( 'yes' === $settings->integrations->reCaptchaV2Invisible->{'enabled'} ) {
+				if ( ( false === isset( $settings->integrations->reCaptchaV2Invisible->{'site-key'} ) ) || ( '' === trim( $settings->integrations->reCaptchaV2Invisible->{'site-key'} ) ) ) {
+					self::$errors_present = true;
+					self::$error_text = __( 'Data for "Site Key" is invalid', 'yop-poll' );
+				}
+				if ( ( false === isset( $settings->integrations->reCaptchaV2Invisible->{'secret-key'} ) ) || ( '' === trim( $settings->integrations->reCaptchaV2Invisible->{'secret-key'} ) ) ) {
+					self::$errors_present = true;
+					self::$error_text = __( 'Data for "Secret Key" is invalid', 'yop-poll' );
+				}
+			}
             if (
                 ( false === self::$errors_present ) &&
                 ( !isset( $settings->integrations->facebook->{'enabled'} ) ||
@@ -635,6 +660,11 @@ class YOP_Poll_Settings {
                         'site-key' => $settings->integrations->reCaptcha->{'site-key'},
                         'secret-key' => $settings->integrations->reCaptcha->{'secret-key'}
                     ),
+                    'reCaptchaV2Invisible' => array(
+						'enabled' => $settings->integrations->reCaptchaV2Invisible->{'enabled'},
+						'site-key' => trim( $settings->integrations->reCaptchaV2Invisible->{'site-key'} ),
+						'secret-key' => trim( $settings->integrations->reCaptchaV2Invisible->{'secret-key'} )
+					),
                     'facebook' => array(
                         'enabled' => $settings->integrations->facebook->{'enabled'},
                         'app-id'      => $settings->integrations->facebook->{'app-id'},

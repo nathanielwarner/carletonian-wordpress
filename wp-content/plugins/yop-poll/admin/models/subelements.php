@@ -2,7 +2,7 @@
 class YOP_POLL_SubElements {
 	private static $errors_present = false,
 		$error_text,
-		$order_by_allowed = array( 'stext', 'sorder', 'total_submits' ),
+		$order_by_allowed = array( 'stext', 'sorder', 'total_submits', 'random' ),
 		$sort_rule_allowed = array( 'ASC', 'DESC' );
 	public static function add_single( $sub_element ) {
 		if ( '' !== $sub_element->poll_id ) {
@@ -223,6 +223,36 @@ class YOP_POLL_SubElements {
 			AND `status` = 'active' ORDER BY {$order_by} {$sort_rule}",
 			$poll_id
 		);
+		$sub_elements = $GLOBALS['wpdb']->get_results( $query, OBJECT );
+		if ( null !== $sub_elements ) {
+			foreach ( $sub_elements as $sub_element ) {
+				$sub_element->meta_data = unserialize( $sub_element->meta_data );
+			}
+			return $sub_elements;
+		} else {
+			return false;
+		}
+	}
+	public static function get_all_for_element( $element_id, $order_by, $sort_rule ) {
+		if ( false === in_array( $order_by, self::$order_by_allowed ) ) {
+			$order_by = 'sorder';
+		}
+		if ( false === in_array( $sort_rule, self::$sort_rule_allowed ) ) {
+			$sort_rule = 'ASC';
+		}
+		if ( 'random' === $order_by ) {
+			$query = $GLOBALS['wpdb']->prepare(
+				"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_subelements} WHERE `element_id` = %s
+				AND `status` = 'active' ORDER BY rand() {$sort_rule}",
+				$element_id
+			);
+		} else {
+			$query = $GLOBALS['wpdb']->prepare(
+				"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_subelements} WHERE `element_id` = %s
+				AND `status` = 'active' ORDER BY {$order_by} {$sort_rule}",
+				$element_id
+			);
+		}
 		$sub_elements = $GLOBALS['wpdb']->get_results( $query, OBJECT );
 		if ( null !== $sub_elements ) {
 			foreach ( $sub_elements as $sub_element ) {

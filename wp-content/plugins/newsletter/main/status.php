@@ -221,6 +221,8 @@ $speed = Newsletter::$instance->options['scheduler_max'];
                             
                             <?php echo esc_html($name) ?>
                         </td>
+                    </tr>
+                    
                     <tr>
                         <td>Mailing</td>
                         <td>
@@ -254,7 +256,24 @@ $speed = Newsletter::$instance->options['scheduler_max'];
                         </td>
 
                     </tr>
-
+                    
+                    <?php if (ini_get('opcache.validate_timestamps') === '0') { ?>
+                    
+                    <tr>
+                        <td>
+                            Opcache
+                        </td>
+                        
+                        <td>
+                            <span class="tnp-ko">KO</span>
+                        </td>
+                        
+                        <td>
+                            You have the PHP opcache active with file validation disable so every blog plugins update needs a webserver restart!
+                        </td>
+                    </tr>
+                    <?php } ?>
+                    
                     <?php
                     $return_path = $module->options['return_path'];
                     if (!empty($return_path)) {

@@ -16,7 +16,7 @@ class YOP_Poll_Votes {
     }
 	public static function add( $vote ) {
         self::$settings_messages = YOP_Poll_Settings::get_messages();
-		$poll = YOP_Poll_Polls::get_poll( $vote->pollId );
+		$poll = YOP_Poll_Polls::get_poll_for_admin( $vote->pollId );
 		$vote->user->ipaddress = YOP_Poll_Votes::get_voter_ip( $poll );
 		$vote->added_date = current_time( 'mysql' );
 		if ( 'wordpress' == $vote->user->type ) {
@@ -27,6 +27,9 @@ class YOP_Poll_Votes {
 			$vote->user->email = $current_user->user_email;
 		}
 		$vote->pollAuthor = $poll->author;
+		if ( false === self::$errors_present ) {
+			self::validate_start_end_date( $vote, $poll );
+		}
 		if ( false === self::$errors_present ) {
 			self::validate_data( $vote, $poll );
 		}
@@ -99,7 +102,7 @@ class YOP_Poll_Votes {
 		}
 	}
 	public static function add_manually( $vote ) {
-		$poll = YOP_Poll_Polls::get_poll( $vote->pollId );
+		$poll = YOP_Poll_Polls::get_poll_for_admin( $vote->pollId );
 		$vote->user->ipaddress = YOP_Poll_Votes::get_voter_ip( $poll );
 		$vote->added_date = current_time( 'mysql' );
 		if ( 'manually' == $vote->user->type ) {
@@ -113,6 +116,22 @@ class YOP_Poll_Votes {
 		self::create_meta_data( $vote );
 		self::record( $vote, $poll );
 		YOP_Poll_Logs::add( $vote, self::$errors_present, self::$error_text );
+	}
+	public static function validate_start_end_date( $vote, $poll ) {
+		if ( false === YOP_Poll_Polls::has_started_frontend( $poll ) ) {
+			self::$errors_present = true;
+			array_push(
+				self::$error_text,
+				self::$settings_messages['voting']['poll-not-started']
+			);
+		}
+		if ( ( false === self::$errors_present ) && ( true === YOP_Poll_Polls::has_ended_frontend( $poll ) ) ) {
+			self::$errors_present = true;
+			array_push(
+				self::$error_text,
+				self::$settings_messages['voting']['poll-ended']
+			);
+		}
 	}
 	public static function validate_data( $vote, $poll ) {
 		foreach ( $poll->elements as $element ) {
@@ -538,7 +557,7 @@ class YOP_Poll_Votes {
 				$voter_ip = filter_var( $_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP );
 			}
 			if ( 'anonymize' == $poll->meta_data['options']['poll']['gdprSolution'] ) {
-				$voter_ip = Helper::anonymize_ip( $voter_ip );
+				$voter_ip = YOP_Poll_Helper::anonymize_ip( $voter_ip );
 			}
 		}
 		return $voter_ip;
@@ -1323,10 +1342,10 @@ class YOP_Poll_Votes {
                 $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop_poll' ) );
                 $csv_file_name    = 'votes_export.' . date( 'YmdHis' ) . '.csv';
                 header( 'Content-Disposition: attachment; filename="' . $csv_file_name . '"' );
-                if ( !Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop_poll' );
+                if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop_poll' );
                 if ( count( $votes_for_csv ) > 0 ) {
                     foreach ( $votes_for_csv as $vote_data ) {
-                        if ( !Helper::yop_fputcsv( $f, $vote_data, ',', '"' ) ) _e( "Can't write votes!", 'yop_poll' );
+                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $vote_data, ',', '"' ) ) _e( "Can't write votes!", 'yop_poll' );
                     }
                 }
                 fclose( $f ) or show_error( __( "Can't close php://output!", 'yop_poll' ) );
@@ -1355,9 +1374,9 @@ class YOP_Poll_Votes {
                     $csv_file_name    = 'customs_export.' . date( 'YmdHis' ) . '.csv';
                     header( 'Content-Disposition: attachment; filename="' . $csv_file_name . '"' );
                     $customs_data_keys = array_keys( $customs_data );
-                    if ( !Helper::yop_fputcsv( $f, $customs_data[$customs_data_keys[0]]['headers'] ) ) _e( "Can't write header!", 'yop_poll' );
+                    if ( !YOP_Poll_Helper::yop_fputcsv( $f, $customs_data[$customs_data_keys[0]]['headers'] ) ) _e( "Can't write header!", 'yop_poll' );
                     foreach ( $customs_data as $ch ) {
-                        if ( !Helper::yop_fputcsv( $f, $ch['data'], ',', '"' ) ) _e( "Can't write votes!", 'yop_poll' );
+                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $ch['data'], ',', '"' ) ) _e( "Can't write votes!", 'yop_poll' );
                     }
                     fclose( $f ) or show_error( __( "Can't close php://output!", 'yop_poll' ) );
                 }

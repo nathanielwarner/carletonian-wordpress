@@ -364,10 +364,34 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 							</div>
 							<div class="form-group answers-display-section hide">
 								<div class="col-md-3">
-									<?php _e( 'Display answers', 'yop-poll' );?>
+									<?php _e( 'Number of columns', 'yop-poll' );?>
 								</div>
 								<div class="col-md-9">
 									<input type="text" name="button-label" class="form-control answers-columns"/>&nbsp;<?php _e( 'columns', 'yop-poll' );?>
+								</div>
+							</div>
+							<div class="form-group">
+								<div class="col-md-3">
+									<a href="#" class="upgrade-to-pro" data-screen="sort-answers">
+										<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
+									</a>
+									<?php _e( 'Sort Answers', 'yop-poll' ); ?>
+								</div>
+								<div class="col-md-9">
+									<select class="answers-sort" style="width:100%">
+										<option value="as-defined" selected>
+											<?php _e( 'As Defined', 'yop-poll' );?>
+										</option>
+										<option value="alphabetically-asc">
+											<?php _e( 'Alphabetically Ascending', 'yop-poll' );?>
+										</option>
+										<option value="alphabetically-desc">
+											<?php _e( 'Alphabetically Descending', 'yop-poll' );?>
+										</option>
+										<option value="random">
+											<?php _e( 'Randomly', 'yop-poll' );?>
+										</option>
+									</select>
 								</div>
 							</div>
 						</div>
