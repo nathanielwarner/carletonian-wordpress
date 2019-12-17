@@ -2,7 +2,8 @@
     "name": "nathaniel/carletonian-wordpress",
     "type": "project",
     "require": {
-        "vlucas/phpdotenv": "^3.3"
+        "vlucas/phpdotenv": "^3.3",
+        "humanmade/s3-uploads": "^2.2.1"
     },
     "license": "GPLv2"
 }
