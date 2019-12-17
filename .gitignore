@@ -2,3 +2,4 @@
 /node_modules/
 /.idea/
 .env
+/wp-content/plugins/s3-uploads/
