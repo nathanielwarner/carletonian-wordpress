@@ -3579,7 +3579,7 @@ Make the border lines for the homepage archives
     display: block;
   }
 
-  .wp-block-columns {
+  .post-203 .wp-block-columns {
     border-left: 1px solid #dcdcdc;
     border-right: 1px solid #dcdcdc;
     border-bottom: 1px solid #dcdcdc;
