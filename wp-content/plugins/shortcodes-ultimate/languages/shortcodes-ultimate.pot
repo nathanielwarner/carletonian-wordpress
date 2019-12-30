@@ -2826,79 +2826,79 @@ msgstr ""
 msgid "Row for flexible columns"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:7
+#: includes/shortcodes/scheduler.php:8
 msgid "Scheduler"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:13
+#: includes/shortcodes/scheduler.php:14
 msgid "Time"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:14
-msgid "In this field you can specify one or more time ranges. Every day at this time the content of shortcode will be visible. %s %s %s - show content from 9:00 to 18:00 %s - show content from 9:00 to 13:00 and from 14:00 to 18:00 %s - example with minutes (content will be visible each day, 45 minutes) %s - example with seconds"
+#: includes/shortcodes/scheduler.php:15
+msgid "In this field you can specify one or more time ranges. Every day at this time the content of shortcode will be visible. %1$s %2$s %3$s - show content from 9:00 to 18:00 %4$s - show content from 9:00 to 13:00 and from 14:00 to 18:00 %5$s - example with minutes (content will be visible each day, 45 minutes) %6$s - example with seconds"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:14, includes/shortcodes/scheduler.php:19, includes/shortcodes/scheduler.php:24, includes/shortcodes/scheduler.php:29, includes/shortcodes/scheduler.php:34
+#: includes/shortcodes/scheduler.php:15, includes/shortcodes/scheduler.php:20, includes/shortcodes/scheduler.php:25, includes/shortcodes/scheduler.php:30, includes/shortcodes/scheduler.php:35
 msgid "Examples (click to set)"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:18
+#: includes/shortcodes/scheduler.php:19
 msgid "Days of the week"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:19
-msgid "In this field you can specify one or more days of the week. Every week at these days the content of shortcode will be visible. %s 0 - Sunday %s 1 - Monday %s 2 - Tuesday %s 3 - Wednesday %s 4 - Thursday %s 5 - Friday %s 6 - Saturday %s %s %s - show content from Monday to Friday %s - show content only at Sunday %s - show content at Sunday and from Wednesday to Friday"
-msgstr ""
-
-#: includes/shortcodes/scheduler.php:23
-msgid "Days of the month"
+#: includes/shortcodes/scheduler.php:20
+msgid "In this field you can specify one or more days of the week. Every week at these days the content of shortcode will be visible. %1$s 0 - Sunday %2$s 1 - Monday %3$s 2 - Tuesday %4$s 3 - Wednesday %5$s 4 - Thursday %6$s 5 - Friday %7$s 6 - Saturday %8$s %9$s %10$s - show content from Monday to Friday %11$s - show content only at Sunday %12$s - show content at Sunday and from Wednesday to Friday"
 msgstr ""
 
 #: includes/shortcodes/scheduler.php:24
-msgid "In this field you can specify one or more days of the month. Every month at these days the content of shortcode will be visible. %s %s %s - show content only at first day of month %s - show content from 1th to 5th %s - show content from 10th to 15th and from 20th to 25th"
+msgid "Days of the month"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:28
-msgid "Months"
+#: includes/shortcodes/scheduler.php:25
+msgid "In this field you can specify one or more days of the month. Every month at these days the content of shortcode will be visible. %1$s %2$s %3$s - show content only at first day of month %4$s - show content from 1th to 5th %5$s - show content from 10th to 15th and from 20th to 25th"
 msgstr ""
 
 #: includes/shortcodes/scheduler.php:29
-msgid "In this field you can specify the month or months in which the content will be visible. %s %s %s - show content only in January %s - show content from February to June %s - show content in January, March and from May to July"
+msgid "Months"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:33
-msgid "Years"
+#: includes/shortcodes/scheduler.php:30
+msgid "In this field you can specify the month or months in which the content will be visible. %1$s %2$s %3$s - show content only in January %4$s - show content from February to June %5$s - show content in January, March and from May to July"
 msgstr ""
 
 #: includes/shortcodes/scheduler.php:34
-msgid "In this field you can specify the year or years in which the content will be visible. %s %s %s - show content only in 2014 %s - show content from 2014 to 2016 %s - show content in 2014, 2018 and from 2020 to 2022"
+msgid "Years"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:38
-msgid "Alternative text"
+#: includes/shortcodes/scheduler.php:35
+msgid "In this field you can specify the year or years in which the content will be visible. %1$s %2$s %3$s - show content only in 2014 %4$s - show content from 2014 to 2016 %5$s - show content in 2014, 2018 and from 2020 to 2022"
 msgstr ""
 
 #: includes/shortcodes/scheduler.php:39
+msgid "Alternative text"
+msgstr ""
+
+#: includes/shortcodes/scheduler.php:40
 msgid "In this field you can type the text which will be shown if content is not visible at the current moment"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:42
+#: includes/shortcodes/scheduler.php:43
 msgid "Scheduled content"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:43
+#: includes/shortcodes/scheduler.php:44
 msgid "Allows to show the content only at the specified time period"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:44
+#: includes/shortcodes/scheduler.php:45
 msgid "This shortcode allows you to show content only at the specified time."
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:44
+#: includes/shortcodes/scheduler.php:45
 msgid "Please pay special attention to the descriptions, which are located below each text field. It will save you a lot of time"
 msgstr ""
 
-#: includes/shortcodes/scheduler.php:44
+#: includes/shortcodes/scheduler.php:45
 msgid "By default, the content of this shortcode will be visible all the time. By using fields below, you can add some limitations. For example, if you type 1-5 in the Days of the week field, content will be only shown from Monday to Friday. Using the same principles, you can limit content visibility from years to seconds."
 msgstr ""
 
@@ -3212,7 +3212,7 @@ msgstr ""
 msgid "Tab name"
 msgstr ""
 
-#: includes/shortcodes/tabs.php:81, includes/shortcodes/tabs.php:189
+#: includes/shortcodes/tabs.php:81, includes/shortcodes/tabs.php:190
 msgid "Tab title"
 msgstr ""
 
