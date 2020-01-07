@@ -52,9 +52,10 @@ if ($controls->is_action()) {
 
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Disable antibot/antispam?', 'newsletter') ?></th>
+                            <th><?php _e('Disable antibot', 'newsletter') ?></th>
                             <td>
                                 <?php $controls->yesno('disabled'); ?>
+                                <?php $controls->help('https://www.thenewsletterplugin.com/documentation/antiflood') ?>
                                 <p class="description">
                                     <?php _e('Disable for ajax form submission', 'newsletter'); ?>
                                 </p>

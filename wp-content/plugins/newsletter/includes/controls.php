@@ -412,7 +412,7 @@ class NewsletterControls {
         if (!$current_language) {
             return;
         }
-        $this->warnings[] = 'You are configuring the language <strong>' . $newsletter->get_language_label($current_language) . '</strong>. Switch to "all languages" to see every options.';
+        $this->warnings[] = 'You are configuring the language <strong>' . $newsletter->get_language_label($current_language) . '</strong>. Switch to "all languages" to see all options.';
     }
 
     function hint($text, $url = '') {
