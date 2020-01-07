@@ -3,6 +3,8 @@
 require_once(__DIR__ . '/../wp-load.php');
 require_once(__DIR__ . '/../wp-admin/includes/user.php');
 
+global $coauthors_plus;
+
 wp_cache_flush();
 
 $users = get_users();
@@ -35,6 +37,10 @@ function get_embedded_users($user)
     return $new_users;
 }
 
+function get_user_login($user) {
+    return $user->user_login;
+}
+
 foreach ($users as $user) {
     $new_users = get_embedded_users($user);
     if (count($new_users) > 0) {
@@ -43,6 +49,18 @@ foreach ($users as $user) {
             echo $new_user->user_login . " (" . $new_user->ID . "), ";
         }
         echo "\n";
+        $posts = get_posts(array('author' => $user->ID));
+        $new_user_names = array_map('get_user_login', $new_users);
+        foreach ($posts as $post) {
+            echo $post->post_name . "\n";
+            wp_update_post(array(
+                'ID' => $post->ID,
+                'post_author' => $new_users[0]->ID
+            ));
+            $coauthors_plus->add_coauthors($post->ID, $new_user_names);
+        }
+        wp_delete_user($user->ID);
+        echo "\n\n";
     }
 }
 
