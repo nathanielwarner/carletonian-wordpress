@@ -1,9 +1,6 @@
 <?php
 
-if (!defined('ABSPATH'))
-    exit;
-
-require_once NEWSLETTER_INCLUDES_DIR . '/module.php';
+defined('ABSPATH') || exit;
 
 class NewsletterSubscription extends NewsletterModule {
 
@@ -162,7 +159,7 @@ class NewsletterSubscription extends NewsletterModule {
         global $wpdb;
         // TODO: Optimize!
         $options = $this->get_options('antibot');
-        
+
         if (empty($options['antiflood'])) {
             return false;
         }
@@ -191,7 +188,7 @@ class NewsletterSubscription extends NewsletterModule {
     function is_spam_by_akismet($email, $name, $ip, $agent, $referrer) {
         // TODO: Optimize!
         $options = $this->get_options('antibot');
-        
+
         if (empty($options['akismet'])) {
             return false;
         }
@@ -215,6 +212,61 @@ class NewsletterSubscription extends NewsletterModule {
             return true;
         }
         return false;
+    }
+
+    /**
+     * $email must be cleaned using the is_email() function.
+     * 
+     * @param type $email
+     * @param type $full_name
+     * @param type $ip
+     */
+    function valid_subscription_or_die($email, $full_name, $ip) {
+        $antibot_logger = new NewsletterLogger('antibot');
+        
+        if (empty($email)) {
+            echo 'Wrong email';
+            header("HTTP/1.0 400 Bad request");
+            die();
+        }
+        
+        if ($this->is_spam_text($full_name)) {
+            $antibot_logger->fatal($email . ' - ' . $ip . ' - Name with http: ' . $full_name);
+            header("HTTP/1.0 404 Not Found");
+            die();
+        }
+
+        if ($this->is_missing_domain_mx($email)) {
+            $antibot_logger->fatal($email . ' - ' . $ip . ' - MX check failed');
+            header("HTTP/1.0 404 Not Found");
+            die();
+        }
+
+        if ($this->is_ip_blacklisted($ip)) {
+            $antibot_logger->fatal($email . ' - ' . $ip . ' - IP blacklisted');
+            header("HTTP/1.0 404 Not Found");
+            die();
+        }
+
+        if ($this->is_address_blacklisted($email)) {
+            $antibot_logger->fatal($email . ' - ' . $ip . ' - Address blacklisted');
+            header("HTTP/1.0 404 Not Found");
+            die();
+        }
+
+        // Akismet check
+        if ($this->is_spam_by_akismet($email, $full_name, $ip, $_SERVER['HTTP_USER_AGENT'], $_SERVER['HTTP_REFERER'])) {
+            $antibot_logger->fatal($email . ' - ' . $ip . ' - Akismet blocked');
+            header("HTTP/1.0 404 Not Found");
+            die();
+        }
+
+        // Flood check
+        if ($this->is_flood($email, $ip)) {
+            $antibot_logger->fatal($email . ' - ' . $ip . ' - Antiflood triggered');
+            header("HTTP/1.0 404 Not Found");
+            die('Too quick');
+        }
     }
 
     /**
@@ -274,88 +326,27 @@ class NewsletterSubscription extends NewsletterModule {
             case 's':
             case 'subscribe':
 
-                $ip = $this->get_remote_ip();
-                $email = $this->normalize_email($_REQUEST['ne']);
-                $first_name = '';
-                if (isset($_REQUEST['nn']))
-                    $first_name = $this->normalize_name($_REQUEST['nn']);
-
-                $last_name = '';
-                if (isset($_REQUEST['ns']))
-                    $last_name = $this->normalize_name($_REQUEST['ns']);
-
-                $full_name = trim($first_name . ' ' . $last_name);
-
-                $antibot_logger = new NewsletterLogger('antibot');
-
                 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                    $antibot_logger->fatal($email . ' - ' . $ip . ' - HTTP method invalid');
+                    $antibot_logger->fatal('HTTP method invalid');
                     die('Invalid');
                 }
-                
+
                 $options_antibot = $this->get_options('antibot');
 
                 $captcha = !empty($options_antibot['captcha']);
 
                 if (!empty($options_antibot['disabled']) || $this->antibot_form_check($captcha)) {
 
+                    $user = $this->subscribe();
 
-                    if ($this->is_spam_text($full_name)) {
-                        $antibot_logger->fatal($email . ' - ' . $ip . ' - Name with http: ' . $full_name);
-                        header("HTTP/1.0 404 Not Found");
-                        die();
-                    }
-
-                    // Cannot check for administrator here, too early.
-                    if (true) {
-
-                        $this->logger->debug('Subscription of: ' . $email);
-
-                        // 404 is returned to attempt to make the bot believe the url has been changed
-
-                        if ($this->is_missing_domain_mx($email)) {
-                            $antibot_logger->fatal($email . ' - ' . $ip . ' - MX check failed');
-                            header("HTTP/1.0 404 Not Found");
-                            die();
-                        }
-
-                        if ($this->is_ip_blacklisted($ip)) {
-                            $antibot_logger->fatal($email . ' - ' . $ip . ' - IP blacklisted');
-                            header("HTTP/1.0 404 Not Found");
-                            die();
-                        }
-
-                        if ($this->is_address_blacklisted($email)) {
-                            $antibot_logger->fatal($email . ' - ' . $ip . ' - Address blacklisted');
-                            header("HTTP/1.0 404 Not Found");
-                            die();
-                        }
-
-                        // Akismet check
-                        if ($this->is_spam_by_akismet($email, $full_name, $ip, $_SERVER['HTTP_USER_AGENT'], $_SERVER['HTTP_REFERER'])) {
-                            $antibot_logger->fatal($email . ' - ' . $ip . ' - Akismet blocked');
-                            header("HTTP/1.0 404 Not Found");
-                            die();
-                        }
-
-                        // Flood check
-                        if ($this->is_flood($email, $ip)) {
-                            $antibot_logger->fatal($email . ' - ' . $ip . ' - Antiflood triggered');
-                            header("HTTP/1.0 404 Not Found");
-                            die('Too quick');
-                        }
-
-                        $user = $this->subscribe();
-
-                        if ($user->status == 'E')
-                            $this->show_message('error', $user);
-                        if ($user->status == 'C')
-                            $this->show_message('confirmed', $user);
-                        if ($user->status == 'A')
-                            $this->show_message('already_confirmed', $user);
-                        if ($user->status == 'S')
-                            $this->show_message('confirmation', $user);
-                    }
+                    if ($user->status == 'E')
+                        $this->show_message('error', $user);
+                    if ($user->status == 'C')
+                        $this->show_message('confirmed', $user);
+                    if ($user->status == 'A')
+                        $this->show_message('already_confirmed', $user);
+                    if ($user->status == 'S')
+                        $this->show_message('confirmation', $user);
                 } else {
                     // Temporary store data
                     //$data_key =  wp_generate_password(16, false, false);
@@ -367,7 +358,14 @@ class NewsletterSubscription extends NewsletterModule {
 
             // AJAX subscription
             case 'ajaxsub':
+
+                if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+                    $antibot_logger->fatal('HTTP method invalid');
+                    die('Invalid');
+                }
+
                 $user = $this->subscribe();
+
                 if ($user->status == 'E')
                     $key = 'error';
                 if ($user->status == 'C')
@@ -376,10 +374,11 @@ class NewsletterSubscription extends NewsletterModule {
                     $key = 'already_confirmed';
                 if ($user->status == 'S')
                     $key = 'confirmation';
-                $module = NewsletterSubscription::instance();
-                $message = $newsletter->replace($module->options[$key . '_text'], $user);
-                if (isset($module->options[$key . '_tracking'])) {
-                    $message .= $module->options[$key . '_tracking'];
+
+
+                $message = $newsletter->replace($this->options[$key . '_text'], $user);
+                if (isset($this->options[$key . '_tracking'])) {
+                    $message .= $this->options[$key . '_tracking'];
                 }
                 echo $message;
                 die();
@@ -466,35 +465,11 @@ class NewsletterSubscription extends NewsletterModule {
             $this->save_options($this->options);
         }
 
-        if ($this->old_version < '2.0.0') {
-            if (!isset($this->options['url']) && !empty($newsletter->options['url'])) {
-                $this->options['url'] = $newsletter->options['url'];
-                $this->save_options($this->options);
-            }
-
-            $options_template = $this->get_options('template');
-            if (empty($options_template) && isset($this->options['template'])) {
-                $options_template['enabled'] = isset($this->options['template_enabled']) ? 1 : 0;
-                $options_template['template'] = $this->options['template'];
-                add_option('newsletter_subscription_template', $options_template, null, 'no');
-            }
-
-            if (isset($this->options['template'])) {
-                unset($this->options['template']);
-                unset($this->options['template_enabled']);
-                $this->save_options($this->options);
-            }
-        }
-
         $this->init_options('template', false);
-
-
 
         global $wpdb, $charset_collate;
 
         require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-
-
 
         $sql = "CREATE TABLE `" . $wpdb->prefix . "newsletter_user_logs` (
             `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -622,12 +597,30 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     /**
-     * Return the subscribed user.
-     *
-     * @param bool $registration If invoked from the registration process
-     * @global Newsletter $newsletter
+     * Create a subscription using the $_REQUEST data. Does security checks.
+     * 
+     * @param string $status The status to use for this subscription (confirmed, not confirmed, ...)
+     * @param bool $emails If the confirmation/welcome email should be sent or the subscription should be silent
+     * @return TNP_User
      */
     function subscribe($status = null, $emails = true) {
+
+        // Validation
+        $ip = $this->get_remote_ip();
+        $email = $this->normalize_email(stripslashes($_REQUEST['ne']));
+        $first_name = '';
+        if (isset($_REQUEST['nn'])) {
+            $first_name = $this->normalize_name($_REQUEST['nn']);
+        }
+
+        $last_name = '';
+        if (isset($_REQUEST['ns'])) {
+            $last_name = $this->normalize_name($_REQUEST['ns']);
+        }
+
+        $full_name = trim($first_name . ' ' . $last_name);
+
+        $this->valid_subscription_or_die($email, $full_name, $ip);
 
         $opt_in = (int) $this->options['noconfirmation']; // 0 - double, 1 - single
         if (!empty($this->options['optin_override']) && isset($_REQUEST['optin'])) {
@@ -648,13 +641,6 @@ class NewsletterSubscription extends NewsletterModule {
             } else {
                 $opt_in = self::OPTIN_DOUBLE;
             }
-        }
-
-        $email = $this->normalize_email(stripslashes($_REQUEST['ne']));
-
-        // Shound never reach this point without a valid email address
-        if ($email == null) {
-            die('Wrong email');
         }
 
         $user = $this->get_user($email);
@@ -729,7 +715,6 @@ class NewsletterSubscription extends NewsletterModule {
 
 
         $user['token'] = $this->get_token();
-        $ip = $this->get_remote_ip();
         $ip = $this->process_ip($ip);
         $user['ip'] = $ip;
         $user['geo'] = 0;
