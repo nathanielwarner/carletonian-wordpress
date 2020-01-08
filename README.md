@@ -16,10 +16,5 @@ After you have that set up, you'll need to do the following:
 
 You'll then be able to navigate in your browser to `localhost` or wherever the server is running.
 
-### General guidelines
-
-Every time you modify a JS file, you'll need to run `grunt` to create the minified version.
-The specific files that will be compiled are specified in the Gruntfile.
-
 ### Wait, this isn't all the documentation, is it??
 Of course not. The architecture of [thecarletonian.com](thecarletonian.com) is explained in depth in `docs.md`.
