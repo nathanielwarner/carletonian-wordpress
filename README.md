@@ -14,4 +14,4 @@ After you have that set up, you'll need to do the following:
 You'll then be able to navigate in your browser to `localhost` or wherever the server is running.
 
 ### Wait, this isn't all the documentation, is it??
-Of course not. The architecture of [https://thecarletonian.com](thecarletonian.com) is explained in depth in `docs.md`.
+Of course not. The architecture of [thecarletonian.com](https://thecarletonian.com) is explained in depth in `docs.md`.
