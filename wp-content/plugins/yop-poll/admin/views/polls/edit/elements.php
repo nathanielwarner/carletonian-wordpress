@@ -82,7 +82,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 </div>
 <div class="row">
 	<div class="poll-elements" data-remove="">
-		<div class="poll-elements-list" style="min-height: 200px;">
+		<div class="poll-elements-list" style="min-height: 200px;" data-remove="">
 			<?php
 			foreach ( $poll->elements as $element ) {
 				switch( $element->etype) {
@@ -91,8 +91,10 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 						<div class="poll-element question" data-type="text-question" data-id="<?php echo $element->id;?>" data-remove="">
 							<div class="title-bar">
 								<span class="bar-title pull-left poll-element-collapse">
-									<?php _e( 'Question', 'yop-poll' );?>
-									<span class="glyphicon glyphicon-chevron-down hspace" aria-hidden="true"></span>
+									<span class="glyphicon glyphicon-chevron-down hspace collapse-element" aria-hidden="true"></span>
+								</span>
+								<span class="bar-title pull-left poll-element-collapse element-title">
+									<?php echo substr( esc_html( $element->etext ), 0, 50 );?>
 								</span>
 								<span class="pull-right actions">
 									<a href="#" class="hspace add-text-answer" title="<?php _e( 'Add Answer', 'yop-poll' );?>">
@@ -231,7 +233,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 													$element_allow_other_answers_class = 'hide';
 												}
 												?>
-												<select class="allow-other-answers" style="width:100%">
+												<select class="allow-other-answers admin-select" style="width:100%">
 													<option value="yes" <?php echo $element_allow_other_answers_yes?>><?php _e( 'Yes', 'yop-poll' );?></option>
 													<option value="no" <?php echo $element_allow_other_answers_no?>><?php _e( 'No', 'yop-poll' );?></option>
 												</select>
@@ -260,7 +262,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 														$element_add_other_answers_no = 'selected';
 													}
 													?>
-													<select class="add-other-answers" style="width:100%">
+													<select class="add-other-answers admin-select" style="width:100%">
 														<option value="yes" <?php echo $element_add_other_answers_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 														<option value="no" <?php echo $element_add_other_answers_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 													</select>
@@ -282,7 +284,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 														$other_answers_results_color_section_class = 'hide';
 													}
 													?>
-													<select class="display-other-answers-in-results" style="width:100%">
+													<select class="display-other-answers-in-results admin-select" style="width:100%">
 														<option value="yes" <?php echo $element_display_other_answers_in_results_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 														<option value="no" <?php echo $element_display_other_answers_in_results_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 													</select>
@@ -320,7 +322,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 													$element_allow_multiple_answers_class = 'hide';
 												}
 												?>
-												<select class="allow-multiple-answers" style="width:100%">>
+												<select class="allow-multiple-answers admin-select" style="width:100%">>
 													<option value="yes" <?php echo $element_allow_multiple_answers_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 													<option value="no"  <?php echo $element_allow_multiple_answers_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 												</select>
@@ -374,7 +376,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 													}
 												}
 												?>
-												<select class="answers-display" style="width:100%">
+												<select class="answers-display admin-select" style="width:100%">
 													<option value="vertical" <?php echo $element_answers_display_vertical;?>>
 														<?php _e( 'Vertical', 'yop-poll' );?>
 													</option>
@@ -436,7 +438,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 													}
 												}
 												?>
-												<select class="answers-sort" style="width:100%">
+												<select class="answers-sort admin-select" style="width:100%">
 													<option value="as-defined" <?php echo $element_answers_sort_as_defined;?>>
 														<?php _e( 'As Defined', 'yop-poll' );?>
 													</option>
@@ -464,8 +466,10 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 						<div class="poll-element question" data-type="custom-field" data-id="<?php echo $element->id;?>" data-remove="">
 							<div class="title-bar">
 								<span class="bar-title pull-left poll-element-collapse">
-									<?php _e( 'Custom Field', 'yop-poll' );?>
-									<span class="glyphicon glyphicon-chevron-down hspace" aria-hidden="true"></span>
+									<span class="glyphicon glyphicon-chevron-down hspace collapse-element" aria-hidden="true"></span>
+								</span>
+								<span class="bar-title pull-left poll-element-collapse element-title">
+									<?php echo substr( esc_html( $element->etext ), 0, 50 );?>
 								</span>
 								<span class="pull-right actions">
 									<a href="#" class="hspace custom-field-edit-more" title="<?php _e( 'Edit', 'yop-poll' );?>">
@@ -532,7 +536,7 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 												$custom_field_type_textfield = 'selected';
 											}
 											?>
-											<select class="custom-field-type" style="width: 100%">
+											<select class="custom-field-type admin-select" style="width: 100%">
 												<option value="textfield" <?php echo $custom_field_type_textfield;?>>
 													<?php _e( 'Textfield', 'yop-poll' );?>
 												</option>

@@ -531,7 +531,9 @@ class YOP_Poll_Polls {
 		}
 		return array(
 			'success' => !self::$errors_present,
-			'error' => self::$error_text
+			'error' => self::$error_text,
+			'new-elements' => $elements_result['new_elements'],
+			'new-subelements' => $elements_result['new_subelements'],
 		);
 	}
 	public static function delete( $poll_id ) {
@@ -1694,7 +1696,11 @@ class YOP_Poll_Polls {
 						$poll_element->answers[] = $poll_sub_element;
 					}
 				}
-				if ( ( true === isset( $poll_element->meta_data['displayOtherAnswersInResults'] ) ) && ( 'yes' === $poll_element->meta_data['displayOtherAnswersInResults'] ) ) {
+				if ( 
+					( true === isset( $poll_element->meta_data['displayOtherAnswersInResults'] ) ) && 
+					( 'yes' === $poll_element->meta_data['displayOtherAnswersInResults'] ) &&
+					( 'no' === $poll_element->meta_data['addOtherAnswers'] )
+					) {
 					$element_other_answers = YOP_Poll_Other_Answers::get_for_element( $poll_element->id );
 					if ( count( $element_other_answers ) > 0 ) {
 						$i = 1;

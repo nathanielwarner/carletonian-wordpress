@@ -12,7 +12,7 @@ class YOP_Poll_Admin {
             add_action( 'admin_menu', array( &$this, 'build_admin_menu' ) );
             add_action( 'plugins_loaded', array( &$this, 'verify_update' ) );
             add_action( 'plugins_loaded', array( $this, 'load_translations') );
-            add_action( 'admin_enqueue_scripts', array( &$this, 'load_dependencies' ) );
+            add_action( 'admin_enqueue_scripts', array( &$this, 'load_dependencies' ), 1000 );
             add_action( 'wp_ajax_create_yop_poll', array( &$this, 'create_poll' ) );
             add_action( 'wp_ajax_update_yop_poll', array( &$this, 'update_poll' ) );
             add_action( 'wp_ajax_delete_single_yop_poll', array( &$this, 'delete_single_poll' ) );
@@ -95,6 +95,10 @@ class YOP_Poll_Admin {
 			if ( true === version_compare( $installed_version, '6.1.1', '<' ) ) {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_1_1();
+			}
+			if ( true === version_compare( $installed_version, '6.1.2', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_1_2();
 			}
         }
 	}
@@ -554,7 +558,13 @@ class YOP_Poll_Admin {
 		if ( current_user_can( 'yop_poll_add' ) && check_ajax_referer( 'yop-poll-add-poll', '_token', false ) ) {
 			$result = YOP_Poll_Polls::add( json_decode( wp_unslash( $_POST['poll'] ) ) );
 			if ( true === $result['success'] ) {
-				wp_send_json_success( __( 'Poll successfully added', 'yop-poll' ) );
+				wp_send_json_success( 
+					array(
+						'success' => true,
+						'message' => __( 'Poll successfully added', 'yop-poll' ),
+						'pollId' => $result['poll_id']
+					)
+				);
 			} else {
 				wp_send_json_error( $result['error'] );
 			}
@@ -573,7 +583,14 @@ class YOP_Poll_Admin {
 			) {
 				$result = YOP_Poll_Polls::update( $poll );
 				if ( true === $result['success'] ) {
-					wp_send_json_success( __( 'Poll successfully updated', 'yop-poll' ) );
+					wp_send_json_success( 
+						array(
+							'success' => true,
+							'message' => __( 'Poll successfully updated', 'yop-poll' ),
+							'newElements' => $result['new-elements'],
+							'newSubElements' => $result['new-subelements'],
+						)
+					);
 				} else {
 					wp_send_json_error( $result['error'] );
 				}

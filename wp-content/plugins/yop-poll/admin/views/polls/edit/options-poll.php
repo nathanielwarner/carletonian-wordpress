@@ -37,7 +37,7 @@
 						$show_results_link_class = 'hide';
 			        }
 			        ?>
-			        <select class="show-results-link" style="width:100%">
+			        <select class="show-results-link admin-select" style="width:100%">
 			            <option value="yes" <?php echo $show_results_link_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" <?php echo $show_results_link_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -65,7 +65,7 @@
 			            $show_total_votes_no = 'selected';
 			        }
 			        ?>
-			        <select class="show-total-votes" style="width:100%">
+			        <select class="show-total-votes admin-select" style="width:100%">
 			            <option value="yes" <?php echo $show_total_votes_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" <?php echo $show_total_votes_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -85,7 +85,7 @@
 			            $show_total_answers_no = 'selected';
 			        }
 			        ?>
-			        <select class="show-total-answers" style="width:100%">
+			        <select class="show-total-answers admin-select" style="width:100%">
 			            <option value="yes" <?php echo $show_total_answers_yes; ?>><?php _e( 'Yes', 'yop-poll' ) ;?></option>
 			            <option value="no" <?php echo $show_total_answers_no; ?>><?php _e( 'No', 'yop-poll' ); ?></option>
 			        </select>
@@ -119,7 +119,7 @@
 						$load_with_ajax_no = 'selected';
 					}
 					?>
-					<select class="load-with-ajax" style="width:100%">
+					<select class="load-with-ajax admin-select" style="width:100%">
 			            <option value="yes" <?php echo $load_with_ajax_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" <?php echo $load_with_ajax_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -141,7 +141,7 @@
 			            $start_date_custom_class = '';
 			        }
 			        ?>
-					<select class="start-date-option" style="width:100%">
+					<select class="start-date-option admin-select" style="width:100%">
 			            <option value="now" <?php echo $start_date_now;?>><?php _e( 'Now', 'yop-poll' );?></option>
 			            <option value="custom" <?php echo $start_date_custom;?>><?php _e( 'Custom Date', 'yop-poll' );?></option>
 			        </select>
@@ -176,7 +176,7 @@
 			            $end_date_custom_class = '';
 			        }
 			        ?>
-			        <select class="end-date-option" style="width:100%">
+			        <select class="end-date-option admin-select" style="width:100%">
 			            <option value="never" <?php echo $end_date_never;?>><?php _e( 'Never', 'yop-poll' );?></option>
 			            <option value="custom" <?php echo $end_date_custom;?>><?php _e( 'Custom Date', 'yop-poll' );?></option>
 			        </select>
@@ -213,7 +213,7 @@
 						$redirect_url = '';
 			        }
 			        ?>
-			        <select class="redirect-after-vote" style="width:100%">
+			        <select class="redirect-after-vote admin-select" style="width:100%">
 			            <option value="yes" <?php echo $redirect_after_vote_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" <?php echo $redirect_after_vote_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -243,7 +243,7 @@
 						$reset_poll_stats_automatically_class = 'hide';
 			        }
 			        ?>
-			        <select class="reset-poll-stats-automatically" style="width:100%">
+			        <select class="reset-poll-stats-automatically admin-select" style="width:100%">
 			            <option value="yes" <?php echo $reset_poll_stats_automatically_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" <?php echo $reset_poll_stats_automatically_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -285,7 +285,7 @@
                         }
                     }
                     ?>
-                    <select class="reset-poll-stats-every-period" style="width:100%">
+                    <select class="reset-poll-stats-every-period admin-select" style="width:100%">
                         <option value="hours" <?php echo $reset_poll_stats_every_period_hours;?>><?php _e( 'Hours', 'yop-poll' );?></option>
                         <option value="days" <?php echo $reset_poll_stats_every_period_days;?>><?php _e( 'Days', 'yop-poll' );?></option>
                     </select>
@@ -305,7 +305,7 @@
 			            $auto_generate_poll_page_no = 'selected';
 			        }
 			        ?>
-			        <select class="auto-generate-poll-page" style="width:100%">
+			        <select class="auto-generate-poll-page admin-select" style="width:100%">
 			            <option value="yes" <?php echo $auto_generate_poll_page_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" <?php echo $auto_generate_poll_page_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -340,7 +340,7 @@
 						}
 					}
 			        ?>
-			        <select class="use-captcha" style="width:100%">
+			        <select class="use-captcha admin-select" style="width:100%">
 						<option value="no" <?php echo $use_captcha_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 						<optgroup label="<?php _e( 'Yes', 'yop-poll' );?>">
 							<option value="yes" <?php echo $use_captcha_built_in_yes;?>><?php _e( 'Use built in Captcha', 'yop-poll' );?></option>
@@ -375,7 +375,7 @@
 			            $send_email_notifications_class = 'hide';
 			        }
 			        ?>
-			        <select class="send-email-notifications" style="width:100%">
+			        <select class="send-email-notifications admin-select" style="width:100%">
 			            <option value="yes" <?php echo $send_email_notifications_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" <?php echo $send_email_notifications_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -453,7 +453,7 @@
 						$enable_gdpr_consent_class = 'hide';
 			        }
 			        ?>
-					<select class="enable-gdpr" style="width:100%">
+					<select class="enable-gdpr admin-select" style="width:100%">
 			            <option value="yes" <?php echo $enable_gdpr_yes?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no"  <?php echo $enable_gdpr_no?>><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -487,7 +487,7 @@
 						}
 					}
 					?>
-					<select class="gdpr-solution" style="width:100%">
+					<select class="gdpr-solution admin-select" style="width:100%">
 			            <option value="consent" <?php echo $gdpr_solution_consent;?>><?php _e( 'Ask for consent ( Ip Addresses will be stored and cookies will be enabled )', 'yop-poll' );?></option>
 			            <option value="anonymize" <?php echo $gdpr_solution_anonymize;?>><?php _e( 'Anonymize Ip Addresses ( Cookies will be disabled ) ', 'yop-poll' );?></option>
 						<option value="nostore" <?php echo $gdpr_solution_nostore;?>><?php _e( 'Do not store Ip Addresses ( Cookies will be disabled ) ', 'yop-poll' );?></option>

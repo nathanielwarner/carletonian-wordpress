@@ -52,6 +52,8 @@ class YOP_POLL_Elements {
 		$element_id = 0;
 		$query_result_error = false;
 		$current_user = wp_get_current_user();
+		$new_elements = [];
+		$i = 0;
 		foreach( $elements as $element ) {
 			if ( false === self::$errors_present ) {
 				$data = array(
@@ -77,6 +79,10 @@ class YOP_POLL_Elements {
 					$data['added_date'] = current_time( 'mysql' );
 					$query_result_error = $GLOBALS['wpdb']->insert( $GLOBALS['wpdb']->yop_poll_elements, $data );
 					$element_id = $GLOBALS['wpdb']->insert_id;
+					$new_elements[$i] = new stdClass();
+					$new_elements[$i]->uid = $element->uid;
+					$new_elements[$i]->id = $element_id;
+					$i++;
 				}
 				if ( false !== $query_result_error ) {
 					if ( true === in_array( $element->type, array( 'text-question', 'media-question' ) ) ) {
@@ -99,7 +105,9 @@ class YOP_POLL_Elements {
 		}
 		return array(
 			'errors_present' => self::$errors_present,
-			'error_text' => self::$error_text
+			'error_text' => self::$error_text,
+			'new_elements'=> $new_elements,
+			'new_subelements' => $sub_elements_result['new_subelements']
 		);
 	}
 	public static function delete( $poll_id, $element_id ) {

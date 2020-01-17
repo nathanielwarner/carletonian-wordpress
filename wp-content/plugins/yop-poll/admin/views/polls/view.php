@@ -270,7 +270,7 @@ switch( $params['order_by'] ) {
             <form method="get" style="float: left; padding-right: 20px;">
                 <input type="hidden" name="_token" value="<?php echo wp_create_nonce( 'yop-poll-view-polls' ); ?>">
                 <input type="hidden" name="page" value="yop-polls">
-                <input type="text" name="perpage" value="<?php echo isset( $_REQUEST['perpage'] ) ?  $_REQUEST['perpage'] : 10; ?>" style="max-width: 50px;"> <?php _e( 'items', 'yop-poll' ); ?> / <?php _e( 'page', 'yop-poll' ); ?>
+                <input type="text" name="perpage" value="<?php echo isset( $_REQUEST['perpage'] ) ?  esc_attr( $_REQUEST['perpage'] ) : 10; ?>" style="max-width: 50px;"> <?php _e( 'items', 'yop-poll' ); ?> / <?php _e( 'page', 'yop-poll' ); ?>
                 <button class="button"><?php _e( 'Set', 'yop-poll' ); ?></button>
             </form>
 			<span class="displaying-num">

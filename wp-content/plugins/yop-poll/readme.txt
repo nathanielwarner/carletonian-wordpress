@@ -118,6 +118,12 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.1.2 =
+* fixed conflict with JNews theme
+* fixed issue with answers being displayed twice in results
+* improved flow for Edit Poll
+* fixed XSS bug
+
 = 6.1.1 =
 * fixed display issue for Sort Results when "As Defined" is choosed
 * removed select2 controls

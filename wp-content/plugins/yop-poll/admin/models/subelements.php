@@ -67,6 +67,8 @@ class YOP_POLL_SubElements {
 		$display_order = 1;
 		$query_result_error = false;
 		$current_user = wp_get_current_user();
+		$new_subElements = [];
+		$i = 0;
 		foreach( $sub_elements as $sub_element ) {
 			if ( false === self::$errors_present ) {
 				$data = array(
@@ -88,6 +90,10 @@ class YOP_POLL_SubElements {
 				} else {
 					$data['added_date'] = current_time( 'mysql' );
 					$query_result_error = $GLOBALS['wpdb']->insert( $GLOBALS['wpdb']->yop_poll_subelements, $data );
+					$new_subElements[$i] = new stdClass();
+					$new_subElements[$i]->uid = $sub_element->uid;
+					$new_subElements[$i]->id = $GLOBALS['wpdb']->insert_id;
+					$i++;
 				}
 				if ( false === $query_result_error ) {
 					self::$errors_present = true;
@@ -98,7 +104,8 @@ class YOP_POLL_SubElements {
 		}
 		return array(
 			'errors_present' => self::$errors_present,
-			'error_text' => self::$error_text
+			'error_text' => self::$error_text,
+			'new_subelements' => $new_subElements
 		);
 	}
 	public static function delete( $poll_id, $element_id, $sub_element_id ) {
