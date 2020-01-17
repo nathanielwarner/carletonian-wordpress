@@ -19,8 +19,8 @@ function get_embedded_users($user) {
     $num_words = count($words);
     $new_users = array();
 
-    for ($i = 0; $i < $num_words - 1; $i++) {
-        for ($j = 1; $j < $num_words; $j++) {
+    for ($i = 0; $i < $num_words; $i++) {
+        for ($j = 1; $j < $num_words - $i; $j++) {
             $possible_user_name = implode(' ', array_slice($words, $i, $j));
             $existing_user = get_user_by('login', $possible_user_name);
             if ($existing_user) {
@@ -31,6 +31,11 @@ function get_embedded_users($user) {
 
     return $new_users;
 }
+
+function get_user_login($user) {
+    return $user->user_login;
+}
+
 
 wp_cache_flush();
 
@@ -70,8 +75,8 @@ foreach ($reason_data->entity as $entity) {
         $posts = $wpdb->get_results("SELECT * FROM wp_posts WHERE post_status='publish' AND post_type='post' AND post_content LIKE '%$content%'");
         if (!$posts) {
             $num_no_result++;
-            echo "No Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"}\n";
-            /*$authors = array('Carletonian Staff');
+            /*echo "No Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"}\n";
+            $authors = array('Carletonian Staff');
             if ($author != '') {
                 $authors = get_embedded_users($author);
             }
@@ -82,11 +87,26 @@ foreach ($reason_data->entity as $entity) {
             echo "\n";*/
         } elseif (count($posts) > 1) {
             $num_multiple_results++;
-            echo "Multiple Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"} => {";
+            /*echo "Multiple Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"} => {";
             foreach ($posts as $post) {
                 echo $post->ID . ', ';
             }
-            echo "}\n";
+            echo "}\n";*/
+        } else {
+            if (count($posts) != 1) {
+                echo "\nFatal Error\n";
+                die();
+            }
+            $post = $posts[0];
+            $users = get_embedded_users($author);
+            $assigned_users = array_map('get_user_login', get_coauthors($post->ID));
+            foreach ($users as $user) {
+                if (!in_array($user, $assigned_users)) {
+                    $nicename = get_user_by('login', $user)->user_nicename;
+                    echo "Adding co-author " . $user . " (nicename " . $nicename . ") to post " . $post->ID . "\n";
+                    $coauthors_plus->add_coauthors($post->ID, array($nicename));
+                }
+            }
         }
     }
 }
