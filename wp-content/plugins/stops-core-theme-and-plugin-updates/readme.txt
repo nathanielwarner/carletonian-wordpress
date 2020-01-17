@@ -5,7 +5,7 @@ Requires at least: 4.7
 Requires PHP: 5.3
 Donate link: https://easyupdatesmanager.com
 Tested up to: 5.3
-Stable tag: 8.2.0
+Stable tag: 9.0.0
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -126,6 +126,15 @@ For additional information and FAQs for Easy Updates Manager <a href="https://ea
 
 == Changelog ==
 
+= 9.0.0 - 2020-01-15 =
+
+* FEATURE: Admin user interface has been cleaned up, providing more straightforward options.
+* FEATURE: (Premium) Check for unmaintained plugins.
+* TWEAK: Constants can now be used to disable the outdated browser warning (EUM_ENABLE_BROWSER_NAG), the WordPress version in the footer (EUM_ENABLE_WORDPRESS_FOOTER_VERSION), and the ratings prompt on the General screen (EUM_ENABLE_RATINGS_NAG).
+* FIX: Prevent Force Updates from deactivating plugins.
+* FIX: (Premium feature) UpdraftPlus will now take a backup during an auto-update
+* FIX: (Premium feature) Fix cron schedules so they are run at the correct time.
+
 = 8.2.0 - 2019-10-30 =
 
 * FEATURE: (Premium) Safe mode now checks themes for compatibility.
@@ -137,6 +146,7 @@ For additional information and FAQs for Easy Updates Manager <a href="https://ea
 = 8.1.1 - 2019-10-23 =
 
 * FIX: Fixed uninstall script error when deleting the plugin.
+
 
 = 8.1.0 - 2019-10-08 =
 
@@ -274,4 +284,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 8.2.0 : Various tweaks and improvements and a fix for an unwanted delay in WP core updates - a recommended update for all
+* 9.0.0 : UI simplification making options clearer/simpler, plus various tweaks and fixes. A recommended update for all.

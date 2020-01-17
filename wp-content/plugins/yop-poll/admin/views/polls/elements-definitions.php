@@ -3,8 +3,10 @@
 		<div class="poll-element question" data-type="custom-field" data-id="" data-remove="">
 			<div class="title-bar">
 				<span class="bar-title pull-left poll-element-collapse">
+					<span class="glyphicon glyphicon-chevron-down hspace collapse-element" aria-hidden="true"></span>
+				</span>
+				<span class="bar-title pull-left poll-element-collapse element-title">
 					<?php _e( 'Custom Field', 'yop-poll' );?>
-					<span class="glyphicon glyphicon-chevron-down hspace" aria-hidden="true"></span>
 				</span>
 				<span class="pull-right actions">
 					<a href="#" class="hspace custom-field-edit-more" title="<?php _e( 'Edit', 'yop-poll' );?>">
@@ -42,7 +44,7 @@
 							<?php _e( 'Type', 'yop-poll' ); ?>
 						</div>
 						<div class="col-md-10">
-							<select class="custom-field-type" style="width: 100%">
+							<select class="custom-field-type admin-select" style="width: 100%">
 								<option value="textfield" selected>
 									<?php _e( 'Textfield', 'yop-poll' );?>
 								</option>
@@ -78,8 +80,10 @@
 		<div class="poll-element question" data-type="text-question" data-id="" data-remove="">
 			<div class="title-bar">
 				<span class="bar-title pull-left poll-element-collapse">
-					<?php _e( 'Question', 'yop-poll' );?>
-					<span class="glyphicon glyphicon-chevron-down hspace" aria-hidden="true"></span>
+					<span class="glyphicon glyphicon-chevron-down hspace collapse-element" aria-hidden="true"></span>
+				</span>
+				<span class="bar-title pull-left poll-element-collapse element-title">
+					<?php _e( 'Do you have a question', 'yop-poll' );?>
 				</span>
 				<span class="pull-right actions">
 					<a href="#" class="hspace add-text-answer" title="<?php _e( 'Add Answer', 'yop-poll' );?>">
@@ -111,7 +115,7 @@
 								<?php _e( 'Allow other answers', 'yop-poll' );?>
 							</div>
 							<div class="col-md-9">
-								<select class="allow-other-answers" style="width:100%">
+								<select class="allow-other-answers admin-select" style="width:100%">
 									<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 									<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 								</select>
@@ -131,7 +135,7 @@
 									<?php _e( 'Add other answers in answers list', 'yop-poll' );?>
 								</div>
 								<div class="col-md-9">
-									<select class="add-other-answers" style="width:100%">
+									<select class="add-other-answers admin-select" style="width:100%">
 										<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 										<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 									</select>
@@ -142,7 +146,7 @@
 									<?php _e( 'Display other answers in results list', 'yop-poll' );?>
 								</div>
 								<div class="col-md-9">
-									<select class="display-other-answers-in-results" style="width:100%">
+									<select class="display-other-answers-in-results admin-select" style="width:100%">
 										<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 										<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 									</select>
@@ -164,7 +168,7 @@
 								<?php _e( 'Allow multiple answers', 'yop-poll' );?>
 							</div>
 							<div class="col-md-9">
-								<select class="allow-multiple-answers" style="width:100%">
+								<select class="allow-multiple-answers admin-select" style="width:100%">
 									<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 									<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 								</select>
@@ -193,7 +197,7 @@
 								<?php _e( 'Display answers', 'yop-poll' );?>
 							</div>
 							<div class="col-md-9">
-								<select class="answers-display" style="width:100%">
+								<select class="answers-display admin-select" style="width:100%">
 									<option value="vertical" selected>
 										<?php _e( 'Vertical', 'yop-poll' );?>
 									</option>

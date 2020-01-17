@@ -18,14 +18,36 @@
 					<?php _e( 'Show results', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select name="show-results-moment" class="show-results-moment" style="width:100%" multiple="multiple">
-			            <option value="before-vote"><?php _e( 'Before vote', 'yop-poll' );?></option>
-			            <option value="after-vote"><?php _e( 'After vote', 'yop-poll' );?></option>
-			            <option value="after-end-date"><?php _e( 'After poll end date', 'yop-poll' );?></option>
-						<option value="custom-date"><?php _e( 'Custom Date', 'yop-poll' );?></option>
-						<option data-divider="true"></option>
-			            <option value="never"><?php _e( 'Never', 'yop-poll' );?></option>
-			        </select>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="before-vote">
+							<?php _e( 'Before vote', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-vote">
+							<?php _e( 'After vote', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-end-date">
+							<?php _e( 'After poll end date', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="custom-date">
+							<?php _e( 'Custom Date', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="never">
+							<?php _e( 'Never', 'yop-poll' );?>
+						</label>
+					</div>
 				</div>
 			</div>
 			<div class="form-group custom-date-results-section hide">
@@ -46,21 +68,37 @@
 					<?php _e( 'Show results to', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select name="show-results-to" class="show-results-to" style="width:100%" multiple="multiple">
-			            <option value="guest"><?php _e( 'Guest', 'yop-poll' );?></option>
-			            <option value="registered"><?php _e( 'Registered', 'yop-poll' );?></option>
-			        </select>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-to" class="show-results-to" value="guest">
+							<?php _e( 'Guest', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-to" class="show-results-to" value="registered">
+							<?php _e( 'Registered', 'yop-poll' );?>
+						</label>
+					</div>
 				</div>
 			</div>
-            <div class="form-group">
+            <div class="form-group show-results-details-section hide">
                 <div class="col-md-3">
 					<?php _e( 'Show Details as', 'yop-poll' );?>
                 </div>
                 <div class="col-md-9">
-                    <select class="results-details-option" style="width:100%" multiple="multiple">
-                        <option value="votes-number"><?php _e( 'Votes Number', 'yop-poll' );?></option>
-                        <option value="percentages" selected><?php _e( 'Percentages', 'yop-poll' );?></option>
-                    </select>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="results-details-option" class="results-details-option"  value="votes-number">
+							<?php _e( 'Votes Number', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="results-details-option" class="results-details-option"  value="percentages" checked>
+							<?php _e( 'Percentages', 'yop-poll' );?>
+						</label>
+					</div>
                 </div>
             </div>
 			<div class="form-group">
@@ -68,7 +106,7 @@
 					<?php _e( 'Display [Back to vote] link', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="back-to-vote-option" style="width:100%">
+					<select class="back-to-vote-option admin-select" style="width:100%">
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			        </select>
@@ -87,7 +125,7 @@
 					<?php _e( 'Sort results', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="sort-results" style="width:100%">
+					<select class="sort-results admin-select" style="width:100%">
 			            <option value="as-defined" selected><?php _e( 'As Defined', 'yop-poll' );?></option>
 			            <option value="alphabetical"><?php _e( 'Alphabetical Order', 'yop-poll' );?></option>
 			            <option value="number-of-votes"><?php _e( 'Number of votes', 'yop-poll' );?></option>
@@ -99,7 +137,7 @@
 					<?php _e( 'Sort rule', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="sort-results-rule" style="width:100%">
+					<select class="sort-results-rule admin-select" style="width:100%">
 			            <option value="asc" selected><?php _e( 'Ascending', 'yop-poll' );?></option>
 			            <option value="desc"><?php _e( 'Descending', 'yop-poll' );?></option>
 			        </select>
@@ -113,7 +151,7 @@
 					<?php _e( 'Display Results As', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="display-results-as" style="width:100%">
+					<select class="display-results-as admin-select" style="width:100%">
 			            <option value="bar" selected><?php _e( 'Bars', 'yop-poll' );?></option>
 			            <option value="pie"><?php _e( 'Pie', 'yop-poll' );?></option>
 			        </select>

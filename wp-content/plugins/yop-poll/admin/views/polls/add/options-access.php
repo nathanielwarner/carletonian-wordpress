@@ -18,12 +18,30 @@
 					<?php _e( 'Vote Permissions', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select name="vote-permissions" class="vote-permissions" style="width:100%" multiple="multiple">
-						<option value="guest"><?php _e( 'Guest', 'yop-poll' );?></option>
-			            <option value="wordpress"><?php _e( 'Wordpress', 'yop-poll' );?></option>
-			            <option value="facebook"><?php _e( 'Facebook', 'yop-poll' );?></option>
-			            <option value="google"><?php _e( 'Google', 'yop-poll' );?></option>
-		            </select>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="vote-permissions" class="vote-permissions" value="guest">
+							<?php _e( 'Guest', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="vote-permissions" class="vote-permissions" value="wordpress">
+							<?php _e( 'Wordpress', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="vote-permissions" class="vote-permissions" value="facebook">
+							<?php _e( 'Facebook', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="vote-permissions" class="vote-permissions" value="google">
+							<?php _e( 'Google', 'yop-poll' );?>
+						</label>
+					</div>
 				</div>
 			</div>
 			<div class="form-group block-voters-section">
@@ -31,14 +49,36 @@
 					<?php _e( 'Block Voters', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select name="block-voters" class="block-voters" style="width:100%" multiple="multiple">
-						<option value="no-block"><?php _e( 'Don\'t Block', 'yop-poll' );?></option>
-		                <optgroup label="<?php _e( 'Block By', 'yop-poll' );?>">
-							<option value="by-cookie"><?php _e( 'Cookie', 'yop-poll' );?></option>
-							<option value="by-ip"><?php _e( 'Ip', 'yop-poll' );?></option>
-							<option value="by-user-id"><?php _e( 'User Id', 'yop-poll' );?></option>
-						</optgroup>
-		            </select>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="block-voters" class="block-voters" value="no-block" checked>
+							<?php _e( 'Don\'t Block', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="block-voters" class="block-voters" value="by-cookie">
+							<?php _e( 'By Cookie', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="block-voters" class="block-voters" value="by-ip">
+							<?php _e( 'By Ip', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="block-voters" class="block-voters" value="by-user-id">
+							<?php _e( 'By User Id', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="block-voters" class="block-voters" value="by-fingerprint">
+							<?php _e( 'By Fingerprint', 'yop-poll' );?>
+						</label>
+					</div>
 				</div>
 			</div>
 			<div class="form-group block-type-section hide">
@@ -46,7 +86,7 @@
 					<?php _e( 'Block Period', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="block-length-type" style="width:100%">
+					<select class="block-length-type admin-select" style="width:100%">
 						<option value="forever" selected>
 							<?php _e( 'Forever', 'yop-poll' );?>
 						</option>
@@ -64,7 +104,7 @@
 					<input type="text" class="form-control block-length-1" value=""/>
 				</div>
 				<div class="col-md-7">
-					<select class="block-length-2" style="width:100%;">
+					<select class="block-length-2 admin-select" style="width:100%;">
 	                    <option value="minutes" selected><?php _e( 'Minutes', 'yop-poll' );?></option>
 	                    <option value="hours"><?php _e( 'Hours', 'yop-poll' );?></option>
 	                    <option value="days"><?php _e( 'Days', 'yop-poll' );?></option>
@@ -76,7 +116,7 @@
 					<?php _e( 'Limit Number Of Votes per User', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="limit-votes-per-user" style="width:100%">
+					<select class="limit-votes-per-user admin-select" style="width:100%">
 		                <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 		                <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 		            </select>

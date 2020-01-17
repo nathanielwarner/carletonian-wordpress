@@ -26,7 +26,7 @@
 					<?php _e( 'Show [Results] Link', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="show-results-link" style="width:100%">
+					<select class="show-results-link admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -45,7 +45,7 @@
 					<?php _e( 'Show Total Votes', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="show-total-votes" style="width:100%">
+					<select class="show-total-votes admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -56,7 +56,7 @@
 					<?php _e( 'Show Total Answers', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="show-total-answers" style="width:100%">
+					<select class="show-total-answers admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -76,7 +76,7 @@
 					<?php _e( 'Load using AJAX' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="load-with-ajax" style="width:90%">
+					<select class="load-with-ajax admin-select" style="width:100%">
 						<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 						<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 					</select>
@@ -87,7 +87,7 @@
 					<?php _e( 'Start Date', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="start-date-option" style="width:100%">
+					<select class="start-date-option admin-select" style="width:100%">
 			            <option value="now" selected><?php _e( 'Now', 'yop-poll' );?></option>
 			            <option value="custom"><?php _e( 'Custom Date', 'yop-poll' );?></option>
 			        </select>
@@ -111,7 +111,7 @@
 					<?php _e( 'End Date', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="end-date-option" style="width:100%">
+					<select class="end-date-option admin-select" style="width:100%">
 			            <option value="never" selected><?php _e( 'Never', 'yop-poll' );?></option>
 			            <option value="custom"><?php _e( 'Custom Date', 'yop-poll' );?></option>
 			        </select>
@@ -135,7 +135,7 @@
 					<?php _e( 'Redirect after vote', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="redirect-after-vote" style="width:100%">
+					<select class="redirect-after-vote admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -154,7 +154,7 @@
 					<?php _e( 'Reset Poll Stats automatically', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="reset-poll-stats-automatically" style="width:100%">
+					<select class="reset-poll-stats-automatically admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -180,7 +180,7 @@
 				</div>
 				<div class="col-md-9">
 					<input type="text" class="form-control reset-poll-stats-every" value="24"/>
-					<select class="reset-poll-stats-every-period" style="width:100%">
+					<select class="reset-poll-stats-every-period admin-select" style="width:100%">
                         <option value="hours" selected><?php _e( 'Hours', 'yop-poll' );?></option>
                         <option value="days"><?php _e( 'Days', 'yop-poll' );?></option>
                     </select>
@@ -191,7 +191,7 @@
 					<?php _e( 'Auto Generate Poll Page', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="auto-generate-poll-page" style="width:100%">
+					<select class="auto-generate-poll-page admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -202,7 +202,7 @@
 					<?php _e( 'Use Captcha', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="use-captcha" style="width:100%">
+					<select class="use-captcha admin-select" style="width:100%">
 						<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			            <optgroup label="<?php _e( 'Yes', 'yop-poll' );?>">
 							<option value="yes"><?php _e( 'Use built in Captcha', 'yop-poll' );?></option>
@@ -226,7 +226,7 @@
 					<?php _e( 'Send Email notifications', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="send-email-notifications" style="width:100%">
+					<select class="send-email-notifications admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -287,7 +287,7 @@
 					<?php _e( 'Enable GDPR', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="enable-gdpr" style="width:100%">
+					<select class="enable-gdpr admin-select" style="width:100%">
 			            <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 			            <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 			        </select>
@@ -298,7 +298,7 @@
 					<?php _e( 'Solution', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<select class="gdpr-solution" style="width:100%">
+					<select class="gdpr-solution admin-select" style="width:100%">
 			            <option value="consent"><?php _e( 'Ask for consent ( Ip Addresses will be stored and cookies will be enabled )', 'yop-poll' );?></option>
 			            <option value="anonymize"><?php _e( 'Anonymize Ip Addresses ( Cookies will be disabled ) ', 'yop-poll' );?></option>
 						<option value="nostore"><?php _e( 'Do not store Ip Addresses ( Cookies will be disabled ) ', 'yop-poll' );?></option>

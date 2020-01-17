@@ -258,51 +258,9 @@ if ( 'custom' === $poll->meta_data['options']['poll']['startDateOption'] ) {
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 				</div>
 				<div class="modal-body">
-					<div class="flexslider" style="margin-bottom:30px; border: 0px;">
-						<ul class="slides">
-							<li><img src="<?php echo YOP_POLL_URL . "admin/assets/images/slider/image1.jpg"; ?>" alt="Image 1"></li>
-							<li><img src="<?php echo YOP_POLL_URL . "admin/assets/images/slider/image2.jpg"; ?>" alt="Image 2"></li>
-							<li><img src="<?php echo YOP_POLL_URL . "admin/assets/images/slider/image3.jpg"; ?>" alt="Image 3"></li>
-							<li><img src="<?php echo YOP_POLL_URL . "admin/assets/images/slider/image4.jpg"; ?>" alt="Image 4"></li>
-							<li><img src="<?php echo YOP_POLL_URL . "admin/assets/images/slider/image6.jpg"; ?>" alt="Image 5"></li>
-							<li><img src="<?php echo YOP_POLL_URL . "admin/assets/images/slider/image7.jpg"; ?>" alt="Image 6"></li>
-						</ul>
-					</div>
-					<form style="text-align: center" action="<?php echo admin_url('admin.php?page=yop-poll-upgrade-pro'); ?>" method="post">
-						<p style="text-align:center; font-weight: bold; font-size: 16px">
-							<?php wp_nonce_field('yop-poll-before-buy' ); ?>
-							<input type="hidden" name="action" value="do-buy">
-							<input type="hidden" name="upgrade" value="yes">
-							<button class="btn btn-primary btn-lg" type="submit">
-								<b>Upgrade to Pro for <u>Only</u> $17</b>
-							</button>
-							<br>
-							One Time Payment. Lifetime Updates
-							<br>
-							60 days money back guarantee
-						</p>
-					</form>
-					<div class="yop_testimonials" style="border: 2px solid; border-radius: 15px; padding: 10px;">
-						<p class="yop_testimonials_header">
-							Top class software and support
-						</p>
-						<p class="yop_testimonials_content">
-							I love this software and the support service.
-							<br>
-							This is definitely the #1 poll plugin for WP. I give this software and its support service a A++++.
-							<br><br>
-							I'm so glad to be a Pro version user. The US$17 upgrade worth every cent...
-							<br><br>
-							I originally had some difficulties with the tool, and I reported them. (This is normal for all software.)
-							After I reported my issues, the support got in touch with me very quickly and have the problem resolved.
-							Also, they listened to my suggestions and worked with me to have things implemented and resolved.
-							This is definitely a TOP CLASS service.
-						</p>
-						<p class="yop_testimonials_client">
-							edwintam, wordpress user
-						</p>
-						<p></p>
-					</div>
+                    <?php
+                    include( YOP_POLL_PATH . 'admin/views/general/upgrade.php' );
+                    ?>
 				</div>
 			</div>
 		</div>

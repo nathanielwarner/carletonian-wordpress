@@ -15,7 +15,7 @@ $ajax_nonce = wp_create_nonce( "yop-poll-ajax-importer" );
 					<?php _e( 'Enable GDPR', 'yop-poll' );?>
 				</div>
 				<div class="col-md-10">
-					<select class="migrate-enable-gdpr" style="width:100%">
+					<select class="migrate-enable-gdpr admin-select" style="width:100%">
 						<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
 						<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
 					</select>
@@ -26,7 +26,7 @@ $ajax_nonce = wp_create_nonce( "yop-poll-ajax-importer" );
 					<?php _e( 'Solution', 'yop-poll' );?>
 				</div>
 				<div class="col-md-10">
-					<select class="migrate-gdpr-solution" style="width:100%">
+					<select class="migrate-gdpr-solution admin-select" style="width:100%">
 			            <option value="consent"><?php _e( 'Migrate as is', 'yop-poll' );?></option>
 			            <option value="anonymize"><?php _e( 'Anonymize Ip Addresses', 'yop-poll' );?></option>
 						<option value="nostore"><?php _e( 'Do not migrate Ip Addresses', 'yop-poll' );?></option>

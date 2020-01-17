@@ -152,7 +152,7 @@
 									<?php _e( 'Text Weight', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10">
-									<select class="questions-text-weight" style="width:100%">
+									<select class="questions-text-weight admin-select" style="width:100%">
 						                <option value="normal" selected ><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>
@@ -163,7 +163,7 @@
 									<?php _e( 'Text Align', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10">
-									<select class="questions-text-align" style="width:100%">
+									<select class="questions-text-align admin-select" style="width:100%">
 						                <option value="left"><?php _e( 'Left', 'yop-poll' );?></option>
 						                <option value="center" selected><?php _e( 'Center', 'yop-poll' );?></option>
 										<option value="right"><?php _e( 'Right', 'yop-poll' );?></option>
@@ -190,7 +190,7 @@
 									<?php _e( 'Skin', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10">
-									<select class="answers-skin" style="width:100%">
+									<select class="answers-skin admin-select" style="width:100%">
 						                <option value="minimal"><?php _e( 'Minimal', 'yop-poll' );?></option>
 						                <option value="square"><?php _e( 'Square', 'yop-poll' );?></option>
 						                <option value="flat"><?php _e( 'Flat', 'yop-poll' );?></option>
@@ -262,7 +262,7 @@
 									<?php _e( 'Text Weight', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10">
-									<select class="answers-text-weight" style="width:100%">
+									<select class="answers-text-weight admin-select" style="width:100%">
 						                <option value="normal" selected><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>
@@ -367,7 +367,7 @@
 									<?php _e( 'Text Weight', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10">
-									<select class="buttons-text-weight" style="width:100%">
+									<select class="buttons-text-weight admin-select" style="width:100%">
 						                <option value="normal" selected><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>
@@ -450,7 +450,7 @@
 									<?php _e( 'Text Weight', 'yop-poll' );?>
 								</div>
 								<div class="col-md-10">
-									<select class="errors-text-weight" style="width:100%">
+									<select class="errors-text-weight admin-select" style="width:100%">
 						                <option value="normal" selected><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>

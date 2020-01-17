@@ -20,7 +20,7 @@
                                             <!--<i class="fa fa-info-circle yop-info"></i>-->
                                         </label>
                                     </div>
-                                    <select class="ban-poll" style="width:50%">
+                                    <select class="ban-poll admin-select" style="min-width:50%">
                                         <option value="0">
                                             All Polls
                                         </option>
@@ -46,7 +46,7 @@
                                         <!--<i class="fa fa-info-circle yop-info"></i>-->
                                         </label>
                                     </div>
-                                    <select class="ban-by" style="width:50%">
+                                    <select class="ban-by admin-select" style="min-width:50%">
                                         <option value="ip">
                                             <?php _e( 'IP', 'yop-poll' );?>
                                         </option>

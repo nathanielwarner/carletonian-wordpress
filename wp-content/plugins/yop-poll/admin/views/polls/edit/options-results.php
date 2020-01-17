@@ -27,35 +27,57 @@
 			        $show_results_moment_custom_date_class = 'hide';
 			        $show_results_to_class = 'hide';
 			        if ( true === in_array( 'before-vote', $poll->meta_data['options']['results']['showResultsMoment'] ) ) {
-			            $show_results_moment_before_vote = 'selected';
+			            $show_results_moment_before_vote = 'checked';
 			            $show_results_to_class = '';
 			        }
 			        if ( true === in_array( 'after-vote', $poll->meta_data['options']['results']['showResultsMoment'] ) ) {
-			            $show_results_moment_after_vote = 'selected';
+			            $show_results_moment_after_vote = 'checked';
 			            $show_results_to_class = '';
 			        }
 			        if ( true === in_array( 'after-end-date', $poll->meta_data['options']['results']['showResultsMoment'] ) ) {
-			            $show_results_moment_after_end_date = 'selected';
+			            $show_results_moment_after_end_date = 'checked';
 			            $show_results_to_class = '';
 			        }
 			        if ( true === in_array( 'custom-date', $poll->meta_data['options']['results']['showResultsMoment'] ) ) {
-			            $show_results_moment_custom_date = 'selected';
+			            $show_results_moment_custom_date = 'checked';
 			            $show_results_moment_custom_date_class = '';
 			            $show_results_to_class = '';
 			        }
 			        if ( true === in_array( 'never', $poll->meta_data['options']['results']['showResultsMoment'] ) ) {
-			            $show_results_moment_never = 'selected';
+			            $show_results_moment_never = 'checked';
 			            $show_results_to_class = 'hide';
 			        }
 			        ?>
-			        <select name="show-results-moment" class="show-results-moment" style="width:100%" multiple="multiple">
-			            <option value="before-vote" <?php echo $show_results_moment_before_vote;?>><?php _e( 'Before vote', 'yop-poll' );?></option>
-			            <option value="after-vote" <?php echo $show_results_moment_after_vote;?>><?php _e( 'After vote', 'yop-poll' );?></option>
-			            <option value="after-end-date" <?php echo $show_results_moment_after_end_date;?>><?php _e( 'After poll end date', 'yop-poll' );?></option>
-						<option value="custom-date" <?php echo $show_results_moment_custom_date;?>><?php _e( 'Custom Date', 'yop-poll' );?></option>
-						<option data-divider="true"></option>
-			            <option value="never" <?php echo $show_results_moment_never;?>><?php _e( 'Never', 'yop-poll' );?></option>
-			        </select>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="before-vote" <?php echo $show_results_moment_before_vote;?>>
+							<?php _e( 'Before vote', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-vote" <?php echo $show_results_moment_after_vote;?>>
+							<?php _e( 'After vote', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-end-date" <?php echo $show_results_moment_after_end_date;?>>
+							<?php _e( 'After poll end date', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="custom-date" <?php echo $show_results_moment_custom_date;?>>
+							<?php _e( 'Custom Date', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="never" <?php echo $show_results_moment_never;?>>
+							<?php _e( 'Never', 'yop-poll' );?>
+						</label>
+					</div>
 				</div>
 			</div>
 			<div class="form-group custom-date-results-section <?php echo $show_results_moment_custom_date_class;?>">
@@ -81,17 +103,25 @@
 			        $show_results_to_registered = '';
 					if ( true === is_array( $poll->meta_data['options']['results']['showResultsTo'] ) ) {
 						if ( true === in_array( 'guest', $poll->meta_data['options']['results']['showResultsTo'] ) ) {
-							$show_results_to_guest = 'selected';
+							$show_results_to_guest = 'checked';
 						}
 						if ( true === in_array( 'registered', $poll->meta_data['options']['results']['showResultsTo'] ) ) {
-							$show_results_to_registered = 'selected';
+							$show_results_to_registered = 'checked';
 						}
 					}
 			        ?>
-			        <select name="show-results-to" class="show-results-to" style="width:100%" multiple="multiple">
-			            <option value="guest" <?php echo $show_results_to_guest;?>><?php _e( 'Guest', 'yop-poll' );?></option>
-			            <option value="registered" <?php echo $show_results_to_registered;?>><?php _e( 'Registered', 'yop-poll' );?></option>
-			        </select>
+			        <div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-to" class="show-results-to" value="guest" <?php echo $show_results_to_guest;?>>
+							<?php _e( 'Guest', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="show-results-to" class="show-results-to" value="registered" <?php echo $show_results_to_registered;?>>
+							<?php _e( 'Registered', 'yop-poll' );?>
+						</label>
+					</div>
 				</div>
 			</div>
             <div class="form-group">
@@ -103,16 +133,24 @@
 	                $results_details_votes_number = '';
 	                $results_details_percentages = '';
 	                if ( true === in_array( 'votes-number', $poll->meta_data['options']['results']['resultsDetails'] ) ) {
-		                $results_details_votes_number = 'selected';
+		                $results_details_votes_number = 'checked';
 	                }
 	                if ( true === in_array( 'percentages', $poll->meta_data['options']['results']['resultsDetails'] ) ) {
-		                $results_details_percentages = 'selected';
+		                $results_details_percentages = 'checked';
 	                }
 	                ?>
-                    <select class="results-details-option" style="width:100%" multiple="multiple">
-                        <option value="votes-number" <?php echo $results_details_votes_number;?>><?php _e( 'Votes Number', 'yop-poll' );?></option>
-                        <option value="percentages" <?php echo $results_details_percentages;?>><?php _e( 'Percentages', 'yop-poll' );?></option>
-                    </select>
+                    <div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="results-details-option" class="results-details-option"  value="votes-number" <?php echo $results_details_votes_number?>>
+							<?php _e( 'Votes Number', 'yop-poll' );?>
+						</label>
+					</div>
+					<div class="checkbox-inline">
+						<label class="admin-label">
+							<input type="checkbox" name="results-details-option" class="results-details-option"  value="percentages"  <?php echo $results_details_percentages?>>
+							<?php _e( 'Percentages', 'yop-poll' );?>
+						</label>
+					</div>
                 </div>
             </div>
 			<div class="form-group">
@@ -131,7 +169,7 @@
 			            $back_to_vote_caption_class = 'hide';
 			        }
 			        ?>
-			        <select class="back-to-vote-option" style="width:100%">
+			        <select class="back-to-vote-option admin-select" style="width:100%">
 			            <option value="no" <?php echo $back_to_vote_option_no;?>><?php _e( 'No', 'yop-poll' );?></option>
 			            <option value="yes" <?php echo $back_to_vote_option_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
 			        </select>
@@ -182,7 +220,7 @@
 			            }
 			        }
 			        ?>
-			        <select class="sort-results" style="width:100%">
+			        <select class="sort-results admin-select" style="width:100%">
 			            <option value="as-defined" <?php echo $sort_results_as_defined;?>>
 			                <?php _e( 'As Defined', 'yop-poll' );?>
 			            </option>
@@ -209,7 +247,7 @@
 			            $sort_results_rule_desc = 'selected';
 			        }
 			        ?>
-			        <select class="sort-results-rule" style="width:100%">
+			        <select class="sort-results-rule admin-select" style="width:100%">
 			            <option value="asc" <?php echo $sort_results_rule_asc?>><?php _e( 'Ascending', 'yop-poll' );?></option>
 			            <option value="desc" <?php echo $sort_results_rule_desc?>><?php _e( 'Descending', 'yop-poll' );?></option>
 			        </select>
@@ -232,7 +270,7 @@
 			            $display_results_as_pie = 'selected';
 			        }
 			        ?>
-			        <select class="display-results-as" style="width:100%">
+			        <select class="display-results-as admin-select" style="width:100%">
 			            <option value="bar" <?php echo $display_results_as_bar;?>><?php _e( 'Bars', 'yop-poll' );?></option>
 			            <option value="pie" <?php echo $display_results_as_pie;?>><?php _e( 'Pie', 'yop-poll' );?></option>
 			        </select>

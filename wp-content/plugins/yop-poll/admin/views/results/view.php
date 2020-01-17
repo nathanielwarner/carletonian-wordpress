@@ -117,7 +117,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                                        <select class="answers-chart-type" id="answers-chart" style="width: 100%">
+                                                        <select class="answers-chart-type admin-select" id="answers-chart" style="width: 100%">
                                                             <option value="bar" selected><?php _e( 'Bar', 'yop-poll' ); ?></option>
                                                             <option value="pie"><?php _e( 'Pie', 'yop-poll' ); ?></option>
                                                         </select>
@@ -132,7 +132,7 @@
                                                         </label>
                                                     </div>
                                                     <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
-                                                        <select class="voters-chart-type" id="voters-chart" style="width:100%">
+                                                        <select class="voters-chart-type admin-select" id="voters-chart" style="width:100%">
                                                             <option value="bar" selected><?php _e( 'Bar', 'yop-poll' ); ?></option>
                                                             <option value="pie"><?php _e( 'Pie', 'yop-poll' ); ?></option>
                                                         </select>

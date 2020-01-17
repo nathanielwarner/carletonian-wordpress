@@ -158,7 +158,7 @@
 								}
 								?>
 								<div class="col-md-10">
-									<select class="questions-text-weight" style="width:100%">
+									<select class="questions-text-weight admin-select" style="width:100%">
 						                <option value="normal" <?php echo $questions_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold" <?php echo $questions_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>
@@ -203,7 +203,7 @@
 								}
 								?>
 								<div class="col-md-10">
-									<select class="questions-text-align" style="width:100%">
+									<select class="questions-text-align admin-select" style="width:100%">
 						                <option value="left" <?php echo $questions_text_align_left;?>><?php _e( 'Left', 'yop-poll' );?></option>
 						                <option value="center" <?php echo $questions_text_align_center;?>><?php _e( 'Center', 'yop-poll' );?></option>
 										<option value="right" <?php echo $questions_text_align_right;?>><?php _e( 'Right', 'yop-poll' );?></option>
@@ -249,7 +249,7 @@
 										}
 									}
 									?>
-									<select class="answers-skin" style="width:100%">
+									<select class="answers-skin admin-select" style="width:100%">
 						                <option value="minimal" <?php echo $answers_skin_minimal;?>><?php _e( 'Minimal', 'yop-poll' );?></option>
 						                <option value="square"<?php echo $answers_skin_square;?>><?php _e( 'Square', 'yop-poll' );?></option>
 						                <option value="flat"<?php echo $answers_skin_flat;?>><?php _e( 'Flat', 'yop-poll' );?></option>
@@ -421,7 +421,7 @@
 								}
 								?>
 								<div class="col-md-10">
-									<select class="answers-text-weight" style="width:100%">
+									<select class="answers-text-weight admin-select" style="width:100%">
 						                <option value="normal" <?php echo $answers_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold" <?php echo $answers_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>
@@ -568,7 +568,7 @@
 								}
 								?>
 								<div class="col-md-10">
-									<select class="buttons-text-weight" style="width:100%">
+									<select class="buttons-text-weight admin-select" style="width:100%">
 						                <option value="normal" <?php echo $buttons_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold" <?php echo $buttons_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>
@@ -703,7 +703,7 @@
 								}
 								?>
 								<div class="col-md-10">
-									<select class="errors-text-weight" style="width:100%">
+									<select class="errors-text-weight admin-select" style="width:100%">
 						                <option value="normal" <?php echo $errors_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
 						                <option value="bold" <?php echo $errors_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
 						            </select>
