@@ -24,7 +24,7 @@ function get_embedded_users($user) {
             $possible_user_name = implode(' ', array_slice($words, $i, $j));
             $existing_user = get_user_by('login', $possible_user_name);
             if ($existing_user) {
-                array_push($new_users, $existing_user->user_login);
+                array_push($new_users, $existing_user->user_nicename);
             }
         }
     }
@@ -98,13 +98,39 @@ foreach ($reason_data->entity as $entity) {
                 die();
             }
             $post = $posts[0];
-            $users = get_embedded_users($author);
-            $assigned_users = array_map('get_user_login', get_coauthors($post->ID));
-            foreach ($users as $user) {
-                if (!in_array($user, $assigned_users)) {
-                    $nicename = get_user_by('login', $user)->user_nicename;
-                    echo "Adding co-author " . $user . " (nicename " . $nicename . ") to post " . $post->ID . "\n";
-                    $coauthors_plus->add_coauthors($post->ID, array($nicename));
+            if (!get_coauthors($post->ID)) {
+                $users = get_embedded_users($author);
+                if (count($users) == 0) {
+                    echo "Author in Reason: \"" . $author . "\" for post with ID " . $post->ID . "\n";
+                    while (true) {
+                        echo "> ";
+                        $fr = fopen("php://stdin","r");   // open our file pointer to read from stdin
+                        $input = fgets($fr,128);        // read a maximum of 128 characters
+                        $input = rtrim($input);         // trim any trailing spaces.
+                        fclose ($fr);
+                        if (strlen($input) == 0) {
+                            break;
+                        }
+                        $user = get_user_by('login', $input);
+                        if ($user) {
+                            array_push($users, $user->user_nicename);
+                        } else {
+                            $random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
+                            $userdata = array(
+                                'user_login'    => $input,
+                                'user_pass'     => $random_password,
+                                'role'          => 'author',
+                            );
+                            $uid = wp_insert_user($userdata);
+                            array_push($users, get_user_by('ID', $uid)->user_nicename);
+                            echo "User " . $input . " added with ID " . $uid . "\n";
+                        }
+                    }
+                    $success = $coauthors_plus->add_coauthors($post->ID, $users);
+                    if (!$success) {
+                        echo "Failed to add coauthors\n";
+                        die();
+                    }
                 }
             }
         }
