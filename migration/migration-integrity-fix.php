@@ -3,6 +3,20 @@
 require_once(__DIR__ . '/../wp-load.php');
 require_once(__DIR__ . '/../wp-admin/includes/user.php');
 
+define("REASON_CATEGORY_NEWS", 345118);
+define("REASON_CATEGORY_SPORTS", 343990);
+define("REASON_CATEGORY_BALDSPOT", 1189200);
+define("REASON_CATEGORY_VIEWPOINT", 344001);
+define("REASON_CATEGORY_ARTSFEATURES", 722331);
+
+define("WP_CATEGORY_NONE", array(1));
+define("WP_CATEGORY_NEWS", array(3));
+define("WP_CATEGORY_SPORTS", array(4));
+define("WP_CATEGORY_BALDSPOT", array(5));
+define("WP_CATEGORY_VIEWPOINT", array(6));
+define("WP_CATEGORY_ARTSFEATURES", array(2));
+define("WP_CATEGORY_SECURITY_BLOTTERS", array(1149));
+
 global $coauthors_plus, $wpdb;
 
 /**
@@ -20,7 +34,7 @@ function get_embedded_users($user) {
     $new_users = array();
 
     for ($i = 0; $i < $num_words; $i++) {
-        for ($j = 1; $j < $num_words - $i; $j++) {
+        for ($j = 1; $j < $num_words - $i + 1; $j++) {
             $possible_user_name = implode(' ', array_slice($words, $i, $j));
             $existing_user = get_user_by('login', $possible_user_name);
             if ($existing_user) {
@@ -59,7 +73,7 @@ foreach ($reason_data->entity as $entity) {
                     $title = (string) $value;
                     break;
                 case 'author':
-                    $author = (string) $value;
+                    $author = sanitize_user((string) $value, true);
                     break;
                 case 'content':
                     $content = (string) $value;
@@ -71,20 +85,97 @@ foreach ($reason_data->entity as $entity) {
             }
         }
     }
-    if ($id != -1 && $title != '' && $content != '') {
+    if ($id != -1 && $title != '' && $content != '' && $date != '') {
+        $sec_blt = false;
+        if ($title == "Security Blotter") {
+            $title = date("l, F j, Y", strtotime($date));
+            $sec_blt = true;
+        }
         $posts = $wpdb->get_results("SELECT * FROM wp_posts WHERE post_status='publish' AND post_type='post' AND post_content LIKE '%$content%'");
         if (!$posts) {
             $num_no_result++;
-            /*echo "No Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"}\n";
-            $authors = array('Carletonian Staff');
+            echo "No Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr(str_replace(array("\r", "\n"), '', $content), 0, 45) . "...\"}\n";
+
+            $authors = array('carletonian-staff');
             if ($author != '') {
                 $authors = get_embedded_users($author);
+                if (count($authors) == 0) {
+                    $single_author = get_user_by('login', $author);
+                    if (!$single_author) {
+                        $random_password = wp_generate_password( $length=12, $include_standard_special_chars=false );
+                        $userdata = array(
+                            'user_login'    => $author,
+                            'user_pass'     => $random_password,
+                            'role'          => 'author',
+                        );
+                        $uid = wp_insert_user($userdata);
+                        if (is_wp_error($uid)) {
+                            echo "Could not insert new user\n";
+                            die();
+                        }
+                        echo "\tInserted new user with ID " . $uid . "\n";
+                        $authors = array(get_user_by('ID', $uid)->user_nicename);
+                    } else {
+                        $authors = array($single_author->user_nicename);
+                    }
+                }
             }
-            echo "==>";
+            echo "\t==>";
             foreach ($authors as $one_author) {
                 echo $one_author . ", ";
             }
-            echo "\n";*/
+            echo "\n";
+
+            $category = WP_CATEGORY_NONE;
+            if ($sec_blt) {
+                $category = WP_CATEGORY_SECURITY_BLOTTERS;
+            } else {
+                foreach($entity->relationships->alrel as $alrel) {
+                    if ($alrel['name'] == 'news_to_news_section') {
+                        switch ($alrel->rel['to_entity_id']) {
+                            case REASON_CATEGORY_NEWS:
+                                $category = WP_CATEGORY_NEWS;
+                                break;
+                            case REASON_CATEGORY_SPORTS:
+                                $category = WP_CATEGORY_SPORTS;
+                                break;
+                            case REASON_CATEGORY_BALDSPOT:
+                                $category = WP_CATEGORY_BALDSPOT;
+                                break;
+                            case REASON_CATEGORY_VIEWPOINT:
+                                $category = WP_CATEGORY_VIEWPOINT;
+                                break;
+                            case REASON_CATEGORY_ARTSFEATURES:
+                                $category = WP_CATEGORY_ARTSFEATURES;
+                                break;
+                            default:
+                                $category = WP_CATEGORY_NONE;
+                                break;
+                        }
+                    }
+                }
+            }
+
+            $post_to_insert = array(
+                'post_title'    => $title,
+                'post_content'  => $content,
+                'post_status'   => 'publish',
+                'post_category' => $category,
+                'post_date'     => $date,
+                'post_date_gmt' => get_gmt_from_date($date)
+            );
+
+            $result = wp_insert_post($post_to_insert);
+
+            if (is_wp_error($result)) {
+                echo "Failed to insert post\n";
+                die();
+            }
+
+            $coauthors_plus->add_coauthors($result, $authors);
+
+            echo "Inserted post " . $result . "\n";
+
         } elseif (count($posts) > 1) {
             $num_multiple_results++;
             echo "Multiple Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"} => {";
