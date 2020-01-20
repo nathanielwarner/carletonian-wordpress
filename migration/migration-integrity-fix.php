@@ -134,6 +134,10 @@ foreach ($reason_data->entity as $entity) {
                 }
             }
             if ($post->post_date != $date) {
+                if ($date == "") {
+                    echo "Empty date in rsn\n";
+                    die();
+                }
                 echo "[" . $post->ID . "]: rsn: " . $date . ", wp: " . $post->post_date . "\n";
                 $pid = wp_update_post(array(
                     "ID" => $post->ID,
@@ -146,6 +150,10 @@ foreach ($reason_data->entity as $entity) {
                 }
             }
             if ($post->post_title != $title) {
+                if ($title == "") {
+                    echo "Empty title in rsn\n";
+                    die();
+                }
                 echo "[" . $post->ID . "]: rsn: " . $title . ", wp: " . $post->post_title . "\n";
                 $pid = wp_update_post(array(
                     "ID" => $post->ID,
