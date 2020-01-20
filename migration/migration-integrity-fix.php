@@ -87,11 +87,11 @@ foreach ($reason_data->entity as $entity) {
             echo "\n";*/
         } elseif (count($posts) > 1) {
             $num_multiple_results++;
-            /*echo "Multiple Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"} => {";
+            echo "Multiple Results: {\"" . $title . "\", \"" . $author . "\", \"" . substr($content, 0, 35) . "...\"} => {";
             foreach ($posts as $post) {
                 echo $post->ID . ', ';
             }
-            echo "}\n";*/
+            echo "}\n";
         } else {
             if (count($posts) != 1) {
                 echo "\nFatal Error\n";
@@ -131,6 +131,29 @@ foreach ($reason_data->entity as $entity) {
                         echo "Failed to add coauthors\n";
                         die();
                     }
+                }
+            }
+            if ($post->post_date != $date) {
+                echo "[" . $post->ID . "]: rsn: " . $date . ", wp: " . $post->post_date . "\n";
+                $pid = wp_update_post(array(
+                    "ID" => $post->ID,
+                    "post_date" => $date,
+                    "post_date_gmt" => get_gmt_from_date($date)
+                ));
+                if (!$pid) {
+                    echo "Failed to update post";
+                    die();
+                }
+            }
+            if ($post->post_title != $title) {
+                echo "[" . $post->ID . "]: rsn: " . $title . ", wp: " . $post->post_title . "\n";
+                $pid = wp_update_post(array(
+                    "ID" => $post->ID,
+                    "post_title" => $title
+                ));
+                if (!$pid) {
+                    echo "Failed to update post";
+                    die();
                 }
             }
         }
