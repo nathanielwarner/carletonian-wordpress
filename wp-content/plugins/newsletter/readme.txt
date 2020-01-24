@@ -2,7 +2,7 @@
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
 Tested up to: 5.3.2
-Stable tag: 6.4.2
+Stable tag: 6.4.3
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -108,6 +108,10 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 6.4.3 =
+
+* Fixed error reported in log on wrong subscription calls
 
 = 6.4.2 =
 

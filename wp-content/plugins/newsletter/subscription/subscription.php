@@ -327,7 +327,7 @@ class NewsletterSubscription extends NewsletterModule {
             case 'subscribe':
 
                 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                    $antibot_logger->fatal('HTTP method invalid');
+                    //$antibot_logger->fatal('HTTP method invalid');
                     die('Invalid');
                 }
 
@@ -360,7 +360,7 @@ class NewsletterSubscription extends NewsletterModule {
             case 'ajaxsub':
 
                 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                    $antibot_logger->fatal('HTTP method invalid');
+                    //$antibot_logger->fatal('HTTP method invalid');
                     die('Invalid');
                 }
 
@@ -665,26 +665,26 @@ class NewsletterSubscription extends NewsletterModule {
                 return $user;
             }
 
-            if ($this->options['multiple'] == 2) {
-                $lists_changed = false;
-                if (isset($_REQUEST['nl']) && is_array($_REQUEST['nl'])) {
-                    foreach ($_REQUEST['nl'] as $list_id) {
-                        $list_id = (int) $list_id;
-                        if ($list_id <= 0 || $list_id > NEWSLETTER_LIST_MAX)
-                            continue;
-                        $field = 'list_' . $list_id;
-                        if ($user->$field == 0) {
-                            $lists_changed = true;
-                            break;
-                        }
-                    }
-                }
-
-                if (!$lists_changed) {
-                    $user->status = 'E';
-                    return $user;
-                }
-            }
+//            if ($this->options['multiple'] == 2) {
+//                $lists_changed = false;
+//                if (isset($_REQUEST['nl']) && is_array($_REQUEST['nl'])) {
+//                    foreach ($_REQUEST['nl'] as $list_id) {
+//                        $list_id = (int) $list_id;
+//                        if ($list_id <= 0 || $list_id > NEWSLETTER_LIST_MAX)
+//                            continue;
+//                        $field = 'list_' . $list_id;
+//                        if ($user->$field == 0) {
+//                            $lists_changed = true;
+//                            break;
+//                        }
+//                    }
+//                }
+//
+//                if (!$lists_changed) {
+//                    $user->status = 'E';
+//                    return $user;
+//                }
+//            }
 
             // If the subscriber is confirmed, we cannot change his data in double opt in mode, we need to
             // temporary store and wait for activation
@@ -1649,9 +1649,7 @@ class NewsletterSubscription extends NewsletterModule {
         $message .= "token: " . $user->token . "\n" .
                 "status: " . $user->status . "\n";
         $email = trim($this->options['notify_email']);
-        if (empty($email)) {
-            $email = get_option('admin_email');
-        }
+
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
         Newsletter::instance()->mail($email, '[' . $blogname . '] ' . $subject, array('text' => $message));
     }

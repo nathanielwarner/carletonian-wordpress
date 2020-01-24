@@ -5,7 +5,7 @@ Requires at least: 4.7
 Requires PHP: 5.3
 Donate link: https://easyupdatesmanager.com
 Tested up to: 5.3
-Stable tag: 9.0.0
+Stable tag: 9.0.1
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -125,6 +125,11 @@ Since third-party providers use custom update mechanisms, we cannot always guara
 For additional information and FAQs for Easy Updates Manager <a href="https://easyupdatesmanager.com">check out our website</a>.
 
 == Changelog ==
+
+= 9.0.1 - 2020-01-21 =
+
+* FIX: (Premium feature) UpdraftPlus will only take one backup during the auto-update process.
+* FIX: Update translations after an auto-update has completed.
 
 = 9.0.0 - 2020-01-15 =
 
@@ -284,4 +289,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 9.0.0 : UI simplification making options clearer/simpler, plus various tweaks and fixes. A recommended update for all.
+* 9.0.1 : 9.0.1 fixes a couple of bugs in the 9.0.0 release, whose updates were: UI simplification making options clearer/simpler, plus various tweaks and fixes. A recommended update for all.

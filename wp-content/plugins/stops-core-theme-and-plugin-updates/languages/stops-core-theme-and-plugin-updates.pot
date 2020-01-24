@@ -221,49 +221,49 @@ msgstr ""
 msgid "The plugin settings have now been reset."
 msgstr ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1022
+#: src/includes/MPSUM_Admin_Ajax.php:1030
 msgid "Force update checks have been initialized."
 msgstr ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1041, src/includes/MPSUM_Admin.php:501
+#: src/includes/MPSUM_Admin_Ajax.php:1049, src/includes/MPSUM_Admin.php:501
 msgid "Updates"
 msgstr ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1042, src/includes/MPSUM_Admin_Help.php:48, src/includes/MPSUM_Admin.php:516, src/includes/MPSUM_Admin.php:623
+#: src/includes/MPSUM_Admin_Ajax.php:1050, src/includes/MPSUM_Admin_Help.php:48, src/includes/MPSUM_Admin.php:516, src/includes/MPSUM_Admin.php:623
 msgid "Plugins"
 msgstr ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1043, src/includes/MPSUM_Admin_Help.php:49, src/includes/MPSUM_Admin.php:524, src/includes/MPSUM_Admin.php:629
+#: src/includes/MPSUM_Admin_Ajax.php:1051, src/includes/MPSUM_Admin_Help.php:49, src/includes/MPSUM_Admin.php:524, src/includes/MPSUM_Admin.php:629
 msgid "Themes"
 msgstr ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1059
+#: src/includes/MPSUM_Admin_Ajax.php:1067
 msgid "%s WordPress Update"
 msgid_plural "%s WordPress Updates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1062
+#: src/includes/MPSUM_Admin_Ajax.php:1070
 msgid "%s Plugin Update"
 msgid_plural "%s Plugin Updates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1065
+#: src/includes/MPSUM_Admin_Ajax.php:1073
 msgid "%s Theme Update"
 msgid_plural "%s Theme Updates"
 msgstr[0] ""
 msgstr[1] ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1068, src/includes/MPSUM_Admin_Core.php:268
+#: src/includes/MPSUM_Admin_Ajax.php:1076, src/includes/MPSUM_Admin_Core.php:268
 msgid "Translation Updates"
 msgstr ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1105
+#: src/includes/MPSUM_Admin_Ajax.php:1113
 msgid "Logs are now enabled"
 msgstr ""
 
-#: src/includes/MPSUM_Admin_Ajax.php:1117
+#: src/includes/MPSUM_Admin_Ajax.php:1125
 msgid "Logs have been emptied"
 msgstr ""
 
@@ -1367,7 +1367,7 @@ msgstr ""
 msgid "Show Notes"
 msgstr ""
 
-#: src/includes/MPSUM_Logs.php:120
+#: src/includes/MPSUM_Logs.php:140
 msgid "No items found."
 msgstr ""
 

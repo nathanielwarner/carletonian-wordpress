@@ -981,6 +981,14 @@ class MPSUM_Admin_Ajax {
 		delete_site_transient('MPSUM_PLUGINS');
 		delete_site_transient('MPSUM_THEMES');
 		if (function_exists('wp_maybe_auto_update')) {
+			// Constant to show that a Force Update is in effect. Since 9.0.1.
+			if (!defined('EUM_DOING_FORCE_UPDATES')) {
+				define('EUM_DOING_FORCE_UPDATES', true );
+			}
+
+			// Disable auto-backups from occuring with UpdraftPlus Premium as it causes a fatal error when running Force Updates. Since 9.0.1.
+			add_filter('updraftplus_boot_backup', '__return_false', 10, 1);
+
 			/**
 			 * Whether to delete the auto update lock file
 			 *
