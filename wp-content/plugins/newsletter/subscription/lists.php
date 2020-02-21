@@ -33,7 +33,7 @@ for ($i = 1; $i <= NEWSLETTER_LIST_MAX; $i++) {
 $all_lang_options = $module->get_options('lists');
 
 
-$status = array(0 => 'Disabled/Private use', 1 => 'Only on profile page', 2 => 'Even on subscription forms', '3' => 'Hidden');
+$status = array(0 => 'Private', 1 => 'Only on profile page', 2 => 'Even on subscription forms', '3' => 'Hidden');
 ?>
 <script>
     jQuery(function () {

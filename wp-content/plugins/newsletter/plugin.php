@@ -4,14 +4,14 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.4.3
+  Version: 6.4.8
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
   Text Domain: newsletter
   License: GPLv2 or later
 
-  Copyright 2009-2019 The Newsletter Team (email: info@thenewsletterplugin.com, web: https://www.thenewsletterplugin.com)
+  Copyright 2009-2020 The Newsletter Team (email: info@thenewsletterplugin.com, web: https://www.thenewsletterplugin.com)
 
   Newsletter is free software: you can redistribute it and/or modify
   it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 
  */
 
-define('NEWSLETTER_VERSION', '6.4.3');
+define('NEWSLETTER_VERSION', '6.4.8');
 
 global $newsletter, $wpdb;
 
@@ -143,7 +143,7 @@ class Newsletter extends NewsletterModule {
             return $schedules;
         }, 1000);
 
-        parent::__construct('main', '1.5.2', null, array('info', 'smtp'));
+        parent::__construct('main', '1.6.3', null, array('info', 'smtp'));
 
         $max = $this->options['scheduler_max'];
         if (!is_numeric($max)) {
@@ -196,8 +196,10 @@ class Newsletter extends NewsletterModule {
                     static $slugs = array();
                     if (empty($slugs)) {
                         $addons = $this->getTnpExtensions();
-                        foreach ($addons as $addon) {
-                            $slugs[] = $addon->wp_slug;
+                        if ($addons) {
+                            foreach ($addons as $addon) {
+                                $slugs[] = $addon->wp_slug;
+                            }
                         }
                     }
                     if (array_search($plugin_file, $slugs) !== false) {
@@ -353,7 +355,11 @@ class Newsletter extends NewsletterModule {
   `click_count` int(10) unsigned NOT NULL DEFAULT '0',
   `version` varchar(10) NOT NULL DEFAULT '',
   `open_count` int(10) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)) $charset_collate;";
+  `unsub_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `error_count` int(10) unsigned NOT NULL DEFAULT '0',
+  `stats_time` int(10) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) $charset_collate;";
 
         dbDelta($sql);
 
@@ -368,7 +374,6 @@ class Newsletter extends NewsletterModule {
             time int(10) unsigned NOT NULL DEFAULT '0',
             error varchar(100) NOT NULL DEFAULT '',
 	    ip varchar(100) NOT NULL DEFAULT '',
-            country varchar(4) NOT NULL DEFAULT '',
             PRIMARY KEY (email_id,user_id),
             KEY user_id (user_id),
             KEY email_id (email_id)
@@ -750,7 +755,10 @@ class Newsletter extends NewsletterModule {
 
         $end_time = microtime(true);
 
-        if ($count > 0) {
+        if (!$test && $count > 0) {
+            
+            NewsletterStatistics::instance()->reset_stats_time($email->id);
+            
             $send_calls = get_option('newsletter_diagnostic_send_calls', array());
             $send_calls[] = array($start_time, $end_time, $count, $result);
 
@@ -1149,6 +1157,10 @@ class Newsletter extends NewsletterModule {
         if (empty($extensions_json)) {
             $url = "http://www.thenewsletterplugin.com/wp-content/extensions.json?ver=" . NEWSLETTER_VERSION;
             $extensions_response = wp_remote_get($url);
+            if (is_wp_error($extensions_response)) {
+                $this->logger->error($extensions_response);
+                return false;
+            }
             $extensions_json = wp_remote_retrieve_body($extensions_response);
             if (!empty($extensions_json)) {
                 set_transient('tnp_extensions_json', $extensions_json, 72 * 60 * 60);

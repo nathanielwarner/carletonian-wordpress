@@ -1,4 +1,6 @@
 <?php
+defined('ABSPATH') || exit;
+
 @include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
 $module = Newsletter::instance();

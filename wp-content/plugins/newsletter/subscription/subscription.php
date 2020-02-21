@@ -176,12 +176,17 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function is_spam_text($text) {
-        if (stripos($text, 'http://') !== false || stripos($text, 'https://') !== false) {
+        if (stripos($text, 'http:') !== false || stripos($text, 'https:') !== false) {
             return true;
         }
         if (stripos($text, 'www.') !== false) {
             return true;
         }
+        // Blocks address like patterns 
+//        if (preg_match('/[^\s]+\.[^\s]+/m', $text)) {
+//            return true;
+//        }
+        
         return false;
     }
 
@@ -223,6 +228,8 @@ class NewsletterSubscription extends NewsletterModule {
      */
     function valid_subscription_or_die($email, $full_name, $ip) {
         $antibot_logger = new NewsletterLogger('antibot');
+        
+        $antibot_logger->info($_REQUEST);
         
         if (empty($email)) {
             echo 'Wrong email';
@@ -605,17 +612,29 @@ class NewsletterSubscription extends NewsletterModule {
      */
     function subscribe($status = null, $emails = true) {
 
+        $options_profile = $this->get_options('profile');
+        /*
+        if ($options_profile['name_status'] == 0 && isset($_REQUEST['nn'])) {
+            // Name injection
+            die();
+        }
+        if ($options_profile['surname_status'] == 0 && isset($_REQUEST['ns'])) {
+            // Last name injection
+            die();
+        }
+        */
+         
         // Validation
         $ip = $this->get_remote_ip();
         $email = $this->normalize_email(stripslashes($_REQUEST['ne']));
         $first_name = '';
         if (isset($_REQUEST['nn'])) {
-            $first_name = $this->normalize_name($_REQUEST['nn']);
+            $first_name = $this->normalize_name(stripslashes($_REQUEST['nn']));
         }
 
         $last_name = '';
         if (isset($_REQUEST['ns'])) {
-            $last_name = $this->normalize_name($_REQUEST['ns']);
+            $last_name = $this->normalize_name(stripslashes($_REQUEST['ns']));
         }
 
         $full_name = trim($first_name . ' ' . $last_name);
@@ -778,6 +797,9 @@ class NewsletterSubscription extends NewsletterModule {
         if (!empty($_REQUEST['nlang'])) {
             $language = strtolower(strip_tags($_REQUEST['nlang']));
             // TODO: Check if it's an allowed language code
+            $user['language'] = $language;
+        } else {
+            $language = $this->get_current_language();
             $user['language'] = $language;
         }
 
@@ -1085,6 +1107,9 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         if (isset($attrs['confirmation_url'])) {
+            if ($attrs['confirmation_url'] == '#') {
+                $attrs['confirmation_url'] = $_SERVER['REQUEST_URI'];
+            }
             $buffer .= "<input type='hidden' name='ncu' value='" . esc_attr($attrs['confirmation_url']) . "'>\n";
         }
 

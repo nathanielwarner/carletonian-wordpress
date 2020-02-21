@@ -33,10 +33,11 @@ $last_email = $wpdb->get_row(
 	$wpdb->prepare( "select * from " . NEWSLETTER_EMAILS_TABLE . " where type='message' and status in ('sent', 'sending') and send_on<%d order by id desc limit 1", time() ) );
 
 if ( $last_email ) {
-	$last_email_sent      = $last_email->sent;
-	$last_email_opened    = $statistics_module->get_open_count( $last_email->id );
+    $report = $statistics_module->get_statistics($last_email);
+	$last_email_sent      = $report->total;
+	$last_email_opened    = $report->open_count;
 	$last_email_notopened = $last_email_sent - $last_email_opened;
-	$last_email_clicked   = $statistics_module->get_click_count( $last_email->id );
+	$last_email_clicked   = $report->click_count;
 	$last_email_opened    -= $last_email_clicked;
 
 	$overall_sent = $wpdb->get_var( "select sum(sent) from " . NEWSLETTER_EMAILS_TABLE . " where type='message' and status in ('sent', 'sending')" );
@@ -88,7 +89,7 @@ $labels = array_reverse( $labels );
                         <!-- START Statistics -->
                         <div id="tnp-dash-statistics" class="postbox">
                             <h3><?php _e( 'Statistics', 'newsletter' ) ?>
-                                <a href="<?php echo NewsletterStatistics::$instance->get_admin_page_url( 'index' ); ?>">
+                                <a href="<?php echo NewsletterStatistics::instance()->get_index_url() ?>">
                                     <i class="fa fa-chart-bar"></i> <?php _e( 'Statistics', 'newsletter' ) ?>
                                 </a>
                             </h3>

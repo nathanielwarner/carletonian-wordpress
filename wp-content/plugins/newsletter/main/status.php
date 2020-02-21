@@ -53,8 +53,16 @@ if ($controls->is_action('conversion')) {
     $this->logger->info('Maybe convert to utf8mb4');
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     if (function_exists('maybe_convert_table_to_utf8mb4')) {
-        maybe_convert_table_to_utf8mb4(NEWSLETTER_EMAILS_TABLE);
-        maybe_convert_table_to_utf8mb4(NEWSLETTER_USERS_TABLE);
+        $r = maybe_convert_table_to_utf8mb4(NEWSLETTER_EMAILS_TABLE);
+        if (!$r) {
+            $controls->errors .= 'It was not possible to run the conversion for the table ' . NEWSLETTER_EMAILS_TABLE . ' - ';
+            $controls->errors .= $wpdb->last_error . '<br>';
+        }
+        $r = maybe_convert_table_to_utf8mb4(NEWSLETTER_USERS_TABLE);
+        if (!$r) {
+            $controls->errors .= 'It was not possible to run the conversion for the table ' . NEWSLETTER_EMAILS_TABLE . ' - ';
+            $controls->errors .= $wpdb->last_error . '<br>';
+        }
         $controls->messages = 'Done.';
     } else {
         $controls->errors = 'Table conversion function not available';
@@ -1210,13 +1218,14 @@ $speed = Newsletter::$instance->options['scheduler_max'];
 
                 <h4><?php echo $wpdb->prefix ?>newsletter_emails</h4>
                 <?php
-                $rs = $wpdb->get_results("describe {$wpdb->prefix}newsletter_emails");
+                $rs = $wpdb->get_results("show full columns from {$wpdb->prefix}newsletter_emails");
                 ?>
                 <table class="tnp-db-table">
                     <thead>
                         <tr>
                             <th>Field</th>
                             <th>Type</th>
+                            <th>Collation</th>
                             <th>Null</th>
                             <th>Key</th>
                             <th>Default</th>
@@ -1228,6 +1237,7 @@ $speed = Newsletter::$instance->options['scheduler_max'];
                             <tr>
                                 <td><?php echo esc_html($r->Field) ?></td>
                                 <td><?php echo esc_html($r->Type) ?></td>
+                                <td><?php echo esc_html($r->Collation) ?></td>
                                 <td><?php echo esc_html($r->Null) ?></td>
                                 <td><?php echo esc_html($r->Key) ?></td>
                                 <td><?php echo esc_html($r->Default) ?></td>

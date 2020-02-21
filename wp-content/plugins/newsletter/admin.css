@@ -3,7 +3,7 @@
 @import url('css/dropdown.css');
 @import url('vendor/jquery-ui/jquery-ui.min.css');
 @import url('css/fields.css');
-
+@import url('css/widgets.css');
 
 /* Bootstrap like */
 
@@ -12,6 +12,8 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
+
 
 /* Color picker patch */
 #tnp-wrap .iris-picker, #tnp-wrap .iris-picker * {
@@ -121,9 +123,9 @@
         url("vendor/fonts/CircularStd-Bold.ttf") format("truetype");
 }
 
-#tnp-wrap, 
-#tnp-header, 
-#tnp-body p, 
+#tnp-wrap,
+#tnp-header,
+#tnp-body p,
 #tnp-body td,
 #tnp-body td p,
 #tnp-body input,
@@ -134,9 +136,9 @@
     -moz-osx-font-smoothing: grayscale; /* Firefox */
 }
 
-#tnp-body h1, 
-#tnp-body h2, 
-#tnp-body h3, 
+#tnp-body h1,
+#tnp-body h2,
+#tnp-body h3,
 #tnp-body h4 {
     font-family: "Circular Std", sans-serif;
     -webkit-font-smoothing: antialiased; /* Chrome, Safari */
@@ -182,7 +184,7 @@
     border-left: 5px solid #dd0000;
     background-color: #fff;
     padding: 15px;
-    margin: 15px 0; 
+    margin: 15px 0;
     font-size: 1.2em;
     line-height: 1.5em;
 }
@@ -191,7 +193,7 @@
     border-left: 5px solid #ffb900;
     background-color: #fff;
     padding: 15px;
-    margin: 15px 0; 
+    margin: 15px 0;
     font-size: 1.2em;
     line-height: 1.5em;
 }
@@ -206,10 +208,10 @@
 }
 
 /* Default font colors for our dark background page body */
-#tnp-body h1, 
-#tnp-body h2, 
-#tnp-body h3, 
-#tnp-body h4, 
+#tnp-body h1,
+#tnp-body h2,
+#tnp-body h3,
+#tnp-body h4,
 #tnp-body p {
     color: #fff;
 }
@@ -233,11 +235,11 @@
 #tnp-body .button:hover,
 #tnp-body .button:active,
 #tnp-body .button:focus,
-#tnp-body .button-primary, 
-#tnp-body .button-primary:visited, 
+#tnp-body .button-primary,
+#tnp-body .button-primary:visited,
 #tnp-body .button-primary:hover,
-#tnp-body .button-secondary, 
-#tnp-body .button-secondary:visited, 
+#tnp-body .button-secondary,
+#tnp-body .button-secondary:visited,
 #tnp-body .button-secondary:hover {
     color: #fff;
     background-color: #3498db;
@@ -267,15 +269,15 @@
 }
 
 /* Form tables correction */
-#tnp-body .form-table h1,  
+#tnp-body .form-table h1,
 #tnp-body .form-table h2,
 #tnp-body .form-table h4,
 #tnp-body .form-table h3 {
     color: #444;
 }
 
-#tnp-body tbody th, 
-#tnp-body td, 
+#tnp-body tbody th,
+#tnp-body td,
 #tnp-body td p,
 #tnp-body td .button,
 #tnp-body td .button:visited,
@@ -285,7 +287,7 @@
     color: #444;
 }
 
-#tnp-body td a, 
+#tnp-body td a,
 #tnp-body td a:visited {
     color: #27AE60; /* Green */
 }
@@ -322,7 +324,7 @@
     border-collapse: collapse;
 }
 
-#tnp-body .form-table table td, 
+#tnp-body .form-table table td,
 .form-table table th {
     padding: 5px;
     font-size: .9em;
@@ -337,7 +339,7 @@
 
 
 /*******************************************************************************
- * Wide fat tables 
+ * Wide fat tables
  */
 
 #tnp-body .widefat {
@@ -370,15 +372,8 @@
     background-color: #f4faff;
 }
 
-/* Buttons on widgets top bar */
-#tnp-body .tnp-widget h3 a,
-#tnp-body .tnp-widget h3 a:visited, 
-#tnp-body .tnp-widget h3 a:hover {
-    color: #fff;
-}
-
 /* jQuery UI tabs corrections */
-#tnp-body #tabs h1,  
+#tnp-body #tabs h1,
 #tnp-body #tabs h2,
 #tnp-body #tabs h3,
 #tnp-body #tabs h4,
@@ -396,11 +391,11 @@
 #tnp-body #tabs .button,
 #tnp-body #tabs .button:visited,
 #tnp-body #tabs .button:hover,
-#tnp-body #tabs .button-primary, 
-#tnp-body #tabs .button-primary:visited, 
+#tnp-body #tabs .button-primary,
+#tnp-body #tabs .button-primary:visited,
 #tnp-body #tabs .button-primary:hover,
-#tnp-body #tabs .button-secondary, 
-#tnp-body #tabs .button-secondary:visited, 
+#tnp-body #tabs .button-secondary,
+#tnp-body #tabs .button-secondary:visited,
 #tnp-body #tabs .button-secondary:hover {
     color: #fff;
     width: auto;
@@ -866,65 +861,6 @@ p.description {
     color: #fff;
 }
 
-#tnp-body .tnp-widget {
-    width: 100%;
-    box-shadow: 0 1px 1px rgba(0,0,0,.04);
-    background: #fff;
-    min-height: 350px;
-    color: #000;
-}
-
-#tnp-body .tnp-widget p {
-    color: #000;
-}
-
-/* Widget title */
-.tnp-widget h3 {
-    font-family: "Circular Std", sans-serif;
-    letter-spacing: 0.05rem;
-    background-color: #2980B9;
-    color: #fff;
-    margin: 15px 0px;
-    padding: 9px;
-    border: 0;
-    font-size: 14px;
-    font-weight: 400;
-}
-
-/* Widget title button */
-.tnp-widget h3 a {
-    float: right;
-    color: white;
-    text-decoration: none;
-    margin-left: 5px;
-    padding: 2px 8px;
-    background-color: #26C281;
-    border-radius: 2px;
-    font-weight: 300;
-    text-transform: capitalize;
-    font-size: 0.8rem;	
-}
-
-/* Widget title button hover */
-.tnp-widget h3 a:hover {
-    color: white;
-    text-decoration: none;
-    margin-left: 5px;
-    background-color: #2ECC71;
-}
-
-.tnp-widget .inside p, .tnp-widget .inside li {
-    font-size: 12px;
-    margin: 10px;
-}
-
-.tnp-widget .inside ul {
-    list-style-type: circle;
-    list-style-position: inside;
-}
-
-
-
 /* Dashboard Box */
 
 .metabox-holder {
@@ -1000,7 +936,7 @@ p.description {
 }
 
 #tnp-dash-documentation .inside div {
-    margin-top: 10px; 
+    margin-top: 10px;
 }
 
 #tnp-dash-documentation .inside a {
@@ -1032,7 +968,7 @@ p.description {
 }
 
 #tnp-footer a:hover {
-    color: #BDC3C7;    
+    color: #BDC3C7;
 }
 
 #tnp-footer input[type="submit"] {
@@ -1195,11 +1131,15 @@ span.wp-media-buttons-icon:before {
 
 /* Colors Palette */
 
-.orange {  
+.bg-white {
+    background-color: #FFF;
+}
+
+.orange {
     background-color: #F39C12; /*Orange #F39C12 */
 }
 
-.blue { 
+.blue {
     background-color: #2980B9; /* Blue #2980B9 */
 }
 
@@ -1215,11 +1155,11 @@ span.wp-media-buttons-icon:before {
 .tnp-chart {
     border: 1px solid #eee;
     width: 100%;
-}  
+}
 
 .tnp-db-table {
     width: auto;
-    background-color: #fff; 
+    background-color: #fff;
 }
 
 .tnp-db-table thead {
@@ -1299,12 +1239,19 @@ table.widefat {
 }
 
 /*******************************************************************************
- * Overrides some jQuery UI styles, specially for tabs and only inside the 
- * #tnp-body div 
+ * Overrides some jQuery UI styles, specially for tabs and only inside the
+ * #tnp-body div
  */
 
 #tnp-body .ui-widget {
     font-family: "Circular Std", sans-serif;
+}
+
+#tnp-body #tabs {
+    background-color: transparent;
+    border: 0!important;
+    padding: 0;
+    margin: 0;
 }
 
 #tnp-body #tabs .ui-widget-header {
@@ -1322,23 +1269,27 @@ table.widefat {
     color: #444;
 }
 
+#tnp-body .ui-tabs .ui-tabs-nav {
+    padding: 0;
+}
+
 #tnp-body .ui-tabs .ui-tabs-nav li a {
     font-size: 14px;
 }
 
-#tnp-body .ui-tabs {
+#tnp-body #tabs .ui-tabs {
     border-color: #28313C;
     background-color: #28313C;
     border: 0;
 }
 
-#tnp-body .ui-tabs .ui-tabs-nav {
+#tnp-body #tabs .ui-tabs .ui-tabs-nav {
     margin: 0;
     padding: .2em .2em 0 0;
     background-color: #f2f2f2;
 }
 
-#tnp-body .ui-tabs .ui-tabs-panel {
+#tnp-body #tabs .ui-tabs .ui-tabs-panel {
     padding: 1em 0;
     background-color: #f2f2f2;
     margin: 0;
@@ -1351,6 +1302,11 @@ table.widefat {
     font-family: "Circular Std", sans-serif;
 }
 
+
+#tnp-body .ui-widget-content {
+    background: #fff;
+}
+
 #tnp-body .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
     border: none;
     background: #ECF0F1;
@@ -1359,15 +1315,15 @@ table.widefat {
 
 
 /*******************************************************************************
- * Extension Panel 
+ * Extension Panel
  */
 
 .tnp-extension-premium-box, .tnp-extension-free-box, .tnp-integration-box {
-    width: 300px; 
-    height: 220px; 
-    background-color: #222B36; 
+    width: 300px;
+    height: 220px;
+    background-color: #222B36;
     text-align: center;
-    margin: 20px; 
+    margin: 20px;
     float: left;
     position: relative;
 }
@@ -1430,7 +1386,7 @@ table.widefat {
     bottom: 0;
     position: absolute;
     width: 100%;
-    padding: 12px; 
+    padding: 12px;
     font-family: "Circular Std", sans-serif;
 }
 
@@ -1607,7 +1563,7 @@ img.tnp-extensions-free-badge {
 
 
 
-/* -------------------------------- 
+/* --------------------------------
 
 Tnp Welcome Slider
 
@@ -1684,7 +1640,7 @@ Tnp Welcome Slider
 
 #tnp-welcome input[type="text"], #tnp-welcome input[type="email"] {
     max-width: 90%;
-} 
+}
 
 .tnp-welcome-next {
     background-color: #2ECC71;
@@ -1864,7 +1820,7 @@ Tnp Welcome Slider
     }
 }
 
-/* -------------------------------- 
+/* --------------------------------
 
 Tnp Welcome Slider Navigation
 
@@ -1963,7 +1919,7 @@ input:checked + .slider:before {
 /* Cossa sea sta roba? ORDINE! */
 
 #tnp-body div.tnp-emails-theme-options table.form-table {
-    margin: 0;  
+    margin: 0;
 }
 
 #tnp-body div.tnp-emails-theme-options h3 {
@@ -2067,7 +2023,7 @@ input:checked + .slider:before {
 #tnp-edit-emoji-list a {
     display: inline-block;
     margin-right: 5px;
-    margin-bottom: 5px;  
+    margin-bottom: 5px;
 }
 
 /* Stili per il campo testo oggetto delle email */
@@ -2097,27 +2053,27 @@ input:checked + .slider:before {
 
 /* Codemirror editor with preview */
 iframe.tnp-editor-preview-mobile {
-    box-sizing: border-box; 
+    box-sizing: border-box;
     background-color: #fff;
-    border: 1px solid #bbb; 
+    border: 1px solid #bbb;
     box-shadow: 1px 1px 10px #777;
-    border-radius: 10px; 
-    padding: 5px; 
-    width: 320px; 
-    height: 500px; 
+    border-radius: 10px;
+    padding: 5px;
+    width: 320px;
+    height: 500px;
     float: left;
 }
 
 iframe.tnp-editor-preview-desktop {
-    box-sizing: border-box; 
-    background-color: #fff; 
-    border: 1px solid #bbb; 
-    border-radius: 10px; 
-    box-shadow: 1px 1px 10px #777; 
-    padding: 15px; 
-    width: 650px; 
-    margin-right: 20px; 
-    height: 500px; 
+    box-sizing: border-box;
+    background-color: #fff;
+    border: 1px solid #bbb;
+    border-radius: 10px;
+    box-shadow: 1px 1px 10px #777;
+    padding: 15px;
+    width: 650px;
+    margin-right: 20px;
+    height: 500px;
     float: left;
 }
 
@@ -2425,26 +2381,6 @@ span.tnp-email-status-sent {
     background-color: #5AC05A;
 }
 
-.tnp-field-row {
-    clear: both;
-    margin-left: -10px;
-    margin-right: -10px;
-}
-
-.tnp-field-col-2 {
-    width: 50%;
-    box-sizing: border-box;
-    padding: 10px;
-    float: left;
-}
-
-.tnp-field-col-3 {
-    width: 33%;
-    box-sizing: border-box;
-    padding: 10px;
-    float: left;
-}
-
 /* Addons page */
 
 #tnp-promo {
@@ -2496,3 +2432,13 @@ span.tnp-email-status-sent {
 #tnp-promo .tnp-promo-button i {
     margin-right: 3px;
 }
+
+#tnp-body td a.tnp-table-link,
+#tnp-body td a.tnp-table-link:visited {
+    color: #444;
+}
+
+#tnp-body td a.tnp-table-link:hover {
+    color: #3498DB;
+}
+

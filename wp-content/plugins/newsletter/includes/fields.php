@@ -19,6 +19,7 @@ class NewsletterFields {
     }
 
     public function _label($text, $for = '') {
+        if (empty($text)) return;
         echo '<label class="tnp-label">', $text, '</label>';
     }
 
@@ -190,16 +191,22 @@ class NewsletterFields {
         $this->_open('tnp-cta');
         $this->_label($label);
         $value = $this->controls->get_value($name . '_label');
+        echo '<div class="tnp-field-row">';
+        echo '<div class="tnp-field-col-2">';
         echo '<input id="', $this->_id($name), '" placeholder="', esc_attr($attrs['placeholder']), '" name="options[' . $name . '_label]" type="text"';
-        echo ' style="width: 200px"';
+        echo ' style="width: 100%"';
         echo ' value="', esc_attr($value), '">';
+        echo '</div>';
 
         if ($attrs['url']) {
+            echo '<div class="tnp-field-col-2">';
             $value = $this->controls->get_value($name . '_url');
             echo '<input id="', $this->_id($name . '_url'), '" placeholder="', esc_attr($attrs['url_placeholder']), '" name="options[' . $name . '_url]" type="url"';
-            echo ' style="width: 200px"';
+            echo ' style="width: 100%"';
             echo ' value="', esc_attr($value), '">';
+            echo '</div>';
         }
+        echo '</div>';
         $this->controls->css_font($name . '_font', array('weight' => false));
         $this->controls->color($name . '_background');
         $this->_close();

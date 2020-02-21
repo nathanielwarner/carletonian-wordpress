@@ -1416,16 +1416,23 @@ class NewsletterControls {
     function css_font_family($name = 'font_family') {
         $value = $this->get_value($name);
 
-        $fonts = array('Helvetica, Arial, sans-serif', 'Arial Black, Gadget, sans-serif', 'Garamond, serif', 'Courier, monospace', 'Comic Sans MS, cursive', 'Impact, Charcoal, sans-serif',
-            'Tahoma, Geneva, sans-serif', 'Times New Roman, Times, serif', 'Verdana, Geneva, sans-serif');
+        $fonts = array('Helvetica, Arial, sans-serif'=>'Helvetica, Arial', 
+            'Arial Black, Gadget, sans-serif'=>'Arial Black, Gadget', 
+            'Garamond, serif'=>'Garamond', 
+            'Courier, monospace'=>'Courier', 
+            'Comic Sans MS, cursive'=>'Comic Sans MS', 
+            'Impact, Charcoal, sans-serif'=>'Impact, Charcoal',
+            'Tahoma, Geneva, sans-serif'=>'Tahoma, Geneva', 
+            'Times New Roman, Times, serif'=>'Times New Roman, Times', 
+            'Verdana, Geneva, sans-serif'=>'Verdana, Geneva');
 
         echo '<select id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']">';
-        foreach ($fonts as $font) {
+        foreach ($fonts as $font=>$label) {
             echo '<option value="', esc_attr($font), '"';
             if ($value == $font) {
                 echo ' selected';
             }
-            echo '>', esc_html($font), '</option>';
+            echo '>', esc_html($label), '</option>';
         }
         echo '</select>';
     }
