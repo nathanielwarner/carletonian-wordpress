@@ -1,4 +1,10 @@
 <?php
+/**
+ * This file is included by NewsletterControls to create the composer.
+ */
+
+/* @var $this NewsletterControls */
+
 defined('ABSPATH') || exit;
 
 $list = NewsletterEmails::instance()->get_blocks();
@@ -59,13 +65,12 @@ $block_options = get_option('newsletter_main');
     <div id="newsletter-builder-sidebar" class="tnp-builder-column">
 
         <div class="tnpc-tabs">
-            <button class="tablinks" onclick="openTab(event, 'tnpc-blocks')" id="defaultOpen"><?php _e('Blocks', 'newsletter') ?></button>
-            <?php /* <button class="tablinks" onclick="openTab(event, 'tnpc-general-options')"><?php _e('General Options', 'newsletter') ?></button> */ ?>
-            <button class="tablinks" onclick="openTab(event, 'tnpc-mobile-tab')"><i class="fa fa-mobile"></i> <?php _e('Mobile Preview', 'newsletter') ?></button>
-            <?php if ($show_test) { ?>
-                <button class="tablinks" onclick="openTab(event, 'tnpc-test-tab')"><i class="fa fa-paper-plane"></i> <?php _e('Test', 'newsletter') ?></button>
-            <?php } ?>
-
+        <button class="tablinks" onclick="openTab(event, 'tnpc-blocks')" id="defaultOpen"><?php _e('Blocks', 'newsletter') ?></button>
+        <button class="tablinks" onclick="openTab(event, 'tnpc-mobile-tab')"><i class="fas fa-mobile"></i> <?php _e('Mobile Preview', 'newsletter') ?></button>
+        <?php if ($show_test) { ?>
+        <button class="tablinks" onclick="openTab(event, 'tnpc-test-tab')"><i class="fas fa-paper-plane"></i> <?php _e('Test', 'newsletter') ?></button>
+        <?php } ?>
+        
         </div>
 
         <div id="tnpc-blocks" class="tabcontent">

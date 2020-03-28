@@ -225,7 +225,7 @@ switch( $params['order_by'] ) {
 			<label for="bulk-action-selector-top" class="screen-reader-text">
 				<?php _e( 'Select bulk action', 'yop-poll' );?>
 			</label>
-			<select name="action" class="bulk-action-top">
+			<select name="action" class="bulk-action-top admin-select">
 				<option value="-1" class="hide-if-no-js">
 					<?php _e( 'Bulk Actions', 'yop-poll' );?>
 				</option>
@@ -743,7 +743,7 @@ switch( $params['order_by'] ) {
 			<label for="bulk-action-selector-bottom" class="screen-reader-text">
 				<?php _e( 'Select bulk action', 'yop-poll' );?>
 			</label>
-			<select name="action" class="bulk-action-bottom">
+			<select name="action" class="bulk-action-bottom admin-select">
                 <option value="-1" class="hide-if-no-js">
 					<?php _e( 'Bulk Actions', 'yop-poll' );?>
 				</option>
@@ -840,7 +840,7 @@ switch( $params['order_by'] ) {
                                 <?php _e( 'Display Results Only', 'yop-poll' );?>
                             </label>
                             <div class="col-md-8">
-                                <select class="shortcode-show-results" style="width:100%">
+                                <select class="shortcode-show-results admin-select" style="width:100%">
                                     <option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
                                     <option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
                                 </select>
@@ -860,4 +860,25 @@ switch( $params['order_by'] ) {
             </div>
         </div>
     </div>
+    <?php
+    if ( 'yes' === $show_guide ) {
+    ?>
+    <div id="yop-poll-guide-modal" class="modal fade" role="dialog" style="margin-top: 10px;" data-backdrop="static">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header" style="border-bottom: 0px!important;">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <?php
+                    include( YOP_POLL_PATH . 'admin/views/general/guide.php' );
+                    ?>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+    }
+    ?>
 </div>

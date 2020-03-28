@@ -5,11 +5,11 @@ jQuery(document).ready(function($) {
         event.preventDefault();
 
         var today = new Date(),
-            march = new Date('March 3, 2020 00:00:00'),
+            march = new Date('March 31, 2020 00:00:00'),
             oldApiURL = $(this).attr('data-old-api'),
             oldApiLink = '';
         if (today.getTime() < march.getTime()) {
-            oldApiLink = 'To connect using the legacy API, <a href="'+oldApiURL+'">click here</a> (expires on March 2, 2020).';
+            oldApiLink = 'To connect using the legacy API, <a href="'+oldApiURL+'">click here</a> (expires on March 31, 2020).';
         }
 
         var personalBasicApiURL = $('#sbi_config .sbi_admin_btn').attr('data-personal-basic-api'),
@@ -956,6 +956,30 @@ jQuery(document).ready(function($) {
         setTimeout(function(){
             jQuery('#sbi_admin_share_links').addClass('sbi_show');
         }, 500);
+    });
+
+    // notices
+
+    if (jQuery('#sbi-notice-bar').length) {
+        jQuery('#wpadminbar').after(jQuery('#sbi-notice-bar'));
+        jQuery('#wpcontent').css('padding-left', 0);
+        jQuery('#wpbody').css('padding-left', '20px');
+        jQuery('#sbi-notice-bar').show();
+    }
+
+    jQuery('#sbi-notice-bar .dismiss').click(function(e) {
+        e.preventDefault();
+        jQuery('#sbi-notice-bar').remove();
+        jQuery.ajax({
+            url: sbiA.ajax_url,
+            type: 'post',
+            data: {
+                action : 'sbi_lite_dismiss',
+                sbi_nonce: sbiA.sbi_nonce
+            },
+            success: function (data) {
+            }
+        });
     });
 
 });

@@ -6,7 +6,8 @@ class YOP_Poll_Settings {
     public static function create_settings() {
         $settings = array(
             'general' => array(
-                'i-date' => current_time( 'mysql' )
+                'i-date' => current_time( 'mysql' ),
+                'show-guide' => 'yes'
             ),
             'email'        => array(
                 'from-name'  => 'Your Name Here',
@@ -247,6 +248,29 @@ class YOP_Poll_Settings {
             $install_date = $unserialized_settings['general']['i-date'];
         }
         return $install_date;
+    }
+    public static function get_show_guide() {
+        $show_guide = '';
+        $settings = self::get_all_settings();
+        if ( '' !== $settings ) {
+            $unserialized_settings = unserialize( $settings );
+            if ( isset( $unserialized_settings['general']['show-guide'] ) ) {
+                $show_guide = $unserialized_settings['general']['show-guide'];
+            } else {
+                $show_guide = 'yes';
+            }
+        }
+        return $show_guide;
+    }
+    public static function update_show_guide( $show_guide  ) {
+        $settings = self::get_all_settings();
+        if ( '' !== $settings ) {
+            $unserialized_settings = unserialize( $settings );
+            $unserialized_settings['general']['show-guide'] = $show_guide;
+            $serialized_settings = serialize( $unserialized_settings );
+            update_option('yop_poll_settings', $serialized_settings  );
+            self::$settings = $serialized_settings;
+        }
     }
     public static function get_email_settings() {
         $email_settings = array();
@@ -645,7 +669,8 @@ class YOP_Poll_Settings {
         if ( false === self::$errors_present ) {
             $yop_poll_settings = array(
                 'general' => array(
-                    'i-date' => self::get_install_date()
+                    'i-date' => self::get_install_date(),
+                    'show-guide' => self::get_show_guide()
                 ),
                 'email'        => array(
                     'from-name'  => $settings->email->{'from-name'},

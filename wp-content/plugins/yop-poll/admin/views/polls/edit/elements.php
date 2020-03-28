@@ -44,41 +44,6 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 			</span>
 		<hr>
 	</div>
-	<div id="modal-poll-elements-add" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<!-- Modal content-->
-			<div class="modal-content">
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h4 class="modal-title">
-						<?php _e( 'Add Elements To Poll' );?>
-						</h4>
-					</div>
-				<div class="modal-body">
-					<div class="row">
-						<div class="col-md-12 text-center">
-							<script src="https://fast.wistia.com/embed/medias/xrh7e7pvxe.jsonp" async></script>
-							<script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
-							<div class="wistia_responsive_padding" style="padding:45.63% 0 0 0;position:relative;">
-								<div class="wistia_responsive_wrapper" style="height:100%;left:0;position:absolute;top:0;width:100%;">
-									<div class="wistia_embed wistia_async_xrh7e7pvxe videoFoam=true" style="height:100%;position:relative;width:100%">
-										<div class="wistia_swatch" style="height:100%;left:0;opacity:0;overflow:hidden;position:absolute;top:0;transition:opacity 200ms;width:100%;">
-											<img src="https://fast.wistia.com/embed/medias/xrh7e7pvxe/swatch" style="filter:blur(5px);height:100%;object-fit:contain;width:100%;" alt="" aria-hidden="true" onload="this.parentNode.style.opacity=1;" />
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">
-						<?php _e( 'Close', 'yop-poll' );?>
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
 </div>
 <div class="row">
 	<div class="poll-elements" data-remove="">
@@ -246,6 +211,20 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 												</div>
 												<div class="col-md-9">
 													<input type="text" name="" value="<?php echo esc_html( $element->meta_data['otherAnswersLabel'] );?>" class="form-control other-answers-label" />
+												</div>
+											</div>
+											<div class="form-group">
+												<div class="col-md-3">
+													<a href="#" class="upgrade-to-pro" data-screen="sort-answers">
+														<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
+													</a>
+													<?php _e( 'Field Type', 'yop-poll' );?>
+												</div>
+												<div class="col-md-9">
+													<select class="other-answers-type admin-select" style="min-width:100%">
+														<option value="textfield" selected><?php _e( 'Textfield', 'yop-poll' );?></option>
+														<option value="textarea"><?php _e( 'Textarea', 'yop-poll' );?></option>
+													</select>
 												</div>
 											</div>
 											<div class="form-group">

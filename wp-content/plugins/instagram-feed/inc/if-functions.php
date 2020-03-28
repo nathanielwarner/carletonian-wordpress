@@ -766,6 +766,32 @@ function sbi_hextorgb( $hex ) {
 	return implode( ',', $rgb ); // returns the rgb values separated by commas
 }
 
+
+/**
+ * Added to workaround MySQL tables that don't use utf8mb4 character sets
+ *
+ * @since 2.2.1/5.3.1
+ */
+function sbi_sanitize_emoji( $string ) {
+	$encoded = array(
+		'jsonencoded' => $string
+	);
+	return wp_json_encode( $encoded );
+}
+
+/**
+ * Added to workaround MySQL tables that don't use utf8mb4 character sets
+ *
+ * @since 2.2.1/5.3.1
+ */
+function sbi_decode_emoji( $string ) {
+	if ( strpos( $string, '{"' ) !== false ) {
+		$decoded = json_decode( $string, true );
+		return $decoded['jsonencoded'];
+	}
+	return $string;
+}
+
 /**
  * @return int
  */
@@ -910,6 +936,11 @@ function sb_instagram_scripts_enqueue() {
     );
 	//Pass option to JS file
 	wp_localize_script('sb_instagram_scripts', 'sb_instagram_js_options', $data );
+
+	if ( SB_Instagram_Blocks::is_gb_editor() ) {
+		wp_enqueue_style( 'sb_instagram_styles' );
+		wp_enqueue_script( 'sb_instagram_scripts' );
+	}
 }
 add_action( 'wp_enqueue_scripts', 'sb_instagram_scripts_enqueue', 2 );
 

@@ -402,7 +402,7 @@
                     <?php _e( 'Recipients', 'yop-poll' ); ?>
                 </div>
                 <div class="col-md-9">
-                    <?php _e( 'Use comma separated email addresses: email@xmail.com,email2@ymail.com', 'yop_poll' ); ?>
+                    <?php _e( 'Use comma separated email addresses: email@xmail.com,email2@ymail.com', 'yop-poll' ); ?>
                     <input class="form-control email-notifications-recipients" value="<?php echo esc_html(  isset( $poll->meta_data['options']['poll']['emailNotificationsRecipients'] ) ? $poll->meta_data['options']['poll']['emailNotificationsRecipients'] : '' );?>">
                 </div>
             </div>

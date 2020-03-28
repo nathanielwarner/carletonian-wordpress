@@ -1286,12 +1286,12 @@ class YOP_Poll_Votes {
                     $x++;
                 }
                 $csv_header_array = [
-                    __( 'Poll Name', 'yop_poll' ),
-                    __( 'Username', 'yop_poll' ),
-                    __( 'Email', 'yop_poll' ),
-                    __( 'User Type', 'yop_poll' ),
-                    __( 'IP', 'yop_poll' ),
-                    __( 'Date', 'yop_poll' ),
+                    __( 'Poll Name', 'yop-poll' ),
+                    __( 'Username', 'yop-poll' ),
+                    __( 'Email', 'yop-poll' ),
+                    __( 'User Type', 'yop-poll' ),
+                    __( 'IP', 'yop-poll' ),
+                    __( 'Date', 'yop-poll' ),
                     __( 'Vote data', 'yop-poll' )
                 ];
                 foreach ( $customs as $key => $val ) {
@@ -1339,16 +1339,16 @@ class YOP_Poll_Votes {
                 header( 'Connection: Keep-Alive' );
                 header( 'Expires: 0' );
                 ob_start();
-                $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop_poll' ) );
+                $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop-poll' ) );
                 $csv_file_name    = 'votes_export.' . date( 'YmdHis' ) . '.csv';
                 header( 'Content-Disposition: attachment; filename="' . $csv_file_name . '"' );
-                if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop_poll' );
+                if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop-poll' );
                 if ( count( $votes_for_csv ) > 0 ) {
                     foreach ( $votes_for_csv as $vote_data ) {
-                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $vote_data, ',', '"' ) ) _e( "Can't write votes!", 'yop_poll' );
+                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $vote_data, ',', '"' ) ) _e( "Can't write votes!", 'yop-poll' );
                     }
                 }
-                fclose( $f ) or show_error( __( "Can't close php://output!", 'yop_poll' ) );
+                fclose( $f ) or show_error( __( "Can't close php://output!", 'yop-poll' ) );
                 $csvStr = ob_get_contents();
                 ob_end_clean();
                 echo $csvStr;
@@ -1368,17 +1368,17 @@ class YOP_Poll_Votes {
                         $customs_sorted_array[$key][] = $value;
                     }
                 }
-                $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop_poll' ) );
+                $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop-poll' ) );
                 $count_customs = count( $customs_data );
                 if ( $count_customs > 0 ) {
                     $csv_file_name    = 'customs_export.' . date( 'YmdHis' ) . '.csv';
                     header( 'Content-Disposition: attachment; filename="' . $csv_file_name . '"' );
                     $customs_data_keys = array_keys( $customs_data );
-                    if ( !YOP_Poll_Helper::yop_fputcsv( $f, $customs_data[$customs_data_keys[0]]['headers'] ) ) _e( "Can't write header!", 'yop_poll' );
+                    if ( !YOP_Poll_Helper::yop_fputcsv( $f, $customs_data[$customs_data_keys[0]]['headers'] ) ) _e( "Can't write header!", 'yop-poll' );
                     foreach ( $customs_data as $ch ) {
-                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $ch['data'], ',', '"' ) ) _e( "Can't write votes!", 'yop_poll' );
+                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $ch['data'], ',', '"' ) ) _e( "Can't write votes!", 'yop-poll' );
                     }
-                    fclose( $f ) or show_error( __( "Can't close php://output!", 'yop_poll' ) );
+                    fclose( $f ) or show_error( __( "Can't close php://output!", 'yop-poll' ) );
                 }
                 $csvStr = ob_get_contents();
                 ob_end_clean();

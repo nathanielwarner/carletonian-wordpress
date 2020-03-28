@@ -378,13 +378,13 @@ class YOP_Poll_Logs {
             $logs = self::get_export_logs( $params );
             $csv_file_name    = 'logs_export.' . date( 'YmdHis' ) . '.csv';
             $csv_header_array = [
-                __( 'POLL Name', 'yop_poll' ),
-                __( 'Username', 'yop_poll' ),
-                __( 'Email', 'yop_poll' ),
-                __( 'User Type', 'yop_poll' ),
-                __( 'IP', 'yop_poll' ),
-                __( 'Date', 'yop_poll' ),
-                __( 'Message', 'yop_poll' ),
+                __( 'POLL Name', 'yop-poll' ),
+                __( 'Username', 'yop-poll' ),
+                __( 'Email', 'yop-poll' ),
+                __( 'User Type', 'yop-poll' ),
+                __( 'IP', 'yop-poll' ),
+                __( 'Date', 'yop-poll' ),
+                __( 'Message', 'yop-poll' ),
                 __( 'Vote data', 'yop-poll' )
             ];
             header( "Content-Type: text/csv" );
@@ -395,8 +395,8 @@ class YOP_Poll_Logs {
             header( 'Connection: Keep-Alive' );
             header( 'Expires: 0' );
             ob_start();
-            $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop_poll' ) );
-            if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop_poll' );
+            $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop-poll' ) );
+            if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop-poll' );
             $logs_for_csv = [];
             if ( count( $logs ) > 0 ){
                  foreach ( $logs as $log ) {
@@ -424,10 +424,10 @@ class YOP_Poll_Logs {
                          stripslashes( $details_string )
                      ];
                      $logs_for_csv[] = $logs_data;
-                     if ( !YOP_Poll_Helper::yop_fputcsv( $f, $logs_data, ',', '"' ) ) _e( "Can't write logs!", 'yop_poll' );
+                     if ( !YOP_Poll_Helper::yop_fputcsv( $f, $logs_data, ',', '"' ) ) _e( "Can't write logs!", 'yop-poll' );
                  }
              }
-            fclose( $f ) or show_error( __( "Can't close php://output!", 'yop_poll' ) );
+            fclose( $f ) or show_error( __( "Can't close php://output!", 'yop-poll' ) );
             $csvStr = ob_get_contents();
             ob_end_clean();
             echo $csvStr;

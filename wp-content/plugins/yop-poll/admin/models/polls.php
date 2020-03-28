@@ -2076,6 +2076,8 @@ class YOP_Poll_Polls {
 						'id' => $subelement->id,
 						'text' => $subelement->stext,
 						'type' => $subelement->stype,
+						'makeLink' => isset( $subelement->meta_data['makeLink'] ) ? $subelement->meta_data['makeLink'] : '',
+						'link' => isset( $subelement->meta_data['link'] ) ? $subelement->meta_data['link'] : '',
 						'color' => $subelement->meta_data['resultsColor'],
 						'votes' => $subelement->total_submits
 					);

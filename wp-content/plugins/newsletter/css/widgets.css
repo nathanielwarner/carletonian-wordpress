@@ -24,7 +24,7 @@ class "tnp-widget"
 
 /* Widget title */
 .tnp-widget h3 {
-    font-family: "Circular Std", sans-serif;
+    font-family: soleil, sans-serif;
     letter-spacing: 0.05rem;
     background-color: #2980B9;
     color: #fff!important;

@@ -11,7 +11,7 @@ class YOP_Poll_Admin {
 			add_filter( 'clean_url', array( &$this, 'clean_recaptcha_url' ) );
             add_action( 'admin_menu', array( &$this, 'build_admin_menu' ) );
             add_action( 'plugins_loaded', array( &$this, 'verify_update' ) );
-            add_action( 'plugins_loaded', array( $this, 'load_translations') );
+			add_action( 'plugins_loaded', array( $this, 'load_translations') );
             add_action( 'admin_enqueue_scripts', array( &$this, 'load_dependencies' ), 1000 );
             add_action( 'wp_ajax_create_yop_poll', array( &$this, 'create_poll' ) );
             add_action( 'wp_ajax_update_yop_poll', array( &$this, 'update_poll' ) );
@@ -37,6 +37,8 @@ class YOP_Poll_Admin {
             add_action( 'wp_ajax_yop_poll_delete_votes_bulk', array( &$this, 'delete_bulk_votes' ) );
 			add_action( 'wp_ajax_yop_poll_save_settings', array( &$this, 'save_settings' ) );
 			add_action( 'wp_ajax_yop_poll-add-votes-manually', array( &$this, 'add_votes_manually' ) );
+			add_action( 'wp_ajax_yop_poll_stop_showing_guide', array( &$this, 'stop_showing_guide' ) );
+			add_action( 'wp_ajax_yop_poll_send_guide', array( &$this, 'send_guide' ) );
 			if ( self::$old_version ) {
 				if ( false !== strpos( self::$old_version, '4.' ) ) {
 					add_action( 'wp_ajax_yop_ajax_migrate', array( 'ClassYopPollImporter4x', 'yop_ajax_import' ) );
@@ -50,6 +52,9 @@ class YOP_Poll_Admin {
 			add_action( 'wp_ajax_nopriv_yop_poll_get_poll_for_frontend', array( &$this, 'create_poll_for_frontend' ) );
 		}
 		Yop_Poll_DbSchema::initialize_tables_names();
+	}
+	public function set_admin_footer() {
+		return 'Please rate YOP Poll <a href="https://wordpress.org/support/plugin/yop-poll/reviews/?filter=5#new-post" target="_blank">★★★★★</a> on <a href="https://wordpress.org/support/plugin/yop-poll/reviews/?filter=5#new-post" target="_blank">WordPress.org</a> to help us spread the word. Thank you from the YOP team!';
 	}
 	public function clean_recaptcha_url( $url ) {
 		if ( false !== strstr( $url, "recaptcha/api.js" ) ) {
@@ -99,6 +104,10 @@ class YOP_Poll_Admin {
 			if ( true === version_compare( $installed_version, '6.1.2', '<' ) ) {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_1_2();
+			}
+			if ( true === version_compare( $installed_version, '6.1.4', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_1_4();
 			}
         }
 	}
@@ -204,16 +213,17 @@ class YOP_Poll_Admin {
 						)
 					);
 				}
-                $proObj  = YopPollUpgrade::get_instance();
-                $subpage_upgrade = add_submenu_page(
+				$subpage = add_submenu_page(
                     'yop-polls',
-                    __( "Upgrade to Pro", 'yop-poll' ),
-                    __( "Upgrade to Pro", 'yop-poll' ),
+                    __( 'Upgrade to Pro', 'yop-poll' ),
+                    __( 'Upgrade to Pro', 'yop-poll' ),
                     'yop_poll_results_own',
-                    'yop-poll-upgrade-pro', array(
-                    &$proObj,
-                    "manage_upgrade_pages"
-                ) );
+                    'yop-poll-upgrade-to-pro',
+                    array(
+                        $this,
+                        'show_upgrade_to_pro'
+                    )
+                );
 			}
 		}
 	}
@@ -224,12 +234,13 @@ class YOP_Poll_Admin {
             'yop-poll-bans',
             'yop-poll-logs',
             'yop-poll-settings',
-            'yop-poll-upgrade-pro',
-		    'yop-poll-migrate'
+			'yop-poll-migrate',
+			'yop-poll-upgrade-to-pro'
         ];
 	    if ( isset( $_REQUEST['page'] ) && in_array( $_REQUEST['page'], $yop_poll_pages ) ) {
             $this->load_styles();
-            $this->load_scripts();
+			$this->load_scripts();
+			add_filter( 'admin_footer_text', array( $this, 'set_admin_footer' ) );
         }
 	}
 	public function load_scripts() {
@@ -332,7 +343,8 @@ class YOP_Poll_Admin {
                     'press' => esc_html__( 'Press', 'yop-poll' ),
                     'copy' => esc_html__( ' to copy', 'yop-poll' ),
                     'noSupport' => esc_html__( 'No Support', 'yop-poll' )
-                ),
+				),
+				'elementAdded' => esc_html__( 'Element added', 'yop-poll' ),
                 'captchaParams' => array(
                     'imgPath' => YOP_POLL_URL . 'public/assets/img/',
                     'url' => YOP_POLL_URL . 'app.php',
@@ -403,7 +415,7 @@ class YOP_Poll_Admin {
                     'response' => esc_html__( 'Response:', 'yop-poll' ),
                     'allDone' => esc_html__( 'All done.', 'yop-poll' ),
                     'importStarted' => esc_html__( 'Migration started', 'yop-poll' ),
-                )
+				)
 			)
 		) );
 	}
@@ -498,6 +510,7 @@ class YOP_Poll_Admin {
 			$params['page_no'] = isset( $_GET['page_no'] ) ? $_GET['page_no'] : '1';
 			$params['perpage'] = isset( $_GET['perpage'] ) && is_numeric( $_GET['perpage'] ) && $_GET['perpage'] > 0 ? $_GET['perpage'] : 10;
 			$polls = YOP_Poll_Polls::get_polls( $params );
+			$show_guide = YOP_Poll_Settings::get_show_guide();
 			$template = YOP_POLL_PATH . 'admin/views/polls/view.php';
 			echo YOP_Poll_View::render(
 				$template,
@@ -509,7 +522,8 @@ class YOP_Poll_Admin {
 					'total_pages' => $polls['total_pages'],
 					'pagination' => $polls['pagination'],
 					'date_format' => self::$date_format,
-					'time_format' => self::$time_format
+					'time_format' => self::$time_format,
+					'show_guide' => $show_guide
 				)
 			);
 		}
@@ -1417,5 +1431,34 @@ class YOP_Poll_Admin {
 				wp_die();
 			}
 		}
+	}
+	public function stop_showing_guide() {
+		YOP_Poll_Settings::update_show_guide( 'no' );
+		wp_send_json_success( __( 'Setting Updated', 'yop-poll' ) );
+	}
+	public function send_guide() {
+		$user_input = sanitize_text_field( $_POST['input'] );
+		$url = 'https://admin.yoppoll.com/';
+        $request_string = array(
+            'body'       => array(
+                'action'  => 'send-guide',
+                'input' =>  $user_input
+            ),
+            'user-agent' => 'WordPress/' . YOP_POLL_VERSION . ';'
+        );
+        $result = wp_remote_post( $url, $request_string );
+        if( ! is_wp_error( $result ) && ( 200 === $result['response']['code'] ) ) {
+            $response = unserialize( $result['body'] );
+        } else {
+            $response = null;
+		}
+		YOP_Poll_Settings::update_show_guide( 'no' );
+		wp_send_json_success( __( 'Guide Sent', 'yop-poll' ) );
+	}
+	public function show_upgrade_to_pro() {
+		$template = YOP_POLL_PATH . 'admin/views/general/upgrade-page.php';
+		echo YOP_Poll_View::render( $template, array(
+			'link' => menu_page_url( 'yop-polls', false )
+		) );
 	}
 }

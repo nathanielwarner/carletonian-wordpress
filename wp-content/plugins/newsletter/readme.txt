@@ -2,7 +2,7 @@
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
 Tested up to: 5.3.2
-Stable tag: 6.4.8
+Stable tag: 6.5.7
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -109,9 +109,70 @@ Thank you, The Newsletter Team
 
 == Changelog ==
 
+= 6.5.7 =
+
+* Fixed posts block to stop automated by default when there are no new contents
+
+= 6.5.6 =
+
+* Improved post image extraction
+
+= 6.5.5 =
+
+* Revised the posts block for the new Automated features
+* Added action_link to controls
+* Revised the newsletter regeneration and added blocks behaviors
+
+= 6.5.4 =
+
+* Font awesome now included
+* Spacing fix on hero block
+* Support methods for the WooCommerce addon
+* Security fix on CSV export (reported by Vishnupriya Ilango of Fortinet's FortiGuard Labs)
+* Removed obsolete fonts
+* PHP 5.6 check
+
+= 6.5.3 =
+
+* Removed a background wrapper for outlook otherwise outlook cut down long emails
+* Added background gradient (experimental, no supported by all mail clients)
+* Added dark color schema to cta and hero blocks
+* Fixed a debug notice
+
+= 6.5.2 =
+
+* Fixed image block 
+* Newsletter editing page with TinyMCE now saves before sending a test
+
+= 6.5.1 =
+
+* Solved hero block media problem not showing
+
+= 6.5.0 =
+
+* Hero block fix
+
+= 6.4.9 =
+
+* Added background selection to the composer
+* Reactivated the Pint theme
+* Improved blocks layout
+* Inline editing for title and excerpt on Posts block
+* Changed the image cropping method on newsletter included images
+* Posts block can now specify an offset to skip the first *n* posts
+* Fixed the display of multiline title on some blocks (was overlapping)
+* Added the excerpt length on Posts block
+* Removed the shortcodes from generated excerpt for blog post composer block
+* New media resize to better fit the email layout standards
+* Updated image block
+
 = 6.4.8 =
 
 * Antispam on PHP API
+* Improved hero block layout
+* Added color schema to some blocks
+* Added background gradient (experimental)
+* Added image width control on image block
 
 = 6.4.7 =
 

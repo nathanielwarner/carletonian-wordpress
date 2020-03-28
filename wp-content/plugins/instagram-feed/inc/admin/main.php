@@ -415,7 +415,17 @@ function sb_instagram_settings_page() {
 
 
 	<div id="sbi_admin" class="wrap">
+        <?php
+        $lite_notice_dismissed = get_transient( 'instagram_feed_dismiss_lite' );
 
+        if ( ! $lite_notice_dismissed ) :
+        ?>
+        <div id="sbi-notice-bar" style="display:none">
+            <span class="sbi-notice-bar-message"><?php _e( 'You\'re using Instagram Feed Lite. To unlock more features consider <a href="https://smashballoon.com/instagram-feed/?utm_source=WordPress&utm_campaign=instagramliteplugin&utm_medium=notice-bar" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'instagram-feed'); ?></span>
+            <button type="button" class="dismiss" title="<?php _e( 'Dismiss this message.', 'instagram-feed'); ?>" data-page="overview">
+            </button>
+        </div>
+        <?php endif; ?>
 		<div id="header">
 			<h1><?php _e( 'Instagram Feed', 'instagram-feed' ); ?></h1>
 		</div>
@@ -664,7 +674,7 @@ function sb_instagram_settings_page() {
 							if ( sbi_is_after_deprecation_deadline() ) {
 								$deprecated_connected_account_message = __( '<b>Action Needed:</b> Reconnect this account to allow feed to update.', 'instagram-feed' );
 							} else {
-								$deprecated_connected_account_message = __( '<b>Action Needed:</b> Reconnect this account before March 2, 2020 to avoid disruption with this feed.', 'instagram-feed' );
+								$deprecated_connected_account_message = __( '<b>Action Needed:</b> Reconnect this account before March 31, 2020 to avoid disruption with this feed.', 'instagram-feed' );
 							}
 
 							$accounts_that_need_updating = sbi_get_user_names_of_personal_accounts_not_also_already_updated();
@@ -1438,7 +1448,7 @@ function sb_instagram_settings_page() {
 
                                 <textarea type="text" name="sb_instagram_custom_bio" id="sb_instagram_custom_bio" ><?php echo esc_textarea( stripslashes( $sb_instagram_custom_bio ) ); ?></textarea>
                                 &nbsp;<a class="sbi_tooltip_link sbi_tooltip_under" href="JavaScript:void(0);"><?php _e("Why is my bio not displaying automatically?", 'instagram-feed'); ?></a>
-                                <p class="sbi_tooltip" style="padding: 10px 0 0 0; width: 99%;"><?php echo sprintf( __("Instagram is deprecating their old API for Personal accounts on March 2, 2020. The plugin supports their new API, however, their new API does not yet include the bio text for Personal accounts. If you require this feature then it is available if you convert your Instagram account from a Personal to a Business account by following %s. Note: If you previously had a Personal account connected then the plugin has saved the avatar for that feed and will continue to use it automatically.", 'instagram-feed'), '<a href="https://smashballoon.com/instagram-business-profiles/" target="_blank">these directions</a>' ); ?></p>
+                                <p class="sbi_tooltip" style="padding: 10px 0 0 0; width: 99%;"><?php echo sprintf( __("Instagram is deprecating their old API for Personal accounts on March 31, 2020. The plugin supports their new API, however, their new API does not yet include the bio text for Personal accounts. If you require this feature then it is available if you convert your Instagram account from a Personal to a Business account by following %s. Note: If you previously had a Personal account connected then the plugin has saved the avatar for that feed and will continue to use it automatically.", 'instagram-feed'), '<a href="https://smashballoon.com/instagram-business-profiles/" target="_blank">these directions</a>' ); ?></p>
                             </div>
                         </div>
 
@@ -1454,7 +1464,7 @@ function sb_instagram_settings_page() {
                         <br>
                         <a class="sbi_tooltip_link sbi_tooltip_under" href="JavaScript:void(0);"><?php _e("Why is my avatar not displaying automatically?", 'instagram-feed'); ?></a>
 
-                        <p class="sbi_tooltip sbi_tooltip_under_text" style="padding: 10px 0 0 0;"><?php echo sprintf( __("Instagram is deprecating their old API for Personal accounts on March 2, 2020. The plugin supports their new API, however, their new API does not yet include the avatar image for Personal accounts. If you require this feature then it is available if you convert your Instagram account from a Personal to a Business account by following %s. Note: If you previously had a Personal account connected then the plugin has saved the bio text for that feed and will continue to use it automatically.", 'instagram-feed'), '<a href="https://smashballoon.com/instagram-business-profiles/" target="_blank">these directions</a>' ); ?></p>
+                        <p class="sbi_tooltip sbi_tooltip_under_text" style="padding: 10px 0 0 0;"><?php echo sprintf( __("Instagram is deprecating their old API for Personal accounts on March 31, 2020. The plugin supports their new API, however, their new API does not yet include the avatar image for Personal accounts. If you require this feature then it is available if you convert your Instagram account from a Personal to a Business account by following %s. Note: If you previously had a Personal account connected then the plugin has saved the bio text for that feed and will continue to use it automatically.", 'instagram-feed'), '<a href="https://smashballoon.com/instagram-business-profiles/" target="_blank">these directions</a>' ); ?></p>
 
                     </td>
                 </tr>

@@ -118,6 +118,13 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.1.4 =
+* fixed issue with polls loading in facebook inapp browser
+* fixed issue with scroll location when there is an error in voting
+* moved voting buttons at the bottom of poll container
+* added links to answers when displaying results
+* added support for adding custom fields on click
+
 = 6.1.2 =
 * fixed conflict with JNews theme
 * fixed issue with answers being displayed twice in results

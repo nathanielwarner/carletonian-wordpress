@@ -225,21 +225,13 @@
             </div>
 		</div>
 	</div>
-    <div id="yopPollUpgradeModal" class="modal fade" role="dialog" style="margin-top: 10px;">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header" style="border-bottom: 0px!important;">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <?php
-                    include( YOP_POLL_PATH . 'admin/views/general/upgrade.php' );
-                    ?>
-                </div>
-            </div>
-        </div>
-    </div>
+    <?php
+    if ( 1 === rand( 1, 2 ) ) {
+        include( YOP_POLL_PATH . 'admin/views/general/upgrade-long.php' );
+    } else {
+        include( YOP_POLL_PATH . 'admin/views/general/upgrade-short.php' );
+    }
+    ?>
 </div>
 <!-- begin live preview -->
 <div class="bootstrap-yop">

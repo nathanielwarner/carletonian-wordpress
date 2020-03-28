@@ -52,7 +52,7 @@ if (empty($controls->data['enabled']) && !empty($controls->data['host'])) {
         <h2><?php _e('SMTP Settings', 'newsletter') ?></h2>
     
     <p>
-        <i class="fa fa-info-circle"></i> <a href="https://www.thenewsletterplugin.com/extensions" target="_blank">Discover how SMTP services can boost your newsletters!</a>
+        <i class="fas fa-info-circle"></i> <a href="https://www.thenewsletterplugin.com/extensions" target="_blank">Discover how SMTP services can boost your newsletters!</a>
         <!--
     <p>SMTP (Simple Mail Transfer Protocol) refers to external delivery services you can use to send emails.</p>
     <p>SMTP services are usually more reliable, secure and spam-aware than the standard delivery method available to your blog.</p>

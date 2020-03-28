@@ -565,9 +565,13 @@ class NewsletterSubscription extends NewsletterModule {
         }
         if ($sub == 'profile') {
             if ($language) {
-
-                $options = get_option('newsletter_profile_' . $language, array());
-                $options = array_merge(get_option('newsletter_profile', array()), $options);
+                // All that because for unknown reasome, sometime the options are returned as string, maybe a WPML
+                // interference...
+                $i18n_options = get_option('newsletter_profile_' . $language, array());
+                if (!is_array($i18n_options)) $i18n_options = array();
+                $options = get_option('newsletter_profile', array());
+                if (!is_array($options)) $options = array();
+                $options = array_merge($options, $i18n_options);
             } else {
                 $options = get_option('newsletter_profile', array());
             }
