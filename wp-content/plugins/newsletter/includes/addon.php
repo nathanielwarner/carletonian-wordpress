@@ -43,6 +43,10 @@ class NewsletterAddon {
         return $this->logger;
     }
 
+    /**
+     * 
+     * @return NewsletterLogger
+     */
     function get_admin_logger() {
         if (!$this->admin_logger) {
             $this->admin_logger = new NewsletterLogger($this->name . '-admin');

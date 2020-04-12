@@ -934,11 +934,19 @@ class NewsletterEmails extends NewsletterModule {
         return $css;
     }
 
+    /**
+     * Send an email to the test subscribers.
+     * 
+     * @param TNP_Email $email Could be any object with the TNP_Email attributes
+     * @param NewsletterControls $controls
+     */
     function send_test_email($email, $controls) {
         if (!$email) {
             $controls->errors = __('Newsletter should be saved before send a test', 'newsletter');
             return;
         }
+        $original_subject = $email->subject;
+        
         if ($email->subject == '') {
             $email->subject = '[TEST] Dummy subject, it was empty (remember to set it)';
         } else {
@@ -972,6 +980,7 @@ class NewsletterEmails extends NewsletterModule {
                 $controls->messages .= '<a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank"><strong>' . __('Read more about delivery issues', 'newsletter') . '</strong></a>.';
             }
         }
+        $email->subject = $original_subject;
     }
 
 	function restore_options_from_request() {

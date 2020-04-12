@@ -39,7 +39,7 @@ $auto_backups = $wpdb->get_results("SELECT option_name, option_value FROM $wpdb-
 	<h2><?php printf( __('Backup Tool for %1$sPublishPress Capabilities%2$s', 'capsman-enhanced'), '<a href="admin.php?page=capsman">', '</a>' );?></h2>
 
 	<form method="post" action="admin.php?page=<?php echo $this->ID ?>-tool">
-	<?php wp_nonce_field('capsman-backup-tool');?>
+	<?php wp_nonce_field('capsman-backup-tool'); ?>
 	<fieldset>
 	<table id="akmin">
 	<tr>

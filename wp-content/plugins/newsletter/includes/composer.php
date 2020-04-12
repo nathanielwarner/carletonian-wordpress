@@ -8,7 +8,7 @@ function tnp_register_block($dir) {
 /**
  * Generates and HTML button for email using the values found on $options and
  * prefixed by $prefix, with the standard syntax of NewsletterFields::button().
- * 
+ *
  * @param array $options
  * @param string $prefix
  * @return string
@@ -98,7 +98,7 @@ class TNP_Composer {
     }
 
     /**
-     * 
+     *
      * @param TNP_Email $email
      * @return string
      */
@@ -115,7 +115,7 @@ class TNP_Composer {
     }
 
     /**
-     * 
+     *
      * @param TNP_Email $email
      * @return string
      */
@@ -128,7 +128,7 @@ class TNP_Composer {
 
     /**
      * Remove <doctype>, <body> and unnecessary envelopes for editing with composer
-     * 
+     *
      * @param string $html_email
      *
      * @return string
@@ -172,7 +172,7 @@ class TNP_Composer {
      * Using the data collected inside $controls (and submitted by a form containing the
      * composer fields), updates the email. The message body is completed with doctype,
      * head, style and the main wrapper.
-     * 
+     *
      * @param TNP_Email $email
      * @param NewsletterControls $controls
      */
@@ -197,15 +197,15 @@ class TNP_Composer {
     /**
      * Prepares a controls object injecting the relevant fields from an email
      * which cannot be directly used by controls.
-     * 
+     *
      * @param Newsletter $controls
      * @param TNP_Email $email
      */
     static function prepare_controls($controls, $email) {
         foreach ($email->options as $name => $value) {
-            if (strpos($name, 'composer_') === 0) {
+            //if (strpos($name, 'composer_') === 0) {
                 $controls->data['options_' . $name] = $value;
-            }
+            //}
         }
 
         $controls->data['message'] = TNP_Composer::unwrap_email($email->message);
@@ -242,6 +242,7 @@ class TNP_Composer {
      * @return bool
      */
     static function is_post_field_edited_inline($inline_edit_list, $field_type, $post_id) {
+        if (empty($inline_edit_list)) return false;
         foreach ($inline_edit_list as $edit) {
             if ($edit['type'] == $field_type && $edit['post_id'] == $post_id) {
                 return true;

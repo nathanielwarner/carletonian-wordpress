@@ -1179,6 +1179,9 @@ span.wp-media-buttons-icon:before {
     background-color: #27AE60;
     padding: 2px 10px;
     border-radius: 10px;
+    display: inline-block;
+    width: 75px;
+    text-align: center;
 }
 
 #tnp-status-table .tnp-ko {
@@ -1188,6 +1191,9 @@ span.wp-media-buttons-icon:before {
     background-color: #E74C41;
     padding: 2px 10px;
     border-radius: 10px;
+        display: inline-block;
+    width: 75px;
+    text-align: center;
 }
 
 #tnp-status-table .tnp-maybe {
@@ -1197,6 +1203,9 @@ span.wp-media-buttons-icon:before {
     background-color: #F1C40F;
     padding: 2px 10px;
     border-radius: 10px;
+        display: inline-block;
+    width: 75px;
+    text-align: center;
 }
 
 .tnp-main-status .tnp-log-files li {
@@ -2432,3 +2441,6 @@ span.tnp-email-status-sent {
     color: #3498DB;
 }
 
+.text-left {
+    text-align: left;
+}

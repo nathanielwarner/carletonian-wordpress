@@ -79,7 +79,8 @@ if (!empty($options['image']['id'])) {
     if ($layout == 'full') {
         $media = tnp_resize($options['image']['id'], array(600, 0));
     } else {
-        $media = tnp_resize($options['image']['id'], array(300, 200, true));
+        $media = tnp_resize($options['image']['id'], array(600, 0));
+        $media->set_width(300-$options['block_padding_left']);
     }
     $media->alt = $options['title'];
 } else {
@@ -155,7 +156,7 @@ if (!empty($options['image']['id'])) {
     <style>
         .hero-title {
             font-size: <?php echo $title_font_size ?>px; 
-            color: #333333; 
+            color: <?php echo $title_font_color ?>; 
             padding-top: 0; 
             font-family: <?php echo $title_font_family ?>;
             font-weight: <?php echo $title_font_weight ?>; 
@@ -164,7 +165,7 @@ if (!empty($options['image']['id'])) {
             padding: 20px 0 0 0; 
             font-size: <?php echo $font_size ?>px; 
             line-height: 150%; 
-            color: #666666; 
+            color: <?php echo $font_color ?>; 
             font-family: <?php echo $font_family ?>; 
             font-weight: <?php echo $font_weight ?>; 
         }
@@ -210,4 +211,72 @@ if (!empty($options['image']['id'])) {
 
 
 <?php } ?>
+
+    
+<?php if ($layout == 'right') { ?>
+
+    <style>
+        .hero-title {
+            font-size: <?php echo $title_font_size ?>px; 
+            color: <?php echo $title_font_color ?>; 
+            padding-top: 0; 
+            font-family: <?php echo $title_font_family ?>;
+            font-weight: <?php echo $title_font_weight ?>; 
+            line-height: normal;
+            margin: 0;
+        }
+        .hero-text {
+            padding: 20px 0 0 0; 
+            font-size: <?php echo $font_size ?>px; 
+            line-height: 150%; 
+            color: <?php echo $font_color ?>; 
+            font-family: <?php echo $font_family ?>; 
+            font-weight: <?php echo $font_weight ?>; 
+        }
+        .image {
+            max-width: 100%!important;
+            display: block;
+        }
+    </style>
+
+    <table width="48%" align="left" class="hero-table hero-table-right">
+        <tr>
+            <td align="center" style="text-align: center">
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                    <tr>
+                        <td align="center" inline-class="hero-title">
+                            <span><?php echo $options['title'] ?></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" inline-class="hero-text">
+                            <span><?php echo $options['text'] ?></span>
+                        </td>
+                    </tr>
+                </table>
+                <br>
+               <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tr>
+                    <td align="center" vertical-align="middle" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                        
+                            <?php echo tnpc_button($options)?>
+                    </td>
+                  </tr>
+               </table>
+                      
+
+            </td>
+        </tr>
+    </table>
+    
+    <table width="48%" align="right" class="hero-table">
+        <tr>
+            <td align="center" valign="top">
+                <img src="<?php echo $media->url ?>" border="0" alt="<?php echo esc_attr($media->alt) ?>" width="<?php echo $media->width ?>" height="<?php echo $media->height ?>" inline-class="image">                
+            </td>
+        </tr>
+    </table>    
+
+
+<?php } ?>    
 

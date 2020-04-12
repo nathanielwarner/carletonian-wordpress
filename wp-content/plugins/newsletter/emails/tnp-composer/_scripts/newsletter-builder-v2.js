@@ -141,15 +141,6 @@ jQuery(function () {
 
     jQuery('#newsletter-builder-area-center-frame-content').css('background-color', jQuery('#options-options_composer_background').val());
 
-    // Init global styles values
-    /*
-    let globalStyles = JSON.parse(jQuery('#tnpc-form input[name="options[global-styles]"]').val());
-    if ('global-styles-bgcolor' in globalStyles) {
-        jQuery('#options-global-styles-bgcolor').val(globalStyles['global-styles-bgcolor']);
-        jQuery('#newsletter-builder-area-center-frame-content').css('background-color', globalStyles['global-styles-bgcolor']);
-    }
-    */
-
 });
 
 function start_composer() {
@@ -270,7 +261,7 @@ function start_composer() {
             alert("Block rendering failed");
         });
 
-    
+
 
     });
 
@@ -290,7 +281,9 @@ function tnpc_mobile_preview() {
 
     d.write("<!DOCTYPE html>\n<html>\n<head>\n");
     d.write("<link rel='stylesheet' href='" + TNP_HOME_URL + "?na=emails-composer-css&ver=" + Math.random() + "' type='text/css'>");
-    d.write("<style type='text/css'>.tnpc-row-delete, .tnpc-row-edit-block, .tnpc-row-clone { display: none; }</style>");
+    d.write("<style>.tnpc-row-delete, .tnpc-row-edit-block, .tnpc-row-clone { display: none; }</style>");
+    d.write("<style>body::-webkit-scrollbar {width: 0px;background: transparent;}</style>");
+    d.write("<style>body{scrollbar-width: none; -ms-overflow-style: none;}</style>");
     d.write("</head>\n<body style='margin: 0; padding: 0;'><div style='width: 320px!important'>");
     d.write(jQuery("#newsletter-builder-area-center-frame-content").html());
     d.write("</div>\n</body>\n</html>");
@@ -312,9 +305,9 @@ function tnpc_save(form) {
     } else {
         form.elements["options[subject]"].value = "";
     }
-    form.elements["options[global-styles]"].value = JSON.stringify(jQuery('#tnpc-global-styles-form').serializeArray());
 
     var global_form = document.getElementById("tnpc-global-styles-form");
+    //Copy "Global styles" form inputs into main form
     tnpc_copy_form(global_form, form);
 
     jQuery("#newsletter-preloaded-export").html(' ');
@@ -322,10 +315,9 @@ function tnpc_save(form) {
 
 function tnpc_copy_form(source, dest) {
     for (var i = 0; i < source.elements.length; i++) {
-        var e = source.elements[i];
-        if (dest.elements[e.name]) {
-            dest.elements[e.name].value = e.value;
-        }
+        var clonedEl = source.elements[i].cloneNode();
+        clonedEl.style.display = 'none';
+        dest.appendChild(clonedEl);
     }
 }
 
@@ -395,7 +387,7 @@ function tnpc_reload_options(e) {
             options[i].value = 'tnpc_options';
         }
     }
-    
+
     jQuery("#tnpc-block-options-form").load(ajaxurl, options);
 }
 
@@ -485,7 +477,7 @@ jQuery(document).ready(function () {
 
             function submit(e, elementToDeleteAfterSubmit, elementToShow) {
                 e.preventDefault();
-                
+
                 var id = elementToDeleteAfterSubmit.find('form input[name=id]').val();
                 var type = elementToDeleteAfterSubmit.find('form input[name=type]').val();
                 var newValue = elementToDeleteAfterSubmit.find('form [name="' + newInputName + '"]').val();

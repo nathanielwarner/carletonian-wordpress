@@ -1,9 +1,11 @@
 <?php
+defined('ABSPATH') or die('Direct Access Denied');
+
 /*
 Plugin Name: Duo Two-Factor Authentication
 Plugin URI: http://wordpress.org/extend/plugins/duo-wordpress/
 Description: This plugin enables Duo two-factor authentication for WordPress logins.
-Version: 2.5.4
+Version: 2.5.5
 Author: Duo Security
 Author URI: http://www.duosecurity.com
 License: GPL2
@@ -460,6 +462,9 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
             $roles = $_POST['duo_roles'];
             $result = update_site_option('duo_roles', $roles);
         }
+        else {
+            $result = update_site_option('duo_roles', []);
+        }
 
         if(isset($_POST['duo_xmlrpc'])) {
             $xmlrpc = $_POST['duo_xmlrpc'];
@@ -659,9 +664,22 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
         duo_debug_log("Unset Duo cookie for path: " . COOKIEPATH . " network path: " . SITECOOKIEPATH . " on domain: " . COOKIE_DOMAIN);
     }
 
+    if(!function_exists('hash_equals')) {
+      function hash_equals($str1, $str2) {
+        if(strlen($str1) != strlen($str2)) {
+          return false;
+        } else {
+          $res = $str1 ^ $str2;
+          $ret = 0;
+          for($i = strlen($res) - 1; $i >= 0; $i--) $ret |= ord($res[$i]);
+          return !$ret;
+        }
+      }
+    }
+
     function duo_verify_sig($cookie, $u_sig){
         $sig = duo_hash_hmac($cookie);
-        if (duo_hash_hmac($sig) === duo_hash_hmac($u_sig)) {
+        if (hash_equals(duo_hash_hmac($sig), duo_hash_hmac($u_sig))) {
             return true;
         }
         return false;

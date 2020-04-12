@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.5.7
+  Version: 6.5.9
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,7 +35,7 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '6.5.7');
+define('NEWSLETTER_VERSION', '6.5.9');
 
 global $newsletter, $wpdb;
 
@@ -262,7 +262,8 @@ class Newsletter extends NewsletterModule {
             echo 'ok';
             die();
         }
-
+        
+        //$user = $this->get_user_from_request();
         do_action('newsletter_action', $this->action);
     }
 
@@ -345,7 +346,7 @@ class Newsletter extends NewsletterModule {
   `total` int(11) NOT NULL DEFAULT '0',
   `last_id` int(11) NOT NULL DEFAULT '0',
   `sent` int(11) NOT NULL DEFAULT '0',
-  `track` int(11) NOT NULL DEFAULT '0',
+  `track` int(11) NOT NULL DEFAULT '1',
   `list` int(11) NOT NULL DEFAULT '0',
   `type` varchar(50) NOT NULL DEFAULT '',
   `query` longtext,
@@ -470,14 +471,6 @@ class Newsletter extends NewsletterModule {
         }
     }
 
-    /**
-     * Returns a set of warnings about this installtion the suser should be aware of. Return an empty string
-     * if there are no warnings.
-     */
-    function warnings() {
-        
-    }
-
     function hook_in_admin_header() {
         if (!$this->is_admin_page()) {
             add_action('admin_notices', array($this, 'hook_admin_notices'));
@@ -498,22 +491,6 @@ class Newsletter extends NewsletterModule {
 
         if (isset($this->options['debug']) && $this->options['debug'] == 1) {
             echo '<div class="notice notice-warning"><p>The Newsletter plugin is in <strong>debug mode</strong>. When done change it on Newsletter <a href="admin.php?page=newsletter_main_main"><strong>main settings</strong></a>. Do not keep the debug mode active on production sites.</p></div>';
-        }
-
-        if (!defined('NEWSLETTER_CRON_WARNINGS') || NEWSLETTER_CRON_WARNINGS) {
-            $x = wp_next_scheduled('newsletter');
-            if ($x === false) {
-                echo '<div class="notice notice-error"><p>The Newsletter delivery engine is off (it should never be off). Deactivate and reactivate the Newsletter plugin.</p></div>';
-            } else if (time() - $x > 900) {
-                echo '<div class="notice notice-error"><p>The WP scheduler doesn\'t seem to be running correctly for Newsletter. <a href="https://www.thenewsletterplugin.com/documentation/newsletter-delivery-engine#cron" target="_blank"><strong>Read this page to solve the problem</strong></a>.</p></div>';
-            } else {
-//            if (empty($this->options['disable_cron_notice'])) {
-//                $cron_data = get_option('newsletter_diagnostic_cron_data');
-//                if ($cron_data && $cron_data['mean'] > 500) {
-//                    echo '<div class="notice notice-error"><p>The WP scheduler doesn\'t seem to be triggered enough often for Newsletter. <a href="https://www.thenewsletterplugin.com/documentation/newsletter-delivery-engine#cron" target="_blank"><strong>Read this page to solve the problem</strong></a> or disable this notice on <a href="admin.php?page=newsletter_main_main"><strong>main settings</strong></a>.</p></div>';
-//                }
-//            }
-            }
         }
     }
 
@@ -551,9 +528,9 @@ class Newsletter extends NewsletterModule {
 
         // https://developer.wordpress.org/plugins/privacy/suggesting-text-for-the-site-privacy-policy/
         // https://make.wordpress.org/core/2018/05/17/4-9-6-update-guide/
-        if (function_exists('wp_add_privacy_policy_content')) {
+        //if (function_exists('wp_add_privacy_policy_content')) {
             //wp_add_privacy_policy_content('Newsletter', wp_kses_post( wpautop( $content, false )));
-        }
+        //}
     }
 
     function hook_admin_head() {
@@ -775,7 +752,8 @@ class Newsletter extends NewsletterModule {
             update_option('newsletter_diagnostic_send_calls', $send_calls, false);
         }
 
-        if ($supplied_users && $this->limits_exceeded()) {
+        // We sent to all supplied users, but warning that no more should be processed
+        if (!$test && $supplied_users && $this->limits_exceeded()) {
             $result = false;
         }
 

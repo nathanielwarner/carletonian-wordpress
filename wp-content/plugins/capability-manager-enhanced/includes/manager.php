@@ -306,13 +306,13 @@ class CapabilityManager
 	            'capsman', 
 	            __('Upgrade to Pro', 'capsman-enhanced'), 
 	            __('Upgrade to Pro', 'capsman-enhanced'), 
-	            'read', 
+	            'manage_capabilities', 
 	            'capabilities-pro', 
 	            array($this, 'generalManager')
 	        );
 		}
 	}
-	
+
 	/**
 	 * Sets the 'manage_capabilities' cap to the administrator role.
 	 *
@@ -472,7 +472,7 @@ class CapabilityManager
 			$capsman_modify->adminDeleteRole();
 		}
 		
-		if (!isset($this->current)) { // By default, we manage the default role
+		if ( ! isset($this->current) ) { // By default, we manage the default role
 			if (empty($_POST) && !empty($_REQUEST['role'])) {
 				$this->current = $_REQUEST['role'];
 			}

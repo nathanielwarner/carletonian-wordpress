@@ -39,16 +39,20 @@ if (empty($options['image']['id'])) {
     $media->alt = $options['image_alt'];
 }
 
+if (!empty($options['width'])) {
+    $media->set_width($options['width']);
+}
+
 $url = $options['url'];
 ?>
 <style>
     .image {
         max-width: 100%!important;
         height: auto!important;
-        display: inline-block;
-        <?php if (!empty($options['width'])) { ?>
-        width: <?php echo $options['width']?>px;
-        <?php } ?>
+        display: block;
+        width: <?php echo $media->width?>px;
+        line-height: 0;
+        margin: 0 auto;
     }
 </style>
 <?php if (!empty($url)) { ?>

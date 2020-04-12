@@ -31,6 +31,8 @@ if (!$controls->is_action()) {
 
         if (is_wp_error($r)) {
             $controls->errors = $r->get_error_message();
+            $controls->errors .= '<br><a href="https://www.thenewsletterplugin.com/documentation/?p=15170" target="_blank"><strong>' . __('Read more', 'newsletter') . '</strong></a>.';
+
         } else {
             $controls->messages = 'Success.';
         }

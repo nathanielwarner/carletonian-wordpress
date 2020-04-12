@@ -436,17 +436,6 @@ class NewsletterProfile extends NewsletterModule {
 
         parent::upgrade();
 
-        // Migration code
-        if (empty($this->options) || empty($this->options['email_changed'])) {
-            // Options of the subscription module (worng name, I know)
-            $options = get_option('newsletter');
-            $this->options['saved'] = $options['profile_saved'];
-            $this->options['text'] = $options['profile_text'];
-            $this->options['email_changed'] = $options['profile_email_changed'];
-            $this->options['error'] = $options['profile_error'];
-            $this->options['url'] = $options['profile_url'];
-            $this->save_options($this->options);
-        }
     }
 
     function admin_menu() {

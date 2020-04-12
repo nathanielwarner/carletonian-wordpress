@@ -239,6 +239,23 @@ $warning |= empty($status_options['mail']);
     </div>
 <?php } ?>
 
+<?php if (!defined('NEWSLETTER_CRON_WARNINGS') || NEWSLETTER_CRON_WARNINGS) {
+            $x = wp_next_scheduled('newsletter');
+            if ($x === false) {
+                echo '<div class="tnp-warning">The Newsletter delivery engine is off (it should never be off). Deactivate and reactivate the Newsletter plugin.</div>';
+            } else if (time() - $x > 900) {
+                echo '<div class="tnp-warning">The WP scheduler doesn\'t seem to be running correctly for Newsletter. <a href="https://www.thenewsletterplugin.com/documentation/?p=6128" target="_blank"><strong>Read this page to solve the problem</strong></a>.</div>';
+            } else {
+//            if (empty($this->options['disable_cron_notice'])) {
+//                $cron_data = get_option('newsletter_diagnostic_cron_data');
+//                if ($cron_data && $cron_data['mean'] > 500) {
+//                    echo '<div class="notice notice-error"><p>The WP scheduler doesn\'t seem to be triggered enough often for Newsletter. <a href="https://www.thenewsletterplugin.com/documentation/newsletter-delivery-engine#cron" target="_blank"><strong>Read this page to solve the problem</strong></a> or disable this notice on <a href="admin.php?page=newsletter_main_main"><strong>main settings</strong></a>.</p></div>';
+//                }
+//            }
+            }
+        }
+ ?>
+        
 <div id="tnp-notification">
     <?php
     if (isset($controls)) {

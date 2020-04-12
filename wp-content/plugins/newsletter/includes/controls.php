@@ -11,9 +11,12 @@ class NewsletterControls {
     var $button_data = '';
     var $errors = '';
     /**
-     * @var string 
+     * @var string
      */
     var $messages = '';
+    /**
+     * @var array 
+     */
     var $warnings = array();
     var $countries = array(
         'AF' => 'Afghanistan',
@@ -378,13 +381,13 @@ class NewsletterControls {
             echo '</div>';
         }
     }
-    
+
     function add_message($text) {
         if (!empty($this->messages)) {
             $this->messages .= '<br><br>';
         }
         $this->messages .= $text;
-    }    
+    }
 
     function add_message_saved() {
         if (!empty($this->messages)) {
@@ -830,11 +833,14 @@ class NewsletterControls {
         echo '<a href="', esc_attr($url), '" class="button-primary"><i class="fas fa-cog"></i>', _e('Configure', 'newsletter'), '</a>';
     }
 
-    function button_back($url) {
+    function button_back($url, $label = null) {
         echo '<a href="';
         echo esc_attr($url);
-        echo '" class="button-primary"><i class="fas fa-chevron-left"></i>&nbsp;';
-        _e('Back', 'newsletter');
+        echo '" class="button-primary"><i class="fas fa-chevron-left"></i>';
+        if (is_null($label)) {
+            echo '&nbsp;';
+            _e('Back', 'newsletter');
+        }
         echo '</a>';
     }
 
@@ -860,13 +866,32 @@ class NewsletterControls {
         }
         echo '</button>';
     }
+    
+    function button_test($action = 'test', $label = 'Test') {
+        echo '<button class="button-secondary" onclick="this.form.act.value=\'' . esc_attr($action) . '\';if (!confirm(\'';
+        echo esc_attr(esc_js(__('Proceed with a test?', 'newsletter')));
+        echo '\')) return false;"';
+        if (empty($label)) {
+            echo 'title="', esc_attr(__('Run a test', 'newsletter')), '"';
+        }
+        echo '>';
+        echo '<i class="fas fa-vial"></i>';
+        if (is_null($label)) {
+        echo ' ', esc_html(__('Run a test', 'newsletter'));
+        } else {
+            if (!empty($label)) {
+                echo ' ' , $label;
+            }
+        }
+        echo '</button>';
+    }    
 
     /**
      * Creates a button with "delete" action.
      * @param type $data
      */
     function button_delete($data = '', $label = null) {
-        echo '<button class="button-secondary" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'delete\';if (!confirm(\'';
+        echo '<button class="button-secondary" style="background-color: darkred; color: #ffffff" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'delete\';if (!confirm(\'';
         echo esc_attr(esc_js(__('Proceed with delete?', 'newsletter')));
         echo '\')) return false;"';
         if (empty($label)) {
@@ -899,6 +924,10 @@ class NewsletterControls {
 
         echo '<input class="button-primary" type="button" value="' . esc_attr($label) . '" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'' . esc_attr($action) . '\';if (confirm(\'' .
         esc_attr(esc_js($message)) . '\')) this.form.submit()"/>';
+    }
+    
+    function button_statistics($url) {
+        echo '<a class="button-primary" href="' . $url . '" title="Statistics"><i class="fas fa-chart-bar"></i></a>';
     }
 
     function editor($name, $rows = 5, $cols = 75) {
@@ -1041,12 +1070,12 @@ class NewsletterControls {
         echo '<div style="clear: both"></div>';
         echo '</div>';
     }
-    
+
     function color($name, $default = '') {
 
         $value = $this->get_value($name);
         if (empty($value) && $default) $value = $default;
-        
+
         //echo '<input id="options-', esc_attr($name), '" class="tnp-controls-color" name="options[' . $name . ']" type="text" value="';
         echo '<input id="options-', esc_attr($name), '" name="options[' . $name . ']" type="color" value="';
         echo esc_attr($value);
@@ -1153,7 +1182,7 @@ class NewsletterControls {
     }
 
     /**
-     * Creates a single select with the active preferences. 
+     * Creates a single select with the active preferences.
      */
     function preferences_select($name = 'preference', $empty_label = null) {
         $lists = $this->get_list_options($empty_label);
@@ -1405,7 +1434,7 @@ class NewsletterControls {
      * Attributes:
      * weight: [true|false]
      * color: [true|false]
-     * 
+     *
      * @param string $name
      * @param array $attrs
      */
@@ -1455,14 +1484,14 @@ class NewsletterControls {
     function css_font_family($name = 'font_family') {
         $value = $this->get_value($name);
 
-        $fonts = array('Helvetica, Arial, sans-serif'=>'Helvetica, Arial', 
-            'Arial Black, Gadget, sans-serif'=>'Arial Black, Gadget', 
-            'Garamond, serif'=>'Garamond', 
-            'Courier, monospace'=>'Courier', 
-            'Comic Sans MS, cursive'=>'Comic Sans MS', 
+        $fonts = array('Helvetica, Arial, sans-serif'=>'Helvetica, Arial',
+            'Arial Black, Gadget, sans-serif'=>'Arial Black, Gadget',
+            'Garamond, serif'=>'Garamond',
+            'Courier, monospace'=>'Courier',
+            'Comic Sans MS, cursive'=>'Comic Sans MS',
             'Impact, Charcoal, sans-serif'=>'Impact, Charcoal',
-            'Tahoma, Geneva, sans-serif'=>'Tahoma, Geneva', 
-            'Times New Roman, Times, serif'=>'Times New Roman, Times', 
+            'Tahoma, Geneva, sans-serif'=>'Tahoma, Geneva',
+            'Times New Roman, Times, serif'=>'Times New Roman',
             'Verdana, Geneva, sans-serif'=>'Verdana, Geneva');
 
         echo '<select id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']">';
@@ -1514,7 +1543,7 @@ class NewsletterControls {
 
     /**
      * Media selector using the media library of WP. Produces a field which values is an array containing 'id' and 'url'.
-     * 
+     *
      * @param string $name
      */
     function media($name) {
@@ -1574,7 +1603,7 @@ class NewsletterControls {
     /**
      * Creates a checkbox group with all active languages. Each checkbox is named
      * $name[] and values with the relative language code.
-     * 
+     *
      * @param string $name
      */
     function languages($name = 'languages') {
@@ -1596,7 +1625,7 @@ class NewsletterControls {
     /**
      * Prints a formatted date using the formats and timezone of WP, including the current date and time and the
      * time left to the passed time.
-     * 
+     *
      * @param int $time
      * @param int $now
      * @param bool $left
@@ -1625,10 +1654,21 @@ class NewsletterControls {
         }
         return $buffer;
     }
-
+    
+    static function delta_time($delta = 0) {
+        $seconds = $delta % 60;
+        $minutes = floor(($delta/60) % 60);
+        $hours =  floor(($delta/(60*60)) % 24);
+        $days = floor($delta / (24*60*60));
+        
+        
+        return $days . ' day(s), ' . $hours . ' hour(s), ' . $minutes . ' minute(s)';
+        
+    }
+    
     /**
      * Prints the help button near a form field. The label is used as icon title.
-     * 
+     *
      * @param string $url
      * @param string $label
      */
@@ -1646,7 +1686,7 @@ class NewsletterControls {
 
     /**
      * Prints a panel link to the documentation.
-     * 
+     *
      * @param type $url
      * @param type $text
      */
@@ -1692,7 +1732,7 @@ class NewsletterControls {
 
     /**
      * Adds the fields used by the composer (version 1) in the page form.
-     * 
+     *
      * @param type $name
      */
     function composer_fields($name = 'body') {
@@ -1745,24 +1785,8 @@ class NewsletterControls {
      * Adds the fields used by the composer (version 2) in the page form.
      */
     function composer_fields_v2($name = 'message') {
-        //TODO [Gioacchino] check su dove è richiamata questa funzione
-
-        /*foreach ($this->data as $key=>$value) {
-            if (strpos($key, 'options_composer_') === 0) {
-                $this->hidden($key);
-            }
-        }*/
-        $this->hidden('options_composer_background');
-        //$this->hidden('options_composer_background_image');
         $this->hidden('subject');
         $this->hidden('message');
-
-        // Global style background color
-        $value = $this->get_value('options');
-        //var_dump($value);
-        //die();
-        $value = isset($value['global-styles']) ? $value['global-styles'] : ['global-styles-bgcolor' => '#ECF0F1'];
-        echo '<input type="hidden" name="options[global-styles]" id="options-global-styles" value="', esc_attr(json_encode($value)), '">';
     }
 
     function composer_load_v2($show_subject = false, $show_test = true, $context_type = '') {
