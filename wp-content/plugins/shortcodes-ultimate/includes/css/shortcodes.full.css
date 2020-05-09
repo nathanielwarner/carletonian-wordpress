@@ -34,6 +34,10 @@
   height: 100%;
 }
 
+.su-u-overflow-hidden {
+  overflow: hidden;
+}
+
 .su-accordion {
   margin-bottom: 1.5em;
 }
@@ -697,7 +701,6 @@
 .su-custom-gallery-slide a {
   display: block;
   width: 100%;
-  height: 100%;
 }
 
 .su-custom-gallery-slide img {

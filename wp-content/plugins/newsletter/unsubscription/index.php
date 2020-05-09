@@ -39,8 +39,8 @@ if (!$controls->is_action()) {
 
     <div id="tnp-heading">
 
-        <h2><?php _e('Cancellation', 'newsletter')?></h2>
-        <?php $controls->panel_help('https://www.thenewsletterplugin.com/documentation/cancellation')?>
+        <h2><?php _e('Cancellation', 'newsletter') ?></h2>
+        <?php $controls->panel_help('https://www.thenewsletterplugin.com/documentation/cancellation') ?>
 
     </div>
 
@@ -48,7 +48,7 @@ if (!$controls->is_action()) {
 
         <form method="post" action="">
             <?php $controls->init(); ?>
-             <p>
+            <p>
                 <?php $controls->button_save() ?>
                 <?php $controls->button_reset() ?>
             </p>
@@ -61,15 +61,9 @@ if (!$controls->is_action()) {
                 <div id="tabs-cancellation">
                     <table class="form-table">
                         <tr>
-                            <th><?php _e('Notify admin on unsubscription', 'newsletter') ?></th>
-                            <td>
-			                    <?php $controls->yesno('notify_admin_on_unsubscription'); ?>
-                            </td>
-                        </tr>
-                        <tr>
                             <th><?php _e('Cancellation message', 'newsletter') ?></th>
                             <td>
-                                <?php $controls->wp_editor('unsubscribe_text', array('editor_height'=>250)); ?>
+                                <?php $controls->wp_editor('unsubscribe_text', array('editor_height' => 250)); ?>
                                 <p class="description">
                                 </p>
                             </td>
@@ -78,7 +72,7 @@ if (!$controls->is_action()) {
                         <tr>
                             <th><?php _e('Goodbye message', 'newsletter') ?></th>
                             <td>
-                                <?php $controls->wp_editor('unsubscribed_text', array('editor_height'=>250)); ?>
+                                <?php $controls->wp_editor('unsubscribed_text', array('editor_height' => 250)); ?>
                                 <p class="description">
                                 </p>
                             </td>
@@ -87,19 +81,42 @@ if (!$controls->is_action()) {
                         <tr>
                             <th><?php _e('Goodbye email', 'newsletter') ?></th>
                             <td>
-                                <?php $controls->email('unsubscribed', 'wordpress', $is_all_languages, array('editor_height'=>250)); ?>
+                                <?php $controls->email('unsubscribed', 'wordpress', $is_all_languages, array('editor_height' => 250)); ?>
                                 <p class="description">
 
                                 </p>
                             </td>
                         </tr>
                         <tr>
-                            <th><?php _e('On error', 'newsletter')?></th>
+                            <th><?php _e('On error', 'newsletter') ?></th>
                             <td>
-                                <?php $controls->wp_editor('error_text', array('editor_height'=>150)); ?>
+                                <?php $controls->wp_editor('error_text', array('editor_height' => 150)); ?>
                                 <p class="description">
 
                                 </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th><?php _e('Cancellation requests via email', 'newsletter') ?></th>
+                            <td>
+                                <?php $controls->text_email('list_unsubscribe_mailto_header'); ?>
+                                <p class="description">
+                                    <i class="fas fa-exclamation-triangle"></i> <a href="https://www.thenewsletterplugin.com/documentation/subscribers-and-management/cancellation/#list-unsubscribe" target="_blank"><?php _e('Read more', 'newsletter') ?></a>
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Disable unsubscribe headers', 'newsletter') ?></th>
+                            <td>
+                                <?php $controls->yesno('disable_unsubscribe_headers'); ?>
+                                <?php $controls->field_help('https://www.thenewsletterplugin.com/documentation/subscribers-and-management/cancellation/#list-unsubscribe') ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th><?php _e('Notify admin on unsubscription', 'newsletter') ?></th>
+                            <td>
+                                <?php $controls->yesno('notify_admin_on_unsubscription'); ?>
                             </td>
                         </tr>
                     </table>
@@ -110,7 +127,7 @@ if (!$controls->is_action()) {
                         <tr>
                             <th><?php _e('Reactivated message', 'newsletter') ?></th>
                             <td>
-                                <?php $controls->wp_editor('reactivated_text', array('editor_height'=>250)); ?>
+                                <?php $controls->wp_editor('reactivated_text', array('editor_height' => 250)); ?>
                                 <p class="description">
                                 </p>
                             </td>

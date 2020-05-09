@@ -41,7 +41,7 @@
                                 I'm so glad to be a Pro version user. The upgrade worth every cent...
                             </p>
                             <p class="yop-poll-pro-testimonial-client">
-                                edwintam, wordpress user
+                                edwintam, WordPress user
                             </p>
                             <p></p>
                         </div>
@@ -193,7 +193,7 @@
                                 I'm so glad to be a Pro version user. The upgrade worth every cent...
                             </p>
                             <p class="yop-poll-pro-testimonial-client">
-                                edwintam, wordpress user
+                                edwintam, WordPress user
                             </p>
                             <p></p>
                         </div>
@@ -341,7 +341,7 @@
                                 I'm so glad to be a Pro version user. The upgrade worth every cent...
                             </p>
                             <p class="yop-poll-pro-testimonial-client">
-                                edwintam, wordpress user
+                                edwintam, WordPress user
                             </p>
                             <p></p>
                         </div>

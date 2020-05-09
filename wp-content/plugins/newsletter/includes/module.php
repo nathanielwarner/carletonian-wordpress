@@ -45,13 +45,87 @@ abstract class TNP_List {
  * @property int $id The list unique identifier
  * @property string $name The list name
  * @property int $status When and how the list is visible to the subscriber - see constants
+ * @property string $type Field type: text or select
+ * @property array $options Field options (usually the select items)
  */
-abstract class TNP_Profile {
+class TNP_Profile {
 
-    const STATUS_PRIVATE = 0;
-    const STATUS_PUBLIC = 2;
-    const STATUS_PROFILE_ONLY = 1;
-    const STATUS_HIDDEN = 3; // Public but never show (can be set with a hidden form field)
+	const STATUS_PRIVATE = 0;
+	const STATUS_PUBLIC = 2;
+	const STATUS_PROFILE_ONLY = 1;
+	const STATUS_HIDDEN = 3; // Public but never shown (can be set with a hidden form field)
+
+	const TYPE_TEXT = 'text';
+	const TYPE_SELECT = 'select';
+
+	public $id;
+	public $name;
+	public $status;
+	public $type;
+	public $options;
+
+	public function __construct( $id, $name, $status, $type, $options ) {
+		$this->id      = $id;
+		$this->name    = $name;
+		$this->status  = $status;
+		$this->type    = $type;
+		$this->options = $options;
+	}
+
+	function is_select() {
+		return $this->type == self::TYPE_SELECT;
+	}
+
+	function is_text() {
+		return $this->type == self::TYPE_TEXT;
+	}
+}
+
+class TNP_Profile_Service {
+
+	static function get_profiles( $language = '', $type = null ) {
+
+		static $profiles = array();
+		if ( isset( $profiles[ $language ] ) ) {
+			return $profiles[ $language ];
+		}
+
+		$profiles[ $language ] = array();
+		$data                  = NewsletterSubscription::instance()->get_options( 'profile', $language );
+		for ( $i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i ++ ) {
+			if ( empty( $data[ 'profile_' . $i ] ) ) {
+				continue;
+			}
+			$profile = new TNP_Profile(
+				$i,
+				$data[ 'profile_' . $i ],
+				(int) $data[ 'profile_' . $i . '_status' ],
+				$data[ 'profile_' . $i . '_type' ],
+				self::string_db_options_to_array( $data[ 'profile_' . $i . '_options' ] )
+			);
+
+			if ( is_null( $type ) ||
+			     ( $type == TNP_Profile::TYPE_SELECT && $profile->is_select() ) ||
+			     ( $type == TNP_Profile::TYPE_TEXT && $profile->is_text() ) ) {
+				$profiles[ $language ][] = $profile;
+			}
+
+		}
+
+		return $profiles[ $language ];
+
+	}
+
+	/**
+	 * Returns a list of strings which are the items for the select field.
+	 * @return array
+	 */
+	private static function string_db_options_to_array( $string_options ) {
+		$items = array_map( 'trim', explode( ',', $string_options ) );
+		$items = array_combine($items,$items);
+
+		return $items;
+	}
 
 }
 
@@ -756,7 +830,7 @@ class NewsletterModule {
     }
 
     /**
-     *
+     * Delete one or more emails identified by ID (single value or array of ID)
      * @global wpdb $wpdb
      * @param int|array $id
      * @return boolean
@@ -1041,26 +1115,9 @@ class NewsletterModule {
      * @param string $language The language for the list labels (it does not affect the lists returned)
      * @return TNP_Profile[]
      */
-    function get_profiles($language = '') {
-        static $profiles = array();
-        if (isset($profiles[$language])) {
-            return $profiles[$language];
-        }
-
-        $profiles[$language] = array();
-        $data = NewsletterSubscription::instance()->get_options('profile', $language);
-        for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
-            if (empty($data['profile_' . $i])) {
-                continue;
-            }
-            $profile = new stdClass();
-            $profile->name = $data['profile_' . $i];
-            $profile->id = $i;
-            $profile->status = (int) $data['profile_' . $i . '_status'];
-            $profiles[$language][] = $profile;
-        }
-        return $profiles[$language];
-    }
+	function get_profiles( $language = '' ) {
+		return TNP_Profile_Service::get_profiles( $language );
+	}
 
     /**
      * @param string $language The language for the list labels (it does not affect the lists returned)
@@ -2018,39 +2075,39 @@ class NewsletterModule {
         return $posts;
     }
 
-	protected function generate_admin_notification_message( $user ) {
+    protected function generate_admin_notification_message($user) {
 
-		$message = "Subscriber details:\n\n" .
-		           "email: " . $user->email . "\n" .
-		           "first name: " . $user->name . "\n" .
-		           "last name: " . $user->surname . "\n" .
-		           "gender: " . $user->sex . "\n";
+        $message = "Subscriber details:\n\n" .
+                "email: " . $user->email . "\n" .
+                "first name: " . $user->name . "\n" .
+                "last name: " . $user->surname . "\n" .
+                "gender: " . $user->sex . "\n";
 
-		$lists = $this->get_lists();
-		foreach ( $lists as $list ) {
-			$field   = 'list_' . $list->id;
-			$message .= $list->name . ': ' . ( empty( $user->$field ) ? "NO" : "YES" ) . "\n";
-		}
+        $lists = $this->get_lists();
+        foreach ($lists as $list) {
+            $field = 'list_' . $list->id;
+            $message .= $list->name . ': ' . ( empty($user->$field) ? "NO" : "YES" ) . "\n";
+        }
 
-		for ( $i = 0; $i < NEWSLETTER_PROFILE_MAX; $i ++ ) {
-			if ( empty( $this->options_profile[ 'profile_' . $i ] ) ) {
-				continue;
-			}
-			$field   = 'profile_' . $i;
-			$message .= $this->options_profile[ 'profile_' . $i ] . ': ' . $user->$field . "\n";
-		}
+        for ($i = 0; $i < NEWSLETTER_PROFILE_MAX; $i ++) {
+            if (empty($this->options_profile['profile_' . $i])) {
+                continue;
+            }
+            $field = 'profile_' . $i;
+            $message .= $this->options_profile['profile_' . $i] . ': ' . $user->$field . "\n";
+        }
 
-		$message .= "token: " . $user->token . "\n" .
-		            "status: " . $user->status . "\n";
+        $message .= "token: " . $user->token . "\n" .
+                "status: " . $user->status . "\n";
 
-		return $message;
-	}
+        return $message;
+    }
 
-	protected function generate_admin_notification_subject( $subject ) {
-		$blogname = wp_specialchars_decode( get_option( 'blogname' ), ENT_QUOTES );
+    protected function generate_admin_notification_subject($subject) {
+        $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
-		return '[' . $blogname . '] ' . $subject;
-	}
+        return '[' . $blogname . '] ' . $subject;
+    }
 
 }
 

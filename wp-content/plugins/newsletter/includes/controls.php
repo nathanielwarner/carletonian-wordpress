@@ -15,7 +15,7 @@ class NewsletterControls {
      */
     var $messages = '';
     /**
-     * @var array 
+     * @var array
      */
     var $warnings = array();
     var $countries = array(
@@ -678,10 +678,12 @@ class NewsletterControls {
 
         foreach ($options as $key => $data) {
             echo '<option value="' . esc_attr($key) . '"';
-            if (is_array($value) && in_array($key, $value) || $value == $key)
-                echo ' selected';
+	        if ( is_array( $value ) && in_array( $key, $value ) || ( ! is_null( $value ) && $value == $key ) ) {
+		        echo ' selected';
+	        }
             echo '>' . esc_html($data) . '</option>';
         }
+
         echo '</select>';
         echo '<script>jQuery("#options-' . esc_attr($name) . '").select2({placeholder: "', esc_js($placeholder), '"});</script>';
     }
@@ -866,7 +868,7 @@ class NewsletterControls {
         }
         echo '</button>';
     }
-    
+
     function button_test($action = 'test', $label = 'Test') {
         echo '<button class="button-secondary" onclick="this.form.act.value=\'' . esc_attr($action) . '\';if (!confirm(\'';
         echo esc_attr(esc_js(__('Proceed with a test?', 'newsletter')));
@@ -884,7 +886,7 @@ class NewsletterControls {
             }
         }
         echo '</button>';
-    }    
+    }
 
     /**
      * Creates a button with "delete" action.
@@ -925,7 +927,7 @@ class NewsletterControls {
         echo '<input class="button-primary" type="button" value="' . esc_attr($label) . '" onclick="this.form.btn.value=\'' . esc_attr($data) . '\';this.form.act.value=\'' . esc_attr($action) . '\';if (confirm(\'' .
         esc_attr(esc_js($message)) . '\')) this.form.submit()"/>';
     }
-    
+
     function button_statistics($url) {
         echo '<a class="button-primary" href="' . $url . '" title="Statistics"><i class="fas fa-chart-bar"></i></a>';
     }
@@ -1654,18 +1656,18 @@ class NewsletterControls {
         }
         return $buffer;
     }
-    
+
     static function delta_time($delta = 0) {
         $seconds = $delta % 60;
         $minutes = floor(($delta/60) % 60);
         $hours =  floor(($delta/(60*60)) % 24);
         $days = floor($delta / (24*60*60));
-        
-        
+
+
         return $days . ' day(s), ' . $hours . ' hour(s), ' . $minutes . ' minute(s)';
-        
+
     }
-    
+
     /**
      * Prints the help button near a form field. The label is used as icon title.
      *

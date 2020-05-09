@@ -6,7 +6,7 @@ Tags: shortcode, toggle, columns, button, slider
 Requires at least: 4.6
 Requires PHP: 5.3
 Tested up to: 5.4
-Stable tag: 5.8.0
+Stable tag: 5.8.1
 
 A comprehensive collection of visual components for your site
 
@@ -150,6 +150,26 @@ For help with premium add-ons, please [open new support ticket](https://getshort
 
 
 == Changelog ==
+
+= 5.8.1 =
+
+**What's new**
+
+- New option `anchor` for `[su_divider]` shortcode
+
+
+**Changes**
+
+- `[su_document]` shortcode is now *deprecated*. It will continue to work, but will be removed from the Insert shortcode window and from documentation
+
+
+**Fixes**
+
+- Fixed fatal error on WP 5.4 in Gallery, Slider, and Carousel shortcodes. Thanks to [Jörn Lund](https://github.com/mcguffin)
+- The `[su_feed]` can now work with URLs containing `&amp;`, converted by the block editor
+- Fixed PHP notices in the admin part
+- Translation fixes
+
 
 = 5.8.0 =
 

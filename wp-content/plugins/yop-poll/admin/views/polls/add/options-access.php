@@ -27,7 +27,7 @@
 					<div class="checkbox-inline">
 						<label class="admin-label">
 							<input type="checkbox" name="vote-permissions" class="vote-permissions" value="wordpress">
-							<?php _e( 'Wordpress', 'yop-poll' );?>
+							<?php _e( 'WordPress', 'yop-poll' );?>
 						</label>
 					</div>
 					<div class="checkbox-inline">

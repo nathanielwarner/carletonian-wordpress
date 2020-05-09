@@ -28,7 +28,7 @@
 		</p>
 
 		<p>
-			<?php printf(__('%s is effective tool for automatically cleaning your WordPress database so that it runs at maximum efficiency.', 'stops-core-theme-and-plugin-updates'), '<strong>'.$easy_updates_manager->easy_updates_manager_url('https://getwpo.com/', __('WP-Optimize', 'stops-core-theme-and-plugin-updates'), '', '', true).'</strong>'); ?>
+			<?php printf(__('%s makes your site fast and efficient.  It cleans the database, compresses images and caches pages for ultimate speed.', 'stops-core-theme-and-plugin-updates'), '<strong>'.$easy_updates_manager->easy_updates_manager_url('https://getwpo.com/', __('WP-Optimize', 'stops-core-theme-and-plugin-updates'), '', '', true).'</strong>'); ?>
 		</p>
 
 		<p>

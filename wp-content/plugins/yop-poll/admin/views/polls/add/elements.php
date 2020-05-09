@@ -9,40 +9,66 @@ include( YOP_POLL_PATH . 'admin/views/polls/elements-definitions.php' )
 <div class="row">
 	<div class="col-md-12 buttons-row">
 		<span class="regular-buttons">
-			<a class="btn btn-primary poll-element-add add-custom-field" href="#" role="button">
-				<i class="glyphicon glyphicon-asterisk" aria-hidden="true"></i>
+			<a class="btn btn-primary lite-button poll-element-add add-custom-field" href="#" role="button">
+				<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
 				<br>
 				<?php _e( 'Custom Field', 'yop-poll' );?>
 			</a>
 		</span>
 		<span class="premium-buttons">
-			<span class="premium">
-				<a href="#" class="upgrade-to-pro" data-screen="multiple-questions">
-					<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-vertical.svg" class="responsive" />
-				</a>
-			</span>
-			<a class="btn btn-warning add-text-question" href="#" role="button">
-				<i class="glyphicon glyphicon-asterisk" aria-hidden="true"></i>
-				<br>
-				<?php _e( 'Text Question', 'yop-poll' );?>
-			</a>
-			<a class="btn btn-warning add-media-question" href="#" role="button">
-				<i class="glyphicon glyphicon-asterisk" aria-hidden="true"></i>
-				<br>
-				<?php _e( 'Media Question', 'yop-poll' );?>
-			</a>
-			<a class="btn btn-warning add-space-separator" href="#" role="button">
-				<i class="glyphicon glyphicon-asterisk" aria-hidden="true"></i>
-				<br>
-				<?php _e( 'Space Separator', 'yop-poll' );?>
-			</a>
-			<a class="btn btn-warning add-text-block" href="#" role="button">
-				<i class="glyphicon glyphicon-asterisk" aria-hidden="true"></i>
-				<br>
-				<?php _e( 'Text Block', 'yop-poll' );?>
-			</a>
-			</span>
-		<hr>
+			<div class="row">
+				<div class="col-md-1">
+					<span class="premium">
+						<a href="#" class="upgrade-to-pro" data-screen="multiple-questions">
+							<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-vertical.svg" class="responsive" />
+						</a>
+					</span>
+				</div>
+				<div class="col-md-11">
+					<a class="btn btn-warning premium-button add-text-question" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Text Question', 'yop-poll' );?>
+					</a>
+					<a class="btn btn-warning premium-button add-media-question" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Media Question', 'yop-poll' );?>
+					</a>
+					<a class="btn btn-warning premium-button add-media-question" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Text Slider Question', 'yop-poll' );?>
+					</a>
+					<a class="btn btn-warning premium-button add-space-separator" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Space Separator', 'yop-poll' );?>
+					</a>
+					<br />
+					<a class="btn btn-warning premium-button add-text-block" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Text Block', 'yop-poll' );?>
+					</a>
+					<a class="btn btn-warning premium-button add-text-block" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Text Area', 'yop-poll' );?>
+					</a>
+					<a class="btn btn-warning premium-button add-text-block" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Text Slider', 'yop-poll' );?>
+					</a>
+					<a class="btn btn-warning premium-button add-text-block" href="#" role="button">
+						<i class="glyphicon glyphicon-plus" aria-hidden="true"></i>
+						<br>
+						<?php _e( 'Countdown Timer', 'yop-poll' );?>
+					</a>
+				</div>
+			</div>
+		</span>
 	</div>
 </div>
 <div class="row">

@@ -63,7 +63,7 @@ class Easy_Updates_Manager_Notices extends Updraft_Notices_1_0 {
 			'wp-optimize' => array(
 				'prefix' => '',
 				'title' => 'WP-Optimize',
-				'text' => __("After you've backed up your database, we recommend you install our WP-Optimize plugin to streamline it for better website performance.", 'stops-core-theme-and-plugin-updates'),
+				'text' => __("Make your site fast amd efficient with our cutting-edge speed plugin.", 'stops-core-theme-and-plugin-updates'),
 				'image' => 'notices/wp_optimize_logo.png',
 				'button_link' => 'https://getwpo.com',
 				'button_meta' => 'wp-optimize',

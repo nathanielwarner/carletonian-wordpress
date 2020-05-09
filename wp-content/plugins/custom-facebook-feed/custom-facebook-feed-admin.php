@@ -2,9 +2,14 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function cff_menu() {
+	global $cff_error_reporter;
+	$notice = '';
+	if ( $cff_error_reporter->are_critical_errors() ) {
+		$notice = ' <span class="update-plugins cff-error-alert"><span>!</span></span>';
+	}
     add_menu_page(
         '',
-        'Facebook Feed',
+        'Facebook Feed'. $notice,
         'manage_options',
         'cff-top',
         'cff_settings_page'
@@ -12,7 +17,7 @@ function cff_menu() {
     add_submenu_page(
         'cff-top',
         'Settings',
-        'Settings',
+        'Settings'. $notice,
         'manage_options',
         'cff-top',
         'cff_settings_page'
@@ -29,8 +34,20 @@ function cff_styling_menu() {
         'cff-style',
         'cff_style_page'
     );
+	add_submenu_page(
+		'cff-top',
+		__( 'About Us', 'custom-facebook-feed' ),
+		__( 'About Us', 'custom-facebook-feed' ),
+		'manage_options',
+		'cff-about',
+		'cff_about_page'
+	);
 }
 add_action('admin_menu', 'cff_styling_menu');
+
+function cff_about_page() {
+	do_action('cff_admin_page' );
+}
 
 //Create Settings page
 function cff_settings_page() {
@@ -123,7 +140,7 @@ function cff_settings_page() {
 	if ( ! $lite_notice_dismissed ) :
 		?>
         <div id="cff-notice-bar" style="display:none">
-            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=WordPress&utm_campaign=facebookliteplugin&utm_medium=notice-bar" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
+            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=notices&utm_medium=lite" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
             <button type="button" class="dismiss" title="<?php _e( 'Dismiss this message.', 'custom-facebook-feed'); ?>" data-page="overview">
             </button>
         </div>
@@ -194,6 +211,9 @@ function cff_settings_page() {
             if( isset($_GET['access_token']) && isset($_GET['final_response']) ){
 
                 if( $_GET['final_response'] == 'true' ){
+	                global $cff_error_reporter;
+
+	                $cff_error_reporter->remove_error( 'accesstoken' );
 
                     $access_token = $_GET['access_token'];
                     $cff_is_groups = false;
@@ -275,7 +295,9 @@ function cff_settings_page() {
                                 echo "<p>Facebook has not returned any groups for your user. It is only possible to display a feed from a group which you are either an admin or a member. Please note, if you are not an admin of the group then it is required that an admin add our app in the group settings in order to display a feed.</p><p>Please either create or join a Facebook group and then follow the directions when connecting your account on this page.</p>";
                                 echo '<a href="JavaScript:void(0);" class="button button-primary" id="cff-close-modal-primary-button">Close</a>';
                             } else {
+	                            global $cff_error_reporter;
 
+	                            $cff_error_reporter->remove_error( 'accesstoken' );
                                 echo '<div class="cff-groups-list">';
                                     echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook group below to get an Access Token.</p>';
 
@@ -334,7 +356,9 @@ function cff_settings_page() {
 
                         } else {
                             //PAGES
+	                        global $cff_error_reporter;
 
+	                        $cff_error_reporter->remove_error( 'accesstoken' );
                             echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook page below to get an Access Token.</p>';
                             echo '<p class="cff-tokens-note">Note: This Access Token will allow you to display posts from <b style="font-weight: 900;">any</b> public Facebook page, not just the one selected.</p>';
 
@@ -766,10 +790,10 @@ function cff_settings_page() {
         <div class="cff_quickstart">
             <h3><i class="fa fa-rocket" aria-hidden="true"></i>&nbsp; Display your feed</h3>
             <p>Copy and paste this shortcode directly into the page, post or widget where you'd like to display the feed:        <input type="text" value="[custom-facebook-feed]" size="22" readonly="readonly" style="text-align: center;" onclick="this.focus();this.select()" title="To copy, click the field then press Ctrl + C (PC) or Cmd + C (Mac)."></p>
-            <p>Find out how to display <a href="https://smashballoon.com/using-shortcode-options-customize-facebook-feeds/?utm_source=plugin-free&utm_campaign=cff" target="_blank"><b>multiple feeds</b></a>.</p>
+            <p>Find out how to display <a href="https://smashballoon.com/using-shortcode-options-customize-facebook-feeds/?utm_campaign=facebook-free&utm_source=settings&utm_medium=multiple" target="_blank"><b>multiple feeds</b></a>.</p>
         </div>
 
-        <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png?2019' , __FILE__ ) ?>" /></a>
+        <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png?2019' , __FILE__ ) ?>" /></a>
 
         <p class="cff_plugins_promo dashicons-before dashicons-admin-plugins"> <?php _e('Check out our other free plugins for <a href="https://wordpress.org/plugins/instagram-feed/" target="_blank">Instagram</a>, <a href="https://wordpress.org/plugins/custom-twitter-feeds/" target="_blank">Twitter</a>, and <a href="https://wordpress.org/plugins/feeds-for-youtube/" target="_blank">YouTube</a>.', 'custom-facebook-feed' ); ?></p>
 
@@ -790,12 +814,12 @@ function cff_settings_page() {
             <h3 style="padding-bottom: 10px;">Need help?</h3>
 
             <p>
-                <span class="cff-support-title"><i class="fa fa-life-ring" aria-hidden="true"></i>&nbsp; <a href="https://smashballoon.com/custom-facebook-feed/docs/free/?utm_source=plugin-free&utm_campaign=cff" target="_blank"><?php _e('Setup Directions'); ?></a></span>
+                <span class="cff-support-title"><i class="fa fa-life-ring" aria-hidden="true"></i>&nbsp; <a href="https://smashballoon.com/custom-facebook-feed/docs/free/?utm_campaign=facebook-free&utm_source=support&utm_medium=setup" target="_blank"><?php _e('Setup Directions'); ?></a></span>
                 <?php _e('A step-by-step guide on how to setup and use the plugin.'); ?>
             </p>
 
             <p>
-                <span class="cff-support-title"><i class="fa fa-question-circle" aria-hidden="true"></i>&nbsp; <a href="https://smashballoon.com/custom-facebook-feed/faq/?utm_source=plugin-free&utm_campaign=cff" target="_blank"><?php _e('FAQs and Docs'); ?></a></span>
+                <span class="cff-support-title"><i class="fa fa-question-circle" aria-hidden="true"></i>&nbsp; <a href="https://smashballoon.com/custom-facebook-feed/faq/?utm_campaign=facebook-free&utm_source=support&utm_medium=faqs" target="_blank"><?php _e('FAQs and Docs'); ?></a></span>
                 <?php _e('View our expansive library of FAQs and documentation to help solve your problem as quickly as possible.'); ?>
             </p>
 
@@ -803,23 +827,24 @@ function cff_settings_page() {
 
                 <ul class="cff-faq-col-1">
                 <li><b>FAQs</b></li>
-                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/faq/?cat=18" target="_blank">General Questions</a>'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/getting-started/?cat=18" target="_blank">Getting Started</a>'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/troubleshooting/?cat=18" target="_blank">Common Issues</a>'); ?></li>
-                <li style="margin-top: 8px; font-size: 12px;"><a href="https://smashballoon.com/custom-facebook-feed/faq/?utm_source=plugin-free&utm_campaign=cff" target="_blank">See all<i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/faq/?utm_campaign=facebook-free&utm_source=support&utm_medium=general" target="_blank">General Questions</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/getting-started/?utm_campaign=facebook-free&utm_source=support&utm_medium=setup" target="_blank">Getting Started</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/category/custom-facebook-feed/troubleshooting/?utm_campaign=facebook-free&utm_source=support&utm_medium=issues" target="_blank">Common Issues</a>'); ?></li>
+                <li style="margin-top: 8px; font-size: 12px;"><a href="https://smashballoon.com/custom-facebook-feed/faq/?utm_campaign=facebook-free&utm_source=support&utm_medium=faqs" target="_blank">See all<i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+
                 </ul>
 
                 <ul>
                 <li><b>Documentation</b></li>
-                <li>&bull;&nbsp; <?php _e('<a href="http://smashballoon.com/custom-facebook-feed/docs/free/" target="_blank">Installation and Configuration</a>'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/custom-facebook-feed/docs/shortcodes/" target="_blank">Shortcode Reference</a>', 'custom-facebook-feed'); ?></li>
-                <li>&bull;&nbsp; <?php _e('<a href=https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/?cat=18" target="_blank">Custom CSS and JavaScript Snippets</a>'); ?></li>
-                <li style="margin-top: 8px; font-size: 12px;"><a href="https://smashballoon.com/custom-facebook-feed/docs/?utm_source=plugin-free&utm_campaign=cff" target="_blank">See all<i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+                <li>&bull;&nbsp; <?php _e('<a href="http://smashballoon.com/custom-facebook-feed/docs/free/?utm_campaign=facebook-free&utm_source=support&utm_medium=setup" target="_blank">Installation and Configuration</a>'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/custom-facebook-feed/docs/shortcodes/?utm_campaign=facebook-free&utm_source=support&utm_medium=shortcode" target="_blank">Shortcode Reference</a>', 'custom-facebook-feed'); ?></li>
+                <li>&bull;&nbsp; <?php _e('<a href="https://smashballoon.com/snippets/?utm_campaign=facebook-free&utm_source=support&utm_medium=snippets" target="_blank">Custom CSS and JavaScript Snippets</a>'); ?></li>
+                <li style="margin-top: 8px; font-size: 12px;"><a href="https://smashballoon.com/custom-facebook-feed/docs/?utm_campaign=facebook-free&utm_source=support&utm_medium=docs" target="_blank">See all<i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
                 </ul>
             </div>
 
             <p>
-                <span class="cff-support-title"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp; <a href="http://smashballoon.com/custom-facebook-feed/support/" target="_blank"><?php _e('Request Support'); ?></a></span>
+                <span class="cff-support-title"><i class="fa fa-envelope" aria-hidden="true"></i>&nbsp; <a href="http://smashballoon.com/custom-facebook-feed/support/?utm_campaign=facebook-free&utm_source=support&utm_medium=support" target="_blank"><?php _e('Request Support'); ?></a></span>
                 <?php _e('Still need help? Submit a ticket and one of our support experts will get back to you as soon as possible.<br /><b>Important:</b> Please include your <b>System Info</b> below with all support requests.'); ?>
             </p>
         </div>
@@ -1025,6 +1050,9 @@ Force Cache To Clear => <?php echo $options['cff_cron'] ."\n"; ?>
 Request Method => <?php echo $options['cff_request_method'] ."\n"; ?>
 Fix Text Shortening => <?php echo $options['cff_format_issue'] ."\n"; ?>
 Disable Default Styles => <?php echo $options['cff_disable_styles'] ."\n"; ?>
+Disable Frontend Error Notice => <?php if ( isset( $options['disable_admin_notice'] ) ) echo $options['disable_admin_notice']; echo "\n"; ?>
+Enable Email => <?php if ( isset( $options['enable_email_report'] ) ) echo $options['enable_email_report']; echo "\n" ?>
+Email Addresses => <?php if ( isset( $options['enable_email_report'] ) ) echo $options['email_notification_addresses']; echo "\n"; ?>
 
 ## CUSTOM TEXT/TRANSLATE: ##
 Modified text strings:
@@ -1067,7 +1095,42 @@ if( isset( $api_response_json->error ) ) echo $posts_json;
 if( isset( $api_response_json->data ) ){
     $posts_json_split = explode(',"paging":{', $posts_json);
     echo $posts_json_split[0];
+} ?>
+
+
+## CRON EVENTS: ##
+<?php
+$cron = _get_cron_array();
+foreach ( $cron as $key => $data ) {
+	$is_target = false;
+	foreach ( $data as $key2 => $val ) {
+		if ( strpos( $key2, 'cff' ) !== false ) {
+			$is_target = true;
+			echo $key2;
+			echo "\n";
+		}
+	}
+	if ( $is_target) {
+		echo date( "Y-m-d H:i:s", $key );
+		echo "\n";
+		echo 'Next Scheduled: ' . ((int)$key - time())/60 . ' minutes';
+		echo "\n\n";
+	}
 }
+?>
+
+## Error Log: ##
+<?php
+global $cff_error_reporter;
+$errors = $cff_error_reporter->get_errors();
+if ( ! empty( $errors ) ) :
+	foreach ( $errors as $error ) :
+		echo $error['admin_message']."\n";
+		echo 'Feed with error: ' . esc_url( get_the_permalink( $error['post_id'] ) )."\n";
+
+	endforeach;
+endif;
+
 ?>
         </textarea>
 
@@ -1215,6 +1278,7 @@ function cff_style_page() {
         'cff_show_credit'           => '',
         'cff_font_source'           => '',
         'cff_minify'                => false,
+        'disable_admin_notice'      => false,
         'cff_sep_color'             => '',
         'cff_sep_size'              => '1',
 
@@ -1266,7 +1330,12 @@ function cff_style_page() {
         'cff_translate_months'      => 'months',
         'cff_translate_year'        => 'year',
         'cff_translate_years'       => 'years',
-        'cff_translate_ago'         => 'ago'
+        'cff_translate_ago'         => 'ago',
+
+        // email
+        'enable_email_report' => 'on',
+		'email_notification' => 'monday',
+		'email_notification_addresses' => get_option( 'admin_email' )
     );
     //Save layout option in an array
     $options = wp_parse_args(get_option('cff_style_settings'), $defaults);
@@ -1427,6 +1496,10 @@ function cff_style_page() {
     $cff_minify = $options[ 'cff_minify' ];
     $cff_cols = $options[ 'cff_cols' ];
     $cff_cols_mobile = $options[ 'cff_cols_mobile' ];
+	$cff_disable_admin_notice = $options[ 'disable_admin_notice' ];
+	$cff_enable_email_report = $options[ 'enable_email_report' ];
+	$cff_email_notification = $options[ 'email_notification' ];
+	$cff_email_notification_addresses = $options[ 'email_notification_addresses' ];
 
     //Page Header
     $cff_show_header = $options[ 'cff_show_header' ];
@@ -1827,6 +1900,7 @@ function cff_style_page() {
                 (isset($_POST[ 'cff_format_issue' ])) ? $cff_format_issue = sanitize_text_field( $_POST[ 'cff_format_issue' ] ) : $cff_format_issue = '';
                 (isset($_POST[ 'cff_restricted_page' ])) ? $cff_restricted_page = sanitize_text_field( $_POST[ 'cff_restricted_page' ] ) : $cff_restricted_page = '';
                 (isset($_POST[ 'cff_minify' ])) ? $cff_minify = sanitize_text_field( $_POST[ 'cff_minify' ] ) : $cff_minify = '';
+	            (isset($_POST[ 'cff_disable_admin_notice' ])) ? $cff_disable_admin_notice = sanitize_text_field( $_POST[ 'cff_disable_admin_notice' ] ) : $cff_disable_admin_notice = '';
 
                 //Custom CSS
                 $options[ 'cff_custom_css' ] = $cff_custom_css;
@@ -1848,6 +1922,7 @@ function cff_style_page() {
                 $options[ 'cff_format_issue' ] = $cff_format_issue;
                 $options[ 'cff_restricted_page' ] = $cff_restricted_page;
                 $options[ 'cff_minify' ] = $cff_minify;
+	            $options[ 'disable_admin_notice' ] = $cff_disable_admin_notice;
 
                 if( $cff_cron == 'no' ) wp_clear_scheduled_hook('cff_cron_job');
 
@@ -1866,6 +1941,29 @@ function cff_style_page() {
 
                     wp_schedule_event(time(), $cff_cron_schedule, 'cff_cron_job');
                 }
+
+	            isset($_POST[ 'cff_enable_email_report' ]) ? $cff_enable_email_report = $_POST[ 'cff_enable_email_report' ] : $cff_enable_email_report = '';
+	            $options['enable_email_report'] = $cff_enable_email_report;
+	            isset($_POST[ 'cff_email_notification' ]) ? $cff_email_notification = $_POST[ 'cff_email_notification' ] : $cff_email_notification = '';
+	            $original = $options['email_notification'];
+	            $options['email_notification'] = $cff_email_notification;
+	            isset($_POST[ 'cff_email_notification_addresses' ]) ? $cff_email_notification_addresses = $_POST[ 'cff_email_notification_addresses' ] : $cff_email_notification_addresses = get_option( 'admin_email' );
+	            $options['email_notification_addresses'] = $cff_email_notification_addresses;
+
+	            if ( $original !== $cff_email_notification && $cff_enable_email_report === 'on' ){
+		            //Clear the existing cron event
+		            wp_clear_scheduled_hook('cff_feed_issue_email');
+
+		            $input = sanitize_text_field($_POST[ 'cff_email_notification' ] );
+		            $timestamp = strtotime( 'next ' . $input );
+
+		            if ( $timestamp - (3600 * 1) < time() ) {
+			            $timestamp = $timestamp + (3600 * 24 * 7);
+		            }
+		            $six_am_local = $timestamp + cff_get_utc_offset() + (6*60*60);
+
+		            wp_schedule_event( $six_am_local, 'cffweekly', 'cff_feed_issue_email' );
+	            }
 
             }
             //Update the Custom Text / Translate options
@@ -1951,7 +2049,7 @@ function cff_style_page() {
     if ( ! $lite_notice_dismissed ) :
         ?>
         <div id="cff-notice-bar" style="display:none">
-            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=WordPress&utm_campaign=facebookliteplugin&utm_medium=notice-bar" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
+            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=notices&utm_medium=lite" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
             <button type="button" class="dismiss" title="<?php _e( 'Dismiss this message.', 'custom-facebook-feed'); ?>" data-page="overview">
             </button>
         </div>
@@ -2085,7 +2183,7 @@ function cff_style_page() {
                     <h3><?php _e('Post Types', 'custom-facebook-feed'); ?></h3>
                     <tr valign="top">
                         <th scope="row"><?php _e('Only show these types of posts:', 'custom-facebook-feed'); ?><br />
-                            <i style="color: #666; font-size: 11px;"><a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff" target="_blank"><?php _e('Upgrade to Pro to enable post types, photos, videos and more', 'custom-facebook-feed'); ?></a></i></th>
+                            <i style="color: #666; font-size: 11px;"><a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=settings&utm_medium=types" target="_blank"><?php _e('Upgrade to Pro to enable post types, photos, videos and more', 'custom-facebook-feed'); ?></a></i></th>
                         <td>
                             <div>
                                 <input name="cff_show_status_type" type="checkbox" id="cff_show_status_type" disabled checked />
@@ -2357,7 +2455,7 @@ function cff_style_page() {
             <hr />
 
             <h3><?php _e('"Load More" button'); ?></h3>
-            <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff" target="_blank">Upgrade to Pro to enable the Load More button</a>
+            <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=settings&utm_medium=loadmore" target="_blank">Upgrade to Pro to enable the Load More button</a>
             <p class="submit cff-expand-button">
                 <a href="javascript:void(0);" class="button"><b>+</b> Show Pro Options</a>
             </p>
@@ -2401,7 +2499,7 @@ function cff_style_page() {
             <hr />
 
             <h3><?php _e('Lightbox'); ?></h3>
-            <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff" target="_blank">Upgrade to Pro to enable the Lightbox</a>
+            <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=settings&utm_medium=lightbox" target="_blank">Upgrade to Pro to enable the Lightbox</a>
             <p class="submit cff-expand-button">
                 <a href="javascript:void(0);" class="button"><b>+</b> Show Pro Options</a>
             </p>
@@ -2447,7 +2545,7 @@ function cff_style_page() {
             <hr />
 
             <h3><?php _e('Filter Content by String'); ?></h3>
-            <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff" target="_blank">Upgrade to Pro to enable Filtering</a>
+            <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=settings&utm_medium=filtering" target="_blank">Upgrade to Pro to enable Filtering</a>
             <p class="submit cff-expand-button">
                 <a href="javascript:void(0);" class="button"><b>+</b> Show Pro Options</a>
             </p>
@@ -2486,7 +2584,7 @@ function cff_style_page() {
             </div>
 
             
-            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png?2019' , __FILE__ ) ?>" /></a>
+            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png?2019' , __FILE__ ) ?>" /></a>
 
             <?php } //End General tab ?>
             <?php if( $cff_active_tab == 'post_layout' ) { //Start Post Layout tab ?>
@@ -2499,7 +2597,7 @@ function cff_style_page() {
             <input type="hidden" name="<?php echo $style_post_layout_hidden_field_name; ?>" value="Y">
             <br />
             <h3><?php _e('Post Layouts', 'custom-facebook-feed'); ?></h3>
-            <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff" target="_blank"><?php _e('Upgrade to Pro to enable layouts', 'custom-facebook-feed'); ?></a>
+            <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=settings&utm_medium=layouts" target="_blank"><?php _e('Upgrade to Pro to enable layouts', 'custom-facebook-feed'); ?></a>
             <p class="submit cff-expand-button">
                 <a href="javascript:void(0);" class="button"><b>+</b> Show Pro Options</a>
             </p>
@@ -2666,7 +2764,7 @@ function cff_style_page() {
             </table>
             
             <?php submit_button(); ?>
-            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
+            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
             <?php } //End Post Layout tab ?>
             <?php if( $cff_active_tab == 'typography' ) { //Start Typography tab ?>
 
@@ -3662,7 +3760,7 @@ function cff_style_page() {
             <hr />
 
             <h3><?php _e('Likes, Shares and Comments Box'); ?></h3>
-            <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff" target="_blank">Upgrade to Pro to enable likes, shares and comments</a>
+            <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=settings&utm_medium=likesharescom" target="_blank">Upgrade to Pro to enable likes, shares and comments</a>
             <p class="submit cff-expand-button">
                 <a href="javascript:void(0);" class="button"><b>+</b> Show Pro Options</a>
             </p>
@@ -3741,7 +3839,7 @@ function cff_style_page() {
                 <?php submit_button(); ?>
             </div>
 
-            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
+            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
             
             <?php } //End Typography tab ?>
             <?php if( $cff_active_tab == 'misc' ) { //Start Misc tab ?>
@@ -3763,7 +3861,7 @@ function cff_style_page() {
                 <tbody>
                     <tr valign="top">
                         <td style="padding-top: 0;">
-                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom CSS in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/?cat=18" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
+                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom CSS in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
                             <textarea name="cff_custom_css" id="cff_custom_css" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_css), 'custom-facebook-feed' ); ?></textarea>
                         </td>
                     </tr>
@@ -3774,7 +3872,7 @@ function cff_style_page() {
                 <tbody>
                     <tr valign="top">
                         <td style="padding-top: 0;">
-                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom JavaScript/jQuery in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/category/custom-facebook-feed/customizations/snippets/?cat=18" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>      
+                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom JavaScript/jQuery in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
                             <textarea name="cff_custom_js" id="cff_custom_js" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_js), 'custom-facebook-feed' ); ?></textarea>                  
                         </td>
                     </tr>
@@ -3785,7 +3883,7 @@ function cff_style_page() {
 
             <hr />
             <h3><?php _e('Media'); ?></h3>
-            <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff" target="_blank">Upgrade to Pro to enable Media options</a>
+            <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=settings&utm_medium=media" target="_blank">Upgrade to Pro to enable Media options</a>
             <p class="submit cff-expand-button">
                 <a href="javascript:void(0);" class="button"><b>+</b> Show Pro Options</a>
             </p>
@@ -3937,11 +4035,84 @@ function cff_style_page() {
                             <p class="cff-tooltip cff-more-info"><?php _e("The plugin includes some basic text and link styles which can be disabled by enabling this setting. Note that the styles used for the layout of the posts will still be applied.", 'custom-facebook-feed'); ?></p>
                         </td>
                     </tr>
+
+                    <tr>
+                        <th class="bump-left"><label for="cff_disable_admin_notice" class="bump-left"><?php _e("Disable admin error notice", 'custom-facebook-feed'); ?></label></th>
+                        <td>
+                            <input name="cff_disable_admin_notice" type="checkbox" id="cff_disable_admin_notice" <?php if($cff_disable_admin_notice == true) echo "checked"; ?> />
+                            <label for="cff_disable_admin_notice"><?php _e('Yes', 'custom-facebook-feed'); ?></label>
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e("This will permanently disable the feed error notice that displays in the bottom right corner for admins on the front end of your site.", 'custom-facebook-feed'); ?></p>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <th class="bump-left"><label for="cff_enable_email_report" class="bump-left"><?php _e("Feed issue email report", 'instagram-feed'); ?></label></th>
+                        <td>
+                            <input name="cff_enable_email_report" type="checkbox" id="cff_enable_email_report" <?php if($cff_enable_email_report == 'on') echo "checked"; ?> />
+                            <label for="cff_enable_email_report"><?php _e('Yes', 'custom-facebook-feed'); ?></label>
+                            <a class="cff-tooltip-link" href="JavaScript:void(0);"><i class="fa fa-question-circle" aria-hidden="true"></i></a>
+                            <p class="cff-tooltip cff-more-info"><?php _e("Custom Facebook Feed will send a weekly notification email using your site's wp_mail() function if one or more of your feeds is not updating or is not displaying. If you're not receiving the emails in your inbox, you may need to configure an SMTP service using another plugin like WP Mail SMTP.", 'custom-facebook-feed'); ?></p>
+
+                            <div class="cff_box" style="display: block;">
+                                <div class="cff_box_setting">
+                                    <label><?php _e('Schedule Weekly on', 'custom-facebook-feed'); ?></label><br>
+				                    <?php
+				                    $schedule_options = array(
+					                    array(
+						                    'val' => 'monday',
+						                    'label' => __( 'Monday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'tuesday',
+						                    'label' => __( 'Tuesday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'wednesday',
+						                    'label' => __( 'Wednesday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'thursday',
+						                    'label' => __( 'Thursday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'friday',
+						                    'label' => __( 'Friday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'saturday',
+						                    'label' => __( 'Saturday', 'custom-facebook-feed' )
+					                    ),
+					                    array(
+						                    'val' => 'sunday',
+						                    'label' => __( 'Sunday', 'custom-facebook-feed' )
+					                    ),
+				                    );
+
+				                    if ( isset( $_GET['flag'] ) ){
+					                    echo '<span id="cff-goto"></span>';
+				                    }
+				                    ?>
+                                    <select name="cff_email_notification" id="cff_email_notification">
+					                    <?php foreach ( $schedule_options as $schedule_option ) : ?>
+                                            <option value="<?php echo esc_attr( $schedule_option['val'] ) ; ?>" <?php if ( $schedule_option['val'] === $cff_email_notification ) { echo 'selected';} ?>><?php echo esc_html( $schedule_option['label'] ) ; ?></option>
+					                    <?php endforeach; ?>
+                                    </select>
+                                </div>
+                                <div class="cff_box_setting">
+                                    <label><?php _e('Email Recipients', 'custom-facebook-feed'); ?></label><br><input class="regular-text" type="text" name="cff_email_notification_addresses" value="<?php echo esc_attr( $cff_email_notification_addresses ); ?>"><span class="sbi_note"><?php _e('separate multiple emails with commas', 'custom-facebook-feed'); ?></span>
+                                    <br><br><?php _e( 'Emails not working?', 'custom-facebook-feed' ) ?> <a href="https://smashballoon.com/email-report-is-not-in-my-inbox/" target="_blank"><?php _e( 'See our related FAQ', 'custom-facebook-feed' ) ?></a>
+                                </div>
+                            </div>
+
+                        </td>
+                    </tr>
+                
                 </tbody>
             </table>
 
             <?php submit_button(); ?>
-            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
+            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
             <?php } //End Misc tab ?>
 
 
@@ -4087,7 +4258,7 @@ function cff_style_page() {
             </table>
             
             <?php submit_button(); ?>
-            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_source=plugin-free&utm_campaign=cff" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
+            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo plugins_url( 'img/pro.png' , __FILE__ ) ?>" /></a>
             <?php } //End Custom Text tab ?>
 
         </form>
@@ -4148,6 +4319,17 @@ function cff_lite_dismiss() {
 	die();
 }
 add_action( 'wp_ajax_cff_lite_dismiss', 'cff_lite_dismiss' );
+
+function cff_reset_log() {
+    global $cff_error_reporter;
+
+	$cff_error_reporter->remove_all_errors();
+	cff_delete_cache();
+
+	die();
+}
+add_action( 'wp_ajax_cff_reset_log', 'cff_reset_log' );
+
 
 // Add a Settings link to the plugin on the Plugins page
 $cff_plugin_file = 'custom-facebook-feed/custom-facebook-feed.php';
@@ -4336,7 +4518,7 @@ function cff_notices_html() {
         $dismiss_url = add_query_arg( 'cff_ignore_rating_notice_nag', '1' );
         $later_url = add_query_arg( 'cff_ignore_rating_notice_nag', 'later' );
         if ( $should_show_bfcm_discount ) {
-            $other_notice_html = '<p class="cff_other_notice">' .  __( 'PS. We currently have a <a href="https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount='.$cff_bfcm_discount_code.'" target="_blank"><b style="font-weight: 700;">Black Friday deal</b></a> for 20% off the Pro version!', 'custom-facebook-feed' ) . '</p>';
+            $other_notice_html = '<p class="cff_other_notice">' .  __( 'PS. We currently have a <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=notices&utm_medium=rating&discount='.$cff_bfcm_discount_code.'" target="_blank"><b style="font-weight: 700;">Black Friday deal</b></a> for 60% off the Pro version!', 'custom-facebook-feed' ) . '</p>';
 
             $dismiss_url = add_query_arg( array(
                     'cff_ignore_rating_notice_nag' => '1',
@@ -4381,9 +4563,9 @@ function cff_notices_html() {
         <div class='cff_notice cff_review_notice cff_new_user_sale_notice'>
             <img src='" . plugins_url( 'img/cff-icon-offer.png?74px' , __FILE__ ) . "' alt='Facebook Feed'>
             <div class='cff-notice-text'>
-                <p>" . __( '<b style="font-weight: 700;">Exclusive offer!</b>  We don\'t run promotions very often, but for a limited time we\'re offering <b style="font-weight: 700;">20% off</b> our Pro version to all users of our free Smash Balloon Custom Facebook Feed plugin.', 'custom-facebook-feed' ) . "</p>
+                <p>" . __( '<b style="font-weight: 700;">Exclusive offer!</b>  We don\'t run promotions very often, but for a limited time we\'re offering <b style="font-weight: 700;">60% off</b> our Pro version to all users of our free Smash Balloon Custom Facebook Feed plugin.', 'custom-facebook-feed' ) . "</p>
                 <p class='cff-links'>
-                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=facebookthankyou' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
+                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=notices&utm_medium=newuser&discount=facebookthankyou' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
                     <a class='cff_notice_dismiss' style='margin-left: 5px;' href='" . esc_url( add_query_arg( 'cff_ignore_new_user_sale_notice', 'always' ) ) . "'>" . __( 'I\'m not interested', 'custom-facebook-feed' ) . "</a>
 
                 </p>
@@ -4399,9 +4581,9 @@ function cff_notices_html() {
         <div class='cff_notice cff_review_notice cff_bfcm_sale_notice'>
             <img src='". plugins_url( 'img/cff-icon-offer.png?74px' , __FILE__ ) ."' alt='Facebook Feed'>
             <div class='cff-notice-text'>
-                <p>" . __( '<b style="font-weight: 700;">Black Friday/Cyber Monday Deal!</b> Thank you for using the free Smash Balloon Custom Facebook Feed plugin. For a limited time, we\'re offering <b style="font-weight: 700;">20% off</b> the Pro version for all of our users.', 'custom-facebook-feed' ) . "</p>
+                <p>" . __( '<b style="font-weight: 700;">Black Friday/Cyber Monday Deal!</b> Thank you for using the free Smash Balloon Custom Facebook Feed plugin. For a limited time, we\'re offering <b style="font-weight: 700;">60% off</b> the Pro version for all of our users.', 'custom-facebook-feed' ) . "</p>
                 <p class='cff-links'>
-                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_source=plugin-free&utm_campaign=cff&discount=".$cff_bfcm_discount_code."' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
+                    <a class='cff_notice_dismiss cff_offer_btn' href='https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=notices&utm_medium=bfcm&discount=".$cff_bfcm_discount_code."' target='_blank'><b>" . __( 'Get this offer', 'custom-facebook-feed' ) . "</b></a>
                     <a class='cff_notice_dismiss' style='margin-left: 5px;' href='" .esc_url( add_query_arg( 'cff_ignore_bfcm_sale_notice', date( 'Y', $current_time ) ) ). "'>" . __( 'I\'m not interested', 'custom-facebook-feed' ) . "</a>
                 </p>
             </div>
@@ -4479,7 +4661,55 @@ function cff_get_future_date( $month, $year, $week, $day, $direction ) {
     return mktime( 0, 0, 0, $month, $startday + $offset, $year );
 }
 
+function cff_admin_hide_unrelated_notices() {
 
+	// Bail if we're not on a sbi screen or page.
+	if ( ! isset( $_GET['page'] ) || strpos( $_GET['page'], 'cff') === false ) {
+		return;
+	}
+
+	// Extra banned classes and callbacks from third-party plugins.
+	$blacklist = array(
+		'classes'   => array(),
+		'callbacks' => array(
+			'cffdb_admin_notice', // 'Database for sbi' plugin.
+		),
+	);
+
+	global $wp_filter;
+
+	foreach ( array( 'user_admin_notices', 'admin_notices', 'all_admin_notices' ) as $notices_type ) {
+		if ( empty( $wp_filter[ $notices_type ]->callbacks ) || ! is_array( $wp_filter[ $notices_type ]->callbacks ) ) {
+			continue;
+		}
+		foreach ( $wp_filter[ $notices_type ]->callbacks as $priority => $hooks ) {
+			foreach ( $hooks as $name => $arr ) {
+				if ( is_object( $arr['function'] ) && $arr['function'] instanceof Closure ) {
+					unset( $wp_filter[ $notices_type ]->callbacks[ $priority ][ $name ] );
+					continue;
+				}
+				$class = ! empty( $arr['function'][0] ) && is_object( $arr['function'][0] ) ? strtolower( get_class( $arr['function'][0] ) ) : '';
+				if (
+					! empty( $class ) &&
+					strpos( $class, 'cff' ) !== false &&
+					! in_array( $class, $blacklist['classes'], true )
+				) {
+					continue;
+				}
+				if (
+					! empty( $name ) && (
+						strpos( $name, 'cff' ) === false ||
+						in_array( $class, $blacklist['classes'], true ) ||
+						in_array( $name, $blacklist['callbacks'], true )
+					)
+				) {
+					unset( $wp_filter[ $notices_type ]->callbacks[ $priority ][ $name ] );
+				}
+			}
+		}
+	}
+}
+add_action( 'admin_print_scripts', 'cff_admin_hide_unrelated_notices' );
 
 
 ?>

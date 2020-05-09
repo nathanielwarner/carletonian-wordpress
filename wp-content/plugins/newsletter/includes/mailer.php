@@ -250,7 +250,7 @@ class NewsletterMailMethodWrapper extends NewsletterMailer {
                 return new WP_Error(self::ERROR_GENERIC, 'Unreported error');
             }
         } else {
-            $message->error = 'Mail mathod not available';
+            $message->error = 'Mail method not available';
             return new WP_Error(self::ERROR_FATAL, 'Mail method not available');
         }
         return true;

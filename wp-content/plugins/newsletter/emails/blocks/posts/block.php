@@ -113,7 +113,6 @@ $alternative = plugins_url('newsletter') . '/emails/blocks/posts/images/blank.pn
 $alternative_2 = plugins_url('newsletter') . '/emails/blocks/posts/images/blank-240x160.png';
 
 remove_all_filters('excerpt_more');
-
 ?>
 
 <?php if (!$posts) { ?>
@@ -192,7 +191,8 @@ remove_all_filters('excerpt_more');
             $media = null;
             if ($show_image) {
                 $media = tnp_composer_block_posts_get_media($post, ['width' => 300, 'height' => 0]);
-                if ($media) $media->set_width(105);
+                if ($media)
+                    $media->set_width(105);
             }
             ?>
 
@@ -201,7 +201,7 @@ remove_all_filters('excerpt_more');
                 <td valign="top" style="padding: 20px 0 0 0;" class="posts-td-1">
 
                     <?php if ($media) { ?>
-                    <table width="20%" cellpadding="0" cellspacing="0" border="0" align="left" class="posts-1-column" style="margin-bottom: 20px">
+                        <table width="20%" cellpadding="0" cellspacing="0" border="0" align="left" class="posts-1-column" style="margin-bottom: 20px">
                             <tr>
                                 <td>
                                     <a href="<?php echo tnp_post_permalink($post) ?>" target="_blank">
@@ -216,68 +216,66 @@ remove_all_filters('excerpt_more');
                                 </td>
                             </tr>
                         </table>
+                    <?php } ?>
 
-                   
-        <?php } ?>
+                    <table width="<?php echo $media ? '78%' : '100%' ?>" cellpadding="0" cellspacing="0" border="0" class="posts-1-column" align="right">
+                        <tr>
+                            <td>
 
-            <table width="<?php echo $media?'78%':'100%'?>" cellpadding="0" cellspacing="0" border="0" class="posts-1-column" align="right">
-                <tr>
-                    <td>
-
-                        <!-- ARTICLE -->
-                        <table border="0" cellspacing="0" cellpadding="0" width="100%">
-        <?php if (!empty($options['show_date'])) { ?>
-                                <tr>
-                                    <td align="left" inline-class="posts-post-date">
-            <?php echo tnp_post_date($post) ?>
-                                    </td>
-                                </tr>
-        <?php } ?>
-                            <tr>
-                                <td align="left" 
-                                    inline-class="posts-post-title" 
-                                    class="tnpc-row-edit tnpc-inline-editable" 
-                                    data-type="title" data-id="<?php echo $post->ID ?>">
-                                        <?php
-                                        echo TNP_Composer::is_post_field_edited_inline($options['inline_edits'], 'title', $post->ID) ?
-                                                TNP_Composer::get_edited_inline_post_field($options['inline_edits'], 'title', $post->ID) :
-                                                tnp_post_title($post)
-                                        ?>
-                                </td>  
-                            </tr>
-                            <tr>
-                                <td align="left"
-                                    inline-class="posts-post-excerpt"
-                                    class="padding-copy tnpc-row-edit tnpc-inline-editable"
-                                    data-type="text" data-id="<?php echo $post->ID ?>">
-                                        <?php
-                                        echo TNP_Composer::is_post_field_edited_inline($options['inline_edits'], 'text', $post->ID) ?
-                                                TNP_Composer::get_edited_inline_post_field($options['inline_edits'], 'text', $post->ID) :
-                                                tnp_post_excerpt($post, $excerpt_length)
-                                        ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="left" class="padding">
-                                    <table border="0" cellpadding="0" cellspacing="0" inline-class="posts-button-table" align="right">
+                                <!-- ARTICLE -->
+                                <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                                    <?php if (!empty($options['show_date'])) { ?>
                                         <tr>
-                                            <td align="center" valign="middle" inline-class="posts-button-td">
-                                                <a href="<?php echo esc_attr($url) ?>" target="_blank" inline-class="posts-button-a"><?php echo $button_label ?></a>
+                                            <td align="left" inline-class="posts-post-date">
+                                                <?php echo tnp_post_date($post) ?>
                                             </td>
                                         </tr>
-                                    </table>    
-                                </td>
-                            </tr>
-                        </table>
+                                    <?php } ?>
+                                    <tr>
+                                        <td align="left" 
+                                            inline-class="posts-post-title" 
+                                            class="tnpc-row-edit tnpc-inline-editable" 
+                                            data-type="title" data-id="<?php echo $post->ID ?>">
+                                                <?php
+                                                echo TNP_Composer::is_post_field_edited_inline($options['inline_edits'], 'title', $post->ID) ?
+                                                        TNP_Composer::get_edited_inline_post_field($options['inline_edits'], 'title', $post->ID) :
+                                                        tnp_post_title($post)
+                                                ?>
+                                        </td>  
+                                    </tr>
+                                    <tr>
+                                        <td align="left"
+                                            inline-class="posts-post-excerpt"
+                                            class="padding-copy tnpc-row-edit tnpc-inline-editable"
+                                            data-type="text" data-id="<?php echo $post->ID ?>">
+                                                <?php
+                                                echo TNP_Composer::is_post_field_edited_inline($options['inline_edits'], 'text', $post->ID) ?
+                                                        TNP_Composer::get_edited_inline_post_field($options['inline_edits'], 'text', $post->ID) :
+                                                        tnp_post_excerpt($post, $excerpt_length)
+                                                ?>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td align="left" class="padding">
+                                            <table border="0" cellpadding="0" cellspacing="0" inline-class="posts-button-table" align="right">
+                                                <tr>
+                                                    <td align="center" valign="middle" inline-class="posts-button-td">
+                                                        <a href="<?php echo esc_attr($url) ?>" target="_blank" inline-class="posts-button-a"><?php echo $button_label ?></a>
+                                                    </td>
+                                                </tr>
+                                            </table>    
+                                        </td>
+                                    </tr>
+                                </table>
 
-                    </td>
-                </tr>
-            </table>
+                            </td>
+                        </tr>
+                    </table>
 
-        </td>
-        </tr>
+                </td>
+            </tr>
 
-    <?php } ?>
+        <?php } ?>
 
     </table>
 
@@ -338,7 +336,7 @@ remove_all_filters('excerpt_more');
 
     <!-- TWO COLUMNS -->
     <table cellspacing="0" cellpadding="0" border="0" width="100%">
-    <?php foreach (array_chunk($posts, 2) AS $row) { ?>        
+        <?php foreach (array_chunk($posts, 2) AS $row) { ?>        
             <tr>
                 <td valign="top" style="padding: 10px;" class="mobile-wrapper two-columns">
 
@@ -364,7 +362,7 @@ remove_all_filters('excerpt_more');
                                                 </a>
                                             </td>
                                         </tr>
-        <?php } ?>
+                                    <?php } ?>
                                     <tr>
                                         <td align="center"
                                             inline-class="posts-post-title"
@@ -377,13 +375,13 @@ remove_all_filters('excerpt_more');
                                                 ?>
                                         </td>
                                     </tr>
-        <?php if (!empty($options['show_date'])) { ?>
+                                    <?php if (!empty($options['show_date'])) { ?>
                                         <tr>
                                             <td  align="center" inline-class="posts-post-date">
-            <?php echo tnp_post_date($row[0]) ?>
+                                                <?php echo tnp_post_date($row[0]) ?>
                                             </td>
                                         </tr>
-        <?php } ?>
+                                    <?php } ?>
                                     <tr>
                                         <td align="center"
                                             inline-class="posts-post-excerpt"
@@ -413,7 +411,7 @@ remove_all_filters('excerpt_more');
                         </tr>
                     </table>
 
-        <?php if (!empty($row[1])) { ?>
+                    <?php if (!empty($row[1])) { ?>
                         <!-- RIGHT COLUMN -->
                         <table cellpadding="0" cellspacing="0" border="0" width="47%" align="right" class="responsive-table">
                             <tr>
@@ -434,7 +432,7 @@ remove_all_filters('excerpt_more');
                                                     </a>
                                                 </td>
                                             </tr>
-            <?php } ?>
+                                        <?php } ?>
                                         <tr>
                                             <td align="center"
                                                 inline-class="posts-post-title"
@@ -447,13 +445,13 @@ remove_all_filters('excerpt_more');
                                                     ?>
                                             </td>
                                         </tr>
-            <?php if (!empty($options['show_date'])) { ?>
+                                        <?php if (!empty($options['show_date'])) { ?>
                                             <tr>
                                                 <td  align="center" inline-class="posts-post-date">
-                <?php echo tnp_post_date($row[1]) ?>
+                                                    <?php echo tnp_post_date($row[1]) ?>
                                                 </td>
                                             </tr>
-            <?php } ?>
+                                        <?php } ?>
                                         <tr>
                                             <td align="center"
                                                 inline-class="posts-post-excerpt"
@@ -482,12 +480,12 @@ remove_all_filters('excerpt_more');
                                 </td>
                             </tr>
                         </table>
-        <?php } ?>
+                    <?php } ?>
 
                 </td>
             </tr>
 
-    <?php } ?>
+        <?php } ?>
 
     </table>
 

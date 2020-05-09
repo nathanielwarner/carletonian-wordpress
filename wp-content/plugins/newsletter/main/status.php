@@ -1,4 +1,6 @@
 <?php
+/* @var $this Newsletter */
+
 defined('ABSPATH') || exit;
 
 @include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
@@ -168,7 +170,7 @@ function tnp_status_print_flag($condition) {
 
         <form method="post" action="">
             <?php $controls->init(); ?>
-            
+
             <h3>Mailing test</h3>
             <table class="widefat" id="tnp-status-table">
 
@@ -181,7 +183,7 @@ function tnp_status_print_flag($condition) {
                 </thead>
 
                 <tbody>
-<tr>
+                    <tr>
                         <td>Mailing</td>
                         <td>
                             <?php if (empty($options['mail'])) { ?>
@@ -216,7 +218,7 @@ function tnp_status_print_flag($condition) {
                     </tr>
                 </tbody>
             </table>
-            
+
             <h3>General checks</h3>
             <table class="widefat" id="tnp-status-table">
 
@@ -226,10 +228,74 @@ function tnp_status_print_flag($condition) {
                         <th><?php _e('Status', 'newsletter') ?></th>
                         <th>Action</th>
                     </tr>
-                    
+
                 </thead>
 
                 <tbody>
+
+                    <tr>
+                        <?php
+                        $page_id = $this->get_newsletter_page_id();
+                        $page = $this->get_newsletter_page();
+                        $condition = 1;
+                        if ($page_id) {
+                            if (!$page || $page->post_status !== 'publish') {
+                                $condition = 0;
+                            }
+                        } else {
+                            $condition = 2;
+                        }
+                        ?>
+                        <td>
+                            Dedicated page<br>
+                            <small>The blog page Newsletter uses for messages</small>
+                        </td>
+                        <td>
+                            <?php tnp_status_print_flag($condition) ?>
+                        </td>
+                        <td>
+                            <?php if ($condition == 2) { ?>
+                                Newsletter is using a neutral page to show messages, if you want to use a dedicated page, configure it on
+                                <a href="?page=newsletter_main_main">main settings</a>.
+                            <?php } else if ($condition == 0) { ?>
+                                A dedicated page is set but it is no more available or no more published. Review the dedicated page on
+                                <a href="?page=newsletter_main_main">main settings</a>.
+                            <?php } ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <?php
+                        $page_id = $this->get_newsletter_page_id();
+                        $page = $this->get_newsletter_page();
+                        $condition = 1;
+                        if ($page_id) {
+                            if (!$page) {
+                                $condition = 0;
+                            } else {
+                                $content = $page->post_content;
+                                if (strpos($content, '[newsletter]') === false && strpos($content, '[newsletter ') === false) {
+                                    $condition = 2;
+                                }
+                            }
+                        }
+                        ?>
+                        <td>
+                            Dedicated page content<br>
+                        </td>
+                        <td>
+                            <?php tnp_status_print_flag($condition) ?>
+                        </td>
+                        <td>
+                            <?php if ($condition == 2) { ?>
+                                The page seems to not contain the <code>[newsletter]</code>, but sometime it cannot be detected if you use
+                                a visual composer. <a href="post.php?post=<?php echo $page->ID ?>&action=edit" target="_blank">Please, check the page</a>.
+                            <?php } else if ($condition == 0) { ?>
+                                The dedicated page seems to not be available.
+                            <?php } ?>
+                        </td>
+                    </tr>
+
                     <?php
                     $method = '';
                     if (function_exists('get_filesystem_method')) {
@@ -298,7 +364,7 @@ function tnp_status_print_flag($condition) {
                         </td>
                     </tr>
 
-                    
+
 
 
 
@@ -677,11 +743,11 @@ function tnp_status_print_flag($condition) {
 
                     <?php
                     wp_mkdir_p(NEWSLETTER_LOG_DIR);
-                    $res = is_dir(NEWSLETTER_LOG_DIR) && is_writable(NEWSLETTER_LOG_DIR);
-                    if ($res) {
+                    $condition = is_dir(NEWSLETTER_LOG_DIR) && is_writable(NEWSLETTER_LOG_DIR) ? 1 : 0;
+                    if ($condition) {
                         @file_put_contents(NEWSLETTER_LOG_DIR . '/test.txt', "");
-                        $res = is_file(NEWSLETTER_LOG_DIR . '/test.txt');
-                        if ($res) {
+                        $condition = is_file(NEWSLETTER_LOG_DIR . '/test.txt') ? 1 : 0;
+                        if ($condition) {
                             @unlink(NEWSLETTER_LOG_DIR . '/test.txt');
                         }
                     }
@@ -691,18 +757,12 @@ function tnp_status_print_flag($condition) {
                             Log folder
                         </td>
                         <td>
-                            <?php if (!$res) { ?>
-                                <span class="tnp-ko">KO</span>
-                            <?php } else { ?>
-                                <span class="tnp-ok">OK</span>
-                            <?php } ?>
+                            <?php tnp_status_print_flag($condition) ?>
                         </td>
                         <td>
                             The log folder is <?php echo esc_html(NEWSLETTER_LOG_DIR) ?><br>
                             <?php if (!$res) { ?>
                                 Cannot create the folder or it is not writable.
-                            <?php } else { ?>
-
                             <?php } ?>
                         </td>
                     </tr>           
@@ -734,8 +794,6 @@ function tnp_status_print_flag($condition) {
                             <?php if ($condition == 2) { ?>
                                 The constant <code>DISABLE_WP_CRON</code> is set to true (probably in <code>wp-config.php</code>). That disables the scheduler auto triggering and it's
                                 good ONLY if you setup an external trigger.
-                            <?php } else { ?>
-
                             <?php } ?>
                         </td>
                     </tr>
@@ -749,8 +807,6 @@ function tnp_status_print_flag($condition) {
                         <td>
                             <?php if (defined('ALTERNATE_WP_CRON') && ALTERNATE_WP_CRON) { ?>
                                 Using the alternate cron trigger.
-                            <?php } else { ?>
-
                             <?php } ?>
                         </td>
                     </tr>
@@ -768,9 +824,6 @@ function tnp_status_print_flag($condition) {
                         <td>
                             <?php if ($condition == 0) { ?>
                                 The blog cron system is NOT triggered enough often.
-
-                            <?php } else { ?>
-
                             <?php } ?>
                             <br>
                             Trigger interval: average <?php echo $wp_cron_calls_avg ?>&nbsp;s, max <?php echo $wp_cron_calls_max ?>&nbsp;s, min <?php echo $wp_cron_calls_min ?>&nbsp;s
@@ -841,7 +894,7 @@ function tnp_status_print_flag($condition) {
                         </td>
                         <td>
                             <?php if (defined('WP_DEBUG') && WP_DEBUG) { ?>
-                            WordPress is in debug mode it is not recommended on a production system. See the constant <code>WP_DEBUG</code> inside the <code>wp-config.php</code>.
+                                WordPress is in debug mode it is not recommended on a production system. See the constant <code>WP_DEBUG</code> inside the <code>wp-config.php</code>.
                             <?php } else { ?>
 
                             <?php } ?>
@@ -987,10 +1040,9 @@ function tnp_status_print_flag($condition) {
                         </td>
                         <td>
                             <?php if (!$res) { ?>
-                                Your PHP execution time limit is <?php echo $value ?> seconds and cannot be changed or 
-                                is too lower to grant the maximum delivery rate of Newsletter.    
+                                Your PHP execution time limit is <?php echo $value ?> seconds. It cannot be changed and it is too lower to grant the maximum delivery rate of Newsletter.
                             <?php } else { ?>
-                                Your PHP execution time limit is <?php echo $value ?> seconds and can be eventually changed by Newsletter<br>
+                                Your PHP execution time limit is <?php echo $value ?> seconds and can be eventually changed by Newsletter.<br>
                             <?php } ?>
 
                         </td>

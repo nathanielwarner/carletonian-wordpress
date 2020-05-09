@@ -34,7 +34,7 @@ msgid "UpdraftCentral is a highly efficient way to take backup, update and manag
 msgstr ""
 
 #: src/includes/easy-updates-manager-notices.php:66
-msgid "After you've backed up your database, we recommend you install our WP-Optimize plugin to streamline it for better website performance."
+msgid "Make your site fast amd efficient with our cutting-edge speed plugin."
 msgstr ""
 
 #: src/includes/easy-updates-manager-notices.php:76
@@ -1572,27 +1572,27 @@ msgstr ""
 msgid "This theme is inactive for your site."
 msgstr ""
 
-#: src/main.php:535
+#: src/main.php:534
 msgid "Easy Updates Manager (Free) has been de-activated, because Easy Updates Manager Premium is active."
 msgstr ""
 
-#: src/main.php:831
+#: src/main.php:833
 msgid "Error:"
 msgstr ""
 
-#: src/main.php:831
+#: src/main.php:833
 msgid "template not found"
 msgstr ""
 
-#: src/main.php:905
+#: src/main.php:907
 msgid "Higher PHP version required"
 msgstr ""
 
-#: src/main.php:906, src/main.php:918
+#: src/main.php:908, src/main.php:920
 msgid "The %s plugin requires %s version %s or higher - your current version is only %s."
 msgstr ""
 
-#: src/main.php:917
+#: src/main.php:919
 msgid "Higher WordPress version required"
 msgstr ""
 
@@ -1940,7 +1940,7 @@ msgid "%s is a highly efficient way to manage, optimize, update and backup multi
 msgstr ""
 
 #: src/templates/notices/thanks-for-using-main-dash.php:31
-msgid "%s is effective tool for automatically cleaning your WordPress database so that it runs at maximum efficiency."
+msgid "%s makes your site fast and efficient.  It cleans the database, compresses images and caches pages for ultimate speed."
 msgstr ""
 
 #: src/templates/notices/thanks-for-using-main-dash.php:31

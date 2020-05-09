@@ -270,7 +270,7 @@
                                                 </div>
                                                 <div class="form-group messages-fields">
                                                     <label for="messages-voting-buttons-wordpress" class="input-caption">
-                                                        <?php _e( 'Vote with your wordpress account', 'yop-poll' );?>
+                                                        <?php _e( 'Vote with your WordPress account', 'yop-poll' );?>
                                                     </label>
                                                     <input class="form-control settings-required-field" name="messages-buttons-wordpress" id="messages-buttons-wordpress"
                                                            value="<?php echo isset( $settings['messages']['buttons']['wordpress'] ) ? esc_html ( $settings['messages']['buttons']['wordpress'] ) : ''; ?>">

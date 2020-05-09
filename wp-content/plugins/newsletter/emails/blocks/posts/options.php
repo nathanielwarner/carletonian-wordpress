@@ -4,7 +4,14 @@
 /* @var $controls NewsletterControls */
 /* @var $fields NewsletterFields */
 
+$extensions_url = '?page=newsletter_main_extension';
+if (class_exists('NewsletterExtensions')) {
+    $extensions_url = '?page=newsletter_extensions_index';
+}
 ?>
+<p>
+    Custom post types can be added using our <a href="<?php echo $extensions_url?>" target="_blank">Advanced Composer Blocks Addon</a>.
+</p>
 
 <?php if ($context['type'] == 'automated') { ?>
 
@@ -26,9 +33,8 @@
 
 <?php $fields->font('font', __('Excerpt font', 'newsletter')) ?>
 
-<div class="tnp-field">
-<label class="tnp-label"><?php _e('Dates and images', 'newsletter')?></div>
 <div class="tnp-field-row">
+    <label class="tnp-row-label"><?php _e('Dates and images', 'newsletter')?></label>
     <div class="tnp-field-col-2">
         <?php $fields->checkbox('show_image', __('Show image', 'newsletter')) ?>
     </div>
@@ -36,7 +42,6 @@
         <?php $fields->checkbox('show_date', __('Show date', 'newsletter')) ?>
     </div>
     <div style="clear: both"></div>
-</div>
 </div>
 
 <div class="tnp-field-row">

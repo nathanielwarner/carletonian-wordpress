@@ -298,6 +298,7 @@ function tnpc_save(form) {
     jQuery("#newsletter-preloaded-export .tnpc-row-edit-block").remove();
     jQuery("#newsletter-preloaded-export .tnpc-row-clone").remove();
     jQuery("#newsletter-preloaded-export .tnpc-row").removeClass("ui-draggable");
+    jQuery('#newsletter-preloaded-export #sortable-helper').remove();
 
     form.elements["options[message]"].value = jQuery("#newsletter-preloaded-export").html();
     if (document.getElementById("options-title")) {

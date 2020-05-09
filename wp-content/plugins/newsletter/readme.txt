@@ -1,8 +1,8 @@
 === Newsletter ===
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
-Tested up to: 5.4
-Stable tag: 6.5.9
+Tested up to: 5.4.1
+Stable tag: 6.6.4
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -108,6 +108,35 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 6.6.4 =
+
+* Added filter on profile fields on targeting
+* Administrator notice on custom forms using provate lists
+* Added translation code on some words
+* Compatibility check with WP 5.4.1
+* Tip changed on SMTP panel about GMail
+
+= 6.6.3 =
+
+* Changed the administration script enqueuing 
+* Improved the status page
+* Added notice on page list to highlight the Newsletter dedicated page
+
+= 6.6.2 =
+
+* Fixed incomplete blocks package on previous release
+
+= 6.6.1 =
+
+* Improved WMPL permalink filter (not working with custom slugs and old WPML releases)
+* Fixed the hero block not rendering correctly with "left" layout
+* Added the one-click list unsubscribe header
+
+= 6.6.0 =
+
+* Fixed a jQuery bug on drag and drop composer
+* Fix for report number animations
 
 = 6.5.9 =
 

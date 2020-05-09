@@ -45,42 +45,71 @@ function tnp_toggle_schedule() {
   jQuery("#tnp-schedule").toggle();
 }
 
-jQuery(document).ready(function () {
-  jQuery('.tnp-counter-animation').each(function () {
-    var _this = jQuery(this);
+window.onload = function () {
+    jQuery('.tnp-counter-animation').each(function () {
+        var _this = jQuery(this);
 
-    var val = null;
-    if (!isFloat(_this.text())) {
-      val = {
-        parsed: parseInt(_this.text()),
-        rounded: function (value) {
-          return Math.ceil(value);
+        var val = null;
+        if (!isFloat(_this.text())) {
+            val = {
+                parsed: parseInt(_this.text()),
+                rounded: function (value) {
+                    return Math.ceil(value);
+                }
+            };
+
+            if (_this.hasClass('percentage')) {
+                _this.css('min-width', '60px');
+            }
+        } else {
+            val = {
+                parsed: parseFloat(_this.text()),
+                rounded: function (value) {
+                    return value.toFixed(1);
+                }
+            };
         }
-      };
 
-      if (_this.hasClass('percentage')) {
-        _this.css('min-width', '60px');
-      }
-    } else {
-      val = {
-        parsed: parseFloat(_this.text()),
-        rounded: function (value) {
-          return value.toFixed(1);
+        jQuery({counter: 0}).animate({counter: val.parsed}, {
+            duration: 1000,
+            easing: 'swing',
+            step: function () {
+                _this.text(val.rounded(this.counter));
+            }
+        });
+
+        function isFloat(value) {
+            return !isNaN(Number(value)) && Number(value).toString().indexOf('.') !== -1;
         }
-      };
-    }
 
-    jQuery({counter: 0}).animate({counter: val.parsed}, {
-      duration: 1000,
-      easing: 'swing',
-      step: function () {
-        _this.text(val.rounded(this.counter));
-      }
     });
 
-    function isFloat(value) {
-      return !isNaN(Number(value)) && Number(value).toString().indexOf('.') !== -1;
-    }
+    (function targetinFormOnChangeHandler() {
 
-  });
-});
+        if (isNewsletterOptionsPage()) {
+
+            var newsletterStatusScheduleValue = jQuery('#tnp-nl-status .tnp-nl-status-schedule-value');
+
+            jQuery('#newsletter-form').change(function (event) {
+
+                if (isElementInsideTargettingTab(event.target)) {
+                    newsletterStatusScheduleValue.text(tnp_translations['save_to_update_counter']);
+                }
+
+                function isElementInsideTargettingTab(element) {
+                    return jQuery(element).parents('#tabs-options').length === 1
+                }
+
+            });
+        }
+
+        function isNewsletterOptionsPage() {
+            return jQuery("#tnp-nl-status").length
+                && jQuery("#newsletter-form").length;
+        }
+
+    })();
+
+};
+
+

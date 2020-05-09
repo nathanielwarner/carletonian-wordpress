@@ -109,10 +109,14 @@ class YOP_Poll_Admin {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_1_4();
 			}
+			if ( true === version_compare( $installed_version, '6.1.5', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_1_5();
+			}
         }
 	}
     public function load_translations() {
-        load_plugin_textdomain( 'yop-poll', FALSE, YOP_POLL_PATH . '/languages/' );
+        load_plugin_textdomain( 'yop-poll', FALSE,  'yop-poll/languages/' );
     }
 	public function is_user_logged_in() {
 		if ( true === is_user_logged_in() ) {
@@ -387,7 +391,7 @@ class YOP_Poll_Admin {
                     'noCustomDate' => esc_html__( 'Custom Date for displaying results is missing', 'yop-poll' ),
                     'noShowResultsMoment' => esc_html__( 'Show Results Time is missing', 'yop-poll' ),
                     'noShowResultsTo' => esc_html__( 'Show Results To is missing', 'yop-poll' ),
-                    'noVoteAsWordpress' => esc_html__( 'Vote As Wordpress User is missing', 'yop-poll' )
+                    'noVoteAsWordpress' => esc_html__( 'Vote As WordPress User is missing', 'yop-poll' )
                 ),
                 'saveBanParams' => array(
                     'noBanFor' => esc_html__( 'Ban For is missing', 'yop-poll' ),

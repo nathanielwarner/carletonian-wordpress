@@ -96,8 +96,9 @@ if (empty($controls->data['enabled']) && !empty($controls->data['host'])) {
                     port: <?php $controls->text('port', 6); ?>
                     <?php $controls->select('secure', array('' => 'No secure protocol', 'tls' => 'TLS protocol', 'ssl' => 'SSL protocol')); ?>
                     <p class="description">
-                        Leave port empty for default value (25). To use Gmail try host "smtp.gmail.com" and port "465" and SSL protocol (without quotes).
-                        For GoDaddy use "relay-hosting.secureserver.net".
+                        Leave port empty for default value (25).<br>
+                        To use GMail, do not set the SMTP here but use a <a href="https://wordpress.org/plugins/search/smtp+gmail/" target="_blank">SMTP plugin which supprts oAuth 2.0</a><br>
+                        On GoDaddy TRY to use "relay-hosting.secureserver.net".
                     </p>
                 </td>
             </tr>

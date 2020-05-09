@@ -1,11 +1,11 @@
 === Easy Updates Manager ===
 Contributors: davidanderson, kidsguide, ronalfy, roary86, bigwing, webulous
 Tags: updates manager, easy updates manager, disable updates manager, disable updates, update control, plugin updates, theme updates, core updates, automatic updates, multisite, logs
-Requires at least: 4.7
+Requires at least: 5.1
 Requires PHP: 5.3
 Donate link: https://easyupdatesmanager.com
-Tested up to: 5.3
-Stable tag: 9.0.1
+Tested up to: 5.4
+Stable tag: 9.0.3
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -125,6 +125,17 @@ Since third-party providers use custom update mechanisms, we cannot always guara
 For additional information and FAQs for Easy Updates Manager <a href="https://easyupdatesmanager.com">check out our website</a>.
 
 == Changelog ==
+
+= 9.0.3 - 2020-04-14 =
+
+* TWEAK: Update class Updraftplus_Notices
+* TWEAK: Update WP-Optimize notices
+* TWEAK: Updater will now make checks on availability without needing login
+* TWEAK: Minimum supported WP version is now 5.1. If you want to install on an older version, then please use a past release. The resources used for supporting older versions are better deployed elsewhere - the aim of EUM is to help you keep up-to-date!
+
+= 9.0.2 - 2020-01-24 =
+
+* FIX: Auto-backup (Premium) feature disabled whilst an issue that could cause it to continually repeat is investigated
 
 = 9.0.1 - 2020-01-21 =
 
@@ -289,4 +300,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 9.0.1 : 9.0.1 fixes a couple of bugs in the 9.0.0 release, whose updates were: UI simplification making options clearer/simpler, plus various tweaks and fixes. A recommended update for all.
+* 9.0.3 : Some minor internal tweaks. Now marked as requiring WP 5.1+. A recommended update for all.

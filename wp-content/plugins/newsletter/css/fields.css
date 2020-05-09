@@ -68,7 +68,7 @@
     margin-bottom: 10px;
 }
 
-.tnp-field label.tnp-label {
+.tnp-field label.tnp-label, .tnp-field-row label.tnp-row-label {
     display: block;
     font-size: 12px;
     font-weight: 300;
@@ -78,6 +78,11 @@
     font-weight: 300;
     padding-bottom: 5px;
     color: #868686;
+}
+
+/* Compesate the negative row margin */
+.tnp-field-row label.tnp-row-label {
+    margin-left: 10px;
 }
 
 .tnp-field.tnp-checkbox label {
@@ -91,6 +96,10 @@ tnp-field.tnp-font {
 
 .tnp-field input {
     width: 100%;
+}
+
+.tnp-field input[type=number] {
+    width: 100px;
 }
 
 .tnp-field.tnp-size input {

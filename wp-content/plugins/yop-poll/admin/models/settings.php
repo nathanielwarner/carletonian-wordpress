@@ -48,7 +48,7 @@ class YOP_Poll_Settings {
                 ),
                 'buttons' => array(
                     'anonymous' => 'Anonymous Vote',
-                    'wordpress' => 'Sign in with Wordpress',
+                    'wordpress' => 'Sign in with WordPress',
                     'facebook' => 'Sign in with Facebook',
                     'google' => 'Sign in with Google'
                 ),
@@ -123,7 +123,7 @@ class YOP_Poll_Settings {
                 ),
                 'buttons' => array(
                     'anonymous' => 'Anonymous Vote',
-                    'wordpress' => 'Sign in with Wordpress',
+                    'wordpress' => 'Sign in with WordPress',
                     'facebook' => 'Sign in with Facebook',
                     'google' => 'Sign in with Google'
                 ),
@@ -203,7 +203,7 @@ class YOP_Poll_Settings {
                 ),
                 'buttons' => array(
                     'anonymous' => 'Anonymous Vote',
-                    'wordpress' => 'Sign in with Wordpress',
+                    'wordpress' => 'Sign in with WordPress',
                     'facebook' => 'Sign in with Facebook',
                     'google' => 'Sign in with Google'
                 ),
@@ -444,7 +444,7 @@ class YOP_Poll_Settings {
                     ( '' === trim( $settings->messages->buttons->{'wordpress'} ) ) )
             ) {
                 self::$errors_present = true;
-                self::$error_text = __( 'Data for "Vote with your wordpress account" is invalid', 'yop-poll' );
+                self::$error_text = __( 'Data for "Vote with your WordPress account" is invalid', 'yop-poll' );
             }
             if (
                 ( false === self::$errors_present ) &&
@@ -452,7 +452,7 @@ class YOP_Poll_Settings {
                     ( '' === trim( $settings->messages->buttons->{'facebook'} ) ) )
             ) {
                 self::$errors_present = true;
-                self::$error_text = __( 'Data for "Vote with your facebook account" is invalid', 'yop-poll' );
+                self::$error_text = __( 'Data for "Vote with your Facebook account" is invalid', 'yop-poll' );
             }
             if (
                 ( false === self::$errors_present ) &&
@@ -460,7 +460,7 @@ class YOP_Poll_Settings {
                     ( '' === trim( $settings->messages->buttons->{'google'} ) ) )
             ) {
                 self::$errors_present = true;
-                self::$error_text = __( 'Data for "Vote with your google account" is invalid', 'yop-poll' );
+                self::$error_text = __( 'Data for "Vote with your Google account" is invalid', 'yop-poll' );
             }
             if (
                 ( false === self::$errors_present ) &&

@@ -5,9 +5,8 @@ Plugin Name: Easy Updates Manager
 Plugin URI: https://easyupdatesmanager.com
 Description: Manage and disable WordPress updates, including core, plugin, theme, and automatic updates - Works with Multisite and has built-in logging features.
 Author: Easy Updates Manager Team
-Version: 9.0.1
-Requires at least: 4.7
-Tested up to: 5.3
+Version: 9.0.3
+Tested up to: 5.4
 Author URI: https://easyupdatesmanager.com
 Contributors: kidsguide, ronalfy
 Text Domain: stops-core-theme-and-plugin-updates
@@ -19,7 +18,7 @@ Network: true
 
 if (!defined('ABSPATH')) die('No direct access allowed');
 if (!defined('EASY_UPDATES_MANAGER_MAIN_PATH')) define('EASY_UPDATES_MANAGER_MAIN_PATH', plugin_dir_path(__FILE__));
-if (!defined('EASY_UPDATES_MANAGER_VERSION')) define('EASY_UPDATES_MANAGER_VERSION', '9.0.1');
+if (!defined('EASY_UPDATES_MANAGER_VERSION')) define('EASY_UPDATES_MANAGER_VERSION', '9.0.3');
 if (!defined('EASY_UPDATES_MANAGER_URL')) define('EASY_UPDATES_MANAGER_URL', plugin_dir_url(__FILE__));
 if (!defined('EASY_UPDATES_MANAGER_SITE_URL')) define('EASY_UPDATES_MANAGER_SITE_URL', 'https://easyupdatesmanager.com/');
 if (!defined('EASY_UPDATES_MANAGER_SLUG')) define('EASY_UPDATES_MANAGER_SLUG', plugin_basename(__FILE__));
@@ -67,7 +66,7 @@ if (!class_exists('MPSUM_Updates_Manager')) {
 		// Minimum PHP version required to run this plugin
 		const PHP_REQUIRED = '5.3';
 		// Minimum WP version required to run this plugin
-		const WP_REQUIRED = '4.7';
+		const WP_REQUIRED = '5.1';
 
 		/**
 		 * Retrieve a class instance.
@@ -700,7 +699,10 @@ if (!class_exists('MPSUM_Updates_Manager')) {
 				if (($installed && time() > $dismissed_until && $installed_for < (14 * 86400) && !defined('EASY_UPDATES_MANAGER_NOADS_B')) || (defined('EASY_UPDATES_MANAGER_FORCE_DASHNOTICE') && EASY_UPDATES_MANAGER_FORCE_DASHNOTICE)) {
 					add_action('all_admin_notices', array($this, 'show_admin_notice_upgraded'));
 				} else {
-					add_action('all_admin_notices', array($this->get_notices(), 'do_notice'));
+					$enable_notices = get_site_option('easy_updates_manager_enable_notices', 'on');
+					if ('on' === $enable_notices) {
+						add_action('all_admin_notices', array($this->get_notices(), 'do_notice'));
+					}
 				}
 			}
 		}

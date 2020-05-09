@@ -17,6 +17,15 @@ img.aligncenter{display:block;margin:0 auto;}
         width:100% !important;
     }
 
+    table[class="mobile-full-width"] {
+        width:100% !important;
+    }
+
+    img[class="mobile-full-width"] {
+        width:100% !important;
+        display: block;
+    }
+
     /* ADJUSTS LAYOUT OF LOGO IMAGE */
     td[class="logo"]{
         text-align: left;

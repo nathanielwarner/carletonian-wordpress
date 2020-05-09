@@ -104,17 +104,17 @@
     },
     {
         "name": "publishpress/wordpress-version-notices",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
+        "version": "dev-hotfix/issue-1",
+        "version_normalized": "dev-hotfix/issue-1",
         "source": {
             "type": "git",
             "url": "https://github.com/publishpress/WordPress-Version-Notices.git",
-            "reference": "a86b0c364d973cd27d2bf5e73ef5afc131430e86"
+            "reference": "6454e094e26b0b70ee9fbd4bdf189f99aa0389e2"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/publishpress/WordPress-Version-Notices/zipball/a86b0c364d973cd27d2bf5e73ef5afc131430e86",
-            "reference": "a86b0c364d973cd27d2bf5e73ef5afc131430e86",
+            "url": "https://api.github.com/repos/publishpress/WordPress-Version-Notices/zipball/6454e094e26b0b70ee9fbd4bdf189f99aa0389e2",
+            "reference": "6454e094e26b0b70ee9fbd4bdf189f99aa0389e2",
             "shasum": ""
         },
         "require": {
@@ -124,7 +124,7 @@
         "require-dev": {
             "lucatume/wp-browser": "^2.2"
         },
-        "time": "2020-04-02T16:14:09+00:00",
+        "time": "2020-04-06T19:14:20+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {

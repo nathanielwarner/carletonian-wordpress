@@ -81,6 +81,13 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/subscription/page.php')) {
             #message {
                 line-height: 1.6em;
             }
+            
+            #missing {
+                padding: 20px;
+                font-weight: bold;
+                border: 1px solid #999;
+                margin: 20px 0;
+            }
         </style>
     </head>
 
@@ -91,6 +98,12 @@ if (is_file(WP_CONTENT_DIR . '/extensions/newsletter/subscription/page.php')) {
         </script>
         <?php } ?>
         <div id="container">
+            <?php if (current_user_can('administrator')) { ?>
+            <div id="missing">
+                This message is shown only to administrators. Newsletter is using this page to show its messages because 
+                the dedicated page (on main settings) is not set or the configured page has been deleted or unpublished.
+            </div>
+            <?php } ?>
             <h1><?php echo get_option('blogname'); ?></h1>
             <div id="message">
             <?php echo $message; ?>

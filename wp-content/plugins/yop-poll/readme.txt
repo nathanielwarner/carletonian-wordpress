@@ -3,14 +3,14 @@ Contributors: yourownprogrammer
 Donate Link: https://www.yop-poll.com
 Tags: booth, create poll, poll plugin, poll, polls, wordpress poll, vote, voting, survey, polling, yop poll, yop
 Requires at least: 3.3
-Tested up to: 5.3
+Tested up to: 5.4
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.htm
 
 Use a full option polling solution to get the answers you need.
 
-YOP Poll is the perfect, easy to use poll plugin for your wordpress site.
+YOP Poll is the perfect, easy to use poll plugin for your WordPress site.
 
 == Description ==
 
@@ -118,6 +118,13 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.1.5 =
+* fixed typos
+* fixed security issue when previewing a poll
+* fixed issue with loading language files
+* fixed issue with loader not being shown when voting
+* fixed issue with answers displayed below radio/checkbox controls on small screens
+
 = 6.1.4 =
 * fixed issue with polls loading in facebook inapp browser
 * fixed issue with scroll location when there is an error in voting
@@ -174,7 +181,7 @@ You can have only one question per poll.
 * fixed issue with logs
 * fixed issue with bans
 * fixed issue with settings
-* fixed issue with wordpress voting
+* fixed issue with WordPress voting
 
 = 6.0.5 =
 * added skins
@@ -241,10 +248,10 @@ You can have only one question per poll.
 = 5.8.1 =
 * fixed security issue
 * fixed issue with multisite
-* compatibility with wordpress 4.7.2
+* compatibility with WordPress 4.7.2
 
 = 5.8.0 =
-* compatibility with wordpress 4.5.2
+* compatibility with WordPress 4.5.2
 * fixed issue with navigation links on archive page
 * fixed loading issue
 * fixed issue with custom fields
@@ -436,7 +443,7 @@ You can have only one question per poll.
 * Fixed various bugs with templates
 
 = 1.8 =
-* Fixed bug with wordpress editor
+* Fixed bug with WordPress editor
 
 = 1.7 =
 * Fixed bug that was causing poll not to update it's settings

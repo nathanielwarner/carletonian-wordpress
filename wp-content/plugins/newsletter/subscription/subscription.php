@@ -272,7 +272,7 @@ class NewsletterSubscription extends NewsletterModule {
         if ($this->is_flood($email, $ip)) {
             $antibot_logger->fatal($email . ' - ' . $ip . ' - Antiflood triggered');
             header("HTTP/1.0 404 Not Found");
-            die('Too quick');
+            die('Too quick. Check the antiflood on security page.');
         }
     }
 
@@ -826,6 +826,19 @@ class NewsletterSubscription extends NewsletterModule {
             }
             if (isset($_REQUEST['np' . $i])) {
                 $user['profile_' . $i] = trim(stripslashes($_REQUEST['np' . $i]));
+            }
+        }
+        
+        // Extra validation to explain the administrator while the submitted data could
+        // be interpreted only partially
+        if (current_user_can('administrator')) {
+            if (isset($_REQUEST['nl']) && is_array($_REQUEST['nl'])) {
+                foreach ($_REQUEST['nl'] as $list_id) {
+                    $list = $this->get_list($list_id);
+                    if ($list->status === TNP_List::STATUS_PRIVATE) {
+                        die('Message visible only to the administrator. List ' . $list_id . ' has been submitted but it is set as private. Please fix the subscription form.');
+                    }
+                }
             }
         }
 
