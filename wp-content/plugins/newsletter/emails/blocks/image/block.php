@@ -11,7 +11,7 @@
 $defaults = array(
     'image' => '',
     'url' => '',
-    'width'=>0,
+    'width' => 0,
     'block_background' => '#ffffff',
     'block_padding_left' => 0,
     'block_padding_right' => 0,
@@ -36,6 +36,11 @@ if (empty($options['image']['id'])) {
     }
 } else {
     $media = tnp_resize($options['image']['id'], array(600, 0));
+    // Should never happen but... it happens
+    if (!$media) {
+        echo 'The selected media file cannot be processed';
+        return;
+    }
     $media->alt = $options['image_alt'];
 }
 
@@ -50,7 +55,7 @@ $url = $options['url'];
         max-width: 100%!important;
         height: auto!important;
         display: block;
-        width: <?php echo $media->width?>px;
+        width: <?php echo $media->width ?>px;
         line-height: 0;
         margin: 0 auto;
     }

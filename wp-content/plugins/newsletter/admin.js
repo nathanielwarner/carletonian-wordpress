@@ -45,6 +45,14 @@ function tnp_toggle_schedule() {
   jQuery("#tnp-schedule").toggle();
 }
 
+function tnp_select_toggle(s, t) {
+    if (s.value == 1) {
+    jQuery("#options-" + t).show();
+    } else {
+        jQuery("#options-" + t).hide();
+    }
+}
+
 window.onload = function () {
     jQuery('.tnp-counter-animation').each(function () {
         var _this = jQuery(this);

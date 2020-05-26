@@ -32,6 +32,18 @@
     }    
 </style>
 
+<div dir="rtl">
+
+    <table width="49%" align="right" class="hero-table" border="0" cellspacing="0" cellpadding="0">
+    <tr>
+        <td align="center" valign="top">
+            <a href="<?php echo $url ?>" target="_blank" rel="noopener nofollow" inline-class="image-a">
+                <img src="<?php echo $media->url ?>" border="0" alt="<?php echo esc_attr($media->alt) ?>" width="<?php echo $media->width ?>" height="<?php echo $media->height ?>" inline-class="image">                
+            </a>
+        </td>
+    </tr>
+</table>  
+    
 <table width="49%" align="left" class="hero-table hero-table-right" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td align="center" inline-class="title">
@@ -51,12 +63,5 @@
 </table>
 
 
-<table width="49%" align="right" class="hero-table" border="0" cellspacing="0" cellpadding="0">
-    <tr>
-        <td align="center" valign="top">
-            <a href="<?php echo $url ?>" target="_blank" rel="noopener nofollow" inline-class="image-a">
-                <img src="<?php echo $media->url ?>" border="0" alt="<?php echo esc_attr($media->alt) ?>" width="<?php echo $media->width ?>" height="<?php echo $media->height ?>" inline-class="image">                
-            </a>
-        </td>
-    </tr>
-</table>    
+  
+</div>

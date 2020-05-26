@@ -78,7 +78,7 @@ msgstr ""
 msgid "Content slider"
 msgstr ""
 
-#: admin/class-shortcodes-ultimate-admin-extra-shortcodes.php:126, includes/shortcodes/lightbox-content.php:73, includes/shortcodes/tooltip.php:46
+#: admin/class-shortcodes-ultimate-admin-extra-shortcodes.php:126, includes/shortcodes/lightbox-content.php:104, includes/shortcodes/tooltip.php:46
 msgid "Shadow"
 msgstr ""
 
@@ -174,7 +174,7 @@ msgstr ""
 msgid "Available shortcodes"
 msgstr ""
 
-#: admin/class-shortcodes-ultimate-admin-shortcodes.php:88, admin/class-shortcodes-ultimate-admin-top-level.php:39, admin/class-shortcodes-ultimate-admin.php:267, includes/functions-galleries.php:419, inc/core/widget.php:14, inc/core/widget.php:40, admin/partials/help/sidebar.php:3
+#: admin/class-shortcodes-ultimate-admin-shortcodes.php:88, admin/class-shortcodes-ultimate-admin-top-level.php:39, admin/class-shortcodes-ultimate-admin.php:267, includes/functions-galleries.php:289, inc/core/widget.php:14, inc/core/widget.php:40, admin/partials/help/sidebar.php:3
 msgid "Shortcodes Ultimate"
 msgstr ""
 
@@ -186,11 +186,11 @@ msgstr ""
 msgid "Media file IDs"
 msgstr ""
 
-#: admin/class-shortcodes-ultimate-admin-shortcodes.php:393
+#: admin/class-shortcodes-ultimate-admin-shortcodes.php:393, includes/shortcodes/display-posts.php:37
 msgid "Post IDs"
 msgstr ""
 
-#: admin/class-shortcodes-ultimate-admin-shortcodes.php:394, inc/core/generator-views.php:147, includes/shortcodes/image-carousel.php:20
+#: admin/class-shortcodes-ultimate-admin-shortcodes.php:394, inc/core/generator-views.php:149, includes/shortcodes/image-carousel.php:20
 msgid "Recent posts"
 msgstr ""
 
@@ -246,7 +246,7 @@ msgstr ""
 msgid "Fork Awesome icon name (with \"icon:\" prefix) or image URL"
 msgstr ""
 
-#: admin/class-shortcodes-ultimate-admin-shortcodes.php:412
+#: admin/class-shortcodes-ultimate-admin-shortcodes.php:412, includes/shortcodes/lightbox-content.php:30, includes/shortcodes/lightbox-content.php:40, includes/shortcodes/lightbox-content.php:50
 msgid "Examples"
 msgstr ""
 
@@ -272,36 +272,16 @@ msgstr ""
 msgid "Shortcodes Ultimate is not activated, because it requires WordPress version %1$s (or higher). You have version %2$s."
 msgstr ""
 
-#: includes/functions-galleries.php:395
+#: includes/functions-galleries.php:250
 msgid "Original image size"
 msgstr ""
 
-#: includes/functions-galleries.php:414
+#: includes/functions-galleries.php:284
 msgid "Slide link"
 msgstr ""
 
-#: includes/functions-galleries.php:420
+#: includes/functions-galleries.php:290
 msgid "Use this field to add custom links to slides used with Slider, Carousel and Custom Gallery shortcodes"
-msgstr ""
-
-#: templates/default-loop.php:16, templates/single-post.php:17
-msgid "Posted"
-msgstr ""
-
-#: templates/default-loop.php:24, templates/single-post.php:19
-msgid "0 comments"
-msgstr ""
-
-#: templates/default-loop.php:24, templates/single-post.php:19
-msgid "1 comment"
-msgstr ""
-
-#: templates/default-loop.php:32, templates/list-loop.php:16, templates/single-post.php:32, templates/teaser-loop.php:20
-msgid "Posts not found"
-msgstr ""
-
-#: templates/single-post.php:19
-msgid "%n comments"
 msgstr ""
 
 #: inc/core/assets.php:83
@@ -365,83 +345,88 @@ msgstr ""
 msgid "Open link"
 msgstr ""
 
-#: inc/core/generator-views.php:93
+#: inc/core/generator-views.php:53
+msgctxt "shortcodes-ultimate"
+msgid "Any post type"
+msgstr ""
+
+#: inc/core/generator-views.php:95
 msgid "Yes"
 msgstr ""
 
-#: inc/core/generator-views.php:93
+#: inc/core/generator-views.php:95
 msgid "No"
 msgstr ""
 
-#: inc/core/generator-views.php:98, inc/core/generator-views.php:98, inc/core/generator-views.php:103, inc/core/generator-views.php:103
+#: inc/core/generator-views.php:100, inc/core/generator-views.php:100, inc/core/generator-views.php:105, inc/core/generator-views.php:105
 msgid "Media manager"
 msgstr ""
 
-#: inc/core/generator-views.php:103, inc/core/generator-views.php:103
+#: inc/core/generator-views.php:105, inc/core/generator-views.php:105
 msgid "Icon picker"
 msgstr ""
 
-#: inc/core/generator-views.php:103
+#: inc/core/generator-views.php:105
 msgid "Filter icons"
 msgstr ""
 
-#: inc/core/generator-views.php:124
+#: inc/core/generator-views.php:126
 msgid "Horizontal offset"
 msgstr ""
 
-#: inc/core/generator-views.php:124
+#: inc/core/generator-views.php:126
 msgid "Vertical offset"
 msgstr ""
 
-#: inc/core/generator-views.php:124
+#: inc/core/generator-views.php:126
 msgid "Blur"
 msgstr ""
 
-#: inc/core/generator-views.php:124, includes/shortcodes/box.php:35
+#: inc/core/generator-views.php:126, includes/shortcodes/box.php:35
 msgid "Color"
 msgstr ""
 
-#: inc/core/generator-views.php:135
+#: inc/core/generator-views.php:137
 msgid "Border width"
 msgstr ""
 
-#: inc/core/generator-views.php:135
+#: inc/core/generator-views.php:137
 msgid "Border style"
 msgstr ""
 
-#: inc/core/generator-views.php:135
+#: inc/core/generator-views.php:137
 msgid "Border color"
 msgstr ""
 
-#: inc/core/generator-views.php:146, includes/shortcodes/image-carousel.php:18
+#: inc/core/generator-views.php:148, includes/shortcodes/image-carousel.php:18
 msgid "Media library"
 msgstr ""
 
-#: inc/core/generator-views.php:148, includes/shortcodes/image-carousel.php:21, includes/shortcodes/posts.php:56
+#: inc/core/generator-views.php:150, includes/shortcodes/display-posts.php:61, includes/shortcodes/image-carousel.php:21, includes/shortcodes/posts.php:56
 msgid "Taxonomy"
 msgstr ""
 
-#: inc/core/generator-views.php:155
+#: inc/core/generator-views.php:157
 msgid "Select images source"
 msgstr ""
 
-#: inc/core/generator-views.php:166
+#: inc/core/generator-views.php:168
 msgid "Select taxonomy"
 msgstr ""
 
-#: inc/core/generator-views.php:177
+#: inc/core/generator-views.php:179
 msgid "Add images"
 msgstr ""
 
-#: inc/core/generator-views.php:177
+#: inc/core/generator-views.php:179
 msgid "Click the button above and select images.<br>You can select multimple images with Ctrl (Cmd) key"
 msgstr ""
 
-#: inc/core/generator-views.php:177
+#: inc/core/generator-views.php:179
 msgid "Select categories to retrieve posts from.<br>You can select multiple categories with Ctrl (Cmd) key"
 msgstr ""
 
-#: inc/core/generator-views.php:177
+#: inc/core/generator-views.php:179
 msgid "Select taxonomy and it's terms.<br>You can select multiple terms with Ctrl (Cmd) key"
 msgstr ""
 
@@ -565,7 +550,7 @@ msgstr ""
 msgid "Add more style to your shortcodes"
 msgstr ""
 
-#: includes/config/borders.php:6, includes/shortcodes/carousel.php:34, includes/shortcodes/custom-gallery.php:30, includes/shortcodes/image-carousel.php:87, includes/shortcodes/image-carousel.php:130, includes/shortcodes/posts.php:139, includes/shortcodes/qrcode.php:43, includes/shortcodes/slider.php:34
+#: includes/config/borders.php:6, includes/shortcodes/carousel.php:36, includes/shortcodes/custom-gallery.php:30, includes/shortcodes/display-posts.php:114, includes/shortcodes/image-carousel.php:87, includes/shortcodes/image-carousel.php:130, includes/shortcodes/posts.php:139, includes/shortcodes/qrcode.php:43, includes/shortcodes/slider.php:36
 msgid "None"
 msgstr ""
 
@@ -645,11 +630,11 @@ msgstr ""
 msgid "Accordion"
 msgstr ""
 
-#: includes/shortcodes/accordion.php:14, includes/shortcodes/animate.php:44, includes/shortcodes/audio.php:37, includes/shortcodes/box.php:56, includes/shortcodes/button.php:144, includes/shortcodes/carousel.php:141, includes/shortcodes/column.php:40, includes/shortcodes/csv-table.php:52, includes/shortcodes/custom-gallery.php:82, includes/shortcodes/dailymotion.php:103, includes/shortcodes/divider.php:74, includes/shortcodes/document.php:50, includes/shortcodes/dropcap.php:33, includes/shortcodes/dummy-image.php:53, includes/shortcodes/dummy-text.php:46, includes/shortcodes/expand.php:88, includes/shortcodes/feed.php:39, includes/shortcodes/frame.php:25, includes/shortcodes/gmap.php:58, includes/shortcodes/guests.php:13, includes/shortcodes/heading.php:56, includes/shortcodes/highlight.php:26, includes/shortcodes/image-carousel.php:187, includes/shortcodes/label.php:27, includes/shortcodes/lightbox-content.php:78, includes/shortcodes/lightbox.php:38, includes/shortcodes/list.php:35, includes/shortcodes/members.php:35, includes/shortcodes/menu.php:18, includes/shortcodes/note.php:37, includes/shortcodes/permalink.php:38, includes/shortcodes/private.php:13, includes/shortcodes/pullquote.php:22, includes/shortcodes/qrcode.php:81, includes/shortcodes/quote.php:34, includes/shortcodes/row.php:15, includes/shortcodes/service.php:41, includes/shortcodes/siblings.php:19, includes/shortcodes/slider.php:122, includes/shortcodes/spacer.php:22, includes/shortcodes/spoiler.php:61, includes/shortcodes/subpages.php:25, includes/shortcodes/table.php:34, includes/shortcodes/tabs.php:52, includes/shortcodes/tabs.php:111, includes/shortcodes/tooltip.php:99, includes/shortcodes/video.php:67, includes/shortcodes/vimeo.php:71, includes/shortcodes/youtube-advanced.php:134, includes/shortcodes/youtube.php:60
+#: includes/shortcodes/accordion.php:14, includes/shortcodes/animate.php:44, includes/shortcodes/audio.php:37, includes/shortcodes/box.php:56, includes/shortcodes/button.php:144, includes/shortcodes/carousel.php:143, includes/shortcodes/column.php:40, includes/shortcodes/csv-table.php:52, includes/shortcodes/custom-gallery.php:82, includes/shortcodes/dailymotion.php:103, includes/shortcodes/display-posts.php:223, includes/shortcodes/divider.php:74, includes/shortcodes/document.php:50, includes/shortcodes/dropcap.php:33, includes/shortcodes/dummy-image.php:53, includes/shortcodes/dummy-text.php:46, includes/shortcodes/expand.php:88, includes/shortcodes/feed.php:39, includes/shortcodes/frame.php:25, includes/shortcodes/gmap.php:58, includes/shortcodes/guests.php:13, includes/shortcodes/heading.php:56, includes/shortcodes/highlight.php:26, includes/shortcodes/image-carousel.php:187, includes/shortcodes/label.php:27, includes/shortcodes/lightbox-content.php:109, includes/shortcodes/lightbox.php:38, includes/shortcodes/list.php:35, includes/shortcodes/members.php:35, includes/shortcodes/menu.php:18, includes/shortcodes/note.php:37, includes/shortcodes/permalink.php:38, includes/shortcodes/private.php:13, includes/shortcodes/pullquote.php:22, includes/shortcodes/qrcode.php:81, includes/shortcodes/quote.php:34, includes/shortcodes/row.php:15, includes/shortcodes/service.php:41, includes/shortcodes/siblings.php:19, includes/shortcodes/slider.php:124, includes/shortcodes/spacer.php:22, includes/shortcodes/spoiler.php:61, includes/shortcodes/subpages.php:25, includes/shortcodes/table.php:34, includes/shortcodes/tabs.php:52, includes/shortcodes/tabs.php:111, includes/shortcodes/tooltip.php:99, includes/shortcodes/video.php:67, includes/shortcodes/vimeo.php:71, includes/shortcodes/youtube-advanced.php:134, includes/shortcodes/youtube.php:60
 msgid "Extra CSS class"
 msgstr ""
 
-#: includes/shortcodes/accordion.php:15, includes/shortcodes/animate.php:45, includes/shortcodes/audio.php:38, includes/shortcodes/box.php:57, includes/shortcodes/button.php:145, includes/shortcodes/carousel.php:142, includes/shortcodes/column.php:41, includes/shortcodes/csv-table.php:53, includes/shortcodes/custom-gallery.php:83, includes/shortcodes/dailymotion.php:104, includes/shortcodes/divider.php:75, includes/shortcodes/document.php:51, includes/shortcodes/dropcap.php:34, includes/shortcodes/dummy-image.php:54, includes/shortcodes/dummy-text.php:47, includes/shortcodes/expand.php:89, includes/shortcodes/feed.php:40, includes/shortcodes/gmap.php:59, includes/shortcodes/guests.php:14, includes/shortcodes/heading.php:57, includes/shortcodes/highlight.php:27, includes/shortcodes/image-carousel.php:188, includes/shortcodes/label.php:28, includes/shortcodes/lightbox-content.php:79, includes/shortcodes/lightbox.php:39, includes/shortcodes/list.php:36, includes/shortcodes/members.php:36, includes/shortcodes/menu.php:19, includes/shortcodes/note.php:38, includes/shortcodes/permalink.php:39, includes/shortcodes/private.php:14, includes/shortcodes/pullquote.php:23, includes/shortcodes/qrcode.php:82, includes/shortcodes/quote.php:35, includes/shortcodes/row.php:16, includes/shortcodes/service.php:42, includes/shortcodes/siblings.php:20, includes/shortcodes/slider.php:123, includes/shortcodes/spacer.php:23, includes/shortcodes/spoiler.php:62, includes/shortcodes/subpages.php:26, includes/shortcodes/table.php:35, includes/shortcodes/tabs.php:53, includes/shortcodes/tabs.php:112, includes/shortcodes/tooltip.php:100, includes/shortcodes/video.php:68, includes/shortcodes/vimeo.php:72, includes/shortcodes/youtube-advanced.php:135, includes/shortcodes/youtube.php:61
+#: includes/shortcodes/accordion.php:15, includes/shortcodes/animate.php:45, includes/shortcodes/audio.php:38, includes/shortcodes/box.php:57, includes/shortcodes/button.php:145, includes/shortcodes/carousel.php:144, includes/shortcodes/column.php:41, includes/shortcodes/csv-table.php:53, includes/shortcodes/custom-gallery.php:83, includes/shortcodes/dailymotion.php:104, includes/shortcodes/display-posts.php:224, includes/shortcodes/divider.php:75, includes/shortcodes/document.php:51, includes/shortcodes/dropcap.php:34, includes/shortcodes/dummy-image.php:54, includes/shortcodes/dummy-text.php:47, includes/shortcodes/expand.php:89, includes/shortcodes/feed.php:40, includes/shortcodes/gmap.php:59, includes/shortcodes/guests.php:14, includes/shortcodes/heading.php:57, includes/shortcodes/highlight.php:27, includes/shortcodes/image-carousel.php:188, includes/shortcodes/label.php:28, includes/shortcodes/lightbox-content.php:110, includes/shortcodes/lightbox.php:39, includes/shortcodes/list.php:36, includes/shortcodes/members.php:36, includes/shortcodes/menu.php:19, includes/shortcodes/note.php:38, includes/shortcodes/permalink.php:39, includes/shortcodes/private.php:14, includes/shortcodes/pullquote.php:23, includes/shortcodes/qrcode.php:82, includes/shortcodes/quote.php:35, includes/shortcodes/row.php:16, includes/shortcodes/service.php:42, includes/shortcodes/siblings.php:20, includes/shortcodes/slider.php:125, includes/shortcodes/spacer.php:23, includes/shortcodes/spoiler.php:62, includes/shortcodes/subpages.php:26, includes/shortcodes/table.php:35, includes/shortcodes/tabs.php:53, includes/shortcodes/tabs.php:112, includes/shortcodes/tooltip.php:100, includes/shortcodes/video.php:68, includes/shortcodes/vimeo.php:72, includes/shortcodes/youtube-advanced.php:135, includes/shortcodes/youtube.php:61
 msgid "Additional CSS class name(s) separated by space(s)"
 msgstr ""
 
@@ -713,7 +698,7 @@ msgstr ""
 msgid "Audio file url. Supported formats: mp3, ogg"
 msgstr ""
 
-#: includes/shortcodes/audio.php:20, includes/shortcodes/carousel.php:61, includes/shortcodes/custom-gallery.php:57, includes/shortcodes/dailymotion.php:23, includes/shortcodes/document.php:25, includes/shortcodes/dummy-image.php:17, includes/shortcodes/gmap.php:18, includes/shortcodes/lightbox-content.php:20, includes/shortcodes/slider.php:61, includes/shortcodes/video.php:35, includes/shortcodes/vimeo.php:23, includes/shortcodes/youtube-advanced.php:29, includes/shortcodes/youtube.php:23
+#: includes/shortcodes/audio.php:20, includes/shortcodes/carousel.php:63, includes/shortcodes/custom-gallery.php:57, includes/shortcodes/dailymotion.php:23, includes/shortcodes/document.php:25, includes/shortcodes/dummy-image.php:17, includes/shortcodes/gmap.php:18, includes/shortcodes/lightbox-content.php:26, includes/shortcodes/slider.php:63, includes/shortcodes/video.php:35, includes/shortcodes/vimeo.php:23, includes/shortcodes/youtube-advanced.php:29, includes/shortcodes/youtube.php:23
 msgid "Width"
 msgstr ""
 
@@ -721,7 +706,7 @@ msgstr ""
 msgid "Player width. You can specify width in percents and player will be responsive. Example values: <b%value>200px</b>, <b%value>100&#37;</b>"
 msgstr ""
 
-#: includes/shortcodes/audio.php:26, includes/shortcodes/carousel.php:128, includes/shortcodes/dailymotion.php:44, includes/shortcodes/image-carousel.php:157, includes/shortcodes/slider.php:109, includes/shortcodes/video.php:56, includes/shortcodes/vimeo.php:44, includes/shortcodes/youtube-advanced.php:72, includes/shortcodes/youtube.php:44
+#: includes/shortcodes/audio.php:26, includes/shortcodes/carousel.php:130, includes/shortcodes/dailymotion.php:44, includes/shortcodes/image-carousel.php:157, includes/shortcodes/slider.php:111, includes/shortcodes/video.php:56, includes/shortcodes/vimeo.php:44, includes/shortcodes/youtube-advanced.php:72, includes/shortcodes/youtube.php:44
 msgid "Autoplay"
 msgstr ""
 
@@ -837,11 +822,11 @@ msgstr ""
 msgid "Button link"
 msgstr ""
 
-#: includes/shortcodes/button.php:21, includes/shortcodes/carousel.php:48, includes/shortcodes/custom-gallery.php:44, includes/shortcodes/feed.php:30, includes/shortcodes/image-carousel.php:144, includes/shortcodes/permalink.php:19, includes/shortcodes/qrcode.php:60, includes/shortcodes/slider.php:48, includes/shortcodes/tabs.php:102
+#: includes/shortcodes/button.php:21, includes/shortcodes/carousel.php:50, includes/shortcodes/custom-gallery.php:44, includes/shortcodes/feed.php:30, includes/shortcodes/image-carousel.php:144, includes/shortcodes/permalink.php:19, includes/shortcodes/qrcode.php:60, includes/shortcodes/slider.php:50, includes/shortcodes/tabs.php:102
 msgid "Open in same tab"
 msgstr ""
 
-#: includes/shortcodes/button.php:22, includes/shortcodes/carousel.php:49, includes/shortcodes/custom-gallery.php:45, includes/shortcodes/feed.php:31, includes/shortcodes/image-carousel.php:145, includes/shortcodes/permalink.php:20, includes/shortcodes/qrcode.php:61, includes/shortcodes/slider.php:49, includes/shortcodes/tabs.php:103
+#: includes/shortcodes/button.php:22, includes/shortcodes/carousel.php:51, includes/shortcodes/custom-gallery.php:45, includes/shortcodes/feed.php:31, includes/shortcodes/image-carousel.php:145, includes/shortcodes/permalink.php:20, includes/shortcodes/qrcode.php:61, includes/shortcodes/slider.php:51, includes/shortcodes/tabs.php:103
 msgid "Open in new tab"
 msgstr ""
 
@@ -881,7 +866,7 @@ msgstr ""
 msgid "Button background color"
 msgstr ""
 
-#: includes/shortcodes/button.php:56, includes/shortcodes/expand.php:40, includes/shortcodes/highlight.php:22, includes/shortcodes/lightbox-content.php:61, includes/shortcodes/lightbox-content.php:67, includes/shortcodes/note.php:23
+#: includes/shortcodes/button.php:56, includes/shortcodes/expand.php:40, includes/shortcodes/highlight.php:22, includes/shortcodes/lightbox-content.php:92, includes/shortcodes/lightbox-content.php:98, includes/shortcodes/note.php:23
 msgid "Text color"
 msgstr ""
 
@@ -1001,163 +986,164 @@ msgstr ""
 msgid "Styled button"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:7
-msgid "Carousel"
+#. translators: Dep. – Deprecated
+#: includes/shortcodes/carousel.php:9
+msgid "Carousel (Dep.)"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:12, includes/shortcodes/slider.php:12
+#: includes/shortcodes/carousel.php:14, includes/shortcodes/slider.php:14
 msgid "There is a much better shortcode for your images. Have you already tried the Image Carousel? It can create both sliders and carousels."
 msgstr ""
 
-#: includes/shortcodes/carousel.php:13, includes/shortcodes/slider.php:13
+#: includes/shortcodes/carousel.php:15, includes/shortcodes/slider.php:15
 msgid "Switch to Image Carousel"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:19, includes/shortcodes/custom-gallery.php:15, includes/shortcodes/slider.php:19
+#: includes/shortcodes/carousel.php:21, includes/shortcodes/custom-gallery.php:15, includes/shortcodes/slider.php:21
 msgid "Source"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:20, includes/shortcodes/custom-gallery.php:16, includes/shortcodes/slider.php:20
+#: includes/shortcodes/carousel.php:22, includes/shortcodes/custom-gallery.php:16, includes/shortcodes/slider.php:22
 msgid "Choose images source. You can use images from Media library or retrieve it from posts (thumbnails) posted under specified blog category. You can also pick any custom taxonomy"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:28, includes/shortcodes/custom-gallery.php:24, includes/shortcodes/feed.php:24, includes/shortcodes/image-carousel.php:32, includes/shortcodes/slider.php:28
+#: includes/shortcodes/carousel.php:30, includes/shortcodes/custom-gallery.php:24, includes/shortcodes/feed.php:24, includes/shortcodes/image-carousel.php:32, includes/shortcodes/slider.php:30
 msgid "Limit"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:29, includes/shortcodes/custom-gallery.php:25, includes/shortcodes/slider.php:29
+#: includes/shortcodes/carousel.php:31, includes/shortcodes/custom-gallery.php:25, includes/shortcodes/slider.php:31
 msgid "Maximum number of image source posts (for recent posts, category and custom taxonomy)"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:35, includes/shortcodes/custom-gallery.php:31, includes/shortcodes/image-carousel.php:131, includes/shortcodes/slider.php:35
+#: includes/shortcodes/carousel.php:37, includes/shortcodes/custom-gallery.php:31, includes/shortcodes/image-carousel.php:131, includes/shortcodes/slider.php:37
 msgid "Full-size image"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:36, includes/shortcodes/custom-gallery.php:32, includes/shortcodes/image-carousel.php:132, includes/shortcodes/lightbox.php:8, includes/shortcodes/slider.php:36
+#: includes/shortcodes/carousel.php:38, includes/shortcodes/custom-gallery.php:32, includes/shortcodes/image-carousel.php:132, includes/shortcodes/lightbox.php:8, includes/shortcodes/slider.php:38
 msgid "Lightbox"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:37, includes/shortcodes/custom-gallery.php:33, includes/shortcodes/slider.php:37
+#: includes/shortcodes/carousel.php:39, includes/shortcodes/custom-gallery.php:33, includes/shortcodes/slider.php:39
 msgid "Slide link (added in media editor)"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:38, includes/shortcodes/custom-gallery.php:34, includes/shortcodes/image-carousel.php:134, includes/shortcodes/slider.php:38
+#: includes/shortcodes/carousel.php:40, includes/shortcodes/custom-gallery.php:34, includes/shortcodes/image-carousel.php:134, includes/shortcodes/slider.php:40
 msgid "Attachment page"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:39, includes/shortcodes/custom-gallery.php:35, includes/shortcodes/image-carousel.php:135, includes/shortcodes/slider.php:39
+#: includes/shortcodes/carousel.php:41, includes/shortcodes/custom-gallery.php:35, includes/shortcodes/image-carousel.php:135, includes/shortcodes/slider.php:41
 msgid "Post permalink"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:42, includes/shortcodes/custom-gallery.php:38, includes/shortcodes/slider.php:42
+#: includes/shortcodes/carousel.php:44, includes/shortcodes/custom-gallery.php:38, includes/shortcodes/slider.php:44
 msgid "Links"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:43, includes/shortcodes/custom-gallery.php:39, includes/shortcodes/slider.php:43
+#: includes/shortcodes/carousel.php:45, includes/shortcodes/custom-gallery.php:39, includes/shortcodes/slider.php:45
 msgid "Select which links will be used for images in this gallery"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:52, includes/shortcodes/custom-gallery.php:48, includes/shortcodes/feed.php:34, includes/shortcodes/image-carousel.php:148, includes/shortcodes/slider.php:52
+#: includes/shortcodes/carousel.php:54, includes/shortcodes/custom-gallery.php:48, includes/shortcodes/feed.php:34, includes/shortcodes/image-carousel.php:148, includes/shortcodes/slider.php:54
 msgid "Links target"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:53, includes/shortcodes/custom-gallery.php:49, includes/shortcodes/slider.php:53
+#: includes/shortcodes/carousel.php:55, includes/shortcodes/custom-gallery.php:49, includes/shortcodes/slider.php:55
 msgid "Open links in"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:62
+#: includes/shortcodes/carousel.php:64
 msgid "Carousel width (in pixels)"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:70, includes/shortcodes/custom-gallery.php:66, includes/shortcodes/dailymotion.php:32, includes/shortcodes/document.php:34, includes/shortcodes/dummy-image.php:26, includes/shortcodes/expand.php:27, includes/shortcodes/gmap.php:27, includes/shortcodes/slider.php:69, includes/shortcodes/spacer.php:17, includes/shortcodes/video.php:44, includes/shortcodes/vimeo.php:32, includes/shortcodes/youtube-advanced.php:38, includes/shortcodes/youtube.php:32
+#: includes/shortcodes/carousel.php:72, includes/shortcodes/custom-gallery.php:66, includes/shortcodes/dailymotion.php:32, includes/shortcodes/document.php:34, includes/shortcodes/dummy-image.php:26, includes/shortcodes/expand.php:27, includes/shortcodes/gmap.php:27, includes/shortcodes/slider.php:71, includes/shortcodes/spacer.php:17, includes/shortcodes/video.php:44, includes/shortcodes/vimeo.php:32, includes/shortcodes/youtube-advanced.php:38, includes/shortcodes/youtube.php:32
 msgid "Height"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:71
+#: includes/shortcodes/carousel.php:73
 msgid "Carousel height (in pixels)"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:76, includes/shortcodes/csv-table.php:35, includes/shortcodes/dailymotion.php:38, includes/shortcodes/document.php:40, includes/shortcodes/gmap.php:33, includes/shortcodes/slider.php:74, includes/shortcodes/table.php:17, includes/shortcodes/vimeo.php:38, includes/shortcodes/youtube-advanced.php:44, includes/shortcodes/youtube.php:38
+#: includes/shortcodes/carousel.php:78, includes/shortcodes/csv-table.php:35, includes/shortcodes/dailymotion.php:38, includes/shortcodes/document.php:40, includes/shortcodes/gmap.php:33, includes/shortcodes/slider.php:76, includes/shortcodes/table.php:17, includes/shortcodes/vimeo.php:38, includes/shortcodes/youtube-advanced.php:44, includes/shortcodes/youtube.php:38
 msgid "Responsive"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:77
+#: includes/shortcodes/carousel.php:79
 msgid "Ignore width and height parameters and make carousel responsive"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:85
+#: includes/shortcodes/carousel.php:87
 msgid "Items to show"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:86
+#: includes/shortcodes/carousel.php:88
 msgid "How much carousel items is visible"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:93
+#: includes/shortcodes/carousel.php:95
 msgid "Scroll number"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:94
+#: includes/shortcodes/carousel.php:96
 msgid "How much items are scrolled in one transition"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:99, includes/shortcodes/custom-gallery.php:77, includes/shortcodes/slider.php:80
+#: includes/shortcodes/carousel.php:101, includes/shortcodes/custom-gallery.php:77, includes/shortcodes/slider.php:82
 msgid "Show titles"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:99
+#: includes/shortcodes/carousel.php:101
 msgid "Display titles for each item"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:104, includes/shortcodes/expand.php:67, includes/shortcodes/frame.php:15, includes/shortcodes/heading.php:33, includes/shortcodes/image-carousel.php:90, includes/shortcodes/lightbox-content.php:45, includes/shortcodes/qrcode.php:45, includes/shortcodes/slider.php:85
+#: includes/shortcodes/carousel.php:106, includes/shortcodes/expand.php:67, includes/shortcodes/frame.php:15, includes/shortcodes/heading.php:33, includes/shortcodes/image-carousel.php:90, includes/shortcodes/lightbox-content.php:76, includes/shortcodes/qrcode.php:45, includes/shortcodes/slider.php:87
 msgid "Center"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:104
+#: includes/shortcodes/carousel.php:106
 msgid "Is carousel centered on the page"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:109, includes/shortcodes/slider.php:90
+#: includes/shortcodes/carousel.php:111, includes/shortcodes/slider.php:92
 msgid "Arrows"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:109, includes/shortcodes/slider.php:90
+#: includes/shortcodes/carousel.php:111, includes/shortcodes/slider.php:92
 msgid "Show left and right arrows"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:114, includes/shortcodes/slider.php:95
+#: includes/shortcodes/carousel.php:116, includes/shortcodes/display-posts.php:197, includes/shortcodes/slider.php:97
 msgid "Pagination"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:115, includes/shortcodes/slider.php:96
+#: includes/shortcodes/carousel.php:117, includes/shortcodes/slider.php:98
 msgid "Show pagination"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:119, includes/shortcodes/slider.php:100
+#: includes/shortcodes/carousel.php:121, includes/shortcodes/slider.php:102
 msgid "Mouse wheel control"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:120
+#: includes/shortcodes/carousel.php:122
 msgid "Allow to rotate carousel with mouse wheel"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:129
+#: includes/shortcodes/carousel.php:131
 msgid "Choose interval between auto animations. Set to 0 to disable autoplay"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:137, includes/shortcodes/slider.php:118
+#: includes/shortcodes/carousel.php:139, includes/shortcodes/slider.php:120
 msgid "Speed"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:137, includes/shortcodes/slider.php:118
+#: includes/shortcodes/carousel.php:139, includes/shortcodes/slider.php:120
 msgid "Specify animation speed"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:146
+#: includes/shortcodes/carousel.php:148
 msgid "Customizable image carousel"
 msgstr ""
 
-#: includes/shortcodes/carousel.php:236, includes/shortcodes/custom-gallery.php:157, includes/shortcodes/image-carousel.php:236, includes/shortcodes/slider.php:209
+#: includes/shortcodes/carousel.php:238, includes/shortcodes/custom-gallery.php:162, includes/shortcodes/image-carousel.php:230, includes/shortcodes/slider.php:216
 msgid "images not found"
 msgstr ""
 
@@ -1349,7 +1335,7 @@ msgstr ""
 msgid "Start the playback of the video automatically after the player load. May not work on some mobile OS versions"
 msgstr ""
 
-#: includes/shortcodes/dailymotion.php:50, includes/shortcodes/lightbox-content.php:55, includes/shortcodes/qrcode.php:76
+#: includes/shortcodes/dailymotion.php:50, includes/shortcodes/lightbox-content.php:86, includes/shortcodes/qrcode.php:76
 msgid "Background color"
 msgstr ""
 
@@ -1413,6 +1399,328 @@ msgstr ""
 msgid "Dailymotion video"
 msgstr ""
 
+#: includes/shortcodes/display-posts.php:9, includes/shortcodes/posts.php:8
+msgid "Posts"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:16, includes/shortcodes/posts.php:15, includes/shortcodes/template.php:8
+msgid "Template"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:19, includes/shortcodes/template.php:14
+msgid "Template name"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:20
+msgid "Available templates"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:22
+msgid "default template with thumbnail, title, and excerpt"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:24
+msgid "default template with various meta data"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:26
+msgid "unordered list with post titles"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:28
+msgid "small teasers containing post thumbnails and titles"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:30
+msgid "single post template"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:32
+msgid "How to create/edit a template"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:38
+msgid "Comma separated list of post IDs to include"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:46, includes/shortcodes/posts.php:35
+msgid "Posts per page"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:47
+msgid "Number of posts that will be shown. Use -1 to display all posts."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:54, includes/shortcodes/posts.php:46
+msgid "Post types"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:55
+msgid "Filter posts by post type"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:62
+msgid "Show posts associated with certain taxonomy"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:69, includes/shortcodes/posts.php:67
+msgid "Terms"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:70
+msgid "Show posts associated with specified taxonomy terms."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:75
+msgid "IN - posts that have any of the selected terms"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:79
+msgid "NOT IN - posts that do not have any of the selected terms"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:83
+msgid "AND - posts that have all of the selected terms"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:89, includes/shortcodes/posts.php:87
+msgid "Taxonomy term operator"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:90
+msgid "Taxonomy terms operator"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:94, includes/shortcodes/posts.php:100
+msgid "Authors"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:95
+msgid "Comma separated list of author IDs"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:99, includes/shortcodes/posts.php:108
+msgid "Meta key"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:100
+msgid "Show posts associated with a certain custom field"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:108, includes/shortcodes/posts.php:120
+msgid "Offset"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:109
+msgid "Number of posts to displace or pass over. The offset parameter is ignored when posts_per_page=-1 (show all posts) is used."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:115, includes/shortcodes/meta.php:33, includes/shortcodes/post.php:17, includes/shortcodes/post.php:59, includes/shortcodes/posts.php:140
+msgid "Post ID"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:116, includes/shortcodes/post.php:18, includes/shortcodes/posts.php:141
+msgid "Post author"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:117, includes/shortcodes/post.php:23, includes/shortcodes/posts.php:142
+msgid "Post title"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:118, includes/shortcodes/posts.php:143
+msgid "Post slug"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:119, includes/shortcodes/posts.php:144
+msgid "Date"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:120, includes/shortcodes/posts.php:145
+msgid "Last modified date"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:121, includes/shortcodes/display-posts.php:144, includes/shortcodes/post.php:31, includes/shortcodes/posts.php:146, includes/shortcodes/posts.php:159
+msgid "Post parent"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:122, includes/shortcodes/posts.php:147
+msgid "Random"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:123, includes/shortcodes/posts.php:148
+msgid "Comments number"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:124, includes/shortcodes/post.php:33, includes/shortcodes/posts.php:149
+msgid "Menu order"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:125, includes/shortcodes/posts.php:150
+msgid "Meta key values"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:126, includes/shortcodes/posts.php:151
+msgid "Meta key values (Numeric)"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:129, includes/shortcodes/posts.php:154
+msgid "Order by"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:130
+msgid "Sort retrieved posts by parameter"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:135, includes/shortcodes/posts.php:129
+msgid "Descending"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:136, includes/shortcodes/posts.php:130
+msgid "Ascending"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:139, includes/shortcodes/posts.php:133
+msgid "Order"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:140
+msgid "Designates the ascending or descending order of the orderby parameter"
+msgstr ""
+
+#. translators: %s will be replaced with clickable text "current"
+#: includes/shortcodes/display-posts.php:147
+msgid "Filter posts by post parent (use parent post ID). Use \"%s\" keyword to display childs of the current post."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:154, includes/shortcodes/posts.php:168
+msgid "Published"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:155, includes/shortcodes/posts.php:169
+msgid "Pending"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:156, includes/shortcodes/posts.php:170
+msgid "Draft"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:157, includes/shortcodes/posts.php:171
+msgid "Auto-draft"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:158, includes/shortcodes/posts.php:172
+msgid "Future post"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:159, includes/shortcodes/posts.php:173
+msgid "Private post"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:160, includes/shortcodes/posts.php:174
+msgid "Inherit"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:161, includes/shortcodes/posts.php:175
+msgid "Trashed"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:162, includes/shortcodes/dummy-image.php:32, includes/shortcodes/posts.php:176
+msgid "Any"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:165, includes/shortcodes/post.php:25, includes/shortcodes/posts.php:179
+msgid "Post status"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:166
+msgid "Filter posts by status"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:171, includes/shortcodes/posts.php:188
+msgid "Ignore sticky"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:172
+msgid "Set this option to yes to ignore sticky posts"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:176
+msgid "Exclude Posts"
+msgstr ""
+
+#. translators: %s will be replaced with clickable text "current"
+#: includes/shortcodes/display-posts.php:179
+msgid "Comma separated list of post IDs to exclude. Use \"%s\" keyword to exclude the current post."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:187
+msgid "Thumbnails quality (if applicable)"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:188
+msgid "This option controls the size of thumbnail images. This option only affects image quality, not the actual thumbnail size."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:193, includes/shortcodes/tabs.php:86
+msgid "Disabled"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:194
+msgid "Previous/Next"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:198
+msgid "This option controls pagination"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:201
+msgid "Previous page"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:202
+msgid "Previous page link label"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:203
+msgid "Use this option to set a custom label for the previous page link."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:206
+msgid "Next page"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:207
+msgid "Next page link label"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:208
+msgid "Use this option to set a custom label for the next page link."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:213
+msgid "Achors in Pagination"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:214
+msgid "Use this option to enable anchors in pagination links. As a result, after navigating to a new page, browser will scroll in the posts element."
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:217, includes/shortcodes/heading.php:50
+msgid "HTML Anchor (ID)"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:218
+msgid "Anchors lets you link directly to an element on a page"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:228, includes/shortcodes/posts.php:195
+msgid "Custom posts query with customizable template"
+msgstr ""
+
+#: includes/shortcodes/display-posts.php:260, includes/shortcodes/posts.php:383, includes/shortcodes/template.php:33
+msgid "invalid template name"
+msgstr ""
+
 #: includes/shortcodes/divider.php:8
 msgid "Divider"
 msgstr ""
@@ -1469,7 +1777,7 @@ msgstr ""
 msgid "Height of the divider (in pixels)"
 msgstr ""
 
-#: includes/shortcodes/divider.php:69, includes/shortcodes/heading.php:46, includes/shortcodes/lightbox-content.php:29, includes/shortcodes/qrcode.php:37
+#: includes/shortcodes/divider.php:69, includes/shortcodes/heading.php:46, includes/shortcodes/lightbox-content.php:60, includes/shortcodes/qrcode.php:37
 msgid "Margin"
 msgstr ""
 
@@ -1539,10 +1847,6 @@ msgstr ""
 
 #: includes/shortcodes/dummy-image.php:27
 msgid "Image height"
-msgstr ""
-
-#: includes/shortcodes/dummy-image.php:32, includes/shortcodes/posts.php:176
-msgid "Any"
 msgstr ""
 
 #: includes/shortcodes/dummy-image.php:33
@@ -1721,11 +2025,11 @@ msgstr ""
 msgid "Select the style for more/less link"
 msgstr ""
 
-#: includes/shortcodes/expand.php:66, includes/shortcodes/frame.php:14, includes/shortcodes/heading.php:32, includes/shortcodes/image-carousel.php:88, includes/shortcodes/lightbox-content.php:44, includes/shortcodes/pullquote.php:14, includes/shortcodes/qrcode.php:44, includes/shortcodes/tooltip.php:36
+#: includes/shortcodes/expand.php:66, includes/shortcodes/frame.php:14, includes/shortcodes/heading.php:32, includes/shortcodes/image-carousel.php:88, includes/shortcodes/lightbox-content.php:75, includes/shortcodes/pullquote.php:14, includes/shortcodes/qrcode.php:44, includes/shortcodes/tooltip.php:36
 msgid "Left"
 msgstr ""
 
-#: includes/shortcodes/expand.php:68, includes/shortcodes/frame.php:16, includes/shortcodes/heading.php:34, includes/shortcodes/image-carousel.php:89, includes/shortcodes/lightbox-content.php:46, includes/shortcodes/pullquote.php:15, includes/shortcodes/qrcode.php:46, includes/shortcodes/tooltip.php:37
+#: includes/shortcodes/expand.php:68, includes/shortcodes/frame.php:16, includes/shortcodes/heading.php:34, includes/shortcodes/image-carousel.php:89, includes/shortcodes/lightbox-content.php:77, includes/shortcodes/pullquote.php:15, includes/shortcodes/qrcode.php:46, includes/shortcodes/tooltip.php:37
 msgid "Right"
 msgstr ""
 
@@ -1879,10 +2183,6 @@ msgstr ""
 
 #: includes/shortcodes/heading.php:47
 msgid "Bottom margin (pixels)"
-msgstr ""
-
-#: includes/shortcodes/heading.php:50
-msgid "HTML Anchor (ID)"
 msgstr ""
 
 #: includes/shortcodes/heading.php:51
@@ -2149,64 +2449,84 @@ msgstr ""
 msgid "Styled label"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:7
+#: includes/shortcodes/lightbox-content.php:8
 msgid "Lightbox content"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:15, includes/shortcodes/permalink.php:13, includes/shortcodes/user.php:21
+#: includes/shortcodes/lightbox-content.php:16, includes/shortcodes/permalink.php:13, includes/shortcodes/user.php:21
 msgid "ID"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:16
-msgid "Enter here the ID from Content source field. %s Example value: %s"
+#: includes/shortcodes/lightbox-content.php:19
+msgid "The ID of the element. Use the value from the Content source field of the lightbox shortcode."
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:21
-msgid "Adjust the width for inline content (in pixels or percents). %s Example values: %s, %s, %s"
+#: includes/shortcodes/lightbox-content.php:20
+msgid "Example"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:30
-msgid "Adjust the margin for inline content (in pixels)"
+#: includes/shortcodes/lightbox-content.php:29
+msgid "The width of the element. CSS units are allowed."
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:38
-msgid "Padding"
+#: includes/shortcodes/lightbox-content.php:36
+msgid "Min. Width"
 msgstr ""
 
 #: includes/shortcodes/lightbox-content.php:39
-msgid "Adjust the padding for inline content (in pixels)"
+msgid "The minimum width of the element. CSS units are allowed."
+msgstr ""
+
+#: includes/shortcodes/lightbox-content.php:46
+msgid "Max. Width"
 msgstr ""
 
 #: includes/shortcodes/lightbox-content.php:49
+msgid "The maximum width of the element. CSS units are allowed."
+msgstr ""
+
+#: includes/shortcodes/lightbox-content.php:61
+msgid "The outer spacing of the element (in pixels)"
+msgstr ""
+
+#: includes/shortcodes/lightbox-content.php:69
+msgid "Padding"
+msgstr ""
+
+#: includes/shortcodes/lightbox-content.php:70
+msgid "The inner spacing of the element (in pixels)"
+msgstr ""
+
+#: includes/shortcodes/lightbox-content.php:80
 msgid "Text alignment"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:50
+#: includes/shortcodes/lightbox-content.php:81
 msgid "Select the text alignment"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:56, includes/shortcodes/qrcode.php:77
+#: includes/shortcodes/lightbox-content.php:87, includes/shortcodes/qrcode.php:77
 msgid "Pick a background color"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:62, includes/shortcodes/lightbox-content.php:68
+#: includes/shortcodes/lightbox-content.php:93, includes/shortcodes/lightbox-content.php:99
 msgid "Pick a text color"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:74
+#: includes/shortcodes/lightbox-content.php:105
 msgid "Adjust the shadow for content box"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:83
+#: includes/shortcodes/lightbox-content.php:114
 msgid "Inline content"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:84
+#: includes/shortcodes/lightbox-content.php:115
 msgid "Inline content for lightbox"
 msgstr ""
 
-#: includes/shortcodes/lightbox-content.php:105
-msgid "please specify correct ID for this block. You should use same ID as in the Content source field (when inserting lightbox shortcode)"
+#: includes/shortcodes/lightbox-content.php:128
+msgid "invalid ID. Use the value from the Content source field of the lightbox shortcode."
 msgstr ""
 
 #: includes/shortcodes/lightbox.php:17
@@ -2386,10 +2706,6 @@ msgstr ""
 msgid "This content will be shown after the value"
 msgstr ""
 
-#: includes/shortcodes/meta.php:33, includes/shortcodes/post.php:17, includes/shortcodes/post.php:59, includes/shortcodes/posts.php:140
-msgid "Post ID"
-msgstr ""
-
 #: includes/shortcodes/meta.php:34
 msgid "You can specify custom post ID. Leave this field empty to use an ID of the current post. Current post ID may not work in Live Preview mode"
 msgstr ""
@@ -2474,10 +2790,6 @@ msgstr ""
 msgid "The utility shortcode to display various post data, like post title, status or excerpt"
 msgstr ""
 
-#: includes/shortcodes/post.php:18, includes/shortcodes/posts.php:141
-msgid "Post author"
-msgstr ""
-
 #: includes/shortcodes/post.php:19, includes/shortcodes/post.php:20
 msgid "Post date"
 msgstr ""
@@ -2490,16 +2802,8 @@ msgstr ""
 msgid "Post content (Filtered)"
 msgstr ""
 
-#: includes/shortcodes/post.php:23, includes/shortcodes/posts.php:142
-msgid "Post title"
-msgstr ""
-
 #: includes/shortcodes/post.php:24
 msgid "Post excerpt"
-msgstr ""
-
-#: includes/shortcodes/post.php:25, includes/shortcodes/posts.php:179
-msgid "Post status"
 msgstr ""
 
 #: includes/shortcodes/post.php:26
@@ -2518,16 +2822,8 @@ msgstr ""
 msgid "Post modified"
 msgstr ""
 
-#: includes/shortcodes/post.php:31, includes/shortcodes/posts.php:146, includes/shortcodes/posts.php:159
-msgid "Post parent"
-msgstr ""
-
 #: includes/shortcodes/post.php:32
 msgid "GUID"
-msgstr ""
-
-#: includes/shortcodes/post.php:33, includes/shortcodes/posts.php:149
-msgid "Menu order"
 msgstr ""
 
 #: includes/shortcodes/post.php:34, includes/shortcodes/post.php:65
@@ -2558,16 +2854,8 @@ msgstr ""
 msgid "Post type of the post you want to display the data from"
 msgstr ""
 
-#: includes/shortcodes/post.php:89
+#: includes/shortcodes/post.php:93
 msgid "invalid post ID"
-msgstr ""
-
-#: includes/shortcodes/posts.php:8
-msgid "Posts"
-msgstr ""
-
-#: includes/shortcodes/posts.php:15, includes/shortcodes/template.php:8
-msgid "Template"
 msgstr ""
 
 #: includes/shortcodes/posts.php:16
@@ -2582,16 +2870,8 @@ msgstr ""
 msgid "Enter comma separated ID's of the posts that you want to show"
 msgstr ""
 
-#: includes/shortcodes/posts.php:35
-msgid "Posts per page"
-msgstr ""
-
 #: includes/shortcodes/posts.php:36
 msgid "Specify number of posts that you want to show. Enter -1 to get all posts"
-msgstr ""
-
-#: includes/shortcodes/posts.php:46
-msgid "Post types"
 msgstr ""
 
 #: includes/shortcodes/posts.php:47
@@ -2600,10 +2880,6 @@ msgstr ""
 
 #: includes/shortcodes/posts.php:57
 msgid "Select taxonomy to show posts from"
-msgstr ""
-
-#: includes/shortcodes/posts.php:67
-msgid "Terms"
 msgstr ""
 
 #: includes/shortcodes/posts.php:68
@@ -2622,84 +2898,24 @@ msgstr ""
 msgid "AND - posts that have all selected terms"
 msgstr ""
 
-#: includes/shortcodes/posts.php:87
-msgid "Taxonomy term operator"
-msgstr ""
-
 #: includes/shortcodes/posts.php:88
 msgid "Operator to test"
-msgstr ""
-
-#: includes/shortcodes/posts.php:100
-msgid "Authors"
 msgstr ""
 
 #: includes/shortcodes/posts.php:101
 msgid "Enter here comma-separated list of author's IDs. Example: 1,7,18"
 msgstr ""
 
-#: includes/shortcodes/posts.php:108
-msgid "Meta key"
-msgstr ""
-
 #: includes/shortcodes/posts.php:109
 msgid "Enter meta key name to show posts that have this key"
-msgstr ""
-
-#: includes/shortcodes/posts.php:120
-msgid "Offset"
 msgstr ""
 
 #: includes/shortcodes/posts.php:121
 msgid "Specify offset to start posts loop not from first post"
 msgstr ""
 
-#: includes/shortcodes/posts.php:129
-msgid "Descending"
-msgstr ""
-
-#: includes/shortcodes/posts.php:130
-msgid "Ascending"
-msgstr ""
-
-#: includes/shortcodes/posts.php:133
-msgid "Order"
-msgstr ""
-
 #: includes/shortcodes/posts.php:134
 msgid "Posts order"
-msgstr ""
-
-#: includes/shortcodes/posts.php:143
-msgid "Post slug"
-msgstr ""
-
-#: includes/shortcodes/posts.php:144
-msgid "Date"
-msgstr ""
-
-#: includes/shortcodes/posts.php:145
-msgid "Last modified date"
-msgstr ""
-
-#: includes/shortcodes/posts.php:147
-msgid "Random"
-msgstr ""
-
-#: includes/shortcodes/posts.php:148
-msgid "Comments number"
-msgstr ""
-
-#: includes/shortcodes/posts.php:150
-msgid "Meta key values"
-msgstr ""
-
-#: includes/shortcodes/posts.php:151
-msgid "Meta key values (Numeric)"
-msgstr ""
-
-#: includes/shortcodes/posts.php:154
-msgid "Order by"
 msgstr ""
 
 #: includes/shortcodes/posts.php:155
@@ -2710,60 +2926,12 @@ msgstr ""
 msgid "Show childrens of entered post (enter post ID)"
 msgstr ""
 
-#: includes/shortcodes/posts.php:168
-msgid "Published"
-msgstr ""
-
-#: includes/shortcodes/posts.php:169
-msgid "Pending"
-msgstr ""
-
-#: includes/shortcodes/posts.php:170
-msgid "Draft"
-msgstr ""
-
-#: includes/shortcodes/posts.php:171
-msgid "Auto-draft"
-msgstr ""
-
-#: includes/shortcodes/posts.php:172
-msgid "Future post"
-msgstr ""
-
-#: includes/shortcodes/posts.php:173
-msgid "Private post"
-msgstr ""
-
-#: includes/shortcodes/posts.php:174
-msgid "Inherit"
-msgstr ""
-
-#: includes/shortcodes/posts.php:175
-msgid "Trashed"
-msgstr ""
-
 #: includes/shortcodes/posts.php:180
 msgid "Show only posts with selected status"
 msgstr ""
 
-#: includes/shortcodes/posts.php:188
-msgid "Ignore sticky"
-msgstr ""
-
 #: includes/shortcodes/posts.php:189
 msgid "Select Yes to ignore posts that is sticked"
-msgstr ""
-
-#: includes/shortcodes/posts.php:195
-msgid "Custom posts query with customizable template"
-msgstr ""
-
-#: includes/shortcodes/posts.php:232, includes/shortcodes/template.php:33
-msgid "invalid template name"
-msgstr ""
-
-#: includes/shortcodes/posts.php:409
-msgid "template not found"
 msgstr ""
 
 #: includes/shortcodes/private.php:7
@@ -2994,39 +3162,40 @@ msgstr ""
 msgid "List of cureent page siblings"
 msgstr ""
 
-#: includes/shortcodes/slider.php:7
-msgid "Slider"
+#. translators: Dep. – Deprecated
+#: includes/shortcodes/slider.php:9
+msgid "Slider (Dep.)"
 msgstr ""
 
-#: includes/shortcodes/slider.php:61
+#: includes/shortcodes/slider.php:63
 msgid "Slider width (in pixels)"
 msgstr ""
 
-#: includes/shortcodes/slider.php:69
+#: includes/shortcodes/slider.php:71
 msgid "Slider height (in pixels)"
 msgstr ""
 
-#: includes/shortcodes/slider.php:75
+#: includes/shortcodes/slider.php:77
 msgid "Ignore width and height parameters and make slider responsive"
 msgstr ""
 
-#: includes/shortcodes/slider.php:80
+#: includes/shortcodes/slider.php:82
 msgid "Display slide titles"
 msgstr ""
 
-#: includes/shortcodes/slider.php:85
+#: includes/shortcodes/slider.php:87
 msgid "Is slider centered on the page"
 msgstr ""
 
-#: includes/shortcodes/slider.php:101
+#: includes/shortcodes/slider.php:103
 msgid "Allow to change slides with mouse wheel"
 msgstr ""
 
-#: includes/shortcodes/slider.php:110
+#: includes/shortcodes/slider.php:112
 msgid "Choose interval between slide animations. Set to 0 to disable autoplay"
 msgstr ""
 
-#: includes/shortcodes/slider.php:127
+#: includes/shortcodes/slider.php:129
 msgid "Customizable image slider"
 msgstr ""
 
@@ -3256,10 +3425,6 @@ msgstr ""
 msgid "Tab title"
 msgstr ""
 
-#: includes/shortcodes/tabs.php:86
-msgid "Disabled"
-msgstr ""
-
 #: includes/shortcodes/tabs.php:87
 msgid "Is this tab disabled"
 msgstr ""
@@ -3274,10 +3439,6 @@ msgstr ""
 
 #: includes/shortcodes/tabs.php:107
 msgid "Choose how to open the custom tab link"
-msgstr ""
-
-#: includes/shortcodes/template.php:14
-msgid "Template name"
 msgstr ""
 
 #. translators: %1$s, %2$s, %3$s – example values for the shortcode attribute
@@ -3893,4 +4054,24 @@ msgstr ""
 
 #: admin/partials/settings/fields/css.php:62
 msgid "Help article"
+msgstr ""
+
+#: includes/partials/shortcodes/posts/templates/default-loop.php:30, includes/partials/shortcodes/posts/templates/single-post.php:31
+msgid "Posted"
+msgstr ""
+
+#: includes/partials/shortcodes/posts/templates/default-loop.php:38, includes/partials/shortcodes/posts/templates/single-post.php:33
+msgid "0 comments"
+msgstr ""
+
+#: includes/partials/shortcodes/posts/templates/default-loop.php:38, includes/partials/shortcodes/posts/templates/single-post.php:33
+msgid "1 comment"
+msgstr ""
+
+#: includes/partials/shortcodes/posts/templates/default-loop.php:46, includes/partials/shortcodes/posts/templates/list-loop.php:30, includes/partials/shortcodes/posts/templates/single-post.php:46, includes/partials/shortcodes/posts/templates/teaser-loop.php:29
+msgid "Posts not found"
+msgstr ""
+
+#: includes/partials/shortcodes/posts/templates/single-post.php:33
+msgid "%n comments"
 msgstr ""

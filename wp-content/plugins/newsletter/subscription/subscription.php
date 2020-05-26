@@ -42,7 +42,7 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function hook_init() {
-        add_action('wp_loaded', array($this, 'hook_wp_loaded'));
+        add_action('newsletter_action', array($this, 'hook_newsletter_action'), 10, 3);
         if (is_admin()) {
             add_action('admin_init', array($this, 'hook_admin_init'));
         } else {
@@ -281,22 +281,19 @@ class NewsletterSubscription extends NewsletterModule {
      * @global wpdb $wpdb
      * @return mixed
      */
-    function hook_wp_loaded() {
+    function hook_newsletter_action($action, $user, $email) {
         global $wpdb;
 
-        $newsletter = Newsletter::instance();
-
-        switch ($newsletter->action) {
+        switch ($action) {
             case 'profile-change':
                 if ($this->antibot_form_check()) {
-                    $user = $this->get_user_from_request();
-                    if (!$user || $user->status != 'C') {
-                        die('Subscriber not found or not active.');
+                    
+                    if (!$user || $user->status != TNP_user::STATUS_CONFIRMED) {
+                        $this->dienow('Subscriber not found or not confirmed.');
                     }
 
-                    $email = $this->get_email_from_request();
                     if (!$email) {
-                        die('Newsletter not found');
+                        $this->dienow('Newsletter not found');
                     }
 
                     if (isset($_REQUEST['list'])) {
@@ -304,11 +301,11 @@ class NewsletterSubscription extends NewsletterModule {
 
                         // Check if the list is public
                         $list = $this->get_list($list_id);
-                        if (!$list || $list->status == 0) {
-                            die('Private list.');
+                        if (!$list || $list->status == TNP_List::STATUS_PRIVATE) {
+                            $this->dienow('List change not allowed.', 'Please check if the list is marked as "disbaled/private".');
                         }
 
-                        $url = $_REQUEST['redirect'];
+                        $url = esc_url_raw($_REQUEST['redirect']);
 
                         $this->set_user_list($user, $list_id, $_REQUEST['value']);
 
@@ -334,8 +331,7 @@ class NewsletterSubscription extends NewsletterModule {
             case 'subscribe':
 
                 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-                    //$antibot_logger->fatal('HTTP method invalid');
-                    die('Invalid');
+                    $this->dienow('Invalid request');
                 }
 
                 $options_antibot = $this->get_options('antibot');
@@ -368,7 +364,7 @@ class NewsletterSubscription extends NewsletterModule {
 
                 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
                     //$antibot_logger->fatal('HTTP method invalid');
-                    die('Invalid');
+                    $this->dienow('Invalid request');
                 }
 
                 $user = $this->subscribe();
@@ -383,7 +379,7 @@ class NewsletterSubscription extends NewsletterModule {
                     $key = 'confirmation';
 
 
-                $message = $newsletter->replace($this->options[$key . '_text'], $user);
+                $message = $this->replace($this->options[$key . '_text'], $user);
                 if (isset($this->options[$key . '_tracking'])) {
                     $message .= $this->options[$key . '_tracking'];
                 }
@@ -393,6 +389,7 @@ class NewsletterSubscription extends NewsletterModule {
             case 'c':
             case 'confirm':
                 if ($this->antibot_form_check()) {
+                    // TODO: Change to accept $user
                     $user = $this->confirm();
                     if ($user->status == 'E') {
                         $this->show_message('error', $user->id);
@@ -413,25 +410,6 @@ class NewsletterSubscription extends NewsletterModule {
 
     function upgrade() {
         global $wpdb, $charset_collate;
-
-        // Possible migration
-        $options_antibot = $this->get_options('antibot');
-
-        if (empty($options_antibot)) {
-            $options = $this->get_options();
-            foreach (array('address_blacklist', 'ip_blacklist', 'akismet', 'captcha', 'antiflood') as $key) {
-                if (isset($options[$key])) {
-                    $options_antibot[$key] = $options[$key];
-                }
-            }
-            if (isset($options['antibot_disable'])) {
-                $options_antibot['disabled'] = $options['antibot_disable'];
-            } else {
-                $options_antibot['disabled'] = 0;
-            }
-
-            $this->save_options($options_antibot, 'antibot');
-        }
 
         parent::upgrade();
 
@@ -688,27 +666,6 @@ class NewsletterSubscription extends NewsletterModule {
                 return $user;
             }
 
-//            if ($this->options['multiple'] == 2) {
-//                $lists_changed = false;
-//                if (isset($_REQUEST['nl']) && is_array($_REQUEST['nl'])) {
-//                    foreach ($_REQUEST['nl'] as $list_id) {
-//                        $list_id = (int) $list_id;
-//                        if ($list_id <= 0 || $list_id > NEWSLETTER_LIST_MAX)
-//                            continue;
-//                        $field = 'list_' . $list_id;
-//                        if ($user->$field == 0) {
-//                            $lists_changed = true;
-//                            break;
-//                        }
-//                    }
-//                }
-//
-//                if (!$lists_changed) {
-//                    $user->status = 'E';
-//                    return $user;
-//                }
-//            }
-
             // If the subscriber is confirmed, we cannot change his data in double opt in mode, we need to
             // temporary store and wait for activation
             if ($user->status == Newsletter::STATUS_CONFIRMED && $opt_in == self::OPTIN_DOUBLE) {
@@ -836,7 +793,7 @@ class NewsletterSubscription extends NewsletterModule {
                 foreach ($_REQUEST['nl'] as $list_id) {
                     $list = $this->get_list($list_id);
                     if ($list->status === TNP_List::STATUS_PRIVATE) {
-                        die('Message visible only to the administrator. List ' . $list_id . ' has been submitted but it is set as private. Please fix the subscription form.');
+                        $this->dienow('Invalid list', 'List ' . $list_id . ' has been submitted but it is set as private. Please fix the subscription form.');
                     }
                 }
             }
@@ -983,15 +940,6 @@ class NewsletterSubscription extends NewsletterModule {
         return $this->mail($user, $subject, $message);
     }
 
-    /**
-     * Saves the subscriber data.
-     *
-     * @return type
-     */
-    function save_profile() {
-        return NewsletterProfile::instance()->save_profile();
-    }
-
     function is_double_optin() {
         return $this->options['noconfirmation'] == 0;
     }
@@ -1122,6 +1070,10 @@ class NewsletterSubscription extends NewsletterModule {
         if (isset($attrs['referrer'])) {
             $buffer .= '<input type="hidden" name="nr" value="' . esc_attr($attrs['referrer']) . '">' . "\n";
         }
+        
+        if (isset($attrs['optin'])) {
+            $buffer .= '<input type="hidden" name="optin" value="' . esc_attr($attrs['optin']) . '">' . "\n";
+        }
 
         if (isset($attrs['confirmation_url'])) {
             if ($attrs['confirmation_url'] == '#') {
@@ -1161,6 +1113,14 @@ class NewsletterSubscription extends NewsletterModule {
         return $buffer;
     }
 
+    /**
+     * Internal use only
+     * 
+     * @param type $name
+     * @param type $attrs
+     * @param type $suffix
+     * @return string
+     */
     function _shortcode_label($name, $attrs, $suffix = null) {
         $options_profile = $this->get_options('profile', $this->get_current_language());
 
@@ -1377,6 +1337,7 @@ class NewsletterSubscription extends NewsletterModule {
      * Returns the form html code for subscription.
      *
      * @return string The html code of the subscription form
+     * @deprecated since version 6.6.0
      */
     function get_subscription_form_html5($referrer = null, $action = null, $attrs = array()) {
         return $this->get_subscription_form($referrer, $action, $attrs);
@@ -1417,10 +1378,11 @@ class NewsletterSubscription extends NewsletterModule {
         $language = $this->get_current_language();
         $options_profile = $this->get_options('profile', $language);
 
-
+        // Possible alternative form actions (used by...?)
         if (isset($attrs['action'])) {
             $action = $attrs['action'];
         }
+        
         if (isset($attrs['referrer'])) {
             $referrer = $attrs['referrer'];
         }
@@ -1444,6 +1406,10 @@ class NewsletterSubscription extends NewsletterModule {
 
         $buffer .= '<input type="hidden" name="nlang" value="' . esc_attr($language) . '">' . "\n";
 
+        if (!empty($attrs['optin'])) {
+            $buffer .= '<input type="hidden" name="optin" value="' . esc_attr($attrs['optin']) . '">' . "\n";
+        }
+        
         if (!empty($referrer)) {
             $buffer .= '<input type="hidden" name="nr" value="' . esc_attr($referrer) . '">' . "\n";
         }
@@ -1786,7 +1752,7 @@ class NewsletterSubscription extends NewsletterModule {
             }
         }
 
-        $email = NewsletterSubscription::instance()->get_email_from_request();
+        $email = $this->get_email_from_request();
 
         $message = $this->replace($message, $user, $email, 'page');
 

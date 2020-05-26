@@ -523,11 +523,7 @@
                 </div>
             </div>
             <?php
-            if ( 1 === rand( 1, 2 ) ) {
-                include( YOP_POLL_PATH . 'admin/views/general/upgrade-long.php' );
-            } else {
-                include( YOP_POLL_PATH . 'admin/views/general/upgrade-short.php' );
-            }
+            include( YOP_POLL_PATH . 'admin/views/general/upgrade-short.php' );
             ?>
         </div>
     </div>

@@ -11,7 +11,6 @@ class NewsletterEmails extends NewsletterModule {
     const EDITOR_TINYMCE = 0;
 
     static $PRESETS_LIST;
-    
     // Cache
     var $blocks = null;
 
@@ -29,7 +28,7 @@ class NewsletterEmails extends NewsletterModule {
         self::$PRESETS_LIST = array("cta", "invite", "announcement", "posts", "sales", "product", "tour", "simple", "blank");
         $this->themes = new NewsletterThemes('emails');
         parent::__construct('emails', '1.1.5');
-        add_action('wp_loaded', array($this, 'hook_wp_loaded'));
+        add_action('newsletter_action', array($this, 'hook_newsletter_action'), 13, 3);
 
         if (is_admin()) {
             add_action('wp_ajax_tnpc_render', array($this, 'tnpc_render_callback'));
@@ -94,18 +93,9 @@ class NewsletterEmails extends NewsletterModule {
         $options = $this->options_decode(stripslashes_deep($_REQUEST['options']));
 
         $context = array('type' => '');
-        if (isset($_REQUEST['context_type']))
+        if (isset($_REQUEST['context_type'])) {
             $context['type'] = $_REQUEST['context_type'];
-
-//        $defaults = array(
-//            'block_padding_top' => 15,
-//            'block_padding_bottom' => 15,
-//            'block_padding_right' => 0,
-//            'block_padding_left' => 0,
-//            'block_background' => '#ffffff'
-//        );
-//
-//        $options = array_merge($defaults, $options);
+        }
 
         $controls = new NewsletterControls($options);
         $fields = new NewsletterFields($controls);
@@ -113,12 +103,12 @@ class NewsletterEmails extends NewsletterModule {
         $controls->init();
         echo '<input type="hidden" name="action" value="tnpc_render">';
         echo '<input type="hidden" name="b" value="' . esc_attr($_REQUEST['id']) . '">';
-	    echo '<input type="hidden" name="context_type" value="' . esc_attr( $context['type'] ) . '">';
+        echo '<input type="hidden" name="context_type" value="' . esc_attr($context['type']) . '">';
         $inline_edits = '';
         if (isset($controls->data['inline_edits'])) {
             $inline_edits = $controls->data['inline_edits'];
         }
-        echo '<input type="hidden" name="options[inline_edits]" value="' . esc_attr( serialize( $inline_edits ) ) . '">';
+        echo '<input type="hidden" name="options[inline_edits]" value="' . esc_attr(serialize($inline_edits)) . '">';
 
         ob_start();
         include $block['dir'] . '/options.php';
@@ -163,7 +153,7 @@ class NewsletterEmails extends NewsletterModule {
             echo $content;
         }
 
-        wp_die();
+        die();
     }
 
     function has_dynamic_blocks($theme) {
@@ -176,8 +166,9 @@ class NewsletterEmails extends NewsletterModule {
             if (!$block) {
                 continue;
             }
-            if ($block['type'] == 'dynamic')
+            if ($block['type'] == 'dynamic') {
                 return true;
+            }
         }
         return false;
     }
@@ -195,14 +186,14 @@ class NewsletterEmails extends NewsletterModule {
      * @return string
      */
     function regenerate($email, $context = array()) {
-        
+
         // Cannot be removed due to compatibility issues with old Automated versions
         if (is_object($email)) {
             $theme = $email->message;
         } else {
             $theme = $email;
         }
-        
+
         //$this->logger->debug('Starting email regeneration');
         //$this->logger->debug($context);
 
@@ -214,7 +205,7 @@ class NewsletterEmails extends NewsletterModule {
         $context = array_merge(array('last_run' => 0, 'type' => ''), $context);
 
         preg_match_all('/data-json="(.*?)"/m', $theme, $matches, PREG_PATTERN_ORDER);
-        
+
         $result = '';
         $subject = '';
 
@@ -249,9 +240,9 @@ class NewsletterEmails extends NewsletterModule {
             $block_html = ob_get_clean();
             $result .= $block_html;
         }
-        
+
         // We need to keep the CSS/HEAD part, the regenearion is only about blocks
-        
+
         if (is_object($email)) {
             $result = TNP_Composer::get_main_wrapper_open($email) . $result . TNP_Composer::get_main_wrapper_close($email);
         }
@@ -263,13 +254,13 @@ class NewsletterEmails extends NewsletterModule {
         } else {
             
         }
-        
+
         if (is_object($email)) {
             $email->message = $result;
             $email->subject = $subject;
             return true;
         }
-        
+
         // Kept for compatibility
         return array('body' => $result, 'subject' => $subject);
     }
@@ -310,8 +301,9 @@ class NewsletterEmails extends NewsletterModule {
         $block_options = get_option('newsletter_main');
 
         $block = $this->get_block($block_id);
-        
-        if (!isset($context['type'])) $context['type'] = '';
+
+        if (!isset($context['type']))
+            $context['type'] = '';
 
         // Block not found
         if (!$block) {
@@ -332,7 +324,7 @@ class NewsletterEmails extends NewsletterModule {
             return;
         }
 
-        $out = array('subject' => '', 'return_empty_message' => false, 'stop'=>false, 'skip'=>false);
+        $out = array('subject' => '', 'return_empty_message' => false, 'stop' => false, 'skip' => false);
 
 
         ob_start();
@@ -377,9 +369,9 @@ class NewsletterEmails extends NewsletterModule {
         $style .= 'padding-bottom: ' . $options['block_padding_bottom'] . 'px; ';
         $style .= 'background-color: ' . $options['block_background'] . ';';
 
-            if (isset($options['block_background_gradient'])) {
-                $style .= 'background: linear-gradient(180deg, ' . $options['block_background'] . ' 0%, ' . $options['block_background_2'] . '  100%);';
-            }
+        if (isset($options['block_background_gradient'])) {
+            $style .= 'background: linear-gradient(180deg, ' . $options['block_background'] . ' 0%, ' . $options['block_background_2'] . '  100%);';
+        }
 
 
 
@@ -420,14 +412,14 @@ class NewsletterEmails extends NewsletterModule {
      * @param type $block_id
      * @param type $wrapper
      */
-	function tnpc_render_callback() {
-		$block_id = $_POST['b'];
-		$wrapper  = isset( $_POST['full'] );
-		$options  = $this->restore_options_from_request();
-		
-		$this->render_block( $block_id, $wrapper, $options );
-		wp_die();
-	}
+    function tnpc_render_callback() {
+        $block_id = $_POST['b'];
+        $wrapper = isset($_POST['full']);
+        $options = $this->restore_options_from_request();
+
+        $this->render_block($block_id, $wrapper, $options);
+        wp_die();
+    }
 
     function tnpc_preview_callback() {
         $email = Newsletter::instance()->get_email($_REQUEST['id'], ARRAY_A);
@@ -439,12 +431,12 @@ class NewsletterEmails extends NewsletterModule {
 
         echo $email['message'];
 
-        wp_die(); // this is required to terminate immediately and return a proper response
+        wp_die();
     }
 
     function tnpc_css_callback() {
         include NEWSLETTER_DIR . '/emails/tnp-composer/css/newsletter.css';
-        wp_die(); // this is required to terminate immediately and return a proper response
+        wp_die();
     }
 
     /** Returns the correct admin page to edit the newsletter with the correct editor. */
@@ -501,23 +493,20 @@ class NewsletterEmails extends NewsletterModule {
         return $editor_type;
     }
 
-    function hook_wp_loaded() {
+    function hook_newsletter_action($action, $user, $email) {
         global $wpdb;
 
-        $newsletter = Newsletter::instance();
-
-        switch ($newsletter->action) {
+        switch ($action) {
             case 'v':
             case 'view':
                 $email = $this->get_email($_GET['id']);
+
                 if (empty($email)) {
                     header("HTTP/1.0 404 Not Found");
                     die('Email not found');
                 }
 
-                $user = NewsletterSubscription::instance()->get_user_from_request();
-
-                if (!is_user_logged_in() || !(current_user_can('editor') || current_user_can('administrator'))) {
+                if (!Newsletter::instance()->is_allowed()) {
 
                     if ($email->status == 'new') {
                         header("HTTP/1.0 404 Not Found");
@@ -542,7 +531,7 @@ class NewsletterEmails extends NewsletterModule {
                 header('X-Robots-Tag: noindex,nofollow,noarchive');
                 header('Cache-Control: no-cache,no-store,private');
 
-                echo $newsletter->replace($email->message, $user, $email);
+                echo $this->replace($email->message, $user, $email);
 
                 die();
                 break;
@@ -674,7 +663,7 @@ class NewsletterEmails extends NewsletterModule {
                     $email['message_text'] = 'You need a modern email client to read this email. Read it online: {email_url}.';
                 }
 
-                $email = $newsletter->save_email($email);
+                $email = $this->save_email($email);
 
                 $edit_url = $this->get_editor_url($email->id, $email->editor);
 
@@ -782,7 +771,7 @@ class NewsletterEmails extends NewsletterModule {
         $this->blocks = array_merge($extended, $this->blocks);
 
         $dirs = apply_filters('newsletter_blocks_dir', array());
-        
+
         //var_dump($dirs);
         //die();
 
@@ -946,7 +935,7 @@ class NewsletterEmails extends NewsletterModule {
             return;
         }
         $original_subject = $email->subject;
-        
+
         if ($email->subject == '') {
             $email->subject = '[TEST] Dummy subject, it was empty (remember to set it)';
         } else {
@@ -983,50 +972,48 @@ class NewsletterEmails extends NewsletterModule {
         $email->subject = $original_subject;
     }
 
-	function restore_options_from_request() {
+    function restore_options_from_request() {
 
-		if ( isset( $_POST['options'] ) && is_array( $_POST['options'] ) ) {
-			// Get all block options
-			$options = stripslashes_deep( $_POST['options'] );
+        if (isset($_POST['options']) && is_array($_POST['options'])) {
+            // Get all block options
+            $options = stripslashes_deep($_POST['options']);
 
-			// Deserialize inline edits when
-			// render is preformed on saving block options
-			if ( isset( $options['inline_edits'] ) && is_serialized( $options['inline_edits'] ) ) {
-				$options['inline_edits'] = unserialize( $options['inline_edits'] );
-			}
+            // Deserialize inline edits when
+            // render is preformed on saving block options
+            if (isset($options['inline_edits']) && is_serialized($options['inline_edits'])) {
+                $options['inline_edits'] = unserialize($options['inline_edits']);
+            }
 
-			// Restore inline edits from data-json
-			// coming from inline editing 
-			// and merge with current inline edit
-			if ( isset( $_POST['encoded_options'] ) ) {
-				$decoded_options = $this->options_decode( $_POST['encoded_options'] );
+            // Restore inline edits from data-json
+            // coming from inline editing 
+            // and merge with current inline edit
+            if (isset($_POST['encoded_options'])) {
+                $decoded_options = $this->options_decode($_POST['encoded_options']);
 
-				$to_merge_inline_edits = [];
+                $to_merge_inline_edits = [];
 
-				if ( isset( $decoded_options['inline_edits'] ) ) {
-					foreach ( $decoded_options['inline_edits'] as $decoded_inline_edit ) {
-						$to_merge_inline_edits[ $decoded_inline_edit['post_id'] . $decoded_inline_edit['type'] ] = $decoded_inline_edit;
-					}
-				}
+                if (isset($decoded_options['inline_edits'])) {
+                    foreach ($decoded_options['inline_edits'] as $decoded_inline_edit) {
+                        $to_merge_inline_edits[$decoded_inline_edit['post_id'] . $decoded_inline_edit['type']] = $decoded_inline_edit;
+                    }
+                }
 
-				//Overwrite with new edited content
-				if ( isset( $options['inline_edits'] ) ) {
-					foreach ( $options['inline_edits'] as $inline_edit ) {
-						$to_merge_inline_edits[ $inline_edit['post_id'] . $inline_edit['type'] ] = $inline_edit;
-					}
-				}
+                //Overwrite with new edited content
+                if (isset($options['inline_edits'])) {
+                    foreach ($options['inline_edits'] as $inline_edit) {
+                        $to_merge_inline_edits[$inline_edit['post_id'] . $inline_edit['type']] = $inline_edit;
+                    }
+                }
 
-				$options['inline_edits'] = array_values( $to_merge_inline_edits );
-				$options                 = array_merge( $decoded_options, $options );
-			}
+                $options['inline_edits'] = array_values($to_merge_inline_edits);
+                $options = array_merge($decoded_options, $options);
+            }
 
-			return $options;
+            return $options;
+        }
 
-		}
-
-		return array();
-
-	}
+        return array();
+    }
 
 }
 

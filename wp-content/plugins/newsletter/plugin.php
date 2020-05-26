@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.6.4
+  Version: 6.6.9
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,7 +35,7 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '6.6.4');
+define('NEWSLETTER_VERSION', '6.6.9');
 
 global $newsletter, $wpdb;
 
@@ -254,8 +254,9 @@ class Newsletter extends NewsletterModule {
             die();
         }
 
-        //$user = $this->get_user_from_request();
-        do_action('newsletter_action', $this->action);
+        $user = $this->get_user_from_request();
+        $email = $this->get_email_from_request();
+        do_action('newsletter_action', $this->action, $user, $email);
     }
 
     function update_cron_stats() {
@@ -421,6 +422,8 @@ class Newsletter extends NewsletterModule {
             }
             $this->save_options($this->options);
         }
+        
+        delete_transient("tnp_extensions_json");
 
         return true;
     }

@@ -95,11 +95,14 @@ function tnp_post_date($post, $format = null) {
  * @return string
  */
 function tnp_media_resize($media_id, $size) {
-    if (empty($media_id))
+    if (empty($media_id)) {
         return '';
+    }
+
     $relative_file = get_post_meta($media_id, '_wp_attached_file', true);
-    if (empty($relative_file))
+    if (empty($relative_file)) {
         return '';
+    }
 
     $width = $size[0];
     $height = $size[1];
@@ -109,6 +112,14 @@ function tnp_media_resize($media_id, $size) {
     }
 
     $uploads = wp_upload_dir();
+
+    // Based on _wp_relative_upload_path() function for blog which store the
+    // full patch of media files
+    if (0 === strpos($relative_file, $uploads['basedir'])) {
+        $relative_file = str_replace($uploads['basedir'], '', $relative_file);
+        $relative_file = ltrim($relative_file, '/');
+    }
+
     $absolute_file = $uploads['basedir'] . '/' . $relative_file;
     // Relative and absolute name of the thumbnail.
     $pathinfo = pathinfo($relative_file);
@@ -189,6 +200,15 @@ function tnp_resize($media_id, $size) {
     if (empty($relative_file)) {
         return null;
     }
+    
+    $uploads = wp_upload_dir();
+    
+    // Based on _wp_relative_upload_path() function for blog which store the
+    // full patch of media files
+    if (0 === strpos($relative_file, $uploads['basedir'])) {
+        $relative_file = str_replace($uploads['basedir'], '', $relative_file);
+        $relative_file = ltrim($relative_file, '/');
+    }    
 
     $width = $size[0];
     $height = $size[1];
@@ -197,7 +217,6 @@ function tnp_resize($media_id, $size) {
         $crop = (boolean) $size[2];
     }
 
-    $uploads = wp_upload_dir();
     $absolute_file = $uploads['basedir'] . '/' . $relative_file;
     // Relative and absolute name of the thumbnail.
     $pathinfo = pathinfo($relative_file);

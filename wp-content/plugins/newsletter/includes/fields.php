@@ -149,7 +149,7 @@ class NewsletterFields {
 
         if (version_compare($wp_version, '4.8', '>=')) {
             echo '<script>wp.editor.remove("options-', $name, '");';
-            echo 'wp.editor.initialize("options-', $name, '", { tinymce: {content_style: "body {background-color: #f4f4f4;}", toolbar1: "undo redo | formatselect fontselect fontsizeselect | bold italic forecolor backcolor | link unlink | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | help", fontsize_formats: "11px 12px 14px 16px 18px 24px 36px 48px", plugins: "link textcolor colorpicker", default_link_target: "_blank", relative_urls : false, convert_urls: false}});</script>';
+            echo 'wp.editor.initialize("options-', $name, '", { tinymce: {content_style: "body {background-color: #f4f4f4;}", toolbar1: "undo redo | formatselect fontselect fontsizeselect | bold italic forecolor backcolor | link unlink | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | wp_add_media | charmap", fontsize_formats: "11px 12px 14px 16px 18px 24px 36px 48px", plugins: "link textcolor colorpicker lists wordpress charmap", default_link_target: "_blank", relative_urls : false, convert_urls: false}});</script>';
         }
         $this->_description($attrs);
         $this->_close();

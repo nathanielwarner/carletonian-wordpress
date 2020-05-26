@@ -1,34 +1,30 @@
 <?php
+/* @var $this NewsletterUnsubscription */
 defined('ABSPATH') || exit;
 
 @include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
-$module = NewsletterUnsubscription::instance();
 
-$current_language = $module->get_current_language();
+$current_language = $this->get_current_language();
 
-$is_all_languages = $module->is_all_languages();
+$is_all_languages = $this->is_all_languages();
 
 if (!$is_all_languages) {
-    $controls->warnings[] = 'You are configuring the language <strong>' . $current_language . '</strong>. Switch to "all languages" to see every options.';
+    $controls->warnings[] = 'You are configuring the language <strong>' . $current_language . '</strong>. Switch to "all languages" to see all options.';
 }
 
 if (!$controls->is_action()) {
-    $controls->data = $module->get_options('', $current_language);
+    $controls->data = $this->get_options('', $current_language);
 } else {
     if ($controls->is_action('save')) {
-        //$controls->data['unsubscription_text'] = NewsletterModule::clean_url_tags($controls->data['unsubscription_text']);
-        //$controls->data['unsubscribed_text'] = NewsletterModule::clean_url_tags($controls->data['unsubscribed_text']);
-        //$controls->data['unsubscribed_message'] = NewsletterModule::clean_url_tags($controls->data['unsubscribed_message']);
-
-        $module->save_options($controls->data, '', null, $current_language);
-        $controls->data = $module->get_options('', $current_language);
+        $this->save_options($controls->data, '', null, $current_language);
+        $controls->data = $this->get_options('', $current_language);
         $controls->add_message_saved();
     }
 
     if ($controls->is_action('reset')) {
         // On reset we ignore the current language
-        $controls->data = $module->reset_options();
+        $controls->data = $this->reset_options();
     }
 }
 ?>

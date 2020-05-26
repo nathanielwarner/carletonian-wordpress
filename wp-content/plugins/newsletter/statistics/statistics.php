@@ -85,6 +85,7 @@ class NewsletterStatistics extends NewsletterModule {
             $ip = $this->process_ip($ip);
 
             if (!$is_action) {
+                $url = apply_filters('newsletter_pre_save_url', $url, $email, $user);
                 $this->add_click($url, $user_id, $email_id, $ip);
                 $this->update_open_value(self::SENT_CLICK, $user_id, $email_id, $ip);
             } else {

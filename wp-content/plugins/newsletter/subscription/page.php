@@ -21,12 +21,15 @@ if ($message_key == 'confirmation') {
 } else {
     $user = $module->get_user_from_request(true);
 }
+
+$email = $module->get_email_from_request();
+
 $message = apply_filters('newsletter_page_text', '', $message_key, $user);
 $options = $module->get_options('', $module->get_user_language($user));
 if (!$message) {
     $message = $options[$message_key . '_text'];
 }
-$message = $module->replace($message, $user);
+$message = $module->replace($message, $user, $email);
 
 if (isset($options[$message_key . '_tracking'])) {
     $message .= $options[$message_key . '_tracking'];

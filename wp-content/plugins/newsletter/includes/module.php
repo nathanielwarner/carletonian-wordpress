@@ -50,82 +50,76 @@ abstract class TNP_List {
  */
 class TNP_Profile {
 
-	const STATUS_PRIVATE = 0;
-	const STATUS_PUBLIC = 2;
-	const STATUS_PROFILE_ONLY = 1;
-	const STATUS_HIDDEN = 3; // Public but never shown (can be set with a hidden form field)
+    const STATUS_PRIVATE = 0;
+    const STATUS_PUBLIC = 2;
+    const STATUS_PROFILE_ONLY = 1;
+    const STATUS_HIDDEN = 3; // Public but never shown (can be set with a hidden form field)
+    const TYPE_TEXT = 'text';
+    const TYPE_SELECT = 'select';
 
-	const TYPE_TEXT = 'text';
-	const TYPE_SELECT = 'select';
+    public $id;
+    public $name;
+    public $status;
+    public $type;
+    public $options;
 
-	public $id;
-	public $name;
-	public $status;
-	public $type;
-	public $options;
+    public function __construct($id, $name, $status, $type, $options) {
+        $this->id = $id;
+        $this->name = $name;
+        $this->status = $status;
+        $this->type = $type;
+        $this->options = $options;
+    }
 
-	public function __construct( $id, $name, $status, $type, $options ) {
-		$this->id      = $id;
-		$this->name    = $name;
-		$this->status  = $status;
-		$this->type    = $type;
-		$this->options = $options;
-	}
+    function is_select() {
+        return $this->type == self::TYPE_SELECT;
+    }
 
-	function is_select() {
-		return $this->type == self::TYPE_SELECT;
-	}
+    function is_text() {
+        return $this->type == self::TYPE_TEXT;
+    }
 
-	function is_text() {
-		return $this->type == self::TYPE_TEXT;
-	}
 }
 
 class TNP_Profile_Service {
 
-	static function get_profiles( $language = '', $type = null ) {
+    static function get_profiles($language = '', $type = null) {
 
-		static $profiles = array();
-		if ( isset( $profiles[ $language ] ) ) {
-			return $profiles[ $language ];
-		}
+        static $profiles = array();
+        if (isset($profiles[$language])) {
+            return $profiles[$language];
+        }
 
-		$profiles[ $language ] = array();
-		$data                  = NewsletterSubscription::instance()->get_options( 'profile', $language );
-		for ( $i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i ++ ) {
-			if ( empty( $data[ 'profile_' . $i ] ) ) {
-				continue;
-			}
-			$profile = new TNP_Profile(
-				$i,
-				$data[ 'profile_' . $i ],
-				(int) $data[ 'profile_' . $i . '_status' ],
-				$data[ 'profile_' . $i . '_type' ],
-				self::string_db_options_to_array( $data[ 'profile_' . $i . '_options' ] )
-			);
+        $profiles[$language] = array();
+        $data = NewsletterSubscription::instance()->get_options('profile', $language);
+        for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i ++) {
+            if (empty($data['profile_' . $i])) {
+                continue;
+            }
+            $profile = new TNP_Profile(
+                    $i, $data['profile_' . $i], (int) $data['profile_' . $i . '_status'], $data['profile_' . $i . '_type'], self::string_db_options_to_array($data['profile_' . $i . '_options'])
+            );
 
-			if ( is_null( $type ) ||
-			     ( $type == TNP_Profile::TYPE_SELECT && $profile->is_select() ) ||
-			     ( $type == TNP_Profile::TYPE_TEXT && $profile->is_text() ) ) {
-				$profiles[ $language ][] = $profile;
-			}
+            if (is_null($type) ||
+                    ( $type == TNP_Profile::TYPE_SELECT && $profile->is_select() ) ||
+                    ( $type == TNP_Profile::TYPE_TEXT && $profile->is_text() )) {
+                $profiles[$language][] = $profile;
+            }
+        }
 
-		}
+        return $profiles[$language];
+    }
 
-		return $profiles[ $language ];
+    /**
+     * Returns a list of strings which are the items for the select field.
+     * @return array
+     */
+    private static function string_db_options_to_array($string_options) {
+        $items = array_map('trim', explode(',', $string_options));
+        $items = array_combine($items, $items);
 
-	}
-
-	/**
-	 * Returns a list of strings which are the items for the select field.
-	 * @return array
-	 */
-	private static function string_db_options_to_array( $string_options ) {
-		$items = array_map( 'trim', explode( ',', $string_options ) );
-		$items = array_combine($items,$items);
-
-		return $items;
-	}
+        return $items;
+    }
 
 }
 
@@ -154,6 +148,11 @@ abstract class TNP_User {
  * @property array $options The subscriber status
  * */
 abstract class TNP_Email {
+
+    const STATUS_DRAFT = 'new';
+    const STATUS_SENT = 'sent';
+    const STATUS_SENDING = 'sending';
+    const STATUS_PAUSED = 'paused';
 
 }
 
@@ -685,7 +684,7 @@ class NewsletterModule {
     }
 
     function admin_menu() {
-
+        
     }
 
     function add_menu_page($page, $title, $capability = '') {
@@ -900,16 +899,25 @@ class NewsletterModule {
             }
         } else if ($email->status == 'new') {
             echo '';
+            return;
+        } else if ($email->status == 'sent') {
+            $percent = 100;
         } else {
             $percent = $this->get_email_progress($email);
-            $label = $percent;
-            if ($attrs['format'] == 'numbers') {
-                $label = $email->sent . ' ' . __('of', 'newsletter') . ' ' . $email->total;
-            }
-            echo '<div class="tnp-progress ', $email->status, '">';
-            echo '<div class="tnp-progress-bar" role="progressbar" style="width: ', $percent, '%;">&nbsp;', $percent, '%&nbsp;</div>';
-            echo '</div>';
-            if ($attrs['numbers']) {
+        }
+
+
+        $label = $percent;
+        if ($attrs['format'] == 'numbers') {
+            $label = $email->sent . ' ' . __('of', 'newsletter') . ' ' . $email->total;
+        }
+        echo '<div class="tnp-progress ', $email->status, '">';
+        echo '<div class="tnp-progress-bar" role="progressbar" style="width: ', $percent, '%;">&nbsp;', $percent, '%&nbsp;</div>';
+        echo '</div>';
+        if ($attrs['numbers']) {
+            if ($email->status == 'sent') {
+                echo '<div class="tnp-progress-numbers">', $email->total, ' ', __('of', 'newsletter'), ' ', $email->total, '</div>';
+            } else {
                 echo '<div class="tnp-progress-numbers">', $email->sent, ' ', __('of', 'newsletter'), ' ', $email->total, '</div>';
             }
         }
@@ -965,6 +973,8 @@ class NewsletterModule {
     /** Searches for a user using the nk parameter or the ni and nt parameters. Tries even with the newsletter cookie.
      * If found, the user object is returned or null.
      * The user is returned without regards to his status that should be checked by caller.
+     * 
+     * DO NOT REMOVE EVEN IF OLD
      *
      * @return TNP_User
      */
@@ -1091,7 +1101,7 @@ class NewsletterModule {
             if ($die_on_fail) {
                 die(__('No subscriber found.', 'newsletter'));
             } else {
-                return null;
+                return $this->get_user_from_logged_in_user();
             }
         }
 
@@ -1105,19 +1115,25 @@ class NewsletterModule {
             if ($die_on_fail) {
                 die(__('No subscriber found.', 'newsletter'));
             } else {
-                return null;
+                return $this->get_user_from_logged_in_user();
             }
         }
         return $user;
+    }
+
+    function get_user_from_logged_in_user() {
+        if (is_user_logged_in()) {
+            return $this->get_user_by_wp_user_id(get_current_user_id());
+        }
     }
 
     /**
      * @param string $language The language for the list labels (it does not affect the lists returned)
      * @return TNP_Profile[]
      */
-	function get_profiles( $language = '' ) {
-		return TNP_Profile_Service::get_profiles( $language );
-	}
+    function get_profiles($language = '') {
+        return TNP_Profile_Service::get_profiles($language);
+    }
 
     /**
      * @param string $language The language for the list labels (it does not affect the lists returned)
@@ -1495,7 +1511,7 @@ class NewsletterModule {
         $this->logger->debug('Status change to ' . $status . ' of subscriber ' . $user->id . ' from ' . $_SERVER['REQUEST_URI']);
 
         $this->query($wpdb->prepare("update " . NEWSLETTER_USERS_TABLE . " set status=%s where id=%d limit 1", $status, $user->id));
-
+        $user->status = $status;
         return $this->get_user($user);
     }
 
@@ -1511,8 +1527,7 @@ class NewsletterModule {
         $token = $this->get_token();
 
         $this->query($wpdb->prepare("update " . NEWSLETTER_USERS_TABLE . " set token=%s where id=%d limit 1", $token, $user->id));
-
-        return $this->get_user($user);
+        $user->token = $token;
     }
 
     /**
@@ -2107,6 +2122,14 @@ class NewsletterModule {
         $blogname = wp_specialchars_decode(get_option('blogname'), ENT_QUOTES);
 
         return '[' . $blogname . '] ' . $subject;
+    }
+
+    function dienow($message, $admin_message = null) {
+        if ($admin_message && current_user_can('administrator')) {
+            $message .= '<br><br><strong>Text below only visibile to administrarors</strong><br>';
+            $message .= $admin_message;
+        }
+        wp_die($message, 200);
     }
 
 }

@@ -118,6 +118,9 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.1.6 =
+* fixed issue with blocking voters when wordpress voting is enabled
+
 = 6.1.5 =
 * fixed typos
 * fixed security issue when previewing a poll

@@ -444,6 +444,10 @@ class YOP_Poll_Votes {
 				$query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `poll_id` = %d AND `ipaddress` = %s AND `status` = 'active' ORDER BY `added_date` DESC LIMIT 1";
 				break;
 			}
+			case 'user_id': {
+				$query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `poll_id` = %d AND `user_id` = %s AND `status` = 'active' ORDER BY `added_date` DESC LIMIT 1";
+				break;
+			}
 		}
 		if ( '' !== $query ) {
 			$vote = $GLOBALS['wpdb']->get_row( $GLOBALS['wpdb']->prepare( $query, $pollId, $data ) );
