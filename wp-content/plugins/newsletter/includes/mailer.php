@@ -337,8 +337,9 @@ class NewsletterDefaultMailer extends NewsletterMailer {
         /* @var $mailer PHPMailer */
         $mailer->Sender = $newsletter->options['return_path'];
 
-        if (!empty($this->current_message->current_message->body) && !empty($this->current_message->current_message->body_text)) {
-            $mailer->AltBody = $this->current_message->current_message->body_text;
+        // If there is an HTML body AND a text body, add the text part.
+        if (!empty($this->current_message->body) && !empty($this->current_message->body_text)) {
+            $mailer->AltBody = $this->current_message->body_text;
         }
     }
 

@@ -2,7 +2,7 @@
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
 Tested up to: 5.4.1
-Stable tag: 6.6.9
+Stable tag: 6.7.0
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -74,6 +74,10 @@ Need *more power*? Feel *something's missing*? The Newsletter Plugin features ca
 * [Subscribe on Comment](https://www.thenewsletterplugin.com/documentation/comments-extension) - adds the subscription option to your blog comment form
 * [Geolocation](https://www.thenewsletterplugin.com/documentation/geolocation-extension) - adds geolocation capability to target subscribers by location
 
+= (NEW!) Third Party Addons =
+
+* [WP User Manager addon for Newsletter](https://wordpress.org/plugins/wpum-newsletter/) - adds the subscription option on registration forms
+
 = GDPR =
 
 The Newsletter Plugin provides all the technical tools needed to achieve GDPR compliancy and we're continuously working to improve them and to give support even for specific use cases.
@@ -108,6 +112,12 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 6.7.0 =
+
+* Fixed the text part not sent when using the standard mailing function of WP
+* Added warning on statistic panel for email without the tracking active
+* Fixed the hero block align when specified manually with text-align on text part
 
 = 6.6.9 =
 

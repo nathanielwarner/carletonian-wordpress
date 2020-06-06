@@ -17,6 +17,10 @@ if ($email->status == 'new') {
     $controls->warnings[] = __('Newsletter still sending', 'newsletter');
 }
 
+if (empty($email->track)) {
+    $controls->warnings[] = __('This newsletter has the tracking disabled. No statistics will be available.', 'newsletter');
+}
+
 ?>
 
 <div class="wrap tnp-statistics tnp-statistics-view" id="tnp-wrap">
