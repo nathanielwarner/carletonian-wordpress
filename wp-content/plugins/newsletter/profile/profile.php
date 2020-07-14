@@ -25,7 +25,7 @@ class NewsletterProfile extends NewsletterModule {
     }
 
     function hook_newsletter_action($action, $user, $email) {
-        
+
         if (in_array($action, ['p', 'profile', 'pe', 'profile-save', 'profile_export', 'ps'])) {
             if (!$user || $user->status != TNP_User::STATUS_CONFIRMED) {
                 $this->dienow(__('The subscriber was not found or is not confirmed.', 'newsletter'));
@@ -61,7 +61,7 @@ class NewsletterProfile extends NewsletterModule {
     }
 
     /**
-     * 
+     *
      * @param stdClass $user
      */
     function get_profile_export_url($user) {
@@ -72,7 +72,7 @@ class NewsletterProfile extends NewsletterModule {
      * URL to the subscriber profile edit action. This URL MUST NEVER be changed by
      * 3rd party plugins. Plugins can change the final URL after the action has been executed using the
      * <code>newsletter_profile_url</code> filter.
-     * 
+     *
      * @param stdClass $user
      */
     function get_profile_url($user, $email = null) {
@@ -98,7 +98,7 @@ class NewsletterProfile extends NewsletterModule {
     }
 
     /**
-     * 
+     *
      * @param type $text
      * @param type $key
      * @param TNP_User $user
@@ -181,7 +181,7 @@ class NewsletterProfile extends NewsletterModule {
                 if (!$email) {
                     continue;
                 }
-                // 'id'=>$item->email_id, 
+                // 'id'=>$item->email_id,
                 $newsletters[] = array('subject' => $email->subject, 'action' => $action, 'sent' => date('Y-m-d h:i:s', $email->send_on));
             }
 
@@ -197,7 +197,7 @@ class NewsletterProfile extends NewsletterModule {
 
     /**
      * Build the profile editing form for the specified subscriber.
-     * 
+     *
      * @param TNP_User $user
      * @return string
      */
@@ -243,6 +243,24 @@ class NewsletterProfile extends NewsletterModule {
             $buffer .= '</select>';
             $buffer .= "</div>\n";
         }
+
+	    if ( $this->is_multilanguage() ) {
+
+		    $languages = $this->get_languages();
+
+		    $buffer .= '<div class="tnp-field tnp-field-language">';
+		    $buffer .= '<label>' . __( 'Language', 'Newsletter' ) . '</label>';
+		    $buffer .= '<select name="nlng" class="tnp-language">';
+
+		    $buffer .= '<option value="" disabled ' . ( empty( $user->language ) ? ' selected' : '' ) . '>' . __( 'Select language', 'newsletter' ) . '</option>';
+		    foreach ( $languages as $key => $language ) {
+			    $buffer .= '<option value="' . $key . '"' . ( $user->language == $key ? ' selected' : '' ) . '>' . $language . '</option>';
+		    }
+
+		    $buffer .= '</select>';
+		    $buffer .= "</div>\n";
+
+	    }
 
         // Profile
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
@@ -335,7 +353,7 @@ class NewsletterProfile extends NewsletterModule {
     /**
      * Saves the subscriber data extracting them from the $_REQUEST and for the
      * subscriber identified by the <code>$user</code> object.
-     * 
+     *
      * @return type
      */
     function save_profile($user) {
@@ -345,6 +363,7 @@ class NewsletterProfile extends NewsletterModule {
         $data = array();
         $data['id'] = $user->id;
 
+        $options = $this->get_options('', $this->get_current_language($user));
         $options_profile = get_option('newsletter_profile', array());
         $options_main = get_option('newsletter_main', array());
 
@@ -352,7 +371,7 @@ class NewsletterProfile extends NewsletterModule {
         $subscription_module = NewsletterSubscription::instance();
 
         if (!$this->is_email($_REQUEST['ne'])) {
-            $user->alert = $this->options['profile_error'];
+            $user->alert = $options['profile_error'];
             return $user;
         }
 
@@ -363,8 +382,7 @@ class NewsletterProfile extends NewsletterModule {
         if ($email_changed) {
             $tmp = $this->get_user($email);
             if ($tmp != null && $tmp->id != $user->id) {
-                // TODO: Move the label on profile setting panel
-                $user->alert = $this->options['error'];
+                $user->alert = $options['error'];
                 return $user;
             }
             $data['status'] = Newsletter::STATUS_NOT_CONFIRMED;
@@ -391,6 +409,12 @@ class NewsletterProfile extends NewsletterModule {
                 die('Wrong sex field');
             }
         }
+	    if ( isset( $_REQUEST['nlng'] ) ) {
+		    $languages = $this->get_languages();
+		    if ( isset( $languages[ $_REQUEST['nlng'] ] ) ) {
+			    $data['language'] = $_REQUEST['nlng'];
+		    }
+	    }
 
         // Lists. If not list is present or there is no list to choose or all are unchecked.
         $nl = array();
@@ -436,7 +460,7 @@ class NewsletterProfile extends NewsletterModule {
         if (isset($alert)) {
             $user->alert = $alert;
         } else {
-            $user->alert = $this->options['saved'];
+            $user->alert = $options['saved'];
         }
         return $user;
     }

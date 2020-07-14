@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.7.4
+  Version: 6.7.9
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,7 +35,7 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '6.7.4');
+define('NEWSLETTER_VERSION', '6.7.9');
 
 global $newsletter, $wpdb;
 
@@ -185,7 +185,7 @@ class Newsletter extends NewsletterModule {
 	        if ( $this->is_admin_page() ) {
 		        add_action( 'admin_enqueue_scripts', array( $this, 'hook_wp_admin_enqueue_scripts' ) );
 	        }
-                
+
                 add_action('wp_ajax_tnp_hide_promotion', function () {
                     update_option('newsletter_promotion', $_POST['id']);
                     die();
@@ -427,7 +427,7 @@ class Newsletter extends NewsletterModule {
             }
             $this->save_options($this->options);
         }
-        
+
         delete_transient("tnp_extensions_json");
 
         return true;
@@ -1259,13 +1259,16 @@ class Newsletter extends NewsletterModule {
         }
 
         $newsletter_page_url = get_permalink($page->ID);
-        if ($language && $this->newsletter_page_url) {
+        if ($language && $newsletter_page_url) {
             if (class_exists('SitePress')) {
                 $newsletter_page_url = apply_filters('wpml_permalink', $newsletter_page_url, $language, true);
             }
-            if (function_exists('pll_get_post')) {
-                $newsletter_page_url = get_permalink(pll_get_post($page->ID), $language);
-            }
+	        if ( function_exists( 'pll_get_post' ) ) {
+		        $translated_page = get_permalink( pll_get_post( $page->ID ), $language );
+		        if ( $translated_page ) {
+			        $newsletter_page_url = $translated_page;
+		        }
+	        }
         }
 
         return $newsletter_page_url;

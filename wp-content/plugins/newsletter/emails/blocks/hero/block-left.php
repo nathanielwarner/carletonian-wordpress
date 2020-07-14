@@ -32,7 +32,7 @@
     }
 </style>
 
-<table width="49%" align="left" class="hero-table" border="0" cellspacing="0" cellpadding="0">
+<table width="50%" align="left" class="hero-table" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td align="center" valign="top">
             <a href="<?php echo $url ?>" target="_blank" rel="noopener nofollow" inline-class="image-a">

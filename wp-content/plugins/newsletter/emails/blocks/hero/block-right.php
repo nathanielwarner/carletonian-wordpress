@@ -34,7 +34,7 @@
 
 <div dir="rtl">
 
-    <table width="49%" align="right" class="hero-table" border="0" cellspacing="0" cellpadding="0">
+    <table width="50%" align="right" class="hero-table" border="0" cellspacing="0" cellpadding="0">
         <tr>
             <td align="center" valign="top" dir="ltr">
                 <a href="<?php echo $url ?>" target="_blank" rel="noopener nofollow" inline-class="image-a">

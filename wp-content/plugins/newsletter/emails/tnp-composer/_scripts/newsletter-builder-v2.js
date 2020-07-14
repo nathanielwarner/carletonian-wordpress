@@ -454,7 +454,7 @@ jQuery(document).ready(function () {
                         break;
                     }
                     case 'title': {
-                        element = "<input name='" + newInputName + "' class='" + className + "-textinput' value='" + value + "' type='text'>";
+                        element = "<textarea name='" + newInputName + "' class='" + className + "-textarea' rows='2'>" + value + "</textarea>";
                         break;
                     }
                 }

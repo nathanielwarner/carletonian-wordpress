@@ -218,6 +218,20 @@ function tnp_resize($media_id, $size) {
     }
 
     $absolute_file = $uploads['basedir'] . '/' . $relative_file;
+    
+    if (substr($relative_file, -4) === '.gif') {
+        $editor = wp_get_image_editor($absolute_file);
+        $new_size = $editor->get_size();
+        $media = new TNP_Media();
+        $media->width = $new_size['width'];
+        $media->height = $new_size['height'];
+        if ($media->width > $width) {
+            $media->set_width($width);
+        }
+        $media->url = $uploads['baseurl'] . '/' . $relative_file;
+        return $media;
+    }
+        
     // Relative and absolute name of the thumbnail.
     $pathinfo = pathinfo($relative_file);
     $relative_thumb = $pathinfo['dirname'] . '/' . $pathinfo['filename'] . '-' . $width . 'x' . $height . ($crop ? '-c' : '') . '.' . $pathinfo['extension'];

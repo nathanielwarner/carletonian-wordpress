@@ -2,7 +2,7 @@
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
 Tested up to: 5.4.2
-Stable tag: 6.7.4
+Stable tag: 6.7.9
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -32,12 +32,12 @@ We redesigned our drag and drop composer to make your campaign creation even eas
 * **Single** And **Double Opt-In** plus privacy checkbox for EU laws compliance
 * **Subscribers lists** to fine-target your campaigns
 * PHP API and REST API for coders and integrations
-* SMTP-Ready 
+* SMTP-Ready
 * Customizable Themes
 * **Status panel** to check your blog mailing capability and configuration
 * **Compatible with every SMTP plugin**: Post SMTP (aka Postman), WP Mail SMTP, Easy WP SMTP, Easy SMTP Mail, WP Mail Bank, ...
 * **Subscribers import** from file
-* Newsletter with Html and Text message versions 
+* Newsletter with Html and Text message versions
 
 = Find Us =
 
@@ -88,7 +88,7 @@ Anyway if you configure the plugin to use external services (usually an external
 
 We provide support for our plugin on [Wordpress.org forums](https://wordpress.org/support/plugin/newsletter) and through our [official forum](https://www.thenewsletterplugin.com/forums).
 
-Premium Users with an active license have access to one-to-one support via our [ticketing system](https://www.thenewsletterplugin.com/support-ticket). 
+Premium Users with an active license have access to one-to-one support via our [ticketing system](https://www.thenewsletterplugin.com/support-ticket).
 
 = Follow Us =
 
@@ -112,6 +112,35 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 6.7.9 =
+
+* Fixed posts block
+
+= 6.7.8 =
+
+* Removed old themes (anyway not usable since long time)
+
+= 6.7.7 =
+
+* Fixed text escape for header and footer blocks (was reported as security required fix)
+
+= 6.7.6 =
+
+* Fixed error on profile save
+
+= 6.7.5 =
+
+* Added language selector on subscriber profile page on multilanguage site
+* Fix multilanguage label on profile page
+* Added newsletter_user_post_subscribe hook (just after saving the subscription, before saving you can use newsletter_user_subscribe)
+* Added checks for WP 5.5 breaking changes
+* Added new layout (big images) on posts block
+* Added standard button on post block
+* Minor fix on hero block
+* Added support for Popup Maker (need a free addon)
+
+= 6.7.4 =
 
 * Improved posts block in the Automated context with more options
 * Improved the unsubscribe header
@@ -178,7 +207,7 @@ Thank you, The Newsletter Team
 
 = 6.6.3 =
 
-* Changed the administration script enqueuing 
+* Changed the administration script enqueuing
 * Improved the status page
 * Added notice on page list to highlight the Newsletter dedicated page
 
@@ -202,7 +231,7 @@ Thank you, The Newsletter Team
 * Revisited the posts block
 * Support for the new Reports addon styles
 * Improved the excerpt extraction
-* Cancellation administrative notifications on/off switch 
+* Cancellation administrative notifications on/off switch
 
 = 6.5.8 =
 
@@ -248,7 +277,7 @@ Thank you, The Newsletter Team
 
 = 6.5.2 =
 
-* Fixed image block 
+* Fixed image block
 * Newsletter editing page with TinyMCE now saves before sending a test
 
 = 6.5.1 =

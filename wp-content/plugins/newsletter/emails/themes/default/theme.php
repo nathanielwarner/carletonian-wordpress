@@ -143,7 +143,7 @@ if (isset($theme_options['theme_posts'])) {
                         </div>
                         <?php if (!empty($theme_options['main_header_sub'])) { ?>
                             <div style="padding: 10px 0; color: #000; font-size: 16px; text-align: center;">
-                                <?php echo $theme_options['main_header_sub'] ?>
+                                <?php echo esc_html($theme_options['main_header_sub']) ?>
                             </div>
                         <?php } ?>    
                     <?php } ?>

@@ -46,7 +46,9 @@ if (class_exists('NewsletterExtensions')) {
 <?php } ?>
 
 
-<?php $fields->select('layout', __('Layout', 'newsletter'), array('one' => __('One column', 'newsletter'), 'two' => __('Two columns', 'newsletter'))) ?>
+<?php $fields->select('layout', __('Layout', 'newsletter'), array('one' => __('One column', 'newsletter'), 
+    'two' => __('Two columns', 'newsletter'),
+    'big-image' => __('One column, big image', 'newsletter'))) ?>
 
 <?php $fields->font('title_font', __('Title font', 'newsletter')) ?>
 

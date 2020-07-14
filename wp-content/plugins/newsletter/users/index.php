@@ -121,6 +121,10 @@ $controls->data['search_page'] ++;
         <h2><?php _e('Subscribers', 'newsletter') ?>
             <a class="tnp-btn-h1" href="?page=newsletter_users_new"><?php _e('Add a subscriber', 'newsletter') ?></a>
         </h2>
+        
+        <p>
+            See the <a href="admin.php?page=newsletter_users_massive">maintenance panel</a> to move subscribers between list, massively delete and so on.
+        </p>
 
     </div>
 

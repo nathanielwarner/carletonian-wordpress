@@ -266,6 +266,29 @@ class TNP_Composer {
         $b .= '</td></tr></table>';
         return $b;
     }
+    
+    /**
+     * 
+     * @param TNP_Media $media
+     * @return string
+     */
+    static function image($media) {
+        $b = '';
+        if ($media->link) {
+            $b .= '<a href="' . $media->link . '" target="_blank" style="text-decoration: none">';
+        }
+        
+        $b .= '<img src="' . $media->url . '" width="' . $media->width . '"' 
+                . ' height="' . $media->height . '"'
+                . ' alt="' . esc_attr($media->alt) . '"'
+                . ' border="0" style="max-width: 100%">';
+                
+        if ($media->link) {
+            $b .= '</a>';
+        }
+        
+        return $b;
+    }
 
     /** 
      * Returns a WP media ID for the specified post (or false if nothing can be found)

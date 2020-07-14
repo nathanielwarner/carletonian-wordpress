@@ -3,9 +3,9 @@ Contributors: hcabrera
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hcabrerab%40gmail%2ecom&lc=GB&item_name=WordPress%20Popular%20Posts%20Plugin&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG_global%2egif%3aNonHosted
 Tags: popular, posts, widget, popularity, top
 Requires at least: 4.7
-Tested up to: 5.4
+Tested up to: 5.4.2
 Requires PHP: 5.4
-Stable tag: 5.1.0
+Stable tag: 5.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,30 @@ The FAQ section has been moved [here](https://github.com/cabrerahector/wordpress
 4. Statistics panel.
 
 == Changelog ==
+= 5.2.1 =
+
+**If you're using a caching plugin, flushing its cache right after installing / upgrading to this version is required.**
+
+- Fixes fatal PHP error triggered on some server setups.
+- Makes sure non-ajaxified themed widgets are properly moved into the ShadowRoot.
+- Fixes declaration of the wpp_params variable.
+
+[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-2-is-here)
+
+= 5.2.0 =
+
+**If you're using a caching plugin, flushing its cache right after installing / upgrading to this version is required.**
+
+- JavaScript based Lazy Loading superseded by Native Lazing Loading.
+- Improved Pageviews Cache.
+- Views/comments count will be prettified now!
+- Fixed a few layout issues found in widget themes.
+- Improved compatibility with Content Security Policy (CSP).
+- Added support for ACF images.
+- Other minor improvements and fixes.
+
+[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-2-is-here)
+
 = 5.1.0 =
 
 - The /popular-posts GET API endpoint is now being cached as well.

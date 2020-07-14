@@ -40,9 +40,9 @@ $warning |= empty($status_options['mail']);
     }
 </script>
 
-<?php if (false && get_option('newsletter_promotion') !== 'june-2020' && time() < gmmktime(0, 0, 0, 7, 15, 2020)) { ?>
+<?php if (get_option('newsletter_promotion') !== 'june-2020' && time() < gmmktime(0, 0, 0, 7, 15, 2020)) { ?>
 <div id="tnp-promotion-bar">
-    <a href="https://www.thenewsletterplugin.com/premium?utm_source=plugin-bar&utm_campaign=june-2020" onclick="tnp_close_promotion(); return true;" target="_blank">We're running a 50% discount offer until July, 15. Check it out.</a>
+    <a href="https://www.thenewsletterplugin.com/premium?utm_source=plugin-bar&utm_campaign=june-2020" onclick="tnp_close_promotion(); return true;" target="_blank">50% discount offer until July, 15. Check it out.</a>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="javascript:void(tnp_close_promotion('june-2020'))">No, thank you!</a>
 </div>

@@ -477,16 +477,25 @@ class NewsletterDefaultSMTPMailer extends NewsletterMailer {
      * @return PHPMailer
      */
     function get_mailer() {
+        global $wp_version;
+        
         if ($this->mailer) {
             return $this->mailer;
         }
 
         $logger = $this->get_logger();
         $logger->debug('Setting up PHP mailer');
-        require_once ABSPATH . WPINC . '/class-phpmailer.php';
-        require_once ABSPATH . WPINC . '/class-smtp.php';
-
-        $this->mailer = new PHPMailer();
+         if (version_compare($wp_version, '5.4.9') > 0) {
+            require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+            require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+            require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+            $this->mailer = new PHPMailer\PHPMailer\PHPMailer(false);
+        } else {
+            require_once ABSPATH . WPINC . '/class-phpmailer.php';
+            require_once ABSPATH . WPINC . '/class-smtp.php';
+            $this->mailer = new PHPMailer();
+        }
+        
         $this->mailer->IsSMTP();
         $this->mailer->Host = $this->options['host'];
         if (!empty($this->options['port'])) {

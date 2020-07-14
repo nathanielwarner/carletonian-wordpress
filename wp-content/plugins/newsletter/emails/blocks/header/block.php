@@ -75,7 +75,7 @@ $empty = empty($info['header_logo']['id']) && empty($info['header_sub']) && empt
                 <?php } ?>
             </td>
             <td width="50%" align="right" class="mobile-hide" inline-class="header-text">
-                <?php echo $info['header_sub'] ?>
+                <?php echo esc_html($info['header_sub']) ?>
             </td>
         </tr>
     </table>

@@ -645,6 +645,7 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         $user = $this->get_user($email);
+       
 
         if ($user != null) {
             // Email already registered in our database
@@ -718,6 +719,8 @@ class NewsletterSubscription extends NewsletterModule {
         if ($emails) {
             $this->send_message(($user->status == Newsletter::STATUS_CONFIRMED) ? 'confirmed' : 'confirmation', $user);
         }
+        
+        $user = apply_filters('newsletter_user_post_subscribe', $user);
 
         return $user;
     }
