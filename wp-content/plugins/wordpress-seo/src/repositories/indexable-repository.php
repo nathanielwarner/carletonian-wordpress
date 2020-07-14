@@ -119,11 +119,17 @@ class Indexable_Repository {
 		}
 
 		if ( $indexable === false ) {
-			return $this->query()->create( [ 'object_type' => 'unknown', 'post_status' => 'unindexed' ] );
+			return $this->query()->create(
+				[
+					'object_type' => 'unknown',
+					'post_status' => 'unindexed',
+				]
+			);
 		}
 
 		return $indexable;
 	}
+
 	/**
 	 * Retrieves an indexable by its permalink.
 	 *
@@ -368,11 +374,31 @@ class Indexable_Repository {
 		}
 
 		$indexables = $this->query()
-						   ->where_in( 'id', $indexable_ids )
-						   ->order_by_expr( 'FIELD(id,' . \implode( ',', $indexable_ids ) . ')' )
-						   ->find_many();
+			->where_in( 'id', $indexable_ids )
+			->order_by_expr( 'FIELD(id,' . \implode( ',', $indexable_ids ) . ')' )
+			->find_many();
 
 		return \array_map( [ $this, 'ensure_permalink' ], $indexables );
+	}
+
+	/**
+	 * Returns all subpages with a given post_parent.
+	 *
+	 * @param int   $post_parent the post parent.
+	 * @param array $exclude_ids the ids to exclude.
+	 *
+	 * @return Indexable[] array of indexables.
+	 */
+	public function get_subpages_by_post_parent( $post_parent, $exclude_ids = [] ) {
+		$query = $this->query()
+			->where( 'post_parent', $post_parent )
+			->where( 'object_type', 'post' )
+			->where( 'post_status' ,'publish' );
+
+		if ( ! empty( $exclude_ids ) ) {
+			$query->where_not_in( 'object_id', $exclude_ids );
+		}
+		return $query->find_many();
 	}
 
 	/**
@@ -385,7 +411,11 @@ class Indexable_Repository {
 	protected function ensure_permalink( $indexable ) {
 		if ( $indexable && $indexable->permalink === null ) {
 			$indexable->permalink = $this->get_permalink_for_indexable( $indexable );
-			$indexable->save();
+
+			// Only save if changed.
+			if ( $indexable->permalink !== null ) {
+				$indexable->save();
+			}
 		}
 		return $indexable;
 	}

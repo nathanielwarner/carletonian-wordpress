@@ -62,6 +62,17 @@ if ($controls->is_action('test')) {
     }
 }
 
+if ($controls->is_action('optimize-stats')) {
+    $this->logger->info('Stats table otpimization');
+    $this->query("alter table " . NEWSLETTER_STATS_TABLE . " drop index email_id");
+    
+    $this->query("alter table " . NEWSLETTER_STATS_TABLE . " drop index user_id");
+    $this->query("alter table `" . NEWSLETTER_STATS_TABLE . "` modify column `email_id` int(11) not null default 0");
+    $this->query("create index email_id on " . NEWSLETTER_STATS_TABLE . " (email_id)");
+    $this->query("create index user_id on " . NEWSLETTER_STATS_TABLE . " (user_id)");
+    $controls->add_message_done();
+}
+
 $options = $this->get_options('status');
 ?>
 
@@ -147,6 +158,23 @@ $options = $this->get_options('status');
                             <?php echo esc_html($name) ?>
                         </td>
                     </tr>
+                    
+                    <?php
+                    $res = $wpdb->get_var("select count(*) from {$wpdb->prefix}newsletter_stats`");
+                    ?>
+                    
+                    <?php if ($res > 500) { ?>
+                    <tr>
+                        <td>Statistics table optimization</td>
+                        <td>
+                            
+                        </td>
+                        <td>
+                            The auto-optimization has not been started because your table contains an big number of rows. Run it manually.
+                            <?php $controls->button('optimize-stats', __('Run', 'newsletter')); ?>
+                        </td>
+                    </tr> 
+                    <?php } ?>
 
                 </tbody>
             </table>

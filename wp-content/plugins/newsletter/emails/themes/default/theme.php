@@ -46,6 +46,8 @@ if (isset($theme_options['theme_posts'])) {
 
     if (!isset($theme_options['theme_language'])) $theme_options['theme_language'] = '';
     $posts = Newsletter::instance()->get_posts($filters, $theme_options['theme_language']);
+    
+    $this->switch_language($theme_options['theme_language']);
 }
 
 ?><!doctype html>

@@ -1,13 +1,11 @@
 <?php
 /* @var $this Newsletter */
+/* @var $wpdb wpdb */
 
 defined('ABSPATH') || exit;
 
-@include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
-$module = Newsletter::instance();
+include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
-/* @var $wpdb wpdb */
-
 
 $wp_cron_calls = get_option('newsletter_diagnostic_cron_calls', array());
 $total = 0;
@@ -83,7 +81,7 @@ if ($controls->is_action('test')) {
 
         $options = $controls->data;
 
-        if ($controls->data['test_email'] == $module->options['sender_email']) {
+        if ($controls->data['test_email'] == $this->options['sender_email']) {
             $controls->messages .= '<strong>Warning:</strong> you are using as test email the same address configured as sender in main configuration. Test can fail because of that.<br>';
         }
 
@@ -92,10 +90,10 @@ if ($controls->is_action('test')) {
         $message->body_text = 'This is a textual test email part sent using the sender data set on Newsletter main setting.';
         $message->to = $controls->data['test_email'];
         $message->subject = 'Newsletter test email at ' . date(DATE_ISO8601);
-        $message->from = $module->options['sender_email'];
-        $message->from_name = $module->options['sender_name'];
+        $message->from = $this->options['sender_email'];
+        $message->from_name = $this->options['sender_name'];
 
-        $r = $module->deliver($message);
+        $r = $this->deliver($message);
 
         if (!is_wp_error($r)) {
             $options['mail'] = 1;
@@ -108,26 +106,36 @@ if ($controls->is_action('test')) {
 
             $controls->errors .= '<strong>FAILED</strong> (' . $r->get_error_message() . ')<br>';
 
-            if (!empty($module->options['return_path'])) {
+            if (!empty($this->options['return_path'])) {
                 $controls->errors .= '- Try to remove the return path on main settings.<br>';
             }
 
             $controls->errors .= '<a href="https://www.thenewsletterplugin.com/documentation/?p=15170" target="_blank"><strong>' . __('Read more', 'newsletter') . '</strong></a>.';
 
-            $parts = explode('@', $module->options['sender_email']);
+            $parts = explode('@', $this->options['sender_email']);
             $sitename = strtolower($_SERVER['SERVER_NAME']);
             if (substr($sitename, 0, 4) == 'www.') {
                 $sitename = substr($sitename, 4);
             }
             if (strtolower($sitename) != strtolower($parts[1])) {
-                $controls->errors .= '- Try to set on main setting a sender address with the same domain of your blog: ' . $sitename . ' (you are using ' . $module->options['sender_email'] . ')<br>';
+                $controls->errors .= '- Try to set on main setting a sender address with the same domain of your blog: ' . $sitename . ' (you are using ' . $this->options['sender_email'] . ')<br>';
             }
         }
-        $module->save_options($options, 'status');
+        $this->save_options($options, 'status');
     }
 }
 
-$options = $module->get_options('status');
+if ($controls->is_action( 'stats_email_column_upgrade') ) {
+	$this->query( "alter table " . NEWSLETTER_STATS_TABLE . " drop index email_id" );
+	$this->query( "alter table " . NEWSLETTER_STATS_TABLE . " drop index user_id" );
+	$this->query( "alter table `" . NEWSLETTER_STATS_TABLE . "` modify column `email_id` int(11) not null default 0" );
+	$this->query( "create index email_id on " . NEWSLETTER_STATS_TABLE . " (email_id)" );
+	$this->query( "create index user_id on " . NEWSLETTER_STATS_TABLE . " (user_id)" );
+	$controls->add_message_done();
+	update_option('newsletter_stats_email_column_upgraded', true);
+}
+
+$options = $this->get_options('status');
 
 // Compute the number of newsletters ongoing and other stats
 $emails = $wpdb->get_results("select * from " . NEWSLETTER_EMAILS_TABLE . " where status='sending' and send_on<" . time() . " order by id asc");
@@ -210,7 +218,7 @@ function tnp_status_print_flag($condition) {
                                 </ol>
                             <?php } ?>
                             <br>
-                            <a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank">Read more to solve your issues, if any</a>.    
+                            <a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank">Read more to solve your issues, if any</a>.
                             <br>
                             Email: <?php $controls->text_email('test_email') ?> <?php $controls->button('test', __('Send a test message')) ?>
                         </td>
@@ -369,11 +377,11 @@ function tnp_status_print_flag($condition) {
 
 
                     <?php
-                    $return_path = $module->options['return_path'];
+                    $return_path = $this->options['return_path'];
                     if (!empty($return_path)) {
                         list($return_path_local, $return_path_domain) = explode('@', $return_path);
                     }
-                    $sender = $module->options['sender_email'];
+                    $sender = $this->options['sender_email'];
                     if (!empty($sender)) {
                         list($sender_local, $sender_domain) = explode('@', $sender);
                     }
@@ -416,7 +424,7 @@ function tnp_status_print_flag($condition) {
                         </td>
                         <td>
                             <?php if ($condition == 0) { ?>
-                                Newsletter Addons update is disabled (probably in your <code>wp-config.php</code> file the constant 
+                                Newsletter Addons update is disabled (probably in your <code>wp-config.php</code> file the constant
                                 <code>NEWSLETTER_EXTENSION_UPDATE</code> is set to <code>true</code>)
                             <?php } else { ?>
                                 Newsletter Addons can be updated
@@ -574,7 +582,7 @@ function tnp_status_print_flag($condition) {
 
                             <?php } ?>
                         </td>
-                    </tr>   
+                    </tr>
 
 
                     <?php
@@ -630,10 +638,10 @@ function tnp_status_print_flag($condition) {
                                 Max mean time measured: <?php echo sprintf("%.2f", $send_max) ?> seconds<br>
                                 Min mean time measured: <?php echo sprintf("%.2f", $send_min) ?> seconds<br>
                                 Total email in the sample: <?php echo $send_total_emails ?><br>
-                                Runs in the sample: <?php echo count($send_calls); ?><br> 
+                                Runs in the sample: <?php echo count($send_calls); ?><br>
                                 Runs prematurely interrupted: <?php echo sprintf("%.2f", (count($send_calls) - $send_completed) * 100.0 / count($send_calls)) ?>%<br>
                             </td>
-                        </tr>    
+                        </tr>
                         <?php
                     }
                     ?>
@@ -726,7 +734,7 @@ function tnp_status_print_flag($condition) {
                                 <span class="tnp-maybe">MAYBE</span>
                             <?php } else { ?>
                                 <span class="tnp-ok">OK</span>
-                            <?php } ?>   
+                            <?php } ?>
 
 
                         </td>
@@ -765,7 +773,7 @@ function tnp_status_print_flag($condition) {
                                 Cannot create the folder or it is not writable.
                             <?php } ?>
                         </td>
-                    </tr>           
+                    </tr>
                 </tbody>
             </table>
 
@@ -1075,7 +1083,7 @@ function tnp_status_print_flag($condition) {
                             ?>
                         </td>
 
-                    </tr>    
+                    </tr>
                     <?php if (ini_get('opcache.validate_timestamps') === '0') { ?>
                         <tr>
                             <td>
@@ -1118,8 +1126,8 @@ function tnp_status_print_flag($condition) {
                             Charset: <?php echo $wpdb->charset; ?>
                             <br>
                             <?php if ($wpdb->charset != 'utf8mb4') { ?>
-                                The recommended charset for your database is <code>utf8mb4</code> to avoid possible saving errors when you use emoji. 
-                                Read the WordPress Codex <a href="https://codex.wordpress.org/Converting_Database_Character_Sets" target="_blank">conversion 
+                                The recommended charset for your database is <code>utf8mb4</code> to avoid possible saving errors when you use emoji.
+                                Read the WordPress Codex <a href="https://codex.wordpress.org/Converting_Database_Character_Sets" target="_blank">conversion
                                     instructions</a> (skilled technicia required).
                             <?php } else { ?>
                                 If you experience newsletter saving database error
@@ -1183,12 +1191,28 @@ function tnp_status_print_flag($condition) {
                             <?php } else { ?>
                             <?php } ?>
                         </td>
-                    </tr> 
+                    </tr>
 
                     <?php
                     // Clean up
                     $res = $wpdb->query("drop table if exists {$wpdb->prefix}newsletter_test");
                     ?>
+
+                    <?php if ( ! get_option( 'newsletter_stats_email_column_upgraded', false ) ) { ?>
+	                    <?php
+	                    $data_type  = $wpdb->get_var(
+		                    $wpdb->prepare( 'SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+			                    DB_NAME, NEWSLETTER_STATS_TABLE, 'email_id' ) );
+	                    $to_upgrade = strtoupper( $data_type ) == 'INT' ? false : true;
+	                    ?>
+	                    <?php if ( $to_upgrade ) { ?>
+                            <tr>
+                                <td>Database stats table upgrade</td>
+                                <td><?php tnp_status_print_flag( 0 ) ?></td>
+                                <td><?php $controls->button( 'stats_email_column_upgrade', 'Stats table upgrade' ) ?></td>
+                            </tr>
+	                    <?php } ?>
+                    <?php } ?>
 
                 </tbody>
             </table>

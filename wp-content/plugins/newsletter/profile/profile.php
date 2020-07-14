@@ -28,7 +28,7 @@ class NewsletterProfile extends NewsletterModule {
         
         if (in_array($action, ['p', 'profile', 'pe', 'profile-save', 'profile_export', 'ps'])) {
             if (!$user || $user->status != TNP_User::STATUS_CONFIRMED) {
-                $this->dienow('The subscriber was not found or is not confirmed.');
+                $this->dienow(__('The subscriber was not found or is not confirmed.', 'newsletter'));
             }
         }
 

@@ -325,7 +325,11 @@ class NewsletterEmails extends NewsletterModule {
         }
 
         $out = array('subject' => '', 'return_empty_message' => false, 'stop' => false, 'skip' => false);
-
+        
+        $dir = is_rtl()?'rtl':'ltr';
+        $align_left = is_rtl()?'right':'left';
+        $align_right = is_rtl()?'left':'right';
+        
 
         ob_start();
         $logger = $this->logger;

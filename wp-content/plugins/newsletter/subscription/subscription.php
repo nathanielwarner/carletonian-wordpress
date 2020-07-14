@@ -302,7 +302,7 @@ class NewsletterSubscription extends NewsletterModule {
                         // Check if the list is public
                         $list = $this->get_list($list_id);
                         if (!$list || $list->status == TNP_List::STATUS_PRIVATE) {
-                            $this->dienow('List change not allowed.', 'Please check if the list is marked as "disbaled/private".');
+                            $this->dienow('List change not allowed.', 'Please check if the list is marked as "private".');
                         }
 
                         $url = esc_url_raw($_REQUEST['redirect']);
@@ -792,7 +792,7 @@ class NewsletterSubscription extends NewsletterModule {
             if (isset($_REQUEST['nl']) && is_array($_REQUEST['nl'])) {
                 foreach ($_REQUEST['nl'] as $list_id) {
                     $list = $this->get_list($list_id);
-                    if ($list->status === TNP_List::STATUS_PRIVATE) {
+                    if ($list && $list->status == TNP_List::STATUS_PRIVATE) {
                         $this->dienow('Invalid list', 'List ' . $list_id . ' has been submitted but it is set as private. Please fix the subscription form.');
                     }
                 }
@@ -852,8 +852,10 @@ class NewsletterSubscription extends NewsletterModule {
         }
         $message = str_replace('{message}', $message, $template);
 
-        $headers = array('Auto-Submitted' => 'auto-generated');
-
+        //$headers = array('Auto-Submitted' => 'auto-generated');
+        
+        $headers = array();
+        
         // Replaces tags from the template
         $message = $this->replace($message, $user);
         $subject = $this->replace($subject, $user);

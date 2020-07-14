@@ -32,12 +32,23 @@ class TNP_Media {
  * @property bool $checked If it must be pre-checked on subscription form
  * @property array $languages The list of language used to pre-assign this list
  */
-abstract class TNP_List {
+class TNP_List {
 
     const STATUS_PRIVATE = 0;
-    const STATUS_PUBLIC = 2;
-    const STATUS_PROFILE_ONLY = 1;
-    const STATUS_HIDDEN = 3; // Public but never show (can be set with a hidden form field)
+    const STATUS_PUBLIC = 1;
+    const SUBSCRIPTION_HIDE = 0;
+    const SUBSCRIPTION_SHOW = 1;
+    const SUBSCRIPTION_SHOW_CHECKED = 2;
+    const PROFILE_HIDE = 0;
+    const PROFILE_SHOW = 1;
+
+    var $id;
+    var $name;
+    var $status;
+    var $forced;
+    var $checked;
+    var $show_on_subscription;
+    var $show_on_profile;
 
 }
 
@@ -242,7 +253,11 @@ class NewsletterModule {
         global $wpdb;
 
         $this->logger->debug($query);
+        //$start = microtime(true);
         $r = $wpdb->query($query);
+        //$this->logger->debug($wpdb->last_query);
+        //$this->logger->debug('Execution time: ' . (microtime(true)-$start));
+        //$this->logger->debug('Result: ' . $r);
         if ($r === false) {
             $this->logger->fatal($query);
             $this->logger->fatal($wpdb->last_error);
@@ -684,7 +699,7 @@ class NewsletterModule {
     }
 
     function admin_menu() {
-        
+
     }
 
     function add_menu_page($page, $title, $capability = '') {
@@ -973,7 +988,7 @@ class NewsletterModule {
     /** Searches for a user using the nk parameter or the ni and nt parameters. Tries even with the newsletter cookie.
      * If found, the user object is returned or null.
      * The user is returned without regards to his status that should be checked by caller.
-     * 
+     *
      * DO NOT REMOVE EVEN IF OLD
      *
      * @return TNP_User
@@ -1151,24 +1166,36 @@ class NewsletterModule {
             if (empty($data['list_' . $i])) {
                 continue;
             }
-            $list = new stdClass();
+            $list = new TNP_List();
             $list->name = $data['list_' . $i];
             $list->id = $i;
-            $list->forced = !empty($data['list_' . $i . '_forced']);
-            $list->status = (int) $data['list_' . $i . '_status'];
-            $list->checked = !empty($data['list_' . $i . '_checked']);
+
+            // New format
+            if (isset($data['list_' . $i . '_subscription'])) {
+                $list->forced = !empty($data['list_' . $i . '_forced']);
+                $list->status = empty($data['list_' . $i . '_status']) ? TNP_List::STATUS_PRIVATE : TNP_List::STATUS_PUBLIC;
+                $list->checked = $data['list_' . $i . '_subscription'] == 2;
+                $list->show_on_subscription = $list->status != TNP_List::STATUS_PRIVATE && !empty($data['list_' . $i . '_subscription']) && !$list->forced;
+                $list->show_on_profile = $list->status != TNP_List::STATUS_PRIVATE && !empty($data['list_' . $i . '_profile']);
+            } else {
+                $list->forced = !empty($data['list_' . $i . '_forced']);
+                $list->status = empty($data['list_' . $i . '_status']) ? TNP_List::STATUS_PRIVATE : TNP_List::STATUS_PUBLIC;
+                $list->checked = !empty($data['list_' . $i . '_checked']);
+                $list->show_on_subscription = $data['list_' . $i . '_status'] == 2 && !$list->forced;
+                $list->show_on_profile = $data['list_' . $i . '_status'] == 1 || $data['list_' . $i . '_status'] == 2;
+            }
             if (empty($data['list_' . $i . '_languages'])) {
                 $list->languages = array();
             } else {
                 $list->languages = $data['list_' . $i . '_languages'];
             }
-            $lists[$language][] = $list;
+            $lists[$language]['' . $list->id] = $list;
         }
         return $lists[$language];
     }
 
     /**
-     *
+     * Returns an array of TNP_List objects of lists that are public.
      * @return TNP_List[]
      */
     function get_lists_public($language = '') {
@@ -1183,7 +1210,7 @@ class NewsletterModule {
             if ($list->status == TNP_List::STATUS_PRIVATE) {
                 continue;
             }
-            $lists[$language][] = $list;
+            $lists[$language]['' . $list->id] = $list;
         }
         return $lists[$language];
     }
@@ -1202,16 +1229,17 @@ class NewsletterModule {
         $lists[$language] = array();
         $all = $this->get_lists($language);
         foreach ($all as $list) {
-            if ($list->status != TNP_List::STATUS_PUBLIC || $list->forced) {
+            if (!$list->show_on_subscription) {
                 continue;
             }
-            $lists[$language][] = $list;
+            $lists[$language]['' . $list->id] = $list;
         }
         return $lists[$language];
     }
 
     /**
-     * Returns the lists to be shown in the profile page.
+     * Returns the lists to be shown in the profile page. The list is associative with
+     * the list ID as key.
      *
      * @return TNP_List[]
      */
@@ -1224,33 +1252,27 @@ class NewsletterModule {
         $lists[$language] = array();
         $all = $this->get_lists($language);
         foreach ($all as $list) {
-            if ($list->status == TNP_List::STATUS_PRIVATE || $list->status == TNP_List::STATUS_HIDDEN) {
+            if (!$list->show_on_profile) {
                 continue;
             }
-            $lists[$language][] = $list;
+            $lists[$language]['' . $list->id] = $list;
         }
         return $lists[$language];
     }
 
     /**
-     * Returns a list as an object (with the same signature of TNP_List)
+     * Returns the list object or null if not found.
      *
      * @param int $id
      * @return TNP_List
      */
     function get_list($id, $language = '') {
-        $id = (int) $id;
-        if (!$id) {
+        $lists = $this->get_lists($language);
+        if (!isset($lists['' . $id])) {
             return null;
         }
-        $data = NewsletterSubscription::instance()->get_options('lists', $language);
-        $list = new stdClass();
-        $list->name = $data['list_' . $id];
-        $list->id = $id;
-        $list->forced = !empty($data['list_' . $id . '_forced']);
-        $list->status = (int) $data['list_' . $id . '_status'];
-        $list->checked = !empty($data['list_' . $id . '_checked']);
-        return $list;
+
+        return $lists['' . $id];
     }
 
     /**
@@ -1642,6 +1664,12 @@ class NewsletterModule {
                 $email = null;
             }
         }
+        
+        $initial_language = $this->get_current_language();
+        
+        if ($user && $user->language) {
+            $this->switch_language($user->language);    
+        }
 
 
         $text = apply_filters('newsletter_replace', $text, $user, $email);
@@ -1747,8 +1775,10 @@ class NewsletterModule {
         $options = Newsletter::instance()->get_options('info');
         $text = str_replace('{company_address}', $options['footer_contact'], $text);
         $text = str_replace('{company_name}', $options['footer_title'], $text);
+        $text = str_replace('{company_legal}', $options['footer_legal'], $text);
 
 
+        $this->switch_language($initial_language);
 //$this->logger->debug('Replace end');
         return $text;
     }
@@ -1799,6 +1829,7 @@ class NewsletterModule {
         if (!isset($_POST['ts']) || time() - $_POST['ts'] > 60) {
             return false;
         }
+
         if ($captcha) {
             $n1 = (int) $_POST['n1'];
             if (empty($n1)) {
@@ -1934,8 +1965,9 @@ class NewsletterModule {
     }
 
     static function sanitize_ip($ip) {
-        if (empty($ip))
+        if (empty($ip)) {
             return '';
+        }
         return preg_replace('/[^0-9a-fA-F:., ]/', '', $ip);
     }
 
@@ -1949,8 +1981,9 @@ class NewsletterModule {
     }
 
     static function check_signature($text, $signature) {
-        if (empty($signature))
+        if (empty($signature)) {
             return false;
+        }
         $key = NewsletterStatistics::instance()->options['key'];
         return md5($text . $key) === $signature;
     }
@@ -1979,7 +2012,6 @@ class NewsletterModule {
      * @return string The language code
      */
     function get_current_language($user = null) {
-        global $current_user;
 
         if ($user && $user->language) {
             return $user->language;
@@ -2050,15 +2082,24 @@ class NewsletterModule {
 
     function get_language_label($language) {
         $languages = $this->get_languages();
-        if (isset($languages[$language]))
+        if (isset($languages[$language])) {
             return $languages[$language];
+        }
         return '';
     }
 
+    /**
+     * Changes the current language usually before extracting the posts since WPML
+     * does not support the language filter in the post query (or at least we didn't
+     * find it).
+     *
+     * @param string $language
+     */
     function switch_language($language) {
         if (class_exists('SitePress')) {
-            if (empty($language))
+            if (empty($language)) {
                 $language = 'all';
+            }
             do_action('wpml_switch_language', $language);
             return;
         }

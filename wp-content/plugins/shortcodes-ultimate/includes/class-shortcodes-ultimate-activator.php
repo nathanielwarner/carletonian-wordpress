@@ -96,7 +96,7 @@ class Shortcodes_Ultimate_Activator {
 				continue;
 			}
 
-			update_option( $option, $value, false );
+			add_option( $option, $value );
 
 		}
 

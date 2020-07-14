@@ -32,6 +32,7 @@ $defaults = array(
     'block_padding_right' => 15,
     'block_padding_top' => 15,
     'block_padding_bottom' => 15,
+    'button_font_weight' => 'normal',
     'excerpt_length' => 30,
     'post_offset' => 0,
     'automated_include' => 'new',
@@ -68,40 +69,47 @@ if (!empty($options['tags'])) {
     $filters['tag'] = $options['tags'];
 }
 
-// Filter by time?
-//$options['block_last_run'] = time();
-if (!empty($context['last_run'])) {
-    $filters['date_query'] = array(
-        'after' => gmdate('c', $context['last_run'])
-    );
-}
+if ($context['type'] != 'automated') {
+    $posts = Newsletter::instance()->get_posts($filters, $options['language']);
+} else {
 
-$posts = Newsletter::instance()->get_posts($filters, $options['language']);
-
-// This is a block regeneration with a timestamp
-if ($context['type'] == 'automated' && !empty($context['last_run'])) {
-    // We don't care the timestamp of the last newsletter sent, we want to send only future events
-    if (empty($posts)) {
-        // I this block was marked as required, we tell the regenerator to return an empty message
-        if ($options['automated'] == '1') {
-            $out['stop'] = true;
-            return;
-        } else if ($options['automated'] == '2') {
-            $out['skip'] = true;
-            return;
-        }
-    }
-
-    // We have something new but we need to reload the posts without filtering by date
-    if ($options['automated_include'] == 'max') {
-        unset($filters['date_query']);
+    if (!empty($options['automated_disabled'])) {
         $posts = Newsletter::instance()->get_posts($filters, $options['language']);
+    } else {
+        // Can be empty when composing...
+        if (!empty($context['last_run'])) {
+            $filters['date_query'] = array(
+                'after' => gmdate('c', $context['last_run'])
+            );
+        }
+
+        $posts = Newsletter::instance()->get_posts($filters, $options['language']);
+        if (empty($posts)) {
+            if ($options['automated'] == '1') {
+                $out['stop'] = true;
+                return;
+            } else if ($options['automated'] == '2') {
+                $out['skip'] = true;
+                return;
+            } else {
+                echo '<div inline-class="nocontents">', $options['automated_no_contents'], '</div>';
+                return;
+            }
+        } else {
+            if ($options['automated_include'] == 'max') {
+                unset($filters['date_query']);
+                $posts = Newsletter::instance()->get_posts($filters, $options['language']);
+            }
+        }
     }
 }
 
 if ($posts) {
     $out['subject'] = $posts[0]->post_title;
 }
+
+$current_language = Newsletter::instance()->get_current_language();
+Newsletter::instance()->switch_language($options['language']);
 
 $button_background = $options['button_background'];
 $button_label = $options['button_label'];
@@ -115,67 +123,57 @@ $alternative_2 = plugins_url('newsletter') . '/emails/blocks/posts/images/blank-
 remove_all_filters('excerpt_more');
 ?>
 
-<?php if (!$posts) { ?>
-
-
-    <div inline-class="nocontents"><?php echo $options['automated_no_contents'] ?></div>
-
-
-    <?php
-    return;
-}
-?>
 
 <?php if ($options['layout'] == 'one') { ?>
     <style>
         .posts-post-date {
-            padding: 0 0 5px 0; 
+            padding: 0 0 5px 0;
             font-size: 13px;
-            font-family: <?php echo $font_family ?>; 
-            font-weight: normal; 
+            font-family: <?php echo $font_family ?>;
+            font-weight: normal;
             color: #aaaaaa;
         }
 
         .posts-post-title {
-            padding: 0 0 5px 0; 
-            font-size: <?php echo $title_font_size ?>px; 
+            padding: 0 0 5px 0;
+            font-size: <?php echo $title_font_size ?>px;
             font-family: <?php echo $title_font_family ?>;
-            font-weight: normal; 
+            font-weight: normal;
             color: <?php echo $options['title_font_color'] ?>;
             line-height: normal;
         }
 
         .posts-post-excerpt {
             padding: 10px 0 15px 0;
-            font-family: <?php echo $font_family ?>; 
+            font-family: <?php echo $font_family ?>;
             color: <?php echo $options['font_color'] ?>;
-            font-size: <?php echo $font_size ?>px; 
+            font-size: <?php echo $font_size ?>px;
             line-height: 1.5em;
         }
 
         .posts-button-table {
-            background-color: <?php echo $button_background ?>; 
+            background-color: <?php echo $button_background ?>;
             /*border:1px solid #353535;*/
             border-radius:5px;
             align: right;
         }
         .posts-button-td {
             color: <?php echo $button_color ?>;
-            font-family:<?php echo $font_family ?>; 
+            font-family:<?php echo $font_family ?>;
             font-size:<?php echo $button_font_size ?>px;
-            font-weight:normal; 
+            font-weight:normal;
             letter-spacing:normal;
-            line-height:normal; 
-            padding-top:10px; 
-            padding-right:15px; 
-            padding-bottom:10px; 
+            line-height:normal;
+            padding-top:10px;
+            padding-right:15px;
+            padding-bottom:10px;
             padding-left:15px;
             text-align: right;
         }
         .posts-button-a {
             color:<?php echo $button_color ?>;
             font-size:<?php echo $button_font_size ?>px;
-            font-weight:normal; 
+            font-weight:normal;
             text-decoration:none;
         }
     </style>
@@ -226,28 +224,28 @@ remove_all_filters('excerpt_more');
                                 <table border="0" cellspacing="0" cellpadding="0" width="100%">
                                     <?php if (!empty($options['show_date'])) { ?>
                                         <tr>
-                                            <td align="left" inline-class="posts-post-date">
+                                            <td align="<?php echo $align_left?>" inline-class="posts-post-date">
                                                 <?php echo tnp_post_date($post) ?>
                                             </td>
                                         </tr>
                                     <?php } ?>
                                     <tr>
-                                        <td align="left" 
+                                        <td align="<?php echo $align_left?>" 
                                             inline-class="posts-post-title" 
                                             class="tnpc-row-edit tnpc-inline-editable" 
-                                            data-type="title" data-id="<?php echo $post->ID ?>">
+                                            data-type="title" data-id="<?php echo $post->ID ?>" dir="<?php echo $dir?>">
                                                 <?php
                                                 echo TNP_Composer::is_post_field_edited_inline($options['inline_edits'], 'title', $post->ID) ?
                                                         TNP_Composer::get_edited_inline_post_field($options['inline_edits'], 'title', $post->ID) :
                                                         tnp_post_title($post)
                                                 ?>
-                                        </td>  
+                                        </td>
                                     </tr>
                                     <tr>
-                                        <td align="left"
+                                        <td align="<?php echo $align_left?>"
                                             inline-class="posts-post-excerpt"
                                             class="padding-copy tnpc-row-edit tnpc-inline-editable"
-                                            data-type="text" data-id="<?php echo $post->ID ?>">
+                                            data-type="text" data-id="<?php echo $post->ID ?>" dir="<?php echo $dir?>">
                                                 <?php
                                                 echo TNP_Composer::is_post_field_edited_inline($options['inline_edits'], 'text', $post->ID) ?
                                                         TNP_Composer::get_edited_inline_post_field($options['inline_edits'], 'text', $post->ID) :
@@ -256,14 +254,14 @@ remove_all_filters('excerpt_more');
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td align="left" class="padding">
-                                            <table border="0" cellpadding="0" cellspacing="0" inline-class="posts-button-table" align="right">
+                                        <td align="<?php echo $align_left?>" class="padding">
+                                            <table border="0" cellpadding="0" cellspacing="0" inline-class="posts-button-table" align="<?php echo $align_right?>">
                                                 <tr>
-                                                    <td align="center" valign="middle" inline-class="posts-button-td">
-                                                        <a href="<?php echo esc_attr($url) ?>" target="_blank" inline-class="posts-button-a"><?php echo $button_label ?></a>
+                                                    <td align="center" valign="middle" inline-class="posts-button-td" dir="<?php echo $dir?>">
+                                                        <a href="<?php echo esc_attr($url) ?>" target="_blank" inline-class="posts-button-a" dir="<?php echo $dir?>"><?php echo $button_label ?></a>
                                                     </td>
                                                 </tr>
-                                            </table>    
+                                            </table>
                                         </td>
                                     </tr>
                                 </table>
@@ -285,58 +283,58 @@ remove_all_filters('excerpt_more');
 
     <style>
         .posts-post-date {
-            padding: 10px 0 0 15px; 
+            padding: 10px 0 0 15px;
             font-size: 13px;
-            font-family: <?php echo $font_family ?>; 
-            font-weight: normal; 
+            font-family: <?php echo $font_family ?>;
+            font-weight: normal;
             color: #aaaaaa;
-        }        
+        }
         .posts-post-title {
-            padding: 15px 0 0 0; 
-            font-family: <?php echo $title_font_family ?>; 
+            padding: 15px 0 0 0;
+            font-family: <?php echo $title_font_family ?>;
             color: <?php echo $options['title_font_color'] ?>;
-            font-size: <?php echo $title_font_size ?>px; 
-            line-height: 1.3em; 
+            font-size: <?php echo $title_font_size ?>px;
+            line-height: 1.3em;
         }
         .posts-post-excerpt {
-            padding: 5px 0 0 0; 
-            font-family: <?php echo $font_family ?>; 
+            padding: 5px 0 0 0;
+            font-family: <?php echo $font_family ?>;
             color: <?php echo $options['font_color'] ?>;
-            font-size: <?php echo $font_size ?>px; 
+            font-size: <?php echo $font_size ?>px;
             line-height: 1.4em;
         }
         .posts-button-table {
-            background-color: <?php echo $button_background ?>; 
+            background-color: <?php echo $button_background ?>;
             /*border:1px solid #353535;*/
             border-radius:5px;
             align: right;
         }
         .posts-button-td {
             color: <?php echo $button_color ?>;
-            font-family:<?php echo $font_family ?>; 
+            font-family:<?php echo $font_family ?>;
             font-size:<?php echo $button_font_size ?>px;
-            font-weight:normal; 
+            font-weight:normal;
             letter-spacing:normal;
-            line-height:normal; 
-            padding-top:15px; 
-            padding-right:30px; 
-            padding-bottom:15px; 
+            line-height:normal;
+            padding-top:15px;
+            padding-right:30px;
+            padding-bottom:15px;
             padding-left:30px;
             text-align: right;
         }
         .posts-button-a {
             color:<?php echo $button_color ?>;
             font-size:<?php echo $button_font_size ?>px;
-            font-weight:normal; 
+            font-weight:normal;
             text-decoration:none;
-        }        
+        }
     </style>
     <!-- TWO COLUMN SECTION -->
 
 
     <!-- TWO COLUMNS -->
     <table cellspacing="0" cellpadding="0" border="0" width="100%">
-        <?php foreach (array_chunk($posts, 2) AS $row) { ?>        
+        <?php foreach (array_chunk($posts, 2) AS $row) { ?>
             <tr>
                 <td valign="top" style="padding: 10px;" class="mobile-wrapper two-columns">
 
@@ -403,7 +401,7 @@ remove_all_filters('excerpt_more');
                                                         <a href="<?php echo tnp_post_permalink($row[0]) ?>" target="_blank" inline-class="posts-button-a"><?php echo $button_label ?></a>
                                                     </td>
                                                 </tr>
-                                            </table> 
+                                            </table>
                                         </td>
                                     </tr>
                                 </table>
@@ -426,7 +424,7 @@ remove_all_filters('excerpt_more');
                                                 <td align="center" valign="middle" class="tnpc-row-edit" data-type="image">
                                                     <a href="<?php echo tnp_post_permalink($row[1]) ?>" target="_blank">
                                                         <img src="<?php echo $media->url ?>"
-                                                             width="<?php echo $media->width ?>" 
+                                                             width="<?php echo $media->width ?>"
                                                              height="<?php echo $media->height ?>"
                                                              alt="Image" border="0" class="img-max">
                                                     </a>
@@ -473,7 +471,7 @@ remove_all_filters('excerpt_more');
                                                             <a href="<?php echo tnp_post_permalink($row[1]) ?>" target="_blank" inline-class="posts-button-a"><?php echo $button_label ?></a>
                                                         </td>
                                                     </tr>
-                                                </table> 
+                                                </table>
                                             </td>
                                         </tr>
                                     </table>
@@ -491,4 +489,8 @@ remove_all_filters('excerpt_more');
 
 
 
-<?php } ?>
+    <?php
+}
+
+Newsletter::instance()->switch_language($options['language']);
+

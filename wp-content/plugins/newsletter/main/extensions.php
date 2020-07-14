@@ -1,10 +1,10 @@
 <?php
+/* @var $this Newsletter */
 defined('ABSPATH') || exit;
 
-@include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
+include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
-$module = Newsletter::instance();
-$extensions = $module->getTnpExtensions();
+$extensions = $this->getTnpExtensions();
 
 $controls->data = get_option('newsletter_main');
 

@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.7.0
+  Version: 6.7.4
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,7 +35,7 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '6.7.0');
+define('NEWSLETTER_VERSION', '6.7.4');
 
 global $newsletter, $wpdb;
 
@@ -185,6 +185,11 @@ class Newsletter extends NewsletterModule {
 	        if ( $this->is_admin_page() ) {
 		        add_action( 'admin_enqueue_scripts', array( $this, 'hook_wp_admin_enqueue_scripts' ) );
 	        }
+                
+                add_action('wp_ajax_tnp_hide_promotion', function () {
+                    update_option('newsletter_promotion', $_POST['id']);
+                    die();
+                });
 
         }
 
@@ -1259,7 +1264,7 @@ class Newsletter extends NewsletterModule {
                 $newsletter_page_url = apply_filters('wpml_permalink', $newsletter_page_url, $language, true);
             }
             if (function_exists('pll_get_post')) {
-                $newsletter_page_url = get_permalink(pll_get_post($page->ID));
+                $newsletter_page_url = get_permalink(pll_get_post($page->ID), $language);
             }
         }
 
@@ -1365,7 +1370,7 @@ class Newsletter extends NewsletterModule {
     function add_notice_to_chosen_profile_page_hook($post_states, $post) {
 
         if ($post->ID == $this->options['page']) {
-            $post_states[] = __('Newsletter subscriber profile page', 'newsletter');
+            $post_states[] = __('Newsletter plugin page, do not delete', 'newsletter');
         }
 
         return $post_states;

@@ -33,6 +33,21 @@ $warning = false;
 
 $warning |= empty($status_options['mail']);
 ?>
+<script>
+    function tnp_close_promotion() {
+        jQuery.post(ajaxurl + "?action=tnp_hide_promotion", {id: 'june-2020'});
+        document.getElementById('tnp-promotion-bar').style.display = 'none';
+    }
+</script>
+
+<?php if (false && get_option('newsletter_promotion') !== 'june-2020' && time() < gmmktime(0, 0, 0, 7, 15, 2020)) { ?>
+<div id="tnp-promotion-bar">
+    <a href="https://www.thenewsletterplugin.com/premium?utm_source=plugin-bar&utm_campaign=june-2020" onclick="tnp_close_promotion(); return true;" target="_blank">We're running a 50% discount offer until July, 15. Check it out.</a>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="javascript:void(tnp_close_promotion('june-2020'))">No, thank you!</a>
+</div>
+<?php } ?>
+
 
 <div class="tnp-drowpdown" id="tnp-header">
     <a href="?page=newsletter_main_index"><img src="<?php echo plugins_url('newsletter'); ?>/images/header/tnp-logo-red-header.png" class="tnp-header-logo" style="vertical-align: bottom;"></a>
@@ -75,11 +90,6 @@ $warning |= empty($status_options['mail']);
                 <li>
                     <a href="?page=newsletter_unsubscription_index"><i class="fas fa-sign-out-alt"></i> <?php _e('Unsubscription', 'newsletter') ?>
                         <small><?php _e('How to give the last goodbye (or avoid it!)', 'newsletter') ?></small></a>
-                </li>
-
-                <li>
-                    <a href="?page=newsletter_subscription_forms"><i class="fas fa-edit"></i> <?php _e('Custom Forms', 'newsletter') ?>
-                        <small><?php _e('Hand coded form storage', 'newsletter') ?></small></a>
                 </li>
 
                 <?php

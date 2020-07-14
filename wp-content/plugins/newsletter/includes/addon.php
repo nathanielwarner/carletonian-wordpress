@@ -22,17 +22,19 @@ class NewsletterAddon {
             }
         }
         add_action('newsletter_init', array($this, 'init'));
+        //Load translations from specific addon /languages/ directory
+        load_plugin_textdomain('newsletter-' . $this->name, false, 'newsletter-' . $this->name . '/languages/');
     }
 
     /**
      * Method to be overridden and invoked on version change or on first install.
-     * 
+     *
      * @param bool $first_install
      */
     function upgrade($first_install = false) {
         
     }
-    
+
     /**
      * Method to be overridden to initialize the add-on. It is invoked when Newsletter
      * fires the <code>newsletter_init</code> event.
@@ -42,8 +44,8 @@ class NewsletterAddon {
     }
 
     /**
-     * General logger for this add-on. 
-     * 
+     * General logger for this add-on.
+     *
      * @return NewsletterLogger
      */
     function get_logger() {
@@ -55,7 +57,7 @@ class NewsletterAddon {
 
     /**
      * Specific logger for administrator actions.
-     * 
+     *
      * @return NewsletterLogger
      */
     function get_admin_logger() {
@@ -65,7 +67,7 @@ class NewsletterAddon {
         return $this->admin_logger;
     }
 
-    /** 
+    /**
      * Loads and prepares the options. It can be used to late initialize the options to save some resources on
      * add-ons which do not need to do something on each page load.
      * @return array
@@ -95,7 +97,7 @@ class NewsletterAddon {
 
     /**
      * Equivalent to $wpdb->query() but logs the event in case of error.
-     * 
+     *
      * @global wpdb $wpdb
      * @param string $query
      */
@@ -110,16 +112,17 @@ class NewsletterAddon {
         }
         return $r;
     }
+
 }
 
 /**
  * Used by mailers add-ons as base-class. Some specific options collected by the mailer
  * are interpreted automatically.
- * 
+ *
  * They are:
- * 
+ *
  * `enabled` if not empty it means the mailer is active and should be registered
- * 
+ *
  * The options are set up in the constructor, there is no need to setup them later.
  */
 class NewsletterMailerAddon extends NewsletterAddon {
@@ -168,47 +171,57 @@ class NewsletterMailerAddon extends NewsletterAddon {
     /**
      * Returns a TNP_Mailer_Message built to send a test message to the <code>$to</code>
      * email address.
-     * 
+     *
      * @param string $to
      * @param string $subject
      * @return TNP_Mailer_Message
      */
-    static function get_test_message($to, $subject = '') {
+    static function get_test_message($to, $subject = '', $type = '') {
         $message = new TNP_Mailer_Message();
         $message->to = $to;
         $message->to_name = '';
-        $message->body = "<!DOCTYPE html>\n";
-        $message->body .= "This is the rich text (HTML) version of a test message.</p>\n";
-        $message->body .= "This is a <strong>bold text</strong></p>\n";
-        $message->body .= "This is a <a href='http://www.thenewsletterplugin.com'>link to www.thenewsletterplugin.com</a></p>\n";
-        $message->body_text = 'This is the TEXT version of a test message. You should see this message only if you email client does not support the rich text (HTML) version.';
+        if (empty($type) || $type == 'html') {
+            $message->body = "<!DOCTYPE html>\n";
+            $message->body .= "This is the rich text (HTML) version of a test message.</p>\n";
+            $message->body .= "This is a <strong>bold text</strong></p>\n";
+            $message->body .= "This is a <a href='http://www.thenewsletterplugin.com'>link to www.thenewsletterplugin.com</a></p>\n";
+        }
+
+        if (empty($type) || $type == 'text') {
+            $message->body_text = 'This is the TEXT version of a test message. You should see this message only if you email client does not support the rich text (HTML) version.';
+        }
+
         $message->headers['X-Newsletter-Email-Id'] = '0';
+
         if (empty($subject)) {
             $message->subject = '[' . get_option('blogname') . '] Test message from Newsletter (' . date(DATE_ISO8601) . ')';
         } else {
             $message->subject = $subject;
         }
+
+        if ($type) {
+            $message->subject .= ' - ' . $type . ' only';
+        }
+        
         $message->from = Newsletter::instance()->options['sender_email'];
         $message->from_name = Newsletter::instance()->options['sender_name'];
         return $message;
     }
 
     /**
-     * Returns a set of test messages to be sent to the specified email address. Used for 
+     * Returns a set of test messages to be sent to the specified email address. Used for
      * turbo mode tests. Each message has a different generated subject.
-     * 
+     *
      * @param string $to The destination mailbox
      * @param int $count Number of message objects to create
      * @return TNP_Mailer_Message[]
      */
-    function get_test_messages($to, $count) {
+    function get_test_messages($to, $count, $type = '') {
         $messages = array();
         for ($i = 0; $i < $count; $i++) {
-            $messages[] = self::get_test_message($to, '[' . get_option('blogname') . '] Test message ' . ($i + 1) . ' from Newsletter (' . date(DATE_ISO8601) . ')');
+            $messages[] = self::get_test_message($to, '[' . get_option('blogname') . '] Test message ' . ($i + 1) . ' from Newsletter (' . date(DATE_ISO8601) . ')', $type);
         }
         return $messages;
     }
 
 }
-
-

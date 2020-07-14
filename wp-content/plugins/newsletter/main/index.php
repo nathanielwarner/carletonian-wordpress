@@ -1,10 +1,7 @@
 <?php
-if ( ! defined( 'ABSPATH' ) ) {
-	exit;
-}
+defined('ABSPATH') ||	exit;
 
-@include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
-
+include_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
 $controls = new NewsletterControls();
 
 wp_enqueue_script( 'tnp-chart' );

@@ -89,7 +89,9 @@ class TNP_Composer {
         $open .= "<style type=\"text/css\">\n";
         $open .= NewsletterEmails::instance()->get_composer_css();
         $open .= "\n</style>\n";
-        $open .= "</head>\n<body style=\"margin: 0; padding: 0;\">\n";
+        $open .= "</head>\n";
+        $open .= '<body style="margin: 0; padding: 0;" dir="' . (is_rtl()?'rtl':'ltr') . '">';
+        $open .= "\n";
         return $open;
     }
 

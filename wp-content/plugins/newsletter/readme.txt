@@ -1,8 +1,8 @@
 === Newsletter ===
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
-Tested up to: 5.4.1
-Stable tag: 6.7.0
+Tested up to: 5.4.2
+Stable tag: 6.7.4
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -112,6 +112,25 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+* Improved posts block in the Automated context with more options
+* Improved the unsubscribe header
+* Removed the Auto-Submitted header
+
+= 6.7.3 =
+
+* Added the company_legal tag
+* Change a column type on statitics table to improve performances on site with big subscription lists (100k+)
+* Fix attempt on posts block for RTL languages
+
+= 6.7.2 =
+
+* Fix post permalink with WPML on language specific setting for Newsletter themes and blocks
+* Added action newsletter_user_reactivated
+
+= 6.7.1 =
+
+* Changed the lists configuration to be more clear
 
 = 6.7.0 =
 

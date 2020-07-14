@@ -21,7 +21,7 @@ class NewsletterStatistics extends NewsletterModule {
     }
 
     function __construct() {
-        parent::__construct('statistics', '1.2.0');
+        parent::__construct('statistics', '1.2.7');
         add_action('wp_loaded', array($this, 'hook_wp_loaded'));
     }
 
@@ -155,20 +155,20 @@ class NewsletterStatistics extends NewsletterModule {
         global $wpdb, $charset_collate;
 
         parent::upgrade();
-
-        $sql = "CREATE TABLE `" . $wpdb->prefix . "newsletter_stats` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `url` varchar(255) NOT NULL DEFAULT '',
-  `user_id` int(11) NOT NULL DEFAULT '0',
+        
+                $sql = "CREATE TABLE `" . $wpdb->prefix . "newsletter_stats` (
+          `id` int(11) NOT NULL AUTO_INCREMENT,
+          `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `url` varchar(255) NOT NULL DEFAULT '',
+          `user_id` int(11) NOT NULL DEFAULT '0',
   `email_id` varchar(10) NOT NULL DEFAULT '0',
-  `ip` varchar(20) NOT NULL DEFAULT '',
-  PRIMARY KEY (`id`),
-  KEY `email_id` (`email_id`),
-  KEY `user_id` (`user_id`)
-) $charset_collate;";
+          `ip` varchar(20) NOT NULL DEFAULT '',
+          PRIMARY KEY (`id`),
+          KEY `email_id` (`email_id`),
+          KEY `user_id` (`user_id`)
+        ) $charset_collate;";
 
-        dbDelta($sql);
+                dbDelta($sql);
 
         if (empty($this->options['key'])) {
             $this->options['key'] = md5($_SERVER['REMOTE_ADDR'] . rand(100000, 999999) . time());
@@ -385,15 +385,17 @@ class NewsletterStatistics extends NewsletterModule {
     /**
      * Returns an object with statistics values
      * 
-     * @global type $wpdb
+     * @global wpdb $wpdb
      * @param TNP_Email $email
      * @return TNP_Report
      */
     function get_statistics($email) {
         global $wpdb;
 
-        if (!is_object($email)) $email = $this->get_email($email);
-        
+        if (!is_object($email)) {
+            $email = $this->get_email($email);
+        }
+
         $report = new TNP_Statistics();
                 
         $report->email_id = $email->id;

@@ -41,21 +41,16 @@ class NewsletterUnsubscription extends NewsletterModule {
                 die();
                 break;
 
+            case 'lu': //Left for backwards compatibility, could be removed after some time
             case 'uc':
-                if ($this->antibot_form_check()) {
+                if (isset($_POST['List-Unsubscribe']) && 'One-Click' === $_POST['List-Unsubscribe']) {
+                    $this->unsubscribe($user, $email);
+                } else if ($this->antibot_form_check()) {
                     $this->unsubscribe($user, $email);
                     $url = $this->build_message_url(null, 'unsubscribed', $user, $email);
                     wp_redirect($url);
                 } else {
                     $this->request_to_antibot_form('Unsubscribe');
-                }
-                die();
-                break;
-
-            case 'lu':
-                // List Unsubscribe - action from oneclick unsubscribe header
-                if ($this->one_click_list_unsubscribe_check()) {
-                    $this->unsubscribe($user, $email);
                 }
                 die();
                 break;
@@ -80,7 +75,7 @@ class NewsletterUnsubscription extends NewsletterModule {
      */
     function unsubscribe($user, $email = null) {
         global $wpdb;
-        
+
         if ($user->status == TNP_User::STATUS_UNSUBSCRIBED) {
             return $user;
         }
@@ -92,7 +87,7 @@ class NewsletterUnsubscription extends NewsletterModule {
 
         do_action('newsletter_user_unsubscribed', $user);
 
-        
+
 
         if ($email) {
             $wpdb->update(NEWSLETTER_USERS_TABLE, array('unsub_email_id' => (int) $email->id, 'unsub_time' => time()), array('id' => $user->id));
@@ -143,6 +138,7 @@ class NewsletterUnsubscription extends NewsletterModule {
         }
         $this->set_user_status($user, TNP_User::STATUS_CONFIRMED);
         $this->add_user_log($user, 'reactivate');
+        do_action('newsletter_user_reactivated', $user);
     }
 
     function hook_newsletter_replace($text, $user, $email) {
@@ -213,23 +209,13 @@ class NewsletterUnsubscription extends NewsletterModule {
             $list_unsubscribe_values[] = "<mailto:$unsubscribe_address?subject=unsubscribe>";
         }
 
-        $unsubscribe_action_url = $this->build_action_url('lu', $user, $email);
+        $unsubscribe_action_url = $this->build_action_url('uc', $user, $email);
         $list_unsubscribe_values[] = "<$unsubscribe_action_url>";
 
-        $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
         $headers['List-Unsubscribe'] = implode(', ', $list_unsubscribe_values);
+        $headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click';
+
         return $headers;
-    }
-
-    /**
-     * @return bool
-     */
-    function one_click_list_unsubscribe_check() {
-        if (isset($_POST['List-Unsubscribe']) && 'One-Click' === $_POST['List-Unsubscribe'] || 'List-Unsubscribe=One-Click' === file_get_contents('php://input')) {
-            return true;
-        }
-
-        return false;
     }
 
 }
