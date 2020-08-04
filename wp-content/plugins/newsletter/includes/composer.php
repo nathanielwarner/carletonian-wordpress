@@ -90,7 +90,7 @@ class TNP_Composer {
         $open .= NewsletterEmails::instance()->get_composer_css();
         $open .= "\n</style>\n";
         $open .= "</head>\n";
-        $open .= '<body style="margin: 0; padding: 0;" dir="' . (is_rtl()?'rtl':'ltr') . '">';
+        $open .= '<body style="margin: 0; padding: 0;" dir="' . (is_rtl() ? 'rtl' : 'ltr') . '">';
         $open .= "\n";
         return $open;
     }
@@ -206,7 +206,7 @@ class TNP_Composer {
     static function prepare_controls($controls, $email) {
         foreach ($email->options as $name => $value) {
             //if (strpos($name, 'composer_') === 0) {
-                $controls->data['options_' . $name] = $value;
+            $controls->data['options_' . $name] = $value;
             //}
         }
 
@@ -244,7 +244,8 @@ class TNP_Composer {
      * @return bool
      */
     static function is_post_field_edited_inline($inline_edit_list, $field_type, $post_id) {
-        if (empty($inline_edit_list)) return false;
+        if (empty($inline_edit_list))
+            return false;
         foreach ($inline_edit_list as $edit) {
             if ($edit['type'] == $field_type && $edit['post_id'] == $post_id) {
                 return true;
@@ -255,6 +256,18 @@ class TNP_Composer {
     }
 
     static function button($options, $prefix = 'button') {
+        $defaults = [
+            'button_url' => '#',
+            $prefix . '_font_family' => 'Helvetica, Arial, sans-serif',
+            $prefix . '_label' => 'Click Here',
+            $prefix . '_font_color' => '#ffffff',
+            $prefix . '_font_weight' => 'bold',
+            $prefix . '_font_size' => 20,
+            $prefix . '_background' => '#256F9C',
+        ];
+        
+        $options = array_merge($defaults, $options);
+        
         $b = '<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">';
         $b .= '<tr>';
         $b .= '<td align="center" bgcolor="' . $options[$prefix . '_background'] . '" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:' . $options[$prefix . '_background'] . '" valign="middle">';
@@ -266,7 +279,7 @@ class TNP_Composer {
         $b .= '</td></tr></table>';
         return $b;
     }
-    
+
     /**
      * 
      * @param TNP_Media $media
@@ -277,20 +290,20 @@ class TNP_Composer {
         if ($media->link) {
             $b .= '<a href="' . $media->link . '" target="_blank" style="text-decoration: none">';
         }
-        
-        $b .= '<img src="' . $media->url . '" width="' . $media->width . '"' 
+
+        $b .= '<img src="' . $media->url . '" width="' . $media->width . '"'
                 . ' height="' . $media->height . '"'
                 . ' alt="' . esc_attr($media->alt) . '"'
                 . ' border="0" style="max-width: 100%">';
-                
+
         if ($media->link) {
             $b .= '</a>';
         }
-        
+
         return $b;
     }
 
-    /** 
+    /**
      * Returns a WP media ID for the specified post (or false if nothing can be found)
      * looking for the featured image or, if missing, taking the first media in the gallery and
      * if again missing, searching the first reference to a media in the post content.
@@ -317,10 +330,10 @@ class TNP_Composer {
         }
 
         $post = get_post($post_id);
-        
+
         $r = preg_match('/wp-image-(\d+)/', $post->post_content, $matches);
         if ($matches) {
-            return (int)$matches[1];
+            return (int) $matches[1];
         }
 
         return false;
@@ -376,7 +389,7 @@ class TNP_Composer_Grid_System {
 
         $row_idx = (int) floor($this->cells_counter / $this->cells_per_row);
         $this->rows[$row_idx]->add_cell($cell);
-        $this->cells_counter ++;
+        $this->cells_counter++;
     }
 
     private function add_row($row) {
@@ -491,11 +504,11 @@ class TNP_Composer_Grid_Cell {
         $column_template = $this->get_template();
         $column = str_replace(
                 [
-            'TNP_ALIGN_PH',
-            'TNP_VALIGN_PH',
-            'TNP_WIDTH_PH',
-            'TNP_CLASS_PH',
-            'TNP_COLUMN_CONTENT_PH'
+                    'TNP_ALIGN_PH',
+                    'TNP_VALIGN_PH',
+                    'TNP_WIDTH_PH',
+                    'TNP_CLASS_PH',
+                    'TNP_COLUMN_CONTENT_PH'
                 ], [
             $this->args['align'],
             $this->args['valign'],

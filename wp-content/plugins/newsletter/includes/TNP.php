@@ -238,7 +238,7 @@ class TNP {
         }
 
         // Lists (an array under the key "lists")
-        // Preferences (field names are nl[] and values the list number so special forms with radio button can work)
+        //(field names are nl[] and values the list number so special forms with radio button can work)
         if (isset($params['lists']) && is_array($params['lists'])) {
             foreach ($params['lists'] as $list_id) {
                 $user['list_' . ( (int) $list_id )] = 1;

@@ -47,7 +47,6 @@ if (empty($options['image']['id'])) {
 if (!empty($options['width'])) {
     $media->set_width($options['width']);
 }
-
 $url = $options['url'];
 ?>
 <style>

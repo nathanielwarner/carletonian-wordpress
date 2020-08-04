@@ -14,8 +14,13 @@
                         <div class="container-fluid yop-poll-hook">
                             <div class="tabs-container">
                                 <!-- Nav tabs -->
-                                <ul class="main nav nav-tabs settings-steps" role="tablist">
+                                <ul class="main-settings nav nav-tabs settings-steps" role="tablist">
                                     <li role="presentation" id="tab-notifications"  class="active">
+                                        <a href="#settings-general" aria-controls="general" role="tab" data-toggle="tab">
+                                            <?php _e( 'General', 'yop-poll' );?>
+                                        </a>
+                                    </li>
+                                    <li role="presentation" id="tab-notifications"  class="">
                                         <a href="#settings-notifications" aria-controls="notifications" role="tab" data-toggle="tab">
                                             <?php _e( 'Notifications', 'yop-poll' );?>
                                         </a>
@@ -32,39 +37,61 @@
                                     </li>
                                 </ul>
                                 <div class="tab-content settings-steps-content">
-                                    <div role="tabpanel" class="tab-pane active" id="settings-notifications">
+                                    <div role="tabpanel" class="tab-pane active" id="settings-general">
+                                        <div class="row submenu" style="padding-top: 30px;">
+                                            <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                                <?php _e( 'Remove plugin data when uninstalling', 'yop-poll-pro' ); ?>
+                                            </div>
+                                            <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                                <?php
+                                                $remove_plugin_data_yes = '';
+                                                $remove_plugin_data_no = '';
+                                                if ( ( true === isset( $settings['general']['remove-data'] ) ) && ( 'yes' === $settings['general']['remove-data'] ) ) {
+                                                    $remove_plugin_data_yes = 'selected';
+                                                } else {
+                                                    $remove_plugin_data_no = 'selected';
+                                                }
+                                                ?>
+                                                <select name="general-remove-data" id="general-remove-data" class="general-remove-data admin-select" style="width:100%">
+                                                    <option value="yes" <?php echo $remove_plugin_data_yes;?>><?php _e( 'Yes', 'yop-poll-pro' );?></option>
+                                                    <option value="no" <?php echo $remove_plugin_data_no;?>><?php _e( 'No', 'yop-poll-pro' );?></option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div role="tabpanel" class="tab-pane" id="settings-notifications">
                                         <div class="row submenu" style="padding-top: 20px;">
                                             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                                 <div class="form-group">
                                                     <label for="email-from-name">
                                                         <?php _e( 'From Name', 'yop-poll' ); ?>
                                                     </label>
-                                                    <input class="form-control settings-required-field" name="email-from-name" id="email-from-name" value="<?php echo isset( $settings['email']['from-name'] ) ? esc_html ( $settings['email']['from-name'] ) : ''; ?>">
+                                                    <input class="form-control settings-required-field" name="email-from-name" id="email-from-name" value="<?php echo isset( $settings['notifications']['new-vote']['from-name'] ) ? esc_html ( $settings['notifications']['new-vote']['from-name'] ) : ''; ?>">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="email-from-email">
                                                         <?php _e( 'From Email', 'yop-poll' ); ?>
                                                     </label>
-                                                    <input class="form-control settings-required-field" name="email-from-email" id="email-from-email" value="<?php echo isset( $settings['email']['from-email'] ) ? esc_html ( $settings['email']['from-email'] ) : ''; ?>">
+                                                    <input class="form-control settings-required-field" name="email-from-email" id="email-from-email" value="<?php echo isset( $settings['notifications']['new-vote']['from-email'] ) ? esc_html ( $settings['notifications']['new-vote']['from-email'] ) : ''; ?>">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="email-recipients">
                                                         <?php _e( 'Recipients', 'yop-poll' ); ?>
                                                     </label>
                                                     <div><?php _e( 'Use comma separated email addresses: email@xmail.com,email2@ymail.com', 'yop-poll' ) ?></div>
-                                                    <input class="form-control settings-required-field" name="email-recipients" id="email-recipients" value="<?php echo isset( $settings['email']['recipients'] ) ? esc_html ( $settings['email']['recipients'] ) : ''; ?>">
+                                                    <input class="form-control settings-required-field" name="email-recipients" id="email-recipients" value="<?php echo isset( $settings['notifications']['new-vote']['recipients'] ) ? esc_html ( $settings['notifications']['new-vote']['recipients'] ) : ''; ?>">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="email-subject">
                                                         <?php _e( 'Subject', 'yop-poll' ); ?>
                                                     </label>
-                                                    <input class="form-control settings-required-field" name="email-subject" id="email-subject" value="<?php echo isset( $settings['email']['subject'] ) ? esc_html ( $settings['email']['subject'] ) : ''; ?>">
+                                                    <input class="form-control settings-required-field" name="email-subject" id="email-subject" value="<?php echo isset( $settings['notifications']['new-vote']['subject'] ) ? esc_html ( $settings['notifications']['new-vote']['subject'] ) : ''; ?>">
                                                 </div>
                                                 <div class="form-group">
                                                     <label for="email-message">
                                                         <?php _e( 'Body', 'yop-poll' ); ?>
                                                     </label>
-                                                    <textarea class="form-control settings-required-field" name="email-message" id="email-message" rows="15"><?php echo isset( $settings['email']['message'] ) ? esc_html ( $settings['email']['message'] ) : ''; ?></textarea>
+                                                    <textarea class="form-control settings-required-field" name="email-message" id="email-message" rows="15"><?php echo isset( $settings['notifications']['new-vote']['message'] ) ? esc_html ( $settings['notifications']['new-vote']['message'] ) : ''; ?></textarea>
                                                 </div>
                                             </div>
                                         </div>

@@ -2,8 +2,9 @@
 Contributors: 5um17
 Tags: search, postmeta, taxonomy, advance search, category search, page search, tag search, author search, search results, posts per page, exact search
 Requires at least: 4.0
-Tested up to: 5.2.4
-Stable tag: 1.3
+Tested up to: 5.4.2
+Requires PHP: 7.0
+Stable tag: 1.3.1
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -31,7 +32,7 @@ You can include or exclude post types to appear in search results.
 
 = Links =
 
-* [Complete documentation](https://www.secretsofgeeks.com/2014/09/wordpress-search-tags-and-categories.html)
+* [Complete documentation](https://wpes.secretsofgeeks.com/)
 * [GitHub repository](https://github.com/5um17/wp-extended-search)
 
 == Installation ==
@@ -41,16 +42,15 @@ You can include or exclude post types to appear in search results.
   Download WP Extended Search and upload it to your webserver via your FTP application. The WordPress codex contains [instructions on how to do this here](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).
 * Activate the plugin and navigate to (Settings > Extended Search) to choose your desired search settings.
 
-== Frequently Asked Questions ==
-
-= Do you have any question? =
-
-Please use plugin [support forum](https://wordpress.org/support/plugin/wp-extended-search) 
-
 == Screenshots ==
 1. WP Extented Search settings page
 
 == Changelog ==
+
+= 1.3.1 - 2020-07-25 =
+* Fixed issue with ACF relationship post field admin search.
+* Fixed issue with Elementor admin search.
+* Added support for new query variable [`disable_wpes`](https://github.com/5um17/wp-extended-search/issues/1#issuecomment-661307679) to disable WPES search. 
 
 = 1.3 - 2019-10-21 =
 * Fixed media search issue

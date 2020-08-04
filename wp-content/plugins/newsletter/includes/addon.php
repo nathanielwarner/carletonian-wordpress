@@ -181,10 +181,8 @@ class NewsletterMailerAddon extends NewsletterAddon {
         $message->to = $to;
         $message->to_name = '';
         if (empty($type) || $type == 'html') {
-            $message->body = "<!DOCTYPE html>\n";
-            $message->body .= "This is the rich text (HTML) version of a test message.</p>\n";
-            $message->body .= "This is a <strong>bold text</strong></p>\n";
-            $message->body .= "This is a <a href='http://www.thenewsletterplugin.com'>link to www.thenewsletterplugin.com</a></p>\n";
+            $message->body = file_get_contents(NEWSLETTER_DIR . '/includes/test-message.html');
+            $message->body = str_replace('{plugin_url}', NEWSLETTER_URL, $message->body);
         }
 
         if (empty($type) || $type == 'text') {

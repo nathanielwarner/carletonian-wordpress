@@ -43,7 +43,7 @@ class WP_ES_admin {
                 do_settings_sections('wp-es');
                 submit_button(__('Save Changes'), 'primary', 'submit', false);
                 echo '&nbsp;&nbsp;';
-                submit_button(__('Reset to WP default'), 'secondary', 'reset', false); ?>
+                submit_button(__('Reset to WP default', 'wp-extended-search'), 'secondary', 'reset', false); ?>
             </form>
             
         </div><?php
@@ -423,7 +423,7 @@ class WP_ES_admin {
         }
         
         if (is_array($links)) {
-            $links[] = '<a href="https://www.secretsofgeeks.com/2014/09/wordpress-search-tags-and-categories.html" target="_blank">'
+            $links[] = '<a href="https://wpes.secretsofgeeks.com/" target="_blank">'
                     . __('Docs', 'wp-extended-search')
                     . '</a>';
             $links[] = '<a href="https://wordpress.org/plugins/search/5um17/" target="_blank">'

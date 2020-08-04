@@ -108,7 +108,7 @@ class NewsletterEmails extends NewsletterModule {
         if (isset($controls->data['inline_edits'])) {
             $inline_edits = $controls->data['inline_edits'];
         }
-        echo '<input type="hidden" name="options[inline_edits]" value="' . esc_attr(serialize($inline_edits)) . '">';
+        echo '<input type="hidden" name="options[inline_edits]" value="' . $this->options_encode($inline_edits) . '">';
 
         ob_start();
         include $block['dir'] . '/options.php';
@@ -179,7 +179,7 @@ class NewsletterEmails extends NewsletterModule {
      * so they can act in the right manner.
      *
      * $context contains a type and, for automated, the last_run.
-     * 
+     *
      * $email can actually be even a string containing the full newsletter HTML code.
      *
      * @param TNP_Email $email (Rinominare)
@@ -221,7 +221,6 @@ class NewsletterEmails extends NewsletterModule {
 
             ob_start();
             $out = $this->render_block($options['block_id'], true, $options, $context);
-            //var_dump($out);
             if ($out['return_empty_message'] || $out['stop']) {
                 if (is_object($email)) {
                     return false;
@@ -252,7 +251,7 @@ class NewsletterEmails extends NewsletterModule {
             $x = strpos($theme, '>', $x);
             $result = substr($theme, 0, $x + 1) . $result . '</body></html>';
         } else {
-            
+
         }
 
         if (is_object($email)) {
@@ -298,6 +297,8 @@ class NewsletterEmails extends NewsletterModule {
             $options = array();
         }
 
+        $options = wp_kses_post_deep($options);
+
         $block_options = get_option('newsletter_main');
 
         $block = $this->get_block($block_id);
@@ -325,11 +326,11 @@ class NewsletterEmails extends NewsletterModule {
         }
 
         $out = array('subject' => '', 'return_empty_message' => false, 'stop' => false, 'skip' => false);
-        
+
         $dir = is_rtl()?'rtl':'ltr';
         $align_left = is_rtl()?'right':'left';
         $align_right = is_rtl()?'left':'right';
-        
+
 
         ob_start();
         $logger = $this->logger;
@@ -417,6 +418,10 @@ class NewsletterEmails extends NewsletterModule {
      * @param type $wrapper
      */
     function tnpc_render_callback() {
+        if (!check_ajax_referer('save')) {
+            $this->dienow('Expired request');
+        }
+
         $block_id = $_POST['b'];
         $wrapper = isset($_POST['full']);
         $options = $this->restore_options_from_request();
@@ -455,7 +460,7 @@ class NewsletterEmails extends NewsletterModule {
     /**
      * Returns the button linked to the correct "edit" page for the passed newsletter. The edit page can be an editor
      * or the targeting page (it depends on newsletter status).
-     * 
+     *
      * @param TNP_Email $email
      */
     function get_edit_button($email) {
@@ -692,7 +697,7 @@ class NewsletterEmails extends NewsletterModule {
     /**
      * Builds a block data structure starting from the folder containing the block
      * files.
-     * 
+     *
      * @param string $dir
      * @return array | WP_Error
      */
@@ -727,7 +732,7 @@ class NewsletterEmails extends NewsletterModule {
     }
 
     /**
-     * 
+     *
      * @param type $dir
      * @return type
      */
@@ -765,8 +770,9 @@ class NewsletterEmails extends NewsletterModule {
      */
     function get_blocks() {
 
-        if (!is_null($this->blocks))
+        if (!is_null($this->blocks)) {
             return $this->blocks;
+        }
 
         $this->blocks = $this->scan_blocks_dir(__DIR__ . '/blocks');
 
@@ -776,10 +782,8 @@ class NewsletterEmails extends NewsletterModule {
 
         $dirs = apply_filters('newsletter_blocks_dir', array());
 
-        //var_dump($dirs);
-        //die();
-
-        $this->logger->debug('Block dirs: ' . print_r($dirs, true));
+        $this->logger->debug('Block dirs:');
+        $this->logger->debug($dirs);
 
         foreach ($dirs as $dir) {
             $dir = str_replace('\\', '/', $dir);
@@ -929,7 +933,7 @@ class NewsletterEmails extends NewsletterModule {
 
     /**
      * Send an email to the test subscribers.
-     * 
+     *
      * @param TNP_Email $email Could be any object with the TNP_Email attributes
      * @param NewsletterControls $controls
      */
@@ -984,12 +988,12 @@ class NewsletterEmails extends NewsletterModule {
 
             // Deserialize inline edits when
             // render is preformed on saving block options
-            if (isset($options['inline_edits']) && is_serialized($options['inline_edits'])) {
-                $options['inline_edits'] = unserialize($options['inline_edits']);
-            }
+	        if ( isset( $options['inline_edits'] ) && ! is_array( $options['inline_edits'] ) ) {
+		        $options['inline_edits'] = $this->options_decode( $options['inline_edits'] );
+	        }
 
             // Restore inline edits from data-json
-            // coming from inline editing 
+            // coming from inline editing
             // and merge with current inline edit
             if (isset($_POST['encoded_options'])) {
                 $decoded_options = $this->options_decode($_POST['encoded_options']);

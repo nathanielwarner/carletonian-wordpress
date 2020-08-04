@@ -118,6 +118,11 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.1.7 =
+* fixed broken css rule
+* added option to keep/remove plugin data on uninstall
+* added default message with tags for email notifications
+
 = 6.1.6 =
 * fixed issue with blocking voters when wordpress voting is enabled
 

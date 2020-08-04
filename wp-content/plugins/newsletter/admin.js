@@ -53,6 +53,25 @@ function tnp_select_toggle(s, t) {
     }
 }
 
+/*
+ * Used by the date field of NewsletterControls
+ */
+function tnp_date_onchange(field) {
+    let id = field.id.substring(0, field.id.lastIndexOf('_'));
+    let base_field = document.getElementById('options-' + id);
+    console.log(base_field);
+    //let form = field.form;
+    let year = document.getElementById(id + '_year');
+    let month = document.getElementById(id + '_month');
+    let day = document.getElementById(id + '_day');
+    if (year.value === '' || month.value === '' || day.value === '') {
+        base_field.value = 0;
+    } else {
+        base_field.value = new Date(year.value, month.value, day.value, 12, 0, 0).getTime()/1000;
+    }
+    //this.form.elements['options[" . esc_attr($name) . "]'].value = new Date(document.getElementById('" . esc_attr($name) . "_year').value, document.getElementById('" . esc_attr($name) . "_month').value, document.getElementById('" . esc_attr($name) . "_day').value, 12, 0, 0).getTime()/1000";
+}
+
 window.onload = function () {
     jQuery('.tnp-counter-animation').each(function () {
         var _this = jQuery(this);

@@ -891,6 +891,7 @@ class YOP_Poll_Basic {
 			if ( true === self::should_display_results( $poll ) ) {
 				$poll_for_display = YOP_Poll_Polls::get_poll_for_results( $poll->id );
 				$params['show_results'] = '1';
+				$params['ended'] = '1';
 				$poll_ready_for_output = self::prepare_regular_view_for_display( $poll_for_display, $params );
 			} else {
 				$params['ended'] = '1';

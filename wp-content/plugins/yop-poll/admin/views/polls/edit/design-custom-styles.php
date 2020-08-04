@@ -56,7 +56,7 @@
 								</div>
 							</div>
 							<?php
-							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) || ( '' !== $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) {
+							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) || ( '' == $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) {
 								$poll->meta_data['style']['poll']['paddingLeftRight'] = '0';
 							}
 							?>
@@ -72,7 +72,7 @@
 								</div>
 							</div>
 							<?php
-							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) || ( '' !== $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) {
+							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) || ( '' == $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) {
 								$poll->meta_data['style']['poll']['paddingTopBottom'] = '0';
 							}
 							?>

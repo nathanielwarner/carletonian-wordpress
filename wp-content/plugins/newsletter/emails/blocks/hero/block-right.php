@@ -32,6 +32,8 @@
     }    
 </style>
 
+<!-- layout: right -->
+
 <div dir="rtl">
 
     <table width="50%" align="right" class="hero-table" border="0" cellspacing="0" cellpadding="0">

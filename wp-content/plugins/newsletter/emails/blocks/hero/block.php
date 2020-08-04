@@ -23,6 +23,7 @@ $defaults = array(
     'block_background' => '#ffffff',
     'layout' => 'full',
     'button_url' => '',
+    'button_font_family' => 'Helvetica, Arial, sans-serif',
     'button_label' => 'Click Here',
     'button_font_color' => '#ffffff',
     'button_font_weight' => 'bold',
@@ -79,12 +80,20 @@ $layout = $options['layout'];
 if (!empty($options['image']['id'])) {
     if ($layout == 'full') {
         $media = tnp_resize($options['image']['id'], array(600, 0));
-        $media->set_width(600 - $options['block_padding_left'] - $options['block_padding_right']);
+        if ($media) {
+            $media->set_width(600 - $options['block_padding_left'] - $options['block_padding_right']);
+        }
     } else {
+        
         $media = tnp_resize($options['image']['id'], array(600, 0));
-        $media->set_width(300 - $options['block_padding_left']);
+        if ($media) {
+            $media->set_width(300 - $options['block_padding_left']);
+        }
     }
-    $media->alt = $options['title'];
+    if ($media) {
+        $media->alt = $options['title'];
+        $media->link = $options['button_url'];
+    }
 } else {
     $media = false;
 }

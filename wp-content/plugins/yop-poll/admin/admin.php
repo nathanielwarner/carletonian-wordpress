@@ -117,6 +117,10 @@ class YOP_Poll_Admin {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_1_6();
 			}
+			if ( true === version_compare( $installed_version, '6.1.7', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_1_7();
+			}
         }
 	}
     public function load_translations() {
@@ -545,7 +549,7 @@ class YOP_Poll_Admin {
 			echo YOP_Poll_View::render( $template, array(
 				'templates' => $templates,
 				'skins' => $skins,
-				'email_settings' => YOP_Poll_Settings::get_email_settings(),
+				'notifications' => YOP_Poll_Settings::get_notifications(),
 				'integrations' => YOP_Poll_Settings::get_integrations(),
 				'date_format' => self::$date_format
 			) );

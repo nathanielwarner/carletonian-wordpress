@@ -142,9 +142,10 @@ $fields = new NewsletterFields($controls);
 </div>
 
 <script type="text/javascript">
-    TNP_PLUGIN_URL = "<?php echo NEWSLETTER_URL ?>";
-    TNP_HOME_URL = "<?php echo home_url('/', is_ssl() ? 'https' : 'http') ?>";
-    tnp_context_type = "<?php echo $context_type ?>";
+    TNP_PLUGIN_URL = "<?php echo esc_js(NEWSLETTER_URL) ?>";
+    TNP_HOME_URL = "<?php echo esc_js(home_url('/', is_ssl() ? 'https' : 'http')) ?>";
+    tnp_context_type = "<?php echo esc_js($context_type) ?>";
+    tnp_nonce = '<?php echo esc_js(wp_create_nonce('save'))?>';
 </script>
 <script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/emails/tnp-composer/_scripts/newsletter-builder-v2.js?ver=<?php echo time() ?>"></script>
 

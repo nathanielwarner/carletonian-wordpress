@@ -1264,6 +1264,50 @@ class NewsletterControls {
     }
 
     /**
+     * Creates a set of fields to collect a date and sends back the triplet year, month and day.
+     * 
+     * @param string $name
+     */
+    function date2($name) {
+        $year = $this->get_value($name . '_year');
+        $day = $this->get_value($name . '_day');
+        $month = $this->get_value($name . '_month');
+
+        echo '<select name="options[' . $name . '_month]">';
+        echo '<option value="">-</option>';
+        for ($i = 1; $i <= 12; $i++) {
+            echo '<option value="' . $i . '"';
+            if ($month - 1 == $i) {
+                echo ' selected';
+            }
+            echo '>' . date('F', mktime(0, 0, 0, $i + 1, 1, 2000)) . '</option>';
+        }
+        echo '</select>';
+
+        echo '<select name="options[' . esc_attr($name) . '_day]">';
+        echo '<option value="">-</option>';
+        for ($i = 1; $i <= 31; $i++) {
+            echo '<option value="' . $i . '"';
+            if ($day == $i) {
+                echo ' selected';
+            }
+            echo '>' . $i . '</option>';
+        }
+        echo '</select>';
+
+        echo '<select name="options[' . esc_attr($name) . '_year]">';
+        echo '<option value="">-</option>';
+        for ($i = 2011; $i <= 2021; $i++) {
+            echo '<option value="' . $i . '"';
+            if ($year == $i) {
+                echo ' selected';
+            }
+            echo '>' . $i . '</option>';
+        }
+        echo '</select>';
+    }
+    
+    /**
      * Date and time (hour) selector. Timestamp stored.
      */
     function datetime($name) {
@@ -1700,7 +1744,20 @@ class NewsletterControls {
     }
 
     static function field_help($url, $text = '') {
-        echo '<a href="', $url, '" target="_blank" style="text-decoration: none" title="' . esc_attr(__('Read more', 'newsletter')) . '"><i class="fas fa-question-circle"></i>&nbsp;', $text, '</a>';
+        if (strpos($url, 'http') !== 0) {
+            $url = 'https://www.thenewsletterplugin.com' . $url;
+        }
+        echo '<a href="', $url, '" target="_blank" style="text-decoration: none" title="' . esc_attr(__('Read more', 'newsletter')) . '"><i class="fas fa-question-circle"></i>';
+        if ($text) echo '&nbsp;', $text;
+        echo '</a>';
+    }
+    
+    static function field_label($label, $help_url = false) {
+        echo $label;
+        if ($help_url) {
+            echo '&nbsp';
+            self::field_help($help_url);
+        }
     }
 
     /**

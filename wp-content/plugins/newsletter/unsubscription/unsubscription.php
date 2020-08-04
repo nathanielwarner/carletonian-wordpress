@@ -30,7 +30,7 @@ class NewsletterUnsubscription extends NewsletterModule {
 
         if (in_array($action, ['u', 'uc', 'lu', 'reactivate'])) {
             if (!$user) {
-                $this->dienow('The subscriber was not found.');
+                $this->dienow('The subscriber was not found.', '', 404);
             }
         }
 

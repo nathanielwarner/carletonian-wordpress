@@ -85,13 +85,7 @@ if ($controls->is_action('test')) {
             $controls->messages .= '<strong>Warning:</strong> you are using as test email the same address configured as sender in main configuration. Test can fail because of that.<br>';
         }
 
-        $message = new TNP_Mailer_Message();
-        $message->body = '<p>This is an <b>HTML</b> test email sent using the sender data set on Newsletter main setting. <a href="https://www.thenewsletterplugin.com">This is a link to an external site</a>.</p>';
-        $message->body_text = 'This is a textual test email part sent using the sender data set on Newsletter main setting.';
-        $message->to = $controls->data['test_email'];
-        $message->subject = 'Newsletter test email at ' . date(DATE_ISO8601);
-        $message->from = $this->options['sender_email'];
-        $message->from_name = $this->options['sender_name'];
+        $message = NewsletterMailerAddon::get_test_message($controls->data['test_email'], 'Newsletter test email at ' . date(DATE_ISO8601));
 
         $r = $this->deliver($message);
 

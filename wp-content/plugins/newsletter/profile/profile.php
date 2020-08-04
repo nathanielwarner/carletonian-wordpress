@@ -28,7 +28,8 @@ class NewsletterProfile extends NewsletterModule {
 
         if (in_array($action, ['p', 'profile', 'pe', 'profile-save', 'profile_export', 'ps'])) {
             if (!$user || $user->status != TNP_User::STATUS_CONFIRMED) {
-                $this->dienow(__('The subscriber was not found or is not confirmed.', 'newsletter'));
+
+                $this->dienow(__('The subscriber was not found or is not confirmed.', 'newsletter'), '', 404);
             }
         }
 
@@ -244,23 +245,22 @@ class NewsletterProfile extends NewsletterModule {
             $buffer .= "</div>\n";
         }
 
-	    if ( $this->is_multilanguage() ) {
+        if ($this->is_multilanguage()) {
 
-		    $languages = $this->get_languages();
+            $languages = $this->get_languages();
 
-		    $buffer .= '<div class="tnp-field tnp-field-language">';
-		    $buffer .= '<label>' . __( 'Language', 'Newsletter' ) . '</label>';
-		    $buffer .= '<select name="nlng" class="tnp-language">';
+            $buffer .= '<div class="tnp-field tnp-field-language">';
+            $buffer .= '<label>' . __('Language', 'Newsletter') . '</label>';
+            $buffer .= '<select name="nlng" class="tnp-language">';
 
-		    $buffer .= '<option value="" disabled ' . ( empty( $user->language ) ? ' selected' : '' ) . '>' . __( 'Select language', 'newsletter' ) . '</option>';
-		    foreach ( $languages as $key => $language ) {
-			    $buffer .= '<option value="' . $key . '"' . ( $user->language == $key ? ' selected' : '' ) . '>' . $language . '</option>';
-		    }
+            $buffer .= '<option value="" disabled ' . ( empty($user->language) ? ' selected' : '' ) . '>' . __('Select language', 'newsletter') . '</option>';
+            foreach ($languages as $key => $language) {
+                $buffer .= '<option value="' . $key . '"' . ( $user->language == $key ? ' selected' : '' ) . '>' . $language . '</option>';
+            }
 
-		    $buffer .= '</select>';
-		    $buffer .= "</div>\n";
-
-	    }
+            $buffer .= '</select>';
+            $buffer .= "</div>\n";
+        }
 
         // Profile
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
@@ -409,12 +409,12 @@ class NewsletterProfile extends NewsletterModule {
                 die('Wrong sex field');
             }
         }
-	    if ( isset( $_REQUEST['nlng'] ) ) {
-		    $languages = $this->get_languages();
-		    if ( isset( $languages[ $_REQUEST['nlng'] ] ) ) {
-			    $data['language'] = $_REQUEST['nlng'];
-		    }
-	    }
+        if (isset($_REQUEST['nlng'])) {
+            $languages = $this->get_languages();
+            if (isset($languages[$_REQUEST['nlng']])) {
+                $data['language'] = $_REQUEST['nlng'];
+            }
+        }
 
         // Lists. If not list is present or there is no list to choose or all are unchecked.
         $nl = array();

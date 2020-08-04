@@ -74,13 +74,17 @@ class TNP_Profile {
     public $status;
     public $type;
     public $options;
+    public $placeholder;
+    public $rule;
 
-    public function __construct($id, $name, $status, $type, $options) {
+    public function __construct($id, $name, $status, $type, $options, $placeholder, $rule) {
         $this->id = $id;
         $this->name = $name;
         $this->status = $status;
         $this->type = $type;
         $this->options = $options;
+        $this->placeholder = $placeholder;
+        $this->rule = $rule;
     }
 
     function is_select() {
@@ -91,35 +95,67 @@ class TNP_Profile {
         return $this->type == self::TYPE_TEXT;
     }
 
+    function is_required() {
+        return $this->rule == 1;
+    }
+
 }
 
 class TNP_Profile_Service {
 
-    static function get_profiles($language = '', $type = null) {
+    /**
+     * 
+     * @param string $language
+     * @param string $type
+     * @return TNP_Profile[]
+     */
+    static function get_profiles($language = '', $type = '') {
 
-        static $profiles = array();
-        if (isset($profiles[$language])) {
-            return $profiles[$language];
+        static $profiles = [];
+        $k = $language . $type;
+
+        if (isset($profiles[$k])) {
+            return $profiles[$k];
         }
 
-        $profiles[$language] = array();
-        $data = NewsletterSubscription::instance()->get_options('profile', $language);
-        for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i ++) {
-            if (empty($data['profile_' . $i])) {
+        $profiles[$k] = [];
+        $profile_options = NewsletterSubscription::instance()->get_options('profile', $language);
+        for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
+            if (empty($profile_options['profile_' . $i])) {
                 continue;
             }
-            $profile = new TNP_Profile(
-                    $i, $data['profile_' . $i], (int) $data['profile_' . $i . '_status'], $data['profile_' . $i . '_type'], self::string_db_options_to_array($data['profile_' . $i . '_options'])
-            );
+            $profile = self::create_profile_from_options($profile_options, $i);
 
-            if (is_null($type) ||
+            if (empty($type) ||
                     ( $type == TNP_Profile::TYPE_SELECT && $profile->is_select() ) ||
                     ( $type == TNP_Profile::TYPE_TEXT && $profile->is_text() )) {
-                $profiles[$language][] = $profile;
+                $profiles[$k]['' . $i] = $profile;
             }
         }
 
-        return $profiles[$language];
+        return $profiles[$k];
+    }
+
+    static function get_profile_by_id($id, $language = '') {
+
+        $profiles = self::get_profiles($language);
+        if (isset($profiles[$id])) return $profiles[$id];
+        return null;
+    }
+
+    /**
+     * @return TNP_Profile
+     */
+    private static function create_profile_from_options($options, $id) {
+        return new TNP_Profile(
+                $id,
+                $options['profile_' . $id],
+                (int) $options['profile_' . $id . '_status'],
+                $options['profile_' . $id . '_type'],
+                self::string_db_options_to_array($options['profile_' . $id . '_options']),
+                $options['profile_' . $id . '_placeholder'],
+                $options['profile_' . $id . '_rules']
+        );
     }
 
     /**
@@ -142,6 +178,7 @@ class TNP_Profile_Service {
  * @property string $surname The subscriber last name
  * @property string $status The subscriber status
  * @property string $language The subscriber language code 2 chars lowercase
+ * @property string $token The subscriber secret token
  */
 abstract class TNP_User {
 
@@ -700,7 +737,7 @@ class NewsletterModule {
     }
 
     function admin_menu() {
-
+        
     }
 
     function add_menu_page($page, $title, $capability = '') {
@@ -1078,6 +1115,10 @@ class NewsletterModule {
      * @return string
      */
     function get_user_key($user, $context = '') {
+        if (empty($user->token)) {
+            $this->refresh_user_token($user);
+        }
+
         if ($context == 'preconfirm') {
             return $user->id . '-' . md5($user->token);
         }
@@ -1141,6 +1182,17 @@ class NewsletterModule {
         if (is_user_logged_in()) {
             return $this->get_user_by_wp_user_id(get_current_user_id());
         }
+        return null;
+    }
+
+    function get_user_count($refresh = false) {
+        global $wpdb;
+        $user_count = get_transient('newsletter_user_count');
+        if ($user_count === false || $refresh) {
+            $user_count = $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='C'");
+            set_transient('newsletter_user_count', $user_count, DAY_IN_SECONDS);
+        }
+        return $user_count;
     }
 
     /**
@@ -1328,15 +1380,13 @@ class NewsletterModule {
      * @return string
      */
     function inline_css($content, $strip_style_blocks = false) {
-// CSS
         $matches = array();
-// "s" skips line breaks
+        // "s" skips line breaks
         $styles = preg_match('|<style>(.*?)</style>|s', $content, $matches);
         if (isset($matches[1])) {
             $style = str_replace(array("\n", "\r"), '', $matches[1]);
             $rules = array();
             preg_match_all('|\s*\.(.*?)\{(.*?)\}\s*|s', $style, $rules);
-//print_r($rules);
             for ($i = 0; $i < count($rules[1]); $i++) {
                 $class = trim($rules[1][$i]);
                 $value = trim($rules[2][$i]);
@@ -1665,11 +1715,11 @@ class NewsletterModule {
                 $email = null;
             }
         }
-        
+
         $initial_language = $this->get_current_language();
-        
+
         if ($user && $user->language) {
-            $this->switch_language($user->language);    
+            $this->switch_language($user->language);
         }
 
 
@@ -1823,6 +1873,10 @@ class NewsletterModule {
     }
 
     public static function antibot_form_check($captcha = false) {
+
+        if (!NEWSLETTER_ANTIBOT)
+            return true;
+
         if (strtolower($_SERVER['REQUEST_METHOD']) != 'post') {
             return false;
         }
@@ -2134,28 +2188,10 @@ class NewsletterModule {
 
     protected function generate_admin_notification_message($user) {
 
-        $message = "Subscriber details:\n\n" .
-                "email: " . $user->email . "\n" .
-                "first name: " . $user->name . "\n" .
-                "last name: " . $user->surname . "\n" .
-                "gender: " . $user->sex . "\n";
+        $message = file_get_contents(__DIR__ . '/notification.html');
 
-        $lists = $this->get_lists();
-        foreach ($lists as $list) {
-            $field = 'list_' . $list->id;
-            $message .= $list->name . ': ' . ( empty($user->$field) ? "NO" : "YES" ) . "\n";
-        }
-
-        for ($i = 0; $i < NEWSLETTER_PROFILE_MAX; $i ++) {
-            if (empty($this->options_profile['profile_' . $i])) {
-                continue;
-            }
-            $field = 'profile_' . $i;
-            $message .= $this->options_profile['profile_' . $i] . ': ' . $user->$field . "\n";
-        }
-
-        $message .= "token: " . $user->token . "\n" .
-                "status: " . $user->status . "\n";
+        $message = $this->replace($message, $user);
+        $message = str_replace('{user_admin_url}', admin_url('admin.php?page=newsletter_users_edit&id=' . $user->id), $message);
 
         return $message;
     }
@@ -2166,12 +2202,25 @@ class NewsletterModule {
         return '[' . $blogname . '] ' . $subject;
     }
 
-    function dienow($message, $admin_message = null) {
+    function dienow($message, $admin_message = null, $http_code = 200) {
         if ($admin_message && current_user_can('administrator')) {
             $message .= '<br><br><strong>Text below only visibile to administrarors</strong><br>';
             $message .= $admin_message;
         }
-        wp_die($message, 200);
+        wp_die($message, $http_code);
+    }
+
+    function dump($var) {
+        if (NEWSLETTER_DEBUG) {
+            var_dump($var);
+        }
+    }
+
+    function dump_die($var) {
+        if (NEWSLETTER_DEBUG) {
+            var_dump($var);
+            die();
+        }
     }
 
 }

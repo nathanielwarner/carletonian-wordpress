@@ -17,7 +17,7 @@ class WP_ES {
         
         $this->WP_ES_settings = $this->wp_es_options();
         
-        if ( !is_admin() || (defined('DOING_AJAX') && DOING_AJAX && !$this->wp_core_actions()) ) {
+        if ( !is_admin() || ( defined('DOING_AJAX') && DOING_AJAX && !$this->preserved_ajax_actions() ) ) {
             //Only filter non admin requests!
             add_action('init', array($this,'wp_es_init'));
         }
@@ -95,7 +95,7 @@ class WP_ES {
      * @param object $query wp_query object
      */
     public function wp_es_pre_get_posts($query) {
-        if (!empty($query->is_search) && !$this->is_bbPress_search()) {
+        if ( !empty( $query->is_search ) && !empty( $query->get( 's' ) ) && empty( $query->get( 'disable_wpes' ) ) && !$this->is_bbPress_search() ) {
 	    
 	    //Set post types
             if (!empty($this->WP_ES_settings['post_types'])) {
@@ -159,8 +159,8 @@ class WP_ES {
     public function wp_es_custom_query( $search, $wp_query ) {
         global $wpdb;
         
-        if ( empty( $search ) || !empty($wp_query->query_vars['suppress_filters']) ) {
-            return $search; // skip processing - If no search term in query or suppress_filters is true
+        if ( empty( $search ) || !empty( $wp_query->query_vars['suppress_filters'] ) || !empty( $wp_query->get('disable_wpes') ) ) {
+            return $search; // skip processing - If no search term in query or suppress_filters is true or disable_wpes is true
         }
         
         $q = $wp_query->query_vars;
@@ -313,21 +313,25 @@ class WP_ES {
     }
     
     /**
-     * Check if it is WordPress core Ajax action
+     * Check if it is WordPress core or some plugin Ajax action
      * @since 1.1.2
      * @return boolean TRUE if it core Ajax request else false
      */
-    public function wp_core_actions() {
-        $wp_core_actions = array(
+    public function preserved_ajax_actions() {
+        $preserved_actions = array(
             'query-attachments',
-	    'menu-quick-search'
+	    'menu-quick-search',
+	    'acf/fields',
+	    'elementor_ajax'
         );
         
         $current_action = !empty($_REQUEST['action']) ? $_REQUEST['action'] : false;
         
-        if (in_array($current_action ,$wp_core_actions)) {
-            return TRUE;
-        }
+	foreach ( $preserved_actions as $action ) {
+	    if ( strpos( $current_action, $action ) !== FALSE ) {
+		return TRUE;
+	    }
+	}
         
         return FALSE;
     }

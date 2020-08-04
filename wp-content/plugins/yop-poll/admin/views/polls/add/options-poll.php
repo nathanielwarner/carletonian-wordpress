@@ -237,7 +237,7 @@
 					<?php _e( 'From Name', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<input type="text" class="form-control email-notifications-from-name" value="<?php echo $email_settings['from-name'];?>"/>
+					<input type="text" class="form-control email-notifications-from-name" value="<?php echo $notifications['new-vote']['from-name'];?>"/>
 				</div>
 			</div>
 			<div class="form-group send-email-notifications-section hide">
@@ -245,7 +245,7 @@
 					<?php _e( 'From Email', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
-					<input type="text" class="form-control email-notifications-from-email" value="<?php echo $email_settings['from-email'];?>"/>
+					<input type="text" class="form-control email-notifications-from-email" value="<?php echo $notifications['new-vote']['from-email'];?>"/>
 				</div>
 			</div>
             <div class="form-group send-email-notifications-section hide">
@@ -254,7 +254,7 @@
                 </div>
                 <div class="col-md-9">
                     <?php _e( 'Use comma separated email addresses: email@xmail.com,email2@ymail.com', 'yop-poll' ); ?>
-                    <input class="form-control email-notifications-recipients" value="<?php echo $email_settings['recipients'] ?>">
+                    <input class="form-control email-notifications-recipients" value="<?php echo $notifications['new-vote']['recipients'] ?>">
                 </div>
             </div>
 			<div class="form-group send-email-notifications-section hide">
@@ -262,7 +262,7 @@
 					<?php _e( 'Subject', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<input type="text" class="form-control email-notifications-subject" value="<?php echo $email_settings['subject'];?>"/>
+					<input type="text" class="form-control email-notifications-subject" value="<?php echo $notifications['new-vote']['subject'];?>"/>
 				</div>
 			</div>
 			<div class="form-group send-email-notifications-section hide">
@@ -270,7 +270,7 @@
 					<?php _e( 'Message', 'yop-poll' );?>
 				</div>
 				<div class="col-md-9">
-					<textarea class="form-control email-notifications-message"><?php echo $email_settings['message'];?></textarea>
+					<textarea class="form-control email-notifications-message"><?php echo $notifications['new-vote']['message'];?></textarea>
 				</div>
 			</div>
 		</div>

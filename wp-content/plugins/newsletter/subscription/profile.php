@@ -18,6 +18,7 @@ if (!$controls->is_action()) {
 } else {
     if ($controls->is_action('save')) {
         $this->save_options($controls->data, 'profile', null, $current_language);
+        $controls->data = $this->get_options('profile', $current_language);
         $controls->add_message_saved();
     }
 
@@ -29,6 +30,7 @@ if (!$controls->is_action()) {
 
 $status = array(0 => __('Private', 'newsletter'), 1 => __('Show on profile page', 'newsletter'), 2 => __('Show on subscription form', 'newsletter'));
 $rules = array(0 => __('Optional', 'newsletter'), 1 => __('Required', 'newsletter'));
+$extra_type = array('text' => __('Text', 'newsletter'), 'select' => __('List', 'newsletter'));
 ?>
 
 <div class="wrap" id="tnp-wrap">
@@ -45,7 +47,7 @@ $rules = array(0 => __('Optional', 'newsletter'), 1 => __('Required', 'newslette
 
     </div>
 
-    <div id="tnp-body">  
+    <div id="tnp-body">
 
         <form action="" method="post">
             <?php $controls->init(); ?>
@@ -115,7 +117,7 @@ $rules = array(0 => __('Optional', 'newsletter'), 1 => __('Required', 'newslette
                                             male: <?php $controls->text('sex_male'); ?>
                                             not specified: <?php $controls->text('sex_none'); ?>
                                         </td></tr>
-                                    
+
 
                                     <tr><th>Salutation titles</th><td>
 
@@ -175,8 +177,8 @@ $rules = array(0 => __('Optional', 'newsletter'), 1 => __('Required', 'newslette
                                         <td><?php $controls->text('privacy_error', 50); ?></td></tr>
                                 </table>
                                 <p class="description">
-                                    The privacy acceptance checkbox (required in many Europen countries) force the subscriber to
-                                    check it before proceeding. If an URL is specified the label become a link.
+                                    The privacy acceptance checkbox (required in many Europen countries) forces the subscriber to
+                                    check it before proceeding. If an URL is specified the label becomes a link.
                                 </p>
                             </td>
                         </tr>
@@ -206,9 +208,17 @@ $rules = array(0 => __('Optional', 'newsletter'), 1 => __('Required', 'newslette
 
                     <table class="widefat">
                         <thead>
-                            <tr>
-                                <th>Field</th><th>Name/Label</th><th>Placeholder</th><th>When/Where</th><th>Type</th><th>Rule</th><th>List values comma separated</th>
-                            </tr>
+                        <tr>
+                            <th>Field</th>
+                            <th>Name/Label</th>
+                            <th>Placeholder</th>
+	                        
+                                <th>When/Where</th>
+                                <th>Type</th>
+                                <th>Rule</th>
+	                        
+                            <th>List values comma separated</th>
+                        </tr>
                         </thead>
                         <?php for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) { ?>
                             <tr>
@@ -217,8 +227,12 @@ $rules = array(0 => __('Optional', 'newsletter'), 1 => __('Required', 'newslette
                                 <td><?php $controls->text('profile_' . $i . '_placeholder'); ?></td>
                                 <?php if ($is_all_languages) { ?>
                                 <td><?php $controls->select('profile_' . $i . '_status', $status); ?></td>
-                                <td><?php $controls->select('profile_' . $i . '_type', array('text' => 'Text', 'select' => 'List')); ?></td>
+                                <td><?php $controls->select('profile_' . $i . '_type', $extra_type); ?></td>
                                 <td><?php $controls->select('profile_' . $i . '_rules', $rules); ?></td>
+                                <?php } else { ?>
+                                <td><?php echo esc_html($status[$controls->get_value('profile_' . $i . '_status')]) ?></td>
+                                <td><?php echo esc_html($extra_type[$controls->get_value('profile_' . $i . '_type')]) ?></td>
+                                <td><?php echo esc_html($rules[$controls->get_value('profile_' . $i . '_rules')]) ?></td>
                                 <?php } ?>
                                 <td>
                                     <?php $controls->textarea_fixed('profile_' . $i . '_options', '200px', '50px'); ?>
@@ -229,7 +243,7 @@ $rules = array(0 => __('Optional', 'newsletter'), 1 => __('Required', 'newslette
 
                 </div>
 
-                
+
 
             </div>
 

@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.7.9
+  Version: 6.8.3
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,13 +35,18 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '6.7.9');
+define('NEWSLETTER_VERSION', '6.8.3');
 
 global $newsletter, $wpdb;
 
 if (!defined('NEWSLETTER_BETA'))
     define('NEWSLETTER_BETA', false);
 
+// For acceptance tests, DO NOT CHANGE
+if (!defined('NEWSLETTER_ANTIBOT'))
+    define('NEWSLETTER_ANTIBOT', true);
+
+// For acceptance tests, DO NOT CHANGE
 if (!defined('NEWSLETTER_DEBUG'))
     define('NEWSLETTER_DEBUG', false);
 
@@ -130,6 +135,7 @@ class Newsletter extends NewsletterModule {
     }
 
     function __construct() {
+        
         // Grab it before a plugin decides to remove it.
         if (isset($_GET['na'])) {
             $this->action = $_GET['na'];
@@ -180,19 +186,17 @@ class Newsletter extends NewsletterModule {
 
             add_action('admin_menu', array($this, 'add_extensions_menu'), 90);
 
-	        add_filter( 'display_post_states', array( $this, 'add_notice_to_chosen_profile_page_hook' ), 10, 2 );
+            add_filter('display_post_states', array($this, 'add_notice_to_chosen_profile_page_hook'), 10, 2);
 
-	        if ( $this->is_admin_page() ) {
-		        add_action( 'admin_enqueue_scripts', array( $this, 'hook_wp_admin_enqueue_scripts' ) );
-	        }
+            if ($this->is_admin_page()) {
+                add_action('admin_enqueue_scripts', array($this, 'hook_wp_admin_enqueue_scripts'));
+            }
 
-                add_action('wp_ajax_tnp_hide_promotion', function () {
-                    update_option('newsletter_promotion', $_POST['id']);
-                    die();
-                });
-
+            add_action('wp_ajax_tnp_hide_promotion', function () {
+                update_option('newsletter_promotion', $_POST['id']);
+                die();
+            });
         }
-
     }
 
     function hook_init() {
@@ -335,9 +339,6 @@ class Newsletter extends NewsletterModule {
   `language` varchar(10) NOT NULL DEFAULT '',
   `subject` varchar(255) NOT NULL DEFAULT '',
   `message` longtext,
-  `subject2` varchar(255) NOT NULL DEFAULT '',
-  `message2` longtext,
-  `name2` varchar(255) NOT NULL DEFAULT '',
   `created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `status` enum('new','sending','sent','paused') NOT NULL DEFAULT 'new',
   `total` int(11) NOT NULL DEFAULT '0',
@@ -503,48 +504,47 @@ class Newsletter extends NewsletterModule {
         }
     }
 
-	function hook_wp_admin_enqueue_scripts() {
+    function hook_wp_admin_enqueue_scripts() {
 
-		$newsletter_url = plugins_url('newsletter');
-		wp_enqueue_script('jquery-ui-tabs');
-		wp_enqueue_script('jquery-ui-tooltip');
-		wp_enqueue_media();
+        $newsletter_url = plugins_url('newsletter');
+        wp_enqueue_script('jquery-ui-tabs');
+        wp_enqueue_script('jquery-ui-tooltip');
+        wp_enqueue_media();
 
-		wp_enqueue_style( 'tnp-admin-font', 'https://use.typekit.net/jlj2wjy.css' );
-		wp_enqueue_style( 'tnp-admin-fontawesome', $newsletter_url . '/vendor/fa/css/all.min.css', [], '6.6.0' );
-		wp_enqueue_style( 'tnp-admin-jquery-ui', $newsletter_url . '/vendor/jquery-ui/jquery-ui.min.css', [], '6.6.0' );
-		wp_enqueue_style( 'tnp-admin-dropdown', $newsletter_url . '/css/dropdown.css', [], '6.6.0' );
-		wp_enqueue_style( 'tnp-admin-fields', $newsletter_url . '/css/fields.css', [], '6.6.0' );
-		wp_enqueue_style( 'tnp-admin-widgets', $newsletter_url . '/css/widgets.css', [], '6.6.0' );
-		wp_enqueue_style( 'tnp-admin', $newsletter_url . '/admin.css',
-			array(
-				'tnp-admin-font',
-				'tnp-admin-fontawesome',
-				'tnp-admin-jquery-ui',
-				'tnp-admin-dropdown',
-				'tnp-admin-fields',
-				'tnp-admin-widgets'
-			), filemtime( NEWSLETTER_DIR . '/admin.css' ) );
+        wp_enqueue_style('tnp-admin-font', 'https://use.typekit.net/jlj2wjy.css');
+        wp_enqueue_style('tnp-admin-fontawesome', $newsletter_url . '/vendor/fa/css/all.min.css', [], '6.6.0');
+        wp_enqueue_style('tnp-admin-jquery-ui', $newsletter_url . '/vendor/jquery-ui/jquery-ui.min.css', [], '6.6.0');
+        wp_enqueue_style('tnp-admin-dropdown', $newsletter_url . '/css/dropdown.css', [], '6.6.0');
+        wp_enqueue_style('tnp-admin-fields', $newsletter_url . '/css/fields.css', [], '6.6.0');
+        wp_enqueue_style('tnp-admin-widgets', $newsletter_url . '/css/widgets.css', [], '6.6.0');
+        wp_enqueue_style('tnp-admin', $newsletter_url . '/admin.css',
+                array(
+                    'tnp-admin-font',
+                    'tnp-admin-fontawesome',
+                    'tnp-admin-jquery-ui',
+                    'tnp-admin-dropdown',
+                    'tnp-admin-fields',
+                    'tnp-admin-widgets'
+                ), filemtime(NEWSLETTER_DIR . '/admin.css'));
 
-		wp_enqueue_script( 'tnp-admin', $newsletter_url . '/admin.js', array( 'jquery' ), time() );
+        wp_enqueue_script('tnp-admin', $newsletter_url . '/admin.js', array('jquery'), time());
 
-		$translations_array = array(
-			'save_to_update_counter' => __( 'Save the newsletter to update the counter!', 'newsletter' )
-		);
-		wp_localize_script( 'tnp-admin', 'tnp_translations', $translations_array );
+        $translations_array = array(
+            'save_to_update_counter' => __('Save the newsletter to update the counter!', 'newsletter')
+        );
+        wp_localize_script('tnp-admin', 'tnp_translations', $translations_array);
 
-		wp_enqueue_style('wp-color-picker');
-		wp_enqueue_script('wp-color-picker');
+        wp_enqueue_style('wp-color-picker');
+        wp_enqueue_script('wp-color-picker');
 
-		wp_enqueue_style('tnp-select2', $newsletter_url . '/vendor/select2/select2.css');
-		wp_enqueue_script('tnp-select2', $newsletter_url . '/vendor/select2/select2.min.js');
-		wp_enqueue_script('tnp-jquery-vmap', $newsletter_url . '/vendor/jqvmap/jquery.vmap.min.js', array('jquery'));
-		wp_enqueue_script('tnp-jquery-vmap-world', $newsletter_url . '/vendor/jqvmap/jquery.vmap.world.js', array('tnp-jquery-vmap'));
-		wp_enqueue_style('tnp-jquery-vmap', $newsletter_url . '/vendor/jqvmap/jqvmap.min.css');
+        wp_enqueue_style('tnp-select2', $newsletter_url . '/vendor/select2/select2.css');
+        wp_enqueue_script('tnp-select2', $newsletter_url . '/vendor/select2/select2.min.js');
+        wp_enqueue_script('tnp-jquery-vmap', $newsletter_url . '/vendor/jqvmap/jquery.vmap.min.js', array('jquery'));
+        wp_enqueue_script('tnp-jquery-vmap-world', $newsletter_url . '/vendor/jqvmap/jquery.vmap.world.js', array('tnp-jquery-vmap'));
+        wp_enqueue_style('tnp-jquery-vmap', $newsletter_url . '/vendor/jqvmap/jqvmap.min.css');
 
-		wp_register_script('tnp-chart', $newsletter_url . '/vendor/chartjs/Chart.min.js', array('jquery'));
-
-	}
+        wp_register_script('tnp-chart', $newsletter_url . '/vendor/chartjs/Chart.min.js', array('jquery'));
+    }
 
     function shortcode_newsletter_replace($attrs, $content) {
         $content = do_shortcode($content);
@@ -1263,12 +1263,12 @@ class Newsletter extends NewsletterModule {
             if (class_exists('SitePress')) {
                 $newsletter_page_url = apply_filters('wpml_permalink', $newsletter_page_url, $language, true);
             }
-	        if ( function_exists( 'pll_get_post' ) ) {
-		        $translated_page = get_permalink( pll_get_post( $page->ID ), $language );
-		        if ( $translated_page ) {
-			        $newsletter_page_url = $translated_page;
-		        }
-	        }
+            if (function_exists('pll_get_post')) {
+	            $translated_page = get_permalink( pll_get_post( $page->ID, $language ) );
+                if ($translated_page) {
+                    $newsletter_page_url = $translated_page;
+                }
+            }
         }
 
         return $newsletter_page_url;
@@ -1287,22 +1287,24 @@ class Newsletter extends NewsletterModule {
 
     function get_license_data($refresh = false) {
 
-        if (!$refresh) {
-            $license_data = get_transient('newsletter_license_data');
-            if (!empty($license_data) && is_object($license_data)) {
-                return $license_data;
-            }
-        }
-
-        $this->logger->debug('Refreshing the license data');
-
-        delete_transient('newsletter_license_data');
+        $this->logger->debug('Getting license data');
 
         $license_key = $this->get_license_key();
         if (empty($license_key)) {
             $this->logger->debug('License was empty');
             return false;
         }
+
+        if (!$refresh) {
+            $license_data = get_transient('newsletter_license_data');
+            if ($license_data !== false && is_object($license_data)) {
+                $this->logger->debug('License data found on cache');
+                return $license_data;
+            }
+        }
+
+        $this->logger->debug('Refreshing the license data');
+
         $license_data_url = 'https://www.thenewsletterplugin.com/wp-content/plugins/file-commerce-pro/get-license-data.php';
 
         $response = wp_remote_post($license_data_url, array(
@@ -1311,13 +1313,15 @@ class Newsletter extends NewsletterModule {
 
         // Fall back to http...
         if (is_wp_error($response)) {
-            $this->logger->error('Falling back to http');
             $this->logger->error($response);
+            $this->logger->error('Falling back to http');
+            $license_data_url = str_replace('https', 'http', $license_data_url);
             $response = wp_remote_post($license_data_url, array(
                 'body' => array('k' => $license_key)
             ));
             if (is_wp_error($response)) {
                 $this->logger->error($response);
+                set_transient('newsletter_license_data', $response, DAY_IN_SECONDS);
                 return $response;
             }
         }
@@ -1326,7 +1330,9 @@ class Newsletter extends NewsletterModule {
 
         if (wp_remote_retrieve_response_code($response) != '200') {
             $this->logger->error('license data error: ' . wp_remote_retrieve_response_code($response));
-            return new WP_Error(wp_remote_retrieve_response_code($response), 'License validation service error. <br>' . $download_message);
+            $data = new WP_Error(wp_remote_retrieve_response_code($response), 'License validation service error. <br>' . $download_message);
+            set_transient('newsletter_license_data', $data, DAY_IN_SECONDS);
+            return $data;
         }
 
         $json = wp_remote_retrieve_body($response);
@@ -1334,17 +1340,23 @@ class Newsletter extends NewsletterModule {
 
         if (!is_object($data)) {
             $this->logger->error($json);
-            return new WP_Error(1, 'License validation service error. <br>' . $download_message);
+            $data = new WP_Error(1, 'License validation service error. <br>' . $download_message);
+            set_transient('newsletter_license_data', $data, DAY_IN_SECONDS);
+            return $data;
         }
 
         if (isset($data->message)) {
-            return new WP_Error(1, $data->message . ' (check the license on Newsletter main settings)');
+            $data = new WP_Error(1, $data->message . ' (check the license on Newsletter main settings)');
+            set_transient('newsletter_license_data', $data, DAY_IN_SECONDS);
+            return $data;
         }
 
-        $timeout = 24 * 7 * 3600;
-        if ($data->expire < time() + $timeout)
-            $timeout = $data->expire;
-        set_transient('newsletter_license_data', $data, $timeout);
+        $expiration = WEEK_IN_SECONDS;
+        // If the license expires in few days, make the transient live only few days, so it will be refreshed
+        if ($data->expire > time() && $data->expire - time() < WEEK_IN_SECONDS) {
+            $expiration = $data->expire - time();
+        }
+        set_transient('newsletter_license_data', $data, $expiration);
 
         return $data;
     }

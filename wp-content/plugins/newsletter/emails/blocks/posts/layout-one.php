@@ -37,7 +37,6 @@ $size = ['width' => 300, 'height' => 0];
         $media = null;
         if ($show_image) {
             $media = tnp_composer_block_posts_get_media($post, $size);
-            //var_dump($media);
             if ($media) {
                 $media->link = $url;
                 $media->set_width(105);

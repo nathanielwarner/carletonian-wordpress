@@ -32,6 +32,8 @@
     }
 </style>
 
+<!-- layout: left -->
+
 <table width="50%" align="left" class="hero-table" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td align="center" valign="top">

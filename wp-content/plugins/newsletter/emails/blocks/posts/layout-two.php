@@ -95,6 +95,9 @@ $size = array('width' => 240, 'height' => 160, "crop" => true);
                 </table>
 
                 <?php
+                if (!isset($row[1])) {
+                    continue;
+                }
                 $media = null;
                 if ($show_image) {
                     $media = tnp_composer_block_posts_get_media($row[1], $size, $alternative_2);

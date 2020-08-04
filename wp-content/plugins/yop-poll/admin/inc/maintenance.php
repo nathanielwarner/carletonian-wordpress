@@ -93,6 +93,10 @@ class YOP_POLL_Maintenance {
 	public function update_to_version_6_1_6() {
 		update_option( 'yop_poll_version', '6.1.6' );
 	}
+	public function update_to_version_6_1_7() {
+		YOP_Poll_Settings::update_settings_to_version_6_1_7();
+		update_option( 'yop_poll_version', '6.1.7' );
+	}
     public function create_archive_page() {
         $poll_archive_page = get_page_by_path( 'yop-poll-archive', ARRAY_A );
         if ( ! $poll_archive_page ) {
@@ -151,13 +155,14 @@ class YOP_POLL_Maintenance {
         }
 	}
     public function uninstall_single() {
-		$this->dbschema = new Yop_Poll_DbSchema;
-		$this->capabilities = new YOP_POLL_Capabilities;
-		/* do not delete tables
-		$this->dbschema->delete_tables();
-		*/
-		$this->capabilities->uninstall();
-		$this->delete_options();
+		$remove_plugin_data = YOP_Poll_Settings::get_remove_data();
+		if ( 'yes' === $remove_plugin_data ) {
+			$this->dbschema = new Yop_Poll_DbSchema;
+			$this->capabilities = new YOP_Poll_Capabilities;
+			$this->dbschema->delete_tables();
+			$this->capabilities->uninstall();
+			$this->delete_options();
+		}
 	}
     public function add_activation_message() {
         add_option( 'yop_poll_ajax_importer', 'yop_poll_ajax_importer' );

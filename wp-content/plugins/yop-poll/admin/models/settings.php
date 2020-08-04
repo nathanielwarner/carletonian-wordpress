@@ -7,15 +7,48 @@ class YOP_Poll_Settings {
         $settings = array(
             'general' => array(
                 'i-date' => current_time( 'mysql' ),
-                'show-guide' => 'yes'
+                'show-guide' => 'yes',
+                'remove-data' => 'no'
             ),
-            'email'        => array(
-                'from-name'  => 'Your Name Here',
-                'from-email' => 'Your Email Address Here',
-                'recipients' => '',
-                'subject'    => 'Your Subject Here',
-                'message'    => 'Your Message Here'
-            ),
+            'notifications' => array(
+				'new-vote' => array(
+					'from-name'  => 'Your Name Here',
+					'from-email' => 'Your Email Address Here',
+					'recipients' => '',
+					'subject'    => 'New vote for %POLL-NAME% on %VOTE-DATE%',
+					'message'    => 'There is a new vote for %POLL-NAME%
+									Here are the details
+
+									[QUESTION]
+									Question - %QUESTION-TEXT%
+									Answer - %ANSWER-VALUE%
+									[/QUESTION]
+
+									[CUSTOM_FIELDS]
+									%CUSTOM_FIELD_NAME% - %CUSTOM_FIELD_VALUE%
+									[/CUSTOM_FIELDS]
+									'
+				),
+				'automatically-reset-votes' => array(
+					'from-name'  => 'Your Name Here',
+					'from-email' => 'Your Email Address Here',
+					'recipients' => '',
+					'subject'    => 'Stats for %POLL-NAME% on %RESET-DATE%',
+					'message'    => 'Poll - %POLL-NAME%
+									Reset Date - %RESET-DATE%
+									
+									[RESULTS]
+									%QUESTION-TEXT%
+									[ANSWERS]
+									%ANSWER-TEXT% - %ANSWER-VOTES% votes - %ANSWER-PERCENTAGES%
+									[/ANSWERS]
+									
+									[OTHER-ANSWERS]
+									%ANSWER-TEXT% - %ANSWER-VOTES% votes
+									[/OTHER-ANSWERS]
+									[/RESULTS]'
+				)
+			),
             'integrations' => array(
                 'reCaptcha' => array(
                     'enabled' => 'no',
@@ -234,6 +267,50 @@ class YOP_Poll_Settings {
         );
         update_option('yop_poll_settings', serialize( $new_settings ) );
     }
+    public static function update_settings_to_version_6_1_7() {
+        $current_settings = unserialize( self::get_all_settings() );
+        $current_settings['general']['remove-data'] = 'no';
+        $current_settings['notifications'] =array(
+            'new-vote' => array(
+                'from-name'  => isset( $current_settings['email']['from-name'] ) ? $current_settings['email']['from-name'] : 'Your Name Here',
+                'from-email' => isset( $current_settings['email']['from-email'] ) ? $current_settings['email']['from-email'] : 'Your Email Address Here',
+                'recipients' => isset( $current_settings['email']['recipients'] ) ? $current_settings['email']['recipients'] : '',
+                'subject'    => isset( $current_settings['email']['subject'] ) ? $current_settings['email']['subject'] : 'New vote for %POLL-NAME% on %VOTE-DATE%',
+                'message'    => isset( $current_settings['email']['message'] ) ? $current_settings['email']['message'] : 'There is a new vote for %POLL-NAME%
+                Here are the details
+
+                [QUESTION]
+                Question - %QUESTION-TEXT%
+                Answer - %ANSWER-VALUE%
+                [/QUESTION]
+
+                [CUSTOM_FIELDS]
+                %CUSTOM_FIELD_NAME% - %CUSTOM_FIELD_VALUE%
+                [/CUSTOM_FIELDS]'
+            ),
+            'automatically-reset-votes' => array(
+                'from-name'  => 'Your Name Here',
+                'from-email' => 'Your Email Address Here',
+                'recipients' => '',
+                'subject'    => 'Stats for %POLL-NAME% on %RESET-DATE%',
+                'message'    => 'Poll - %POLL-NAME%
+                                Reset Date - %RESET-DATE%
+                                
+                                [RESULTS]
+                                %QUESTION-TEXT%
+                                [ANSWERS]
+                                %ANSWER-TEXT% - %ANSWER-VOTES% votes - %ANSWER-PERCENTAGES%
+                                [/ANSWERS]
+                                
+                                [OTHER-ANSWERS]
+                                %ANSWER-TEXT% - %ANSWER-VOTES% votes
+                                [/OTHER-ANSWERS]
+                                [/RESULTS]'
+            )
+        );
+        unset( $current_settings['email'] );
+        update_option( 'yop_poll_settings', serialize( $current_settings ) );
+    }
     public static function get_all_settings() {
         if ( ( false === isset( self::$settings ) ) || ( '' === self::$settings ) ) {
             self::$settings = get_option( 'yop_poll_settings' );
@@ -272,21 +349,15 @@ class YOP_Poll_Settings {
             self::$settings = $serialized_settings;
         }
     }
-    public static function get_email_settings() {
-        $email_settings = array();
-        $settings = self::get_all_settings();
-        if ( '' !== $settings ) {
-            $unserialized_settings = unserialize( $settings );
-            $email_settings = array(
-                'from-name' => $unserialized_settings['email']['from-name'],
-                'from-email' => $unserialized_settings['email']['from-email'],
-                'recipients' => $unserialized_settings['email']['recipients'],
-                'subject' => $unserialized_settings['email']['subject'],
-                'message' => $unserialized_settings['email']['message']
-            );
-        }
-        return $email_settings;
-    }
+    public static function get_notifications() {
+		$email_settings = array();
+		$settings = self::get_all_settings();
+		if ( '' !== $settings ) {
+			$unserialized_settings = unserialize( $settings );
+			$email_settings = $unserialized_settings['notifications'];
+		}
+		return $email_settings;
+	}
     public static function get_integrations() {
         $integrations_settings = array();
         $settings = self::get_all_settings();
@@ -316,6 +387,15 @@ class YOP_Poll_Settings {
         }
         return $integrations_settings;
     }
+    public static function get_remove_data() {
+		$remove_data = 'no';
+		$settings = self::get_all_settings();
+		if ( '' !== $settings ) {
+			$unserialized_settings = unserialize( $settings );
+			$remove_data = $unserialized_settings['general']['remove-data'];
+		}
+		return $remove_data;
+	}
     public static function get_messages() {
         $messages = array();
         $settings = self::get_all_settings();
@@ -330,6 +410,7 @@ class YOP_Poll_Settings {
             self::$errors_present = true;
             self::$error_text = __( 'Invalid data', 'yop-poll' );
         } else {
+            /*
             if (
                 ( false === self::$errors_present ) &&
                 ( !isset( $settings->email->{'from-name'} ) ||
@@ -370,6 +451,7 @@ class YOP_Poll_Settings {
                 self::$errors_present = true;
                 self::$error_text = __( 'Data for "Message" is invalid', 'yop-poll' );
             }
+            */
             if (
                 ( false === self::$errors_present ) &&
                 ( !isset( $settings->integrations->reCaptcha->{'enabled'} ) ||
@@ -670,14 +752,36 @@ class YOP_Poll_Settings {
             $yop_poll_settings = array(
                 'general' => array(
                     'i-date' => self::get_install_date(),
-                    'show-guide' => self::get_show_guide()
+                    'show-guide' => self::get_show_guide(),
+                    'remove-data' => $settings->general->{'remove-data'}
                 ),
-                'email'        => array(
-                    'from-name'  => $settings->email->{'from-name'},
-                    'from-email' => $settings->email->{'from-email'},
-                    'recipients' => $settings->email->{'recipients'},
-                    'subject'    => $settings->email->{'subject'},
-                    'message'    => $settings->email->{'message'}
+                'notifications'  => array(
+                    'new-vote' => array(
+                        'from-name'  => $settings->notifications->{'new-vote'}->{'from-name'},
+                        'from-email' => $settings->notifications->{'new-vote'}->{'from-email'},
+                        'recipients' => $settings->notifications->{'new-vote'}->{'recipients'},
+                        'subject'    => $settings->notifications->{'new-vote'}->{'subject'},
+                        'message'    => $settings->notifications->{'new-vote'}->{'message'}
+                    ),
+                    'automatically-reset-votes' => array(
+                        'from-name'  => 'Your Name Here',
+                        'from-email' => 'Your Email Address Here',
+                        'recipients' => '',
+                        'subject'    => 'Stats for %POLL-NAME% on %RESET-DATE%',
+                        'message'    => 'Poll - %POLL-NAME%
+									Reset Date - %RESET-DATE%
+									
+									[RESULTS]
+									%QUESTION-TEXT%
+									[ANSWERS]
+									%ANSWER-TEXT% - %ANSWER-VOTES% votes - %ANSWER-PERCENTAGES%
+									[/ANSWERS]
+									
+									[OTHER-ANSWERS]
+									%ANSWER-TEXT% - %ANSWER-VOTES% votes
+									[/OTHER-ANSWERS]
+									[/RESULTS]'
+                    )
                 ),
                 'integrations' => array(
                     'reCaptcha' => array(
