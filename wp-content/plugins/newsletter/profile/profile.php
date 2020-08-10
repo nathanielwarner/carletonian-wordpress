@@ -19,7 +19,7 @@ class NewsletterProfile extends NewsletterModule {
     function __construct() {
         parent::__construct('profile', '1.1.0');
         add_shortcode('newsletter_profile', array($this, 'shortcode_newsletter_profile'));
-        add_filter('newsletter_replace', array($this, 'hook_newsletter_replace'), 10, 3);
+        add_filter('newsletter_replace', array($this, 'hook_newsletter_replace'), 10, 4);
         add_filter('newsletter_page_text', array($this, 'hook_newsletter_page_text'), 10, 3);
         add_action('newsletter_action', array($this, 'hook_newsletter_action'), 12, 3);
     }
@@ -80,8 +80,9 @@ class NewsletterProfile extends NewsletterModule {
         return $this->build_action_url('profile', $user, $email);
     }
 
-    function hook_newsletter_replace($text, $user, $email) {
+    function hook_newsletter_replace($text, $user, $email, $html = true) {
         if (!$user) {
+            $text = $this->replace_url($text, 'PROFILE_URL', $this->build_action_url('nul'));
             return $text;
         }
 

@@ -1723,7 +1723,7 @@ class NewsletterModule {
         }
 
 
-        $text = apply_filters('newsletter_replace', $text, $user, $email);
+        $text = apply_filters('newsletter_replace', $text, $user, $email, $esc_html);
 
         $text = $this->replace_url($text, 'BLOG_URL', $home_url);
         $text = $this->replace_url($text, 'HOME_URL', $home_url);

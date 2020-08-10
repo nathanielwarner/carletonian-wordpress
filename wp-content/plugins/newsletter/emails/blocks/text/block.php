@@ -32,7 +32,7 @@ $options['html'] = str_replace('<p', '<p inline-class="text-p"', $options['html'
         font-family: <?php echo $options['font_family']?>;
         font-size: <?php echo $options['font_size']?>px;
         color: <?php echo $options['font_color']?>;
-        line-height: 1.5rem;
+        line-height: 1.5;
     }
     .text-p {
         font-family: <?php echo $options['font_family']?>;

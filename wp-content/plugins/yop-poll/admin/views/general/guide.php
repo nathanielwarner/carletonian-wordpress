@@ -8,14 +8,13 @@
 <div class="row guide-section">
     <div class="col-md-12">
         <div class="row pro-section">
-            <div class="col-md-12 text-center guide-section-headline">
-                <h3 class="headline-text">
-                    Get Our <u>Free</u> Guide
-                </h3>
+            
+            <div class="col-md-12 text-center guide-section-text">
+                <img src="<?php echo YOP_POLL_URL . '/admin/assets/images/guide.png';?>">
             </div>
             <div class="col-md-12 text-center guide-section-text">
                 <div class="extra-text">
-                    Everything you need to know about creating successful polls on WordPress Sites.
+                    Everything you need to know about creating successful polls on Your Site.
                 </div>
                 <div class="email-container text-center">
                     <input type="text" class="guide-email form-control" placeholder="Email Address">

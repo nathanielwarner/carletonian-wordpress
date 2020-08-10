@@ -251,7 +251,12 @@ if ( 'custom' === $poll->meta_data['options']['poll']['startDateOption'] ) {
 		</div>
 	</div>
     <?php
-    include( YOP_POLL_PATH . 'admin/views/general/upgrade-short.php' );
+    $page = rand( 1, 2 );
+    if ( 1 === $page ) {
+        include( YOP_POLL_PATH . 'admin/views/general/upgrade-short-1.php' );
+    } else {
+        include( YOP_POLL_PATH . 'admin/views/general/upgrade-short-2.php' );
+    }
     ?>
 </div>
 <!-- begin live preview -->

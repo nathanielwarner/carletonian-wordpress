@@ -118,6 +118,12 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.1.8 =
+* fixed issue with votes not being deleted when poll is removed
+* fixed issue with logs not being deleted when poll is removed
+* fixed issue with guest voting and limit number of votes
+* fixed issue on edit poll screen that was causing polls to stop displaying when a new template was choosen
+
 = 6.1.7 =
 * fixed broken css rule
 * added option to keep/remove plugin data on uninstall

@@ -563,6 +563,9 @@ class YOP_Poll_Polls {
 				self::$errors_present = true;
 				self::$error_text = $delete_poll_result['error_text'];
 			}
+			YOP_Poll_Votes::delete_all_for_poll( $poll_id );
+			YOP_Poll_Logs::delete_all_for_poll( $poll_id );
+			YOP_Poll_Bans::delete_all_for_poll( $poll_id );
 		} else {
 			self::$errors_present = true;
 			self::$error_text = __( 'Error deleting poll', 'yop-poll' );
@@ -641,7 +644,7 @@ class YOP_Poll_Polls {
 		if ( false !== $GLOBALS['wpdb']->update( $GLOBALS['wpdb']->yop_poll_polls, $data, array( 'id' => $poll_id ) ) ) {
 			YOP_Poll_SubElements::delete_others_for_poll( $poll_id );
 			YOP_Poll_SubElements::reset_submits_for_poll( $poll_id );
-			YOP_Poll_Votes::delete_votes_for_poll( $poll_id );
+			YOP_Poll_Votes::delete_all_for_poll( $poll_id );
 		} else {
 			self::$errors_present = true;
 			self::$error_text = __( 'Error resetting votes', 'yop-poll' );
@@ -2109,7 +2112,7 @@ class YOP_Poll_Polls {
 		);
 		$GLOBALS['wpdb']->query( $query );
 		YOP_POLL_SubElements::reset_submits_for_poll( $poll_id );
-		YOP_Poll_Votes::delete_votes_for_poll( $poll_id );
+		YOP_Poll_Votes::delete_all_for_poll( $poll_id );
 	}
 	public static function update_meta_data( $poll_id, $meta_flag_owner, $meta_flag, $meta_value ) {
 		$meta_data = self::get_meta_data( $poll_id );

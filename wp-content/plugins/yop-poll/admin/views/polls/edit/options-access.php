@@ -205,7 +205,14 @@
 		            </select>
 				</div>
 			</div>
-			<div class="form-group">
+			<?php
+			if ( ( true === in_array('wordpress', $poll->meta_data['options']['access']['votePermissions'] ) ) && ( false === in_array( 'guest', $poll->meta_data['options']['access']['votePermissions'] ) ) ) {
+				$limit_votes_per_user_section_class = '';
+			} else {
+				$limit_votes_per_user_section_class = 'hide';
+			}
+			?>
+			<div class="form-group limit-votes-per-user-section <?php echo $limit_votes_per_user_section_class;?>">
 				<div class="col-md-3">
 					<?php _e( 'Limit Number Of Votes per User', 'yop-poll' );?>
 				</div>

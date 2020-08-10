@@ -561,5 +561,23 @@ class YOP_Poll_Logs {
         } else {
             return [];
         }
-    }
+	}
+	public static function delete_all_for_poll( $poll_id ) {
+		$delete_log_result = $GLOBALS['wpdb']->delete(
+            $GLOBALS['wpdb']->yop_poll_logs,
+            array(
+                'poll_id' => $poll_id
+            )
+        );
+        if ( false !== $delete_log_result ) {
+            self::$errors_present = false;
+        } else {
+            self::$errors_present = true;
+            self::$error_text = __( 'Error deleting logs', 'yop-poll' );
+        }
+        return array(
+            'success' => !self::$errors_present,
+            'error' => self::$error_text
+        );
+	}
 }

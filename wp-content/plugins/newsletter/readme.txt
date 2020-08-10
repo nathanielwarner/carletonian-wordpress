@@ -2,7 +2,7 @@
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
 Tested up to: 5.4.2
-Stable tag: 6.8.3
+Stable tag: 6.8.4
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 
@@ -113,6 +113,12 @@ Thank you, The Newsletter Team
 
 == Changelog ==
 
+= 6.8.4 =
+
+* Code update for WordPress 5.5 compatibility (PHPMailer)
+* Added dummy user-related-links on newsletter preview
+* Fixed optin form option for the minimal subsbscription form
+
 = 6.8.3 =
 
 * Changed the administrative notification of subscription removing the lists and linking the user profile
@@ -129,6 +135,7 @@ Thank you, The Newsletter Team
 * Multilanguage on validation JS (but will be removed in favor of pure HTML validation)
 * Fixed label "for" attribute for extra fields on custom forms
 * Better test message from status panel
+* Fixed vulnerability reported by WordFence
 
 = 6.8.2 =
 

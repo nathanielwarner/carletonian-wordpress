@@ -1277,10 +1277,10 @@ class NewsletterControls {
         echo '<option value="">-</option>';
         for ($i = 1; $i <= 12; $i++) {
             echo '<option value="' . $i . '"';
-            if ($month - 1 == $i) {
+            if ($month == $i) {
                 echo ' selected';
             }
-            echo '>' . date('F', mktime(0, 0, 0, $i + 1, 1, 2000)) . '</option>';
+            echo '>' . date_i18n('F', mktime(0, 0, 0, $i, 1, 2000)) . '</option>';
         }
         echo '</select>';
 

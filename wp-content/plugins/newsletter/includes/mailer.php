@@ -1,7 +1,9 @@
 <?php
 
+use TNP\Mailer\PHPMailerLoader;
+
 /**
- * 
+ *
  */
 class NewsletterMailer {
 
@@ -41,7 +43,7 @@ class NewsletterMailer {
     }
 
     /**
-     * 
+     *
      * @param TNP_Mailer_Message $message
      * @return bool|WP_Error
      */
@@ -62,7 +64,7 @@ class NewsletterMailer {
     }
 
     /**
-     * 
+     *
      * @param TNP_Mailer_Message[] $messages
      * @return bool|WP_Error
      */
@@ -110,7 +112,7 @@ class NewsletterMailer {
     }
 
     /**
-     * 
+     *
      * @return NewsletterLogger
      */
     function get_logger() {
@@ -122,7 +124,7 @@ class NewsletterMailer {
     }
 
     /**
-     * 
+     *
      * @param TNP_Mailer_Message $message
      * @return bool|WP_Error
      */
@@ -162,7 +164,7 @@ class NewsletterMailer {
     /**
      * Original mail function simulation for compatibility.
      * @deprecated
-     * 
+     *
      * @param string $to
      * @param string $subject
      * @param array $message
@@ -196,12 +198,12 @@ class NewsletterMailer {
 }
 
 /**
- * @property string $to 
- * @property string $subject 
+ * @property string $to
+ * @property string $subject
  * @property string $body
- * @property array $headers 
+ * @property array $headers
  * @property string $from
- * @property string $from_name 
+ * @property string $from_name
  */
 class TNP_Mailer_Message {
 
@@ -226,7 +228,7 @@ class NewsletterMailMethodWrapper extends NewsletterMailer {
 
     /**
      * The reference to the mail method.
-     * 
+     *
      * @param callback $callable Must be an array with object and method to call, no other callback formats allowed.
      */
     function __construct($callable) {
@@ -278,7 +280,7 @@ class NewsletterOldMailerWrapper extends NewsletterMailer {
 
     /**
      * Only send() needs to be implemented all other method will use the defail base-class implementation
-     * 
+     *
      * @param TNP_Mailer_Message $message
      * @return \WP_Error|boolean
      */
@@ -308,7 +310,7 @@ class NewsletterDefaultMailer extends NewsletterMailer {
 
     /**
      * Static to be accessed in the hook: on some installation the object $this is not working, we're still trying to understand why
-     * @var TNP_Mailer_Message 
+     * @var TNP_Mailer_Message
      */
     var $current_message = null;
 
@@ -417,7 +419,7 @@ class NewsletterDefaultSMTPMailer extends NewsletterMailer {
     }
 
     /**
-     * 
+     *
      * @param TNP_Mailer_Message $message
      * @return \WP_Error|boolean
      */
@@ -473,29 +475,22 @@ class NewsletterDefaultSMTPMailer extends NewsletterMailer {
     }
 
     /**
-     * 
+     *
      * @return PHPMailer
      */
     function get_mailer() {
         global $wp_version;
-        
+
         if ($this->mailer) {
             return $this->mailer;
         }
 
         $logger = $this->get_logger();
         $logger->debug('Setting up PHP mailer');
-         if (version_compare($wp_version, '5.4.9') > 0) {
-            require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
-            require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
-            require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
-            $this->mailer = new PHPMailer\PHPMailer\PHPMailer(false);
-        } else {
-            require_once ABSPATH . WPINC . '/class-phpmailer.php';
-            require_once ABSPATH . WPINC . '/class-smtp.php';
-            $this->mailer = new PHPMailer();
-        }
-        
+
+	    require_once 'PHPMailerLoader.php';
+	    $this->mailer = PHPMailerLoader::make_instance();
+
         $this->mailer->IsSMTP();
         $this->mailer->Host = $this->options['host'];
         if (!empty($this->options['port'])) {

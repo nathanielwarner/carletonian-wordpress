@@ -1417,7 +1417,7 @@ class YOP_Poll_Votes {
         }
         return  $votes;
     }
-	public static function delete_votes_for_poll( $poll_id ) {
+	public static function delete_all_for_poll( $poll_id ) {
 		$query = $GLOBALS['wpdb']->prepare(
 			"UPDATE {$GLOBALS['wpdb']->yop_poll_votes} SET `status` = 'deleted' WHERE `poll_id` = %s", $poll_id
 		);

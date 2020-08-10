@@ -111,7 +111,7 @@
 	                </select>
 				</div>
 			</div>
-			<div class="form-group">
+			<div class="form-group limit-votes-per-user-section hide">
 				<div class="col-md-3">
 					<?php _e( 'Limit Number Of Votes per User', 'yop-poll' );?>
 				</div>

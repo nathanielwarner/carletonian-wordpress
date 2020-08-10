@@ -3,6 +3,7 @@ class YOP_Poll_Admin {
 	private $templates;
 	private static $date_format, $time_format, $old_version = null;
 	public function __construct() {
+		global $pagenow;
 		self::$date_format = get_option( 'date_format' );
 		self::$time_format = get_option( 'time_format' );
 		self::$old_version = get_option( 'yop_poll_old_version' );
@@ -39,6 +40,10 @@ class YOP_Poll_Admin {
 			add_action( 'wp_ajax_yop_poll-add-votes-manually', array( &$this, 'add_votes_manually' ) );
 			add_action( 'wp_ajax_yop_poll_stop_showing_guide', array( &$this, 'stop_showing_guide' ) );
 			add_action( 'wp_ajax_yop_poll_send_guide', array( &$this, 'send_guide' ) );
+			add_action( 'wp_ajax_yop_poll_send_deactivation_feedback', array( &$this, 'send_deactivation_feedback' ) );
+			if ( 'plugins.php' === $pagenow ) {
+				add_action( 'admin_footer', array( $this, 'add_deactivate_elements' ) );
+			}
 			if ( self::$old_version ) {
 				if ( false !== strpos( self::$old_version, '4.' ) ) {
 					add_action( 'wp_ajax_yop_ajax_migrate', array( 'ClassYopPollImporter4x', 'yop_ajax_import' ) );
@@ -55,6 +60,147 @@ class YOP_Poll_Admin {
 	}
 	public function set_admin_footer() {
 		return 'Please rate YOP Poll <a href="https://wordpress.org/support/plugin/yop-poll/reviews/?filter=5#new-post" target="_blank">★★★★★</a> on <a href="https://wordpress.org/support/plugin/yop-poll/reviews/?filter=5#new-post" target="_blank">WordPress.org</a> to help us spread the word. Thank you from the YOP team!';
+	}
+	public function add_deactivate_elements() {
+		?>
+		<div id="yop-poll-deactivate-modal-wrapper">
+		    <div id="yop-poll-deactivate-modal">
+				<a href="#" id="yop-poll-deactivate-close">
+					<span class="dashicons dashicons-no-alt"></span>
+				</a>
+		    	<form action="" method="post">
+		    		<!-- Modal header -->
+		    		<div id="yop-poll-deactivate-header">
+		    			<img src="<?php echo YOP_POLL_URL . "/admin/assets/images/yop-poll-admin-menu-icon16.png";?>">
+						Quick Feedback
+		    		</div>
+		    		<!-- Modal inner -->
+		    		<div id="yop-poll-deactivate-inner">
+			    	    <h3><?php echo __( "We're sorry to see you go.", 'yop-poll' ); ?></h3>
+			            <p><strong><?php echo __( 'If you have a moment, please share why you are deactivating YOP Poll:', 'yop-poll' ) ?></strong></p>
+
+			    	    <ul>
+
+			    	    	<li>
+								<label>
+									<input type="radio" name="yop-poll_disable_reason" value="technical-issue" />
+									<strong><?php echo __( "I couldn't get the plugin to work", 'yop-poll' ); ?></strong>
+									<p><?php echo __( 'Please describe the issues below. This will help us test and solve these problems in a timely manner.', 'yop-poll' ); ?></p>
+									<textarea name="yop-poll_deactivate_details[]" placeholder="<?php echo __( 'Type the issues here...', 'yop-poll' ); ?>"></textarea>
+								</label>
+							</li>
+
+			                <li>
+			                	<label>
+			                		<input type="radio" name="yop-poll_disable_reason" value="missing-feature" />
+			                		<strong><?php echo __( 'Missing features I need', 'yop-poll' ); ?></strong>
+									<p><?php echo __( 'Please describe the feature you need. This will help us prioritize our tasks and work on the most requested features.', 'yop-poll' ); ?></p>
+									<textarea name="yop-poll_deactivate_details[]" placeholder="<?php echo __( 'Type the missing features here...', 'yop-poll' ); ?>"></textarea>
+								</label>
+							</li>
+
+							<li>
+								<label>
+									<input type="radio" name="yop-poll_disable_reason" value="other" />
+									<strong><?php echo __( 'Other reason', 'yop-poll' ); ?></strong>
+			    			  		<p><?php echo __( 'We are continuously improving YOP Poll and your feedback is extremely important to us. Please let us know how we can improve the plugin.', 'yop-poll' ); ?></p>
+			    			  		<textarea name="yop-poll_deactivate_details[]" placeholder="<?php echo __( 'Type your feedback here...', 'yop-poll' ); ?>"></textarea>
+			    			  	</label>
+			    			</li>
+
+			    	    </ul>
+
+			    	</div>
+
+			    	<!-- Modal footer -->
+		    	    <div id="yop-poll-deactivate-footer">
+			    	    <input disabled id="yop-poll-feedback-submit" class="button button-primary" type="submit" name="yop-poll-feedback-submit" value="<?php echo __( 'Submit & Deactivate', 'yop-poll' ); ?>" />
+			    	    <a id="yop-poll-deactivate-without-feedback" href="#"><?php echo __( 'Skip and Deactivate', 'yop-poll'); ?></a>
+			    	</div>
+
+			    	<!-- Token -->
+			    	<?php wp_nonce_field( 'yop-poll_deactivation', 'yop-poll_deactivate_token', false ); ?>
+
+		    	</form>
+		    </div>
+		</div>
+		<style>
+			#yop-poll-deactivate-modal-wrapper { display: none; z-index: 9999; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,.35);  }
+			#yop-poll-deactivate-modal { z-index: 10000; position: fixed; top: 7.5%; left: 50%; background: #fff; border-radius: 4px; max-width: 600px; margin-left: -300px; width: 100%; }
+
+			#yop-poll-deactivate-header { padding: 20px 0 15px 0; border-bottom: 1px solid rgba( 200, 215, 225, 0.5 ); text-align: left; font-size: 20px; }
+			#yop-poll-deactivate-header img { max-width: 140px; height: auto; margin-left: 20px;}
+			#yop-poll-deactivate-modal #yop-poll-deactivate-close { float:right; margin-right: 5px; margin-top: 5px; font-size: 14px; color: #000; text-decoration: none;}
+
+			#yop-poll-deactivate-inner { padding: 20px; }
+
+			#yop-poll-deactivate-inner > h3 { margin-top: 0; margin-bottom: 0; }
+			#yop-poll-deactivate-inner > p { margin-top: 5px; margin-bottom: 20px; opacity: 0.8; }
+
+			#yop-poll-deactivate-modal ul { margin: 0; }
+			#yop-poll-deactivate-modal li { margin: 10px 0; transition: opacity 0.2s ease-in-out; }
+			#yop-poll-deactivate-modal li label { display: block; padding: 15px; border-radius: 5px; background: rgba( 200, 215, 225, 0.2 ); }
+			#yop-poll-deactivate-modal li:last-of-type { margin-bottom: 0; }
+			#yop-poll-deactivate-modal li:hover { opacity: 1 !important; }
+			#yop-poll-deactivate-modal li.yop-poll-inactive { opacity: 0.7; }
+
+			#yop-poll-deactivate-modal ul p { display: none; margin: 5px 0 0 24px; opacity: 0.8; }
+
+			#yop-poll-deactivate-modal textarea,
+			#yop-poll-deactivate-modal input[type="text"] { display:none; width: 100%; }
+			#yop-poll-deactivate-modal textarea { margin-left: 24px; margin-top: 10px; min-height: 65px; width: calc( 100% - 24px ); font-size: 13px; padding: 6px 11px; }
+			#yop-poll-deactivate-modal #yop-poll-deactivate-without-feedback { float: right; line-height: 30px; color: #a4afb7; }
+
+			#yop-poll-deactivate-footer { border-top: 1px solid rgba( 200, 215, 225, 0.5 ); background: rgba( 200, 215, 225, 0.15 ); padding: 20px; }
+
+		</style>
+		<script>
+		jQuery( function( $ ) {
+			$( document ).on( 'click', '.wp-admin.plugins-php tr[data-slug="yop-poll"] .row-actions .deactivate a', function( e ) {
+				e.preventDefault();  
+				$( '#yop-poll-deactivate-modal-wrapper' ).show();
+			});
+			$(document).on( 'click', '#yop-poll-deactivate-modal form input[type="radio"]', function () {
+				$( this ).closest( 'ul' ).find( 'input[type="text"], textarea, p' ).hide();
+				$( this ).closest( 'ul' ).children( 'li' ).removeClass( 'yop-poll-inactive yop-poll-active' );
+				$( this ).closest( 'li' ).siblings( 'li' ).addClass( 'yop-poll-inactive' );
+				$( this ).closest( 'li' ).addClass( 'yop-poll-active' );
+				$( this ).closest( 'li' ).find( 'input[type="text"], textarea, p' ).show().focus();
+				$( '#yop-poll-feedback-submit' ).attr( 'disabled', false );
+			});
+			$( document ).on( 'click', '#yop-poll-feedback-submit', function( e ) {
+				e.preventDefault();
+				$('#yop-poll-deactivate-modal-wrapper').hide();
+				window.console.log( $( '#yop-poll-deactivate-modal form' ).serialize() );
+				$.ajax({
+					type 	 : 'POST',
+					url 	 : ajaxurl,
+					dataType : 'json',
+					data 	 : {
+						action : 'yop_poll_send_deactivation_feedback',
+						_token : $( '#yop-poll_deactivate_token' ).val(),
+						data   : $( '#yop-poll-deactivate-modal form' ).serialize()
+					},
+					complete : function( MLHttpRequest, textStatus, errorThrown ) {
+						$( '#yop-poll-deactivate-modal' ).remove();
+						window.location.href = $( '.wp-admin.plugins-php tr[data-slug="yop-poll"] .row-actions .deactivate a' ).attr( 'href' );   
+					}
+				});
+
+			});
+			$( document ).on( 'click', '#yop-poll-deactivate-without-feedback', function( e ) {
+				e.preventDefault();
+				$('#yop-poll-deactivate-modal-wrapper').hide();        
+				$('#yop-poll-deactivate-modal-wrapper').remove();
+				window.location.href = $('.wp-admin.plugins-php tr[data-slug="yop-poll"] .row-actions .deactivate a').attr('href');
+			});
+			$(document).on( 'click', '#yop-poll-deactivate-close', function( e ) {
+				e.preventDefault();
+				$( '#yop-poll-deactivate-modal-wrapper' ).hide();
+			});
+		});
+		</script>
+		<?php
 	}
 	public function clean_recaptcha_url( $url ) {
 		if ( false !== strstr( $url, "recaptcha/api.js" ) ) {
@@ -120,6 +266,10 @@ class YOP_Poll_Admin {
 			if ( true === version_compare( $installed_version, '6.1.7', '<' ) ) {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_1_7();
+			}
+			if ( true === version_compare( $installed_version, '6.1.8', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_1_8();
 			}
         }
 	}
@@ -639,7 +789,6 @@ class YOP_Poll_Admin {
 				) {
 					$result = YOP_Poll_Polls::delete( $poll_id );
 					if ( true === $result['success'] ) {
-						YOP_Poll_Bans::delete_all_for_poll( $poll_id );
 						wp_send_json_success( __( 'Poll successfully deleted', 'yop-poll' ) );
 					} else {
 						wp_send_json_error( $result['error'] );
@@ -1472,5 +1621,27 @@ class YOP_Poll_Admin {
 		echo YOP_Poll_View::render( $template, array(
 			'link' => menu_page_url( 'yop-polls', false )
 		) );
+	}
+	public function send_deactivation_feedback() {
+		if( empty( $_POST['_token'] ) || ! wp_verify_nonce( $_POST['_token'], 'yop-poll_deactivation' ) ) {
+			wp_die( 0 );
+		}
+		if( isset( $_POST['data'] ) ) {
+	        parse_str( $_POST['data'], $form_data );
+		}
+		$subject = "YOP Poll Deactivation Notification";
+		$message = '';
+	    if( isset( $form_data['yop-poll_deactivate_details'] ) ) {
+	        $message .= "\n\r\n\r";
+	        $message .= 'Message: ' . sanitize_text_field( implode('', $form_data['yop-poll_deactivate_details']) );
+	    } else {
+			$message = 'No extra details given';
+		}
+		$email_headers = array (
+			'From: Wordpress Deactivation Notice <deactivate@yop-poll.com>',
+			'Content-Type: text/plain'
+        );
+	    $success = wp_mail( array( 'noreply@yop-poll.com' ), $subject, $message, $email_headers );
+		wp_die();
 	}
 }
