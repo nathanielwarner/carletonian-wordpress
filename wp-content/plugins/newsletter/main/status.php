@@ -1210,6 +1210,31 @@ function tnp_status_print_flag($condition) {
 
                 </tbody>
             </table>
+            
+             <h3>3rd party plugins</h3>
+            <table class="widefat" id="tnp-status-table">
+                <thead>
+                    <tr>
+                        <th>Plugin</th>
+                        <th><?php _e('Status', 'newsletter') ?></th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (is_plugin_active('plugin-load-filter/plugin-load-filter.php')) { ?>
+                    <tr>
+                        <td><a href="https://wordpress.org/plugins/plugin-load-filter/" target="_blank">Plugin load filter</a></td>
+                        <td>
+                            <span class="tnp-maybe">MAY BE</span>
+                        </td>
+                        <td>
+                            Be sure Newsletter is set as active in EVERY context.
+                        </td>
+                    </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+             
             <h3>General parameters</h3>
             <table class="widefat" id="tnp-parameters-table">
                 <thead>

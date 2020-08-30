@@ -59,7 +59,7 @@ function tnp_select_toggle(s, t) {
 function tnp_date_onchange(field) {
     let id = field.id.substring(0, field.id.lastIndexOf('_'));
     let base_field = document.getElementById('options-' + id);
-    console.log(base_field);
+    //console.log(base_field);
     //let form = field.form;
     let year = document.getElementById(id + '_year');
     let month = document.getElementById(id + '_month');

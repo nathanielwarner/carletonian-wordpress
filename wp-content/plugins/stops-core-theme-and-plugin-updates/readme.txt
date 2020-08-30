@@ -5,7 +5,7 @@ Requires at least: 5.1
 Requires PHP: 5.3
 Donate link: https://easyupdatesmanager.com
 Tested up to: 5.5
-Stable tag: 9.0.5
+Stable tag: 9.0.6
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -126,7 +126,11 @@ For additional information and FAQs for Easy Updates Manager <a href="https://ea
 
 == Changelog ==
 
-= 9.0.5 - 2020-08-11 =
+= 9.0.6 - 2020-08-10 =
+
+* FIX: Fatal error in a template file
+
+= 9.0.5 - 2020-08-10 =
 
 * TWEAK: Some minor code improvements based on PHPCS analysis
 * TWEAK: Updated seasonal notices
@@ -310,4 +314,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 9.0.5 : Changes related to WP 5.5 core changes.
+* 9.0.6 : Changes related to WP 5.5 core changes, and a fix to a regression in 9.0.5.

@@ -1761,6 +1761,10 @@ class NewsletterSubscription extends NewsletterModule {
         if (isset($attrs['optin'])) {
             $form .= $this->build_optin_field($attrs['optin']);
         }
+        
+        if (isset($attrs['confirmation_url'])) {
+            $form .= "<input type='hidden' name='ncu' value='" . esc_attr($attrs['confirmation_url']) . "'>\n";
+        }        
 
         if (isset($attrs['lists'])) {
             $arr = explode(',', $attrs['lists']);

@@ -2,8 +2,8 @@
 Contributors: pronskiy, williamdodson, stevelock
 Tags: admin, plugin, search
 Requires at least: 3.3
-Tested up to: 5.3
-Stable tag: 1.2.5
+Tested up to: 5.5
+Stable tag: 1.2.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -77,6 +77,9 @@ function filterForProducts($exclude, $query)
 2. screenshot-2.png
 
 == Changelog ==
+
+= 1.2.6 =
+* Fix compatibility with WordPress 5.5
 
 = 1.2.5 =
 * Security release. More protection added.

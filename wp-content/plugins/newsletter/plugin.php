@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 6.8.4
+  Version: 6.8.7
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,7 +35,7 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '6.8.4');
+define('NEWSLETTER_VERSION', '6.8.7');
 
 global $newsletter, $wpdb;
 
@@ -189,6 +189,8 @@ class Newsletter extends NewsletterModule {
             add_filter('display_post_states', array($this, 'add_notice_to_chosen_profile_page_hook'), 10, 2);
 
             if ($this->is_admin_page()) {
+                // Remove the emoji replacer to save to database the original emoji characters (see even woocommerce for the same problem)
+                remove_action('admin_print_scripts', 'print_emoji_detection_script');
                 add_action('admin_enqueue_scripts', array($this, 'hook_wp_admin_enqueue_scripts'));
             }
 
