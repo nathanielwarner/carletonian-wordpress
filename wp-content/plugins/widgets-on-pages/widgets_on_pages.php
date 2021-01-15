@@ -11,7 +11,7 @@
  * Plugin Name:       Widgets On Pages
  * Plugin URI:        https://datamad.co.uk/wordpress-plugins/widgets-on-pages/
  * Description:       The easiest way to Add Widgets or Sidebars to Posts and Pages using shortcodes or template tags.
- * Version:           1.4.0
+ * Version:           1.5.0
  * Author:            Todd Halfpenny
  * Author URI:        http://toddhalfpenny.com/
  * License:           GPL-2.0+
@@ -28,7 +28,7 @@ if ( !function_exists( 'wop_fs' ) ) {
     function wop_fs()
     {
         global  $wop_fs ;
-        
+
         if ( !isset( $wop_fs ) ) {
             // Include Freemius SDK.
             require_once dirname( __FILE__ ) . '/freemius/start.php';
@@ -47,10 +47,10 @@ if ( !function_exists( 'wop_fs' ) ) {
                 'is_live'        => true,
             ) );
         }
-        
+
         return $wop_fs;
     }
-    
+
     // Init Freemius.
     wop_fs();
     // Signal that SDK was initiated.
@@ -73,7 +73,7 @@ if ( !function_exists( 'wop_fs' ) ) {
             $freemius_link
         );
     }
-    
+
     wop_fs()->add_filter(
         'connect_message_on_update',
         'wop_fs_custom_connect_message_on_update',
@@ -98,7 +98,7 @@ if ( !function_exists( 'wop_fs' ) ) {
         require_once plugin_dir_path( __FILE__ ) . 'includes/class-widgets-on-pages-activator.php';
         Widgets_On_Pages_Activator::activate( $wop_plugin_version );
     }
-    
+
     /**
      * The code that runs during plugin deactivation.
      * This action is documented in includes/class-widgets-on-pages-deactivator.php
@@ -108,7 +108,7 @@ if ( !function_exists( 'wop_fs' ) ) {
         require_once plugin_dir_path( __FILE__ ) . 'includes/class-widgets-on-pages-deactivator.php';
         Widgets_On_Pages_Deactivator::deactivate();
     }
-    
+
     register_activation_hook( __FILE__, 'activate_widgets_on_pages' );
     register_deactivation_hook( __FILE__, 'deactivate_widgets_on_pages' );
     /**
@@ -120,7 +120,7 @@ if ( !function_exists( 'wop_fs' ) ) {
             activate_widgets_on_pages( WOP_PLUGIN_VERSION );
         }
     }
-    
+
     add_action( 'plugins_loaded', 'wop_plugin_check_version' );
     /**
      * The core plugin class that is used to define internationalization,
@@ -141,7 +141,7 @@ if ( !function_exists( 'wop_fs' ) ) {
         $plugin = new Widgets_On_Pages( WOP_PLUGIN_VERSION );
         $plugin->run();
     }
-    
+
     run_widgets_on_pages();
 } else {
     $args = array(

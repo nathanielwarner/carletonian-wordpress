@@ -67,12 +67,13 @@ class Widgets_On_Pages_Admin
         add_action( 'admin_menu', array( $this, 'wop_remove_hidden_meta' ) );
         // Shortcode/Template Tag Custom Meta on Turbo Sidebar CTP.
         add_action( 'load-post.php', array( $this, 'wop_load_post_hook' ) );
-        add_filter(
-            'contextual_help',
-            array( $this, 'wop_plugin_help' ),
-            10,
-            3
-        );
+        // TODO - Replace with "add_help_tab" (https://developer.wordpress.org/reference/hooks/contextual_help/)
+        // add_filter(
+        //     'contextual_help',
+        //     array( $this, 'wop_plugin_help' ),
+        //     10,
+        //     3
+        // );
         // WYSIWYG Tiny MCE.
         add_action( 'admin_head', array( $this, 'wop_add_my_tc_button' ) );
         add_action( 'wp_ajax_twd_cpt_list', array( $this, 'twd_list_ajax' ) );
@@ -82,7 +83,7 @@ class Widgets_On_Pages_Admin
             add_action( 'add_meta_boxes', array( $this, 'wop_add_free_custom_meta' ) );
         }
     }
-    
+
     /**
      * Sets "Settings" link on listing in Plugins screen.
      *
@@ -95,7 +96,7 @@ class Widgets_On_Pages_Admin
             'settings' => '<a href="' . admin_url( '/options-general.php?page=widgets-on-pages' ) . '">' . __( 'Settings', 'widgets-on-pages' ) . '</a>',
         ), $links );
     }
-    
+
     /**
      * Adds extra links under plugin description in listing on Plugins screen.
      *
@@ -105,7 +106,7 @@ class Widgets_On_Pages_Admin
      */
     public function wop_register_plugins_links( $links, $file )
     {
-        
+
         if ( strpos( $file, $this->plugin_name ) !== false ) {
             $new_links = array(
                 'donate' => '<a href="https://datamad.co.uk/donate.php" target="_blank">Donate</a>',
@@ -113,10 +114,10 @@ class Widgets_On_Pages_Admin
             );
             $links = array_merge( $links, $new_links );
         }
-        
+
         return $links;
     }
-    
+
     /**
      * Adds Admin Menu item.
      *
@@ -153,7 +154,7 @@ class Widgets_On_Pages_Admin
             'edit.php?post_type=turbo-sidebar-cpt'
         );
     }
-    
+
     /**
      * Register our setting
      *
@@ -163,7 +164,7 @@ class Widgets_On_Pages_Admin
     {
         register_setting( 'wop_options', 'wop_options_field' );
     }
-    
+
     /**
      * Render the options page for plugin
      *
@@ -173,7 +174,7 @@ class Widgets_On_Pages_Admin
     {
         include_once 'partials/widgets-on-pages-admin-display.php';
     }
-    
+
     /**
      * Render the options page for plugin
      *
@@ -184,16 +185,16 @@ class Widgets_On_Pages_Admin
      */
     public function wop_plugin_help( $text, $screen_id, $screen )
     {
-        
+
         if ( $screen_id == $this->wop_option_screen_id ) {
             $text = '<h5>Need help with the Widgets on Pages plugin?</h5>';
             $text .= '<p>Check out the documentation and support forums for help with this plugin.</p>';
             $text .= '<a href="http://wordpress.org/extend/plugins/widgets-on-pages/">Documentation</a><br /><a href="https://wordpress.org/support/plugin/widgets-on-pages/">Support forums</a>';
         }
-        
+
         return $text;
     }
-    
+
     /**
      * Removes meta boxes from admin screen
      *
@@ -203,7 +204,7 @@ class Widgets_On_Pages_Admin
     {
         remove_meta_box( 'postexcerpt', 'turbo-sidebar-cpt', 'normal' );
     }
-    
+
     /**
      * Hook to add action for shortcode / template tag meta boxes
      * Note: We have this seprate function for the action as we saw this error
@@ -215,7 +216,7 @@ class Widgets_On_Pages_Admin
     {
         add_action( 'add_meta_boxes', array( $this, 'wop_add_edit_only_custom_meta' ) );
     }
-    
+
     /**
      * Adds meta boxes from admin screen (Shortcode and Template Tag)
      *
@@ -234,7 +235,7 @@ class Widgets_On_Pages_Admin
             null
         );
     }
-    
+
     /**
      * Adds meta boxes from admin screen
      *
@@ -243,7 +244,7 @@ class Widgets_On_Pages_Admin
     public function wop_add_custom_meta()
     {
     }
-    
+
     /**
      * Adds meta boxes from admin screen
      *
@@ -262,7 +263,7 @@ class Widgets_On_Pages_Admin
             null
         );
     }
-    
+
     /**
      * Shortcode metabox markup
      *
@@ -274,7 +275,7 @@ class Widgets_On_Pages_Admin
         echo  __( '<h4>Shortcode</h4><p>Use this shortcode in your post/page</h4>', 'widgets-on-pages' ) ;
         $shortcode_id = '[widgets_on_pages id="' . $post->post_title . '"]';
         ?>
-		<?php 
+		<?php
         echo  '<p id="wop-shortcode">' . $shortcode_id . '</p><button type="button" id="bq_copy_sc" value="Copy Shortcode" class="button-secondary" />Copy Shortcode</button>' ;
         echo  '<section><h3>' . esc_html__( 'Insert using the visual editor', 'widgets-on-pages' ) . '</h3>' ;
         echo  '<p>' . esc_html__( 'Use the visual editor to add Turbo Sidebars.', 'widgets-on-pages' ) ;
@@ -286,7 +287,7 @@ class Widgets_On_Pages_Admin
         $shortcode_id = esc_html( '<?php widgets_on_template("' . $post->post_title . '");?>' );
         echo  '<p id="wop-template-tag">' . $shortcode_id . '</p><button type="button" id="bq_copy_tt" value="Copy Shortcode" class="button-secondary" />Copy PHP</button>' ;
     }
-    
+
     /**
      * Auto Insert PRO INFO metabox markup
      *
@@ -297,14 +298,14 @@ class Widgets_On_Pages_Admin
         // Show our custom meta options.
         ?>
 		<div class='inside'>
-			<?php 
+			<?php
         echo  '<h4>' . esc_html__( 'Auto Insert options is a Widgets on Pages PRO feature', 'widgets-on-pages' ) . '</h4><p>' . esc_html__( 'To auto-insert widgets into your theme\'s header, before-or-after page content, or into your theme\'s footer you need ', 'widgets-on-pages' ) . '<a href="' . wop_fs()->get_upgrade_url() . '">Widgets on Pages PRO.</a></p><p><a href="' . wop_fs()->get_upgrade_url() . '">' . esc_html__( 'Upgrade now', 'widgets-on-pages' ) . '</a> ' . esc_html( 'to access these features (and more), updates and priority support', 'widgets-on-pages' ) . '</p>' ;
         echo  '<a class="button-primary" href="' . wop_fs()->get_upgrade_url() . '">' . esc_html__( 'Get PRO Features', 'widgets-on-pages' ) . '</a>' ;
         ?>
 		</div>
 		<hr/>
 		<div class='inside'>
-			<h3><?php 
+			<h3><?php
         _e( 'Auto Insert', 'widgets-on-pages' );
         ?></h3>
 			<p>
@@ -314,7 +315,7 @@ class Widgets_On_Pages_Admin
 		</div>
 
 		<div class='inside'>
-			<h3><?php 
+			<h3><?php
         _e( 'Position', 'widgets-on-pages' );
         ?></h3>
 			<p>
@@ -333,7 +334,7 @@ class Widgets_On_Pages_Admin
 		</div>
 
 		<div class='inside'>
-			<h3><?php 
+			<h3><?php
         _e( 'Show on Posts / Pages', 'widgets-on-pages' );
         ?></h3>
 			<p>
@@ -344,13 +345,13 @@ class Widgets_On_Pages_Admin
 		</div>
 
 		<div class='inside'>
-			<h3><?php 
+			<h3><?php
         _e( 'Layout Options', 'widgets-on-pages' );
         ?></h3>
-			<p><?php 
+			<p><?php
         _e( 'Number of widget columms per screen size', 'widgets-on-pages' );
         ?></p>
-			<p><label><?php 
+			<p><label><?php
         _e( 'Small Screen', 'widgets-on-pages' );
         ?></label>
 				<select>
@@ -360,7 +361,7 @@ class Widgets_On_Pages_Admin
 				    <option value="4">4</option>
 				</select>
 			</p>
-			<p><label><?php 
+			<p><label><?php
         _e( 'Medium Screen', 'widgets-on-pages' );
         ?></label>
 				<select>
@@ -370,7 +371,7 @@ class Widgets_On_Pages_Admin
 				    <option value="4">4</option>
 				</select>
 			</p>
-			<p><label><?php 
+			<p><label><?php
         _e( 'Large Screen', 'widgets-on-pages' );
         ?></label>
 				<select>
@@ -380,7 +381,7 @@ class Widgets_On_Pages_Admin
 				    <option value="4">4</option>
 				</select>
 			</p>
-			<p><label><?php 
+			<p><label><?php
         _e( 'Wide Screen', 'widgets-on-pages' );
         ?></label>
 				<select>
@@ -391,9 +392,9 @@ class Widgets_On_Pages_Admin
 				</select>
 			</p>
 
-		<?php 
+		<?php
     }
-    
+
     /**
      * Creates a new Turbo Sidebars custom post type
      *
@@ -462,7 +463,7 @@ class Widgets_On_Pages_Admin
         $opts = apply_filters( 'turbo-sidebars-cpt-options', $opts );
         register_post_type( strtolower( $cpt_name ), $opts );
     }
-    
+
     /**
      * Register the sidebars, based upon our Turbo Sidebars.
      *
@@ -480,7 +481,7 @@ class Widgets_On_Pages_Admin
         $myposts = get_posts( $args );
         foreach ( $myposts as $post ) {
             setup_postdata( $post );
-            
+
             if ( is_numeric( $post->post_name ) ) {
                 $name = 'Widgets on Pages ' . $post->post_name;
                 $shortcode_id = $post->post_name;
@@ -490,7 +491,7 @@ class Widgets_On_Pages_Admin
                 $id = 'wop-' . $post->post_name;
                 $shortcode_id = $post->post_title;
             }
-            
+
             if ( '' != $post->post_excerpt ) {
                 $id = 'wop-' . $post->post_excerpt;
             }
@@ -507,7 +508,7 @@ class Widgets_On_Pages_Admin
             ) );
         }
     }
-    
+
     /**
      * Register the stylesheets for the admin area.
      *
@@ -534,7 +535,7 @@ class Widgets_On_Pages_Admin
             'all'
         );
     }
-    
+
     /**
      * Register the JavaScript for the admin area.
      *
@@ -555,10 +556,10 @@ class Widgets_On_Pages_Admin
          * class.
          */
         // Load our JS for Turbo Sidebars admin screen.
-        
+
         if ( in_array( $hook, array( 'post.php', 'post-new.php' ) ) ) {
             $screen = get_current_screen();
-            
+
             if ( is_object( $screen ) && 'turbo-sidebar-cpt' == $screen->post_type ) {
                 wp_enqueue_script(
                     $this->plugin_name,
@@ -575,11 +576,11 @@ class Widgets_On_Pages_Admin
                     true
                 );
             }
-        
+
         }
-    
+
     }
-    
+
     /**
      * Adds a button to the TinyMCE editor.
      */
@@ -595,14 +596,14 @@ class Widgets_On_Pages_Admin
             return;
         }
         // Check if WYSIWYG is enabled.
-        
+
         if ( get_user_option( 'rich_editing' ) == 'true' ) {
             add_filter( 'mce_external_plugins', array( $this, 'wop_add_tinymce_plugin' ) );
             add_filter( 'mce_buttons', array( $this, 'wop_register_my_tc_button' ) );
         }
-    
+
     }
-    
+
     /**
      * Sets up the link from our button to our JS.
      *
@@ -614,7 +615,7 @@ class Widgets_On_Pages_Admin
         $plugin_array['wop_tc_button'] = plugins_url( '/js/wop-tinymce-plugin.js', __FILE__ );
         return $plugin_array;
     }
-    
+
     /**
      * Add our TinyMCE button.
      *
@@ -626,7 +627,7 @@ class Widgets_On_Pages_Admin
         array_push( $buttons, 'wop_tc_button' );
         return $buttons;
     }
-    
+
     /**
      * Function to fetch buttons
      *
@@ -644,7 +645,7 @@ class Widgets_On_Pages_Admin
         $loop = new WP_Query( $args );
         while ( $loop->have_posts() ) {
             $loop->the_post();
-            
+
             if ( is_numeric( $loop->post->post_name ) ) {
                 $name = 'Widgets on Pages ' . $loop->post->post_name;
                 $shortcode_id = $loop->post->post_name;
@@ -654,7 +655,7 @@ class Widgets_On_Pages_Admin
                 $id = 'wop-' . $loop->post->post_name;
                 $shortcode_id = $loop->post->post_title;
             }
-            
+
             if ( '' != get_the_excerpt( $loop->post ) ) {
                 $id = 'wop-' . get_the_excerpt( $loop->post );
             }
@@ -667,7 +668,7 @@ class Widgets_On_Pages_Admin
         wp_die();
         // This is required to terminate immediately and return a proper response.
     }
-    
+
     /**
      * Function to output button list ajax script
      *
@@ -677,7 +678,7 @@ class Widgets_On_Pages_Admin
     {
         // Create nonce.
         global  $pagenow ;
-        
+
         if ( 'admin.php' != $pagenow ) {
             $nonce = wp_create_nonce( 'twd-nonce' );
             $notPaying = false;
@@ -688,7 +689,7 @@ class Widgets_On_Pages_Admin
 				jQuery( document ).ready( function( $ ) {
 					var data = {
 						'action'	: 'twd_cpt_list', // wp ajax action
-						'security'	: '<?php 
+						'security'	: '<?php
             echo  $nonce ;
             ?>' // nonce value created earlier
 					};
@@ -703,7 +704,7 @@ class Widgets_On_Pages_Admin
 								if (typeof(tinyMCE) != 'undefined') {
 									if (tinyMCE.activeEditor != null) {
 										tinyMCE.activeEditor.settings.cptPostsList = response;
-										tinyMCE.activeEditor.settings.notPaying = <?php 
+										tinyMCE.activeEditor.settings.notPaying = <?php
             echo  $notPaying ;
             ?>;
 									}
@@ -712,9 +713,9 @@ class Widgets_On_Pages_Admin
 						});
 				});
 			</script>
-	<?php 
+	<?php
         }
-    
+
     }
 
 }

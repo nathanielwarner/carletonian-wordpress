@@ -2,7 +2,7 @@
     <input type="hidden" name="_token" value="<?php echo wp_create_nonce( 'yop-poll-get-vote-details' ); ?>">
     <div id="icon-options-general" class="icon32"></div>
     <h1>
-        <i class="fa fa-bar-chart" aria-hidden="true"></i><?php _e( 'Poll results for', 'yop-poll' ); ?> <?php echo $poll->name; ?>
+        <span class="glyphicon glyphicon-signal" style="margin-right:10px;"></span><?php _e( 'Poll results for', 'yop-poll' ); ?> <?php echo $poll->name; ?>
         <a href="<?php echo esc_url( add_query_arg(
             array(
                 'page' => 'yop-polls',
@@ -149,13 +149,13 @@
                                                     foreach ( $answersArray as $answer ) {
                                                         ?>
                                                         <?php
-                                                        if( 0 == $z && $answer['total_submits'] > 0 ) echo '<i class="fa fa-trophy" aria-hidden="true"></i>';
+                                                        if( 0 == $z && $answer['total_submits'] > 0 ) echo '<span class="dashicons dashicons-awards"></span>&nbsp;';
                                                         ?>
                                                         <?php
                                                         switch ( $answer['stype'] ) {
                                                             case 'text': {
                                                                 if( 0 == $answer['author'] ) {
-                                                                    echo '<i class="fa fa-user" aria-hidden="true"></i>&nbsp;&nbsp;';
+                                                                    echo '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;';
                                                                 }
                                                                 echo "<label>" . $answer['stext'];
                                                                 break;
@@ -273,7 +273,7 @@
                                                         <?php
                                                         foreach ( $total_votes_for_question_array as $key => $value ) {
                                                             ?>
-                                                            <?php if( 0 == $z ) echo '<i class="fa fa-trophy" aria-hidden="true"></i>'; ?>
+                                                            <?php if( 0 == $z ) echo '<span class="dashicons dashicons-awards"></span>&nbsp;'; ?>
                                                             <label>
                                                                 <?php
                                                                 echo $key;

@@ -1,4 +1,4 @@
-<div id="yop-main-area" class="bootstrap-yop">
+<div id="yop-main-area" class="bootstrap-yop yop-poll-upgrade-modal-long">
                 <div class="row">
                     <div class="col-md-1"></div>
                     <div class="col-md-10">

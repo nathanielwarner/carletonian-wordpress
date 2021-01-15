@@ -91,9 +91,24 @@ class TNP_Composer {
         $open .= "\n</style>\n";
         $open .= "</head>\n";
         $open .= '<body style="margin: 0; padding: 0;" dir="' . (is_rtl() ? 'rtl' : 'ltr') . '">';
-        $open .= "\n";
+	    $open .= "\n";
+	    $open .= self::get_html_preheader( $email );
+
         return $open;
     }
+
+	static private function get_html_preheader( $email ) {
+
+		if ( empty ( $email->options['preheader'] ) ) {
+			return "";
+		}
+
+		$preheader_text = $email->options['preheader'];
+		$html           = "<div style=\"display:none;font-size:1px;color:#ffffff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;\">$preheader_text</div>";
+		$html           .= "\n";
+
+		return $html;
+	}
 
     static function get_html_close($email) {
         return "</body>\n</html>";
@@ -105,8 +120,8 @@ class TNP_Composer {
      * @return string
      */
     static function get_main_wrapper_open($email) {
-        if (!isset($email->options['composer_background'])) {
-            $bgcolor = '#ffffff';
+        if (!isset($email->options['composer_background']) || $email->options['composer_background'] == 'inherit') {
+            $bgcolor = '';
         } else {
             $bgcolor = $email->options['composer_background'];
         }
@@ -255,9 +270,26 @@ class TNP_Composer {
         return false;
     }
 
+    /**
+     * Creates the HTML for a button extrating from the options, with the provided prefix, the button attributes:
+     *
+     * - [prefix]_url The button URL
+     * - [prefix]_font_family
+     * - [prefix]_font_size
+     * - [prefix]_font_weight
+     * - [prefix]_label
+     * - [prefix]_font_color The label color
+     * - [prefix]_background The button color
+     *
+     * TODO: Add radius and possiblt the alignment
+     *
+     * @param array $options
+     * @param string $prefix
+     * @return string
+     */
     static function button($options, $prefix = 'button') {
         $defaults = [
-            'button_url' => '#',
+            $prefix . '_url' => '#',
             $prefix . '_font_family' => 'Helvetica, Arial, sans-serif',
             $prefix . '_label' => 'Click Here',
             $prefix . '_font_color' => '#ffffff',
@@ -265,9 +297,9 @@ class TNP_Composer {
             $prefix . '_font_size' => 20,
             $prefix . '_background' => '#256F9C',
         ];
-        
+
         $options = array_merge($defaults, $options);
-        
+
         $b = '<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;">';
         $b .= '<tr>';
         $b .= '<td align="center" bgcolor="' . $options[$prefix . '_background'] . '" role="presentation" style="border:none;border-radius:3px;cursor:auto;mso-padding-alt:10px 25px;background:' . $options[$prefix . '_background'] . '" valign="middle">';
@@ -281,20 +313,50 @@ class TNP_Composer {
     }
 
     /**
-     * 
+     * Generates an IMG tag, linked if the media has an URL.
+     *
      * @param TNP_Media $media
+     * @param string $style
      * @return string
      */
-    static function image($media) {
-        $b = '';
-        if ($media->link) {
-            $b .= '<a href="' . $media->link . '" target="_blank" style="text-decoration: none">';
-        }
+    static function image($media, $attr = []) {
 
-        $b .= '<img src="' . $media->url . '" width="' . $media->width . '"'
-                . ' height="' . $media->height . '"'
-                . ' alt="' . esc_attr($media->alt) . '"'
-                . ' border="0" style="max-width: 100%">';
+	    $default_attrs = [
+		    'style'      => 'max-width: 100%; height: auto;',
+		    'class'      => null,
+		    'link-style' => 'text-decoration: none;',
+		    'link-class' => null,
+	    ];
+
+    	$attr = array_merge($default_attrs, $attr);
+
+    	//Class and style attribute are mutually exclusive.
+	    //Class take priority to style because classes will transform to inline style inside block rendering operation
+	    if ( ! empty( $attr['class'] ) ) {
+		    $styling = ' inline-class="' . $attr['class'] . '" ';
+	    } else {
+		    $styling = ' style="' . $attr['style'] . '" ';
+	    }
+
+	    //Class and style attribute are mutually exclusive.
+	    //Class take priority to style because classes will transform to inline style inside block rendering operation
+	    if ( ! empty( $attr['link-class'] ) ) {
+		    $link_styling = ' inline-class="' . $attr['link-class'] . '" ';
+	    } else {
+		    $link_styling = ' style="' . $attr['link-style'] . '" ';
+	    }
+
+        $b = '';
+	    if ( $media->link ) {
+		    $b .= '<a href="' . $media->link . '" target="_blank" rel="noopener nofollow" ' . $link_styling . '>';
+	    }
+
+	    if ( $media ) {
+		    $b .= '<img src="' . $media->url . '" width="' . $media->width . '"'
+		          . ' height="' . $media->height . '"'
+		          . ' alt="' . esc_attr( $media->alt ) . '"'
+		          . ' border="0" ' . $styling . '>';
+	    }
 
         if ($media->link) {
             $b .= '</a>';
@@ -307,7 +369,7 @@ class TNP_Composer {
      * Returns a WP media ID for the specified post (or false if nothing can be found)
      * looking for the featured image or, if missing, taking the first media in the gallery and
      * if again missing, searching the first reference to a media in the post content.
-     * 
+     *
      * @param int $post_id
      * @return int
      */
@@ -370,6 +432,7 @@ class TNP_Composer_Grid_System {
     public function __construct($columns_per_row) {
         $this->cells_per_row = $columns_per_row;
         $this->cells_counter = 0;
+        $this->rows = [];
     }
 
     public function __toString() {

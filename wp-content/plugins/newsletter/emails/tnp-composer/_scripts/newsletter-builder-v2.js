@@ -45,8 +45,6 @@ jQuery.fn.perform_block_edit = function () {
         jQuery("#tnpc-edit-block .bgcolor").val(target.css("background-color"));
         jQuery("#tnpc-edit-block .font").val(target.css("font-family"));
 
-        jQuery('.bgcolor').wpColorPicker().iris('color', target.css("background-color"));
-
         // The row container which is a global variable and used later after the options save
         container = jQuery(this).closest("table");
 
@@ -66,6 +64,7 @@ jQuery.fn.perform_block_edit = function () {
                 options: options
             }, function () {
                 start_options = jQuery("#tnpc-block-options-form").serialize();
+                tnp_controls_init();
             });
 
         } else {
@@ -134,12 +133,21 @@ jQuery(function () {
     // subject management
     jQuery('#options-title').val(jQuery('#tnpc-form input[name="options[subject]"]').val());
 
-    // Add event to update composer wrapper background color
+    // ======================== //
+    // ==  BACKGROUND COLOR  == //
+    // ======================== //
+    _setBuilderAreaBackgroundColor(document.getElementById('options-options_composer_background').value);
+
     jQuery('#options-options_composer_background').on('change', function (e) {
-        jQuery('#newsletter-builder-area-center-frame-content').css('background-color', e.target.value);
+        _setBuilderAreaBackgroundColor(e.target.value);
     });
 
-    jQuery('#newsletter-builder-area-center-frame-content').css('background-color', jQuery('#options-options_composer_background').val());
+    function _setBuilderAreaBackgroundColor(color) {
+        jQuery('#newsletter-builder-area-center-frame-content').css('background-color', color);
+    }
+    // ======================== //
+    // ==  BACKGROUND COLOR  == //
+    // ======================== //
 
 });
 
@@ -168,7 +176,7 @@ function start_composer() {
                     '_wpnonce': tnp_nonce
                 };
                 jQuery.post(ajaxurl, data, function (response) {
-                    
+
                     new_row = jQuery(response);
 //                    ui.item.before(new_row);
 //                    ui.item.remove();
@@ -259,7 +267,6 @@ function start_composer() {
         }).fail(function () {
             alert("Block rendering failed");
         });
-
 
 
     });

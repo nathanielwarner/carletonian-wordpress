@@ -17,7 +17,8 @@ $default_options = array(
     'block_padding_bottom' => 20,
     'block_background' => '#ffffff',
     'font_family' => 'Helvetica, Arial, sans-serif',
-    'font_size' => 16
+    'font_size' => 16,
+    'font_color' => '#000'
 );
 
 $options = array_merge($default_options, $options);

@@ -1,29 +1,29 @@
 <style>
     /* Styles which will be removed and injected in the replacing the matching "inline-class" attribute */
     .title {
-        font-size: <?php echo $title_font_size ?>px; 
-        color: <?php echo $title_font_color ?>; 
-        padding-top: 0; 
+        font-size: <?php echo $title_font_size ?>px;
+        color: <?php echo $title_font_color ?>;
+        padding-top: 0;
         font-family: <?php echo $title_font_family ?>;
-        font-weight: <?php echo $title_font_weight ?>; 
+        font-weight: <?php echo $title_font_weight ?>;
         margin: 0;
         text-align: center;
         line-height: normal;
     }
     .text {
-        padding: 20px 0 0 0; 
-        font-size: <?php echo $font_size ?>px; 
-        line-height: 150%; 
-        color: <?php echo $font_color ?>; 
-        font-family: <?php echo $font_family ?>; 
-        font-weight: <?php echo $font_weight ?>; 
+        padding: 20px 0 0 0;
+        font-size: <?php echo $font_size ?>px;
+        line-height: 150%;
+        color: <?php echo $font_color ?>;
+        font-family: <?php echo $font_family ?>;
+        font-weight: <?php echo $font_weight ?>;
         margin: 0;
         text-align: center;
     }
     .image {
         max-width: 100%!important;
         display: block;
-    }  
+    }
     .image-a {
         display: block;
     }
@@ -37,9 +37,7 @@
 <table width="50%" align="left" class="hero-table" border="0" cellspacing="0" cellpadding="0">
     <tr>
         <td align="center" valign="top">
-            <a href="<?php echo $url ?>" target="_blank" rel="noopener nofollow" inline-class="image-a">
-                <img src="<?php echo $media->url ?>" border="0" alt="<?php echo esc_attr($media->alt) ?>" width="<?php echo $media->width ?>" height="<?php echo $media->height ?>" inline-class="image">                
-            </a>
+	        <?php echo TNP_Composer::image( $media, [ 'class' => 'image', 'link-class' => 'image-a' ] ); ?>
         </td>
     </tr>
 </table>

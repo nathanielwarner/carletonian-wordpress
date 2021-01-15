@@ -14,6 +14,7 @@ $size = array('width' => 240, 'height' => 160, "crop" => true);
         font-family: <?php echo $title_font_family ?>;
         color: <?php echo $options['title_font_color'] ?>;
         font-size: <?php echo $title_font_size ?>px;
+        font-weight: <?php echo $title_font_weight ?>;
         line-height: 1.3em;
     }
     .post-excerpt {

@@ -105,7 +105,7 @@ switch( $params['order_by'] ) {
 <div id="yop-main-area" class="bootstrap-yop wrap">
 	<div id="icon-options-general" class="icon32"></div>
 	<h1>
-		<i class="fa fa-bar-chart" aria-hidden="true"></i>Logs
+		<?php _e( 'Logs', 'yop-poll' );?>
 	</h1>
 	<form method="get" action="" id="searchForm">
 		<input type="hidden" name="_token" value="<?php echo wp_create_nonce( 'yop-poll-view-logs' ); ?>">

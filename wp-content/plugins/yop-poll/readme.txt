@@ -3,7 +3,7 @@ Contributors: yourownprogrammer
 Donate Link: https://www.yop-poll.com
 Tags: booth, create poll, poll plugin, poll, polls, wordpress poll, vote, voting, survey, polling, yop poll, yop
 Requires at least: 3.3
-Tested up to: 5.4
+Tested up to: 5.6
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.htm
@@ -117,6 +117,32 @@ You can have only one question per poll.
 12. Poll With Vertical Display Showing Results Before Vote
 
 == Changelog ==
+
+= 6.2.4 =
+* fixed issue with GDPR/CCPA checkbox when having multiple polls on the same page
+* fixed issue with Results and Get Code icons not showing
+* fixed issue with cloning polls
+
+= 6.2.3 =
+* fixed issue with [br] tag showing on results page
+* added more tags for answers - [strong][/strong], [p][/p], [b][/b], [u][/u], [i][/i]
+
+= 6.2.2 =
+* fixed issue with polls loading with ajax
+* added %VOTER-FIRST-NAME%, %VOTER-LAST-NAME%, %VOTER-EMAIL%, %VOTER-USERNAME% to new vote email notifications
+
+= 6.2.1 =
+* removed 2 options from built in captcha
+* updated icons for View Results and Get Shortcode
+* fixed issue with duplicate answers when viewing results
+
+= 6.2.0 =
+* fixed issue with google reCaptcha loading intermitently when polls are loaded with ajax
+* fixed issue with google reCaptcha when allowing votes from guests and wordpress users
+* added support for google reCaptcha v3
+
+= 6.1.9 =
+* fixed issue with wp login window blocking voting if window is manually closed
 
 = 6.1.8 =
 * fixed issue with votes not being deleted when poll is removed

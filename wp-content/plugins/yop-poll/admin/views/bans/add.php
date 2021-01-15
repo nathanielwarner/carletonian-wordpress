@@ -1,8 +1,7 @@
 <div class="bootstrap-yop wrap">
 	<div id="icon-options-general" class="icon32"></div>
 	<h1>
-		<i class="fa fa-bar-chart" aria-hidden="true"></i>
-		Add Ban
+        <?php _e( 'Add Ban', 'yop-poll' );?>
 	</h1>
 	<div id="poststuff">
 		<div id="post-body" class="metabox-holder addban">
@@ -17,12 +16,11 @@
                                     <div class="yop-text">
                                         <label>
                                             <?php _e( 'Poll', 'yop-poll' );?>
-                                            <!--<i class="fa fa-info-circle yop-info"></i>-->
                                         </label>
                                     </div>
                                     <select class="ban-poll admin-select" style="min-width:50%">
                                         <option value="0">
-                                            All Polls
+                                            <?php _e( 'All Polls', 'yop-poll' );?>
                                         </option>
                                         <?php
                                         foreach ( $polls as $poll ) {
@@ -43,7 +41,6 @@
                                     <div class="yop-text">
                                         <label>
                                             <?php _e( 'Ban By', 'yop-poll' );?>
-                                        <!--<i class="fa fa-info-circle yop-info"></i>-->
                                         </label>
                                     </div>
                                     <select class="ban-by admin-select" style="min-width:50%">

@@ -94,7 +94,7 @@ if (!$controls->is_action()) {
                                 <?php $controls->text('footer_legal', 40); ?>
                             </td>
                         </tr>
-                    </table>                
+                    </table>
                 </div>
 
                 <div id="tabs-social">
@@ -152,6 +152,18 @@ if (!$controls->is_action()) {
                             <th>Soundcloud URL</th>
                             <td>
                                 <?php $controls->text('soundcloud_url', 40); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Telegram URL</th>
+                            <td>
+			                    <?php $controls->text('telegram_url', 40); ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>VK URL</th>
+                            <td>
+			                    <?php $controls->text('vk_url', 40); ?>
                             </td>
                         </tr>
                     </table>

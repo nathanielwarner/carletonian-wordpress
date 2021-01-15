@@ -1,3 +1,45 @@
+### 5.9.5
+
+Added compatiblity with WordPress 5.6
+Minor improvements
+Fixed readme.txt information
+
+
+### 5.9.4
+
+**Fixes**
+
+- Fixed PHP notice `A non-numeric value encountered` in `[su_dropcap]`
+- Fixed PHP notice `A non-numeric value encountered` in `[su_service]`
+- Updated in-plugin links
+
+
+### 5.9.3
+
+**What's new**
+
+- New option `anchor_in_url` for `[su_tabs]` and `[su_spoiler]`. This option specifies whether an anchor will be added to page URL after clicking a tab or a spoiler.
+- New option `random` for `[su_image_carousel]` which allows to shuffle carousel images
+
+**Fixes**
+
+- Fixed issue in `[su_image_carousel]` where images were hidden on some themes
+
+
+### 5.9.2
+
+**What's new**
+
+- `[su_qrcode]` now supports nested shortcodes in the `data` attribute
+- Improved performance by reducing the number of DB queries
+
+**Fixes**
+
+- Fixed issue in the Insert Shortcode tool with Taxonomy and Tax terms fields
+- Fixed error `Posts: invalid template name` on some installations
+- This update also fixes the plugin options issue present in 5.9.1
+
+
 ### 5.9.1
 
 **What's new**

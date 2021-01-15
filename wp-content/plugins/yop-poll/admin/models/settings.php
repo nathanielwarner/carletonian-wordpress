@@ -59,6 +59,12 @@ class YOP_Poll_Settings {
 					'enabled' => 'no',
 					'site-key' => '',
 					'secret-key' => ''
+                ),
+                'reCaptchaV3' => array(
+					'enabled' => 'no',
+					'site-key' => '',
+                    'secret-key' => '',
+                    'min-allowed-score' => ''
 				),
                 'facebook' => array(
                     'enabled' => 'no',
@@ -134,6 +140,12 @@ class YOP_Poll_Settings {
 					'enabled' => 'no',
 					'site-key' => '',
 					'secret-key' => ''
+                ),
+                'reCaptchaV3' => array(
+					'enabled' => 'no',
+					'site-key' => '',
+                    'secret-key' => '',
+                    'min-allowed-score' => ''
 				),
                 'facebook' => array(
                     'enabled'  => isset( $old_settings['facebook_integration'] ) ? $old_settings['facebook_integration'] : 'no',
@@ -311,6 +323,14 @@ class YOP_Poll_Settings {
         unset( $current_settings['email'] );
         update_option( 'yop_poll_settings', serialize( $current_settings ) );
     }
+    public static function update_settings_to_version_6_2_0() {
+        $current_settings = unserialize( self::get_all_settings() );
+        $current_settings['integrations']['reCaptchaV3']['enabled'] = 'no';
+        $current_settings['integrations']['reCaptchaV3']['site-key'] = '';
+        $current_settings['integrations']['reCaptchaV3']['secret-key'] = '';
+        $current_settings['integrations']['reCaptchaV3']['min-allowed-score'] = '';
+        update_option( 'yop_poll_settings', serialize( $current_settings ) );
+    }
     public static function get_all_settings() {
         if ( ( false === isset( self::$settings ) ) || ( '' === self::$settings ) ) {
             self::$settings = get_option( 'yop_poll_settings' );
@@ -373,6 +393,12 @@ class YOP_Poll_Settings {
 					'enabled' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible']['enabled'] ) ) ? $unserialized_settings['integrations']['reCaptchaV2Invisible']['enabled'] : '',
 	                'site-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible']['site-key'] ) ) ? $unserialized_settings['integrations']['reCaptchaV2Invisible']['site-key'] : '',
 					'secret-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible'] ) && isset( $unserialized_settings['integrations']['reCaptchaV2Invisible']['secret-key'] ) ) ? $unserialized_settings['integrations']['reCaptchaV2Invisible']['secret-key'] : ''
+                ),
+                'reCaptchaV3' => array(
+					'enabled' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3']['enabled'] ) ) ? $unserialized_settings['integrations']['reCaptchaV3']['enabled'] : '',
+	                'site-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3']['site-key'] ) ) ? $unserialized_settings['integrations']['reCaptchaV3']['site-key'] : '',
+                    'secret-key' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3']['secret-key'] ) ) ? $unserialized_settings['integrations']['reCaptchaV3']['secret-key'] : '',
+                    'min-allowed-score' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3'] ) && isset( $unserialized_settings['integrations']['reCaptchaV3']['min-allowed-score'] ) ) ? $unserialized_settings['integrations']['reCaptchaV3']['min-allowed-score'] : ''
 				),
                 'facebook' => array(
                     'enabled' => ( isset( $unserialized_settings['integrations'] ) && isset( $unserialized_settings['integrations']['facebook'] ) && isset( $unserialized_settings['integrations']['facebook']['enabled'] ) ) ? $unserialized_settings['integrations']['facebook']['enabled'] : '',
@@ -478,6 +504,20 @@ class YOP_Poll_Settings {
 				if ( ( false === isset( $settings->integrations->reCaptchaV2Invisible->{'secret-key'} ) ) || ( '' === trim( $settings->integrations->reCaptchaV2Invisible->{'secret-key'} ) ) ) {
 					self::$errors_present = true;
 					self::$error_text = __( 'Data for "Secret Key" is invalid', 'yop-poll' );
+                }
+            }
+            if ( 'yes' === $settings->integrations->reCaptchaV3->{'enabled'} ) {
+				if ( ( false === isset( $settings->integrations->reCaptchaV3->{'site-key'} ) ) || ( '' === trim( $settings->integrations->reCaptchaV3->{'site-key'} ) ) ) {
+					self::$errors_present = true;
+					self::$error_text = __( 'Data for "Site Key" is invalid', 'yop-poll' );
+				}
+				if ( ( false === isset( $settings->integrations->reCaptchaV3->{'secret-key'} ) ) || ( '' === trim( $settings->integrations->reCaptchaV3->{'secret-key'} ) ) ) {
+					self::$errors_present = true;
+					self::$error_text = __( 'Data for "Secret Key" is invalid', 'yop-poll' );
+                }
+                if ( ( false === isset( $settings->integrations->reCaptchaV3->{'min-allowed-score'} ) ) || ( '' === trim( $settings->integrations->reCaptchaV3->{'min-allowed-score'} ) ) ) {
+					self::$errors_present = true;
+					self::$error_text = __( 'Data for "Min Allowed Score" is invalid', 'yop-poll' );
 				}
 			}
             if (
@@ -793,6 +833,12 @@ class YOP_Poll_Settings {
 						'enabled' => $settings->integrations->reCaptchaV2Invisible->{'enabled'},
 						'site-key' => trim( $settings->integrations->reCaptchaV2Invisible->{'site-key'} ),
 						'secret-key' => trim( $settings->integrations->reCaptchaV2Invisible->{'secret-key'} )
+                    ),
+                    'reCaptchaV3' => array(
+						'enabled' => $settings->integrations->reCaptchaV3->{'enabled'},
+						'site-key' => trim( $settings->integrations->reCaptchaV3->{'site-key'} ),
+                        'secret-key' => trim( $settings->integrations->reCaptchaV3->{'secret-key'} ),
+                        'min-allowed-score' => trim( $settings->integrations->reCaptchaV3->{'min-allowed-score'} )
 					),
                     'facebook' => array(
                         'enabled' => $settings->integrations->facebook->{'enabled'},

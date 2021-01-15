@@ -8,6 +8,12 @@
  */
 function SimpleLogger()
 {
+    // Load loggers if main SimpleLogger class is not yet available.
+    // Makes it possible to log things early,
+    // before loggers are loaded "normally" on filter "after_setup_theme".
+    if (!class_exists('SimpleLogger')) {
+        SimpleHistory::get_instance()->load_loggers();
+    }
     return new SimpleLogger(SimpleHistory::get_instance());
 }
 
@@ -165,6 +171,45 @@ function sh_error_log()
             error_log(print_r($var, true));
         }
     }
+}
+
+/**
+ * Echoes any number of variables for debug purposes.
+ *
+ * Example usage:
+ *
+ * sh_d('Values fromm $_GET', $_GET);
+ * sh_d('$_POST', $_POST);
+ * sh_d('My vars', $varOne, $varTwo, $varXYZ);
+ *
+ * @mixed Vars Variables to output.
+ */
+function sh_d()
+{
+    $output = '';
+
+    foreach (func_get_args() as $var) {
+        $loopOutput = '';
+        if (is_bool($var)) {
+            $bool_string = true === $var ? 'true' : 'false';
+            $loopOutput = "$bool_string (boolean value)";
+        } elseif (is_null($var)) {
+            $loopOutput = ('null (null value)');
+        } else {
+            $loopOutput = print_r($var, true);
+        }
+
+        if ($loopOutput) {
+            $output = $output . sprintf(
+                '
+                <pre>%1$s</pre>
+                ',
+                esc_html($loopOutput)
+            );
+        }
+    }
+    
+    echo $output;
 }
 
 /**

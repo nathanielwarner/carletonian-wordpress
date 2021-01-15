@@ -91,7 +91,9 @@ $fields = new NewsletterFields($controls);
 
             <form id="tnpc-global-styles-form">
 
-                <?php $fields->color('options_composer_background', __('Background color', 'newsletter'), ['default'=>'#f4f4f4']) ?>
+		        <?php $fields->color( 'options_composer_background', __( 'Background color', 'newsletter' ), [ 'default' => '#FFFFFF' ] ) ?>
+		        <?php $fields->text( 'options_preheader', __( 'Snippet', 'newsletter' ), ['description'=>'Short content preview shown by Gmail']) ?>
+
             </form>
 
         </div>

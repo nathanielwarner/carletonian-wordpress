@@ -1,8 +1,7 @@
 <div class="bootstrap-yop wrap">
 	<div id="icon-options-general" class="icon32"></div>
 	<h1>
-		<i class="fa fa-bar-chart" aria-hidden="true"></i>
-	 	Edit Ban
+        <?php _e( 'Edit Ban', 'yop-poll' );?>
 	</h1>
 	<div id="poststuff">
 		<div id="post-body" class="metabox-holder addban">
@@ -17,20 +16,19 @@
                                     <div class="yop-text">
                                         <label>
                                         <?php _e( 'Poll', 'yop-poll' );?>
-                                        <!--<i class="fa fa-info-circle yop-info"></i>-->
                                         </label>
                                     </div>
                                     <select class="ban-poll admin-select" style="min-width:50%">
                                         <?php if ( 0 === intval( $ban->poll_id ) ) {
                                             ?>
                                             <option value="0" selected>
-                                                All Polls
+                                                <?php _e( 'All Polls', 'yop-poll' );?>
                                             </option>
                                             <?php
                                         } else {
                                             ?>
                                             <option value="0">
-                                                All Polls
+                                                <?php _e( 'All Polls', 'yop-poll' );?>
                                             </option>
                                             <?php
                                         }
@@ -60,7 +58,6 @@
                                     <div class="yop-text">
                                         <label>
                                             <?php _e( 'Ban By', 'yop-poll' );?>
-                                        <!--<i class="fa fa-info-circle yop-info"></i>-->
                                         </label>
                                     </div>
                                     <?php

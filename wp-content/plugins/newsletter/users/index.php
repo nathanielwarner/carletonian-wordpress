@@ -169,7 +169,7 @@ $controls->data['search_page'] ++;
             <table class="widefat">
                 <thead>
                     <tr>
-                        <th><input type="checkbox" onchange="jQuery('input.tnp-selector').prop('checked', this.checked)"</th>
+                        <th><input type="checkbox" onchange="jQuery('input.tnp-selector').prop('checked', this.checked)"></th>
                         <th>Id</th>
                         <th>Email</th>
                         <th><?php _e('Name', 'newsletter') ?></th>

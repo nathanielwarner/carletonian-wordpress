@@ -101,7 +101,7 @@
 						<input type="text" class="form-control start-date-custom" readonly />
 						<input type="hidden" class="form-control start-date-custom-hidden" />
 		                <div class="input-group-addon">
-							<i class="fa fa-calendar show-start-date" aria-hidden="true"></i>
+							<span class="dashicons dashicons-calendar-alt show-start-date"></span>
 		                </div>
 					</div>
 				</div>
@@ -125,7 +125,7 @@
 						<input type="text" class="form-control end-date-custom" readonly />
 						<input type="hidden" class="form-control end-date-custom-hidden" />
 		                <div class="input-group-addon">
-							<i class="fa fa-calendar show-end-date" aria-hidden="true"></i>
+							<span class="dashicons dashicons-calendar-alt show-end-date"></span>
 		                </div>
 					</div>
 				</div>
@@ -169,7 +169,7 @@
 						<input type="text" class="form-control reset-poll-stats-on" readonly />
 						<input type="hidden" class="form-control reset-poll-stats-on-hidden" />
 		                <div class="input-group-addon">
-							<i class="fa fa-calendar show-reset-poll-stats-on" aria-hidden="true"></i>
+							<span class="dashicons dashicons-calendar-alt show-reset-poll-stats-on"></span>
 		                </div>
 					</div>
 				</div>
@@ -208,6 +208,7 @@
 							<option value="yes"><?php _e( 'Use built in Captcha', 'yop-poll' );?></option>
 							<option value="yes-recaptcha"><?php _e( 'Use reCaptcha v2 Checkbox', 'yop-poll' );?></option>
 							<option value="yes-recaptcha-invisible"><?php _e( 'Use reCaptcha v2 Invisible', 'yop-poll' );?></option>
+							<option value="yes-recaptcha-v3"><?php _e( 'Use reCaptcha v3', 'yop-poll' );?></option>
 						</optgroup>
 			        </select>
 				</div>

@@ -1199,7 +1199,7 @@ span.wp-media-buttons-icon:before {
     background-color: #E74C41;
     padding: 2px 10px;
     border-radius: 10px;
-        display: inline-block;
+    display: inline-block;
     width: 75px;
     text-align: center;
 }
@@ -1211,7 +1211,7 @@ span.wp-media-buttons-icon:before {
     background-color: #F1C40F;
     padding: 2px 10px;
     border-radius: 10px;
-        display: inline-block;
+    display: inline-block;
     width: 75px;
     text-align: center;
 }
@@ -2455,4 +2455,25 @@ span.tnp-email-status-sent {
 
 .text-left {
     text-align: left;
+}
+
+.tab-min-height {
+    min-height: 500px;
+}
+
+.tnp-control-all-languages-notice {
+    padding: 15px;
+    border: 1px dashed #999;
+}
+
+/* Spectru, color picker */
+
+/* Down arrow */
+.sp-dd {
+    display: none;
+}
+
+.sp-replacer {
+    width:  30px!important;
+    height: 30px!important;
 }

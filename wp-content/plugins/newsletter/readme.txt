@@ -1,10 +1,12 @@
 === Newsletter ===
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
-Tested up to: 5.5
-Stable tag: 6.8.7
+Tested up to: 5.6
+Stable tag: 7.0.2
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Add a real newsletter system to your blog. For free. With unlimited newsletters and subscribers.
 
@@ -50,20 +52,27 @@ Improve The Newsletter Plugin with these free addons:
 * [WP Registration Integration](https://www.thenewsletterplugin.com/documentation/wpusers-extension) - connects the WordPress standard and custom registration with Newsletter subscription. Optionally imports all registered users as subscribers.
 * [Archive](https://www.thenewsletterplugin.com/documentation/archive-extension) - creates a simple blog page which lists all your sent newsletters
 * [Locked Content](https://www.thenewsletterplugin.com/documentation/locked-content-extension) - open up your premium content only after subscription
-* [Newsletter REST API](https://www.thenewsletterplugin.com/developers/dev-newsletter-api) - adds a tier of REST api to integrate with the Newsletter core services
-* BuddyPress integration - subscription opt-in inside BuddyPress signup form
+* [Newsletter REST API](https://www.thenewsletterplugin.com/documentation/developers/newsletter-api-2/) - adds a tier of REST api to integrate with the Newsletter core services
+* [Sendinblue integration](https://www.thenewsletterplugin.com/documentation/addons/delivery-addons/sendinblue-extension/) - deliver your newsletters with Sendinblue
 
 (*easily add them from our [Addons panel](https://www.thenewsletterplugin.com/documentation/install-extensions)*)
+
+= Addons on WordPress.org =
+
+* [RSS Composer Block](https://wordpress.org/plugins/newsletter-rss-block/) - (3rd party) a composer block which builds its content from a RSS feed
+* [Popup Maker Integration](https://wordpress.org/plugins/newsletter-popupmaker/) - (3rd party) integration of Newsletter forms with Popup Maker plugin
+* [BuddyPress integration](https://wordpress.org/plugins/newsletter-buddypress/) - subscription opt-in inside BuddyPress signup form
+* [WP User Manager addon for Newsletter](https://wordpress.org/plugins/wpum-newsletter/) - adds the subscription option on registration forms
 
 = Professional Addons =
 
 Need *more power*? Feel *something's missing*? The Newsletter Plugin features can be easily extended through our **premium, professional Addons**! Let us introduce just two of them : )
 
-* Extended Composer Blocks - adds new blocks to the drag & drop composer
-* [WooCommerce Integration](https://www.thenewsletterplugin.com/woocommerce) - subscribe customers to a mailing list and generate product newletters.
-* [Reports](https://www.thenewsletterplugin.com/reports) - improves the internal statistics collection system and provides better reports of data collected for each sent email. And retargeting. Neat.
 * [Automated](https://www.thenewsletterplugin.com/automated) - generates and sends your newsletters using your blog last posts, even custom ones like events or products. Just sit and watch!
 * [Autoresponder](https://www.thenewsletterplugin.com/autoresponder) - creates email series to follow up your subscribers
+* [Extended Composer Blocks](https://www.thenewsletterplugin.com/composer) - adds new blocks to the drag & drop composer
+* [WooCommerce Integration](https://www.thenewsletterplugin.com/woocommerce) - subscribe customers to a mailing list and generate product newletters.
+* [Reports](https://www.thenewsletterplugin.com/reports) - improves the internal statistics collection system and provides better reports of data collected for each sent email. And retargeting. Neat.
 * [Leads](https://www.thenewsletterplugin.com/leads) adds a fancy subscription popup box or a fixed bar to your website that will boost your conversion rate
 * [Amazon SES and other mail providers integration](https://www.thenewsletterplugin.com/integrations) - seamlessly integrate Amazon SES and other email service providers with The Newsletter Plugin. Hassle-free.
 * [Contact Form 7 Integration](https://www.thenewsletterplugin.com/documentation/contact-form-7-extension) - integrate the subscription on Contact Form 7 forms
@@ -73,10 +82,6 @@ Need *more power*? Feel *something's missing*? The Newsletter Plugin features ca
 * [Google Analytics](https://www.thenewsletterplugin.com/google-analytics) - track newsletter links with Google UTM tracking paramaters
 * [Subscribe on Comment](https://www.thenewsletterplugin.com/documentation/comments-extension) - adds the subscription option to your blog comment form
 * [Geolocation](https://www.thenewsletterplugin.com/documentation/geolocation-extension) - adds geolocation capability to target subscribers by location
-
-= (NEW!) Third Party Addons =
-
-* [WP User Manager addon for Newsletter](https://wordpress.org/plugins/wpum-newsletter/) - adds the subscription option on registration forms
 
 = GDPR =
 
@@ -112,6 +117,104 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 7.0.2 =
+
+* Fixed media 2x resize
+
+= 7.0.1 =
+
+* Fixed enforced lists by language with Polylang
+
+= 7.0.0 =
+
+* Added multiple newsletter selection for deletion
+* Added text part on welcome and activation email
+* Added the attribute "show_form" to "newsletter" shortcode 
+* Added filter on subscriber saving (from external systems) with wrong list field values
+* Added index.html on log folder
+
+= 6.9.9 =
+
+* Not specified gender fix
+* Labels translation
+* Added "newsletter_message" filter to act on the whole message before sending
+* Removed X-Mailer when sending with the internal SMTP
+* Added referrer field on subscriber editing page
+* Fixed button label control on composer
+
+= 6.9.8 =
+
+* New color picker
+* Extended the IP field on stats table
+* Removed filter for temporary email services (can be added in the security page)
+* Added support to show the last regular newsletter (not private) adding to the home url ?na=view&id=last
+* Hero and image blocks now use high res images
+
+= 6.9.7 =
+
+* Fixed country filter
+* Fixed tag replacements for server with TR-tr locale
+
+= 6.9.6 =
+
+* Added 3 months option for inactive subscriber selection
+* Improved the add-ons classes
+* Improved admin messages for multilanguage blogs
+* Updated link to documentation on main settings
+* Added VK and Telegram socials
+* Removed the old bounce import on subscribe maintenance panel
+* Added Telegram and VK icon on social block component
+
+= 6.9.5 =
+
+* Added pagination on newsletters page table
+* Changed label text for empty language in edit user page
+* Added preheader text on email
+* If email is paused but scheduled in the future it is now possible to change the sending date
+* Fixed font weight selection for titles on posts block
+
+= 6.9.4 =
+
+* Fixed the profile save
+* Improved the email change management from the subscriber data page
+* Removed custom javascript and opted for HTML5 validation (you can use a polyfill plugin like parsely)
+* Removed custom error messages (see above)
+* Check on delivery speed to be minimum 10 emails per hour
+
+= 6.9.3 =
+
+* Fixed profile saving spam check
+
+= 6.9.2 =
+
+* Fixed error on TNP::subscribe()
+
+= 6.9.1 =
+
+* Fix of administrator notice on form about worng list
+
+= 6.9.0 =
+
+* Improved and optimized the lists field shortcode
+* Added the dropdown option to the lists field shortcode
+* Optimized the standard generated form aligned with the structure of the form generated by shortcodes
+* Added notices **only for the administrator** on online forms to better discover wrong or unwanted configurations
+* Added support for the next to come API version 2
+* Internally revised the subscription process
+* Fixed empty tag {profile_20}
+* Fix CSS class on mininmal form privacy field
+* Improved error message with notes for administrator on form submission errors
+* Improved error repoting on invalid tracking links (very rare anyway)
+
+= 6.8.9 =
+
+* Welcome and activation messages test sent using the admin language
+* Added RTL/LTR button on composer text block
+
+= 6.8.8 =
+
+* Fixed cancellation notification for admins
 
 = 6.8.7 =
 

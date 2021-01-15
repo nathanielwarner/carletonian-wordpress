@@ -427,6 +427,12 @@ class NewsletterControls {
         }
         $this->warnings[] = 'You are configuring the language <strong>' . $newsletter->get_language_label($current_language) . '</strong>. Switch to "all languages" to see all options.';
     }
+    
+    function switch_to_all_languages_notice() {
+        echo '<div class="tnp-control-all-languages-notice">';
+        _e('Switch the administration side to "all languages" to set these options', 'newsletter');
+        echo '</div>';
+    }
 
     function hint($text, $url = '') {
         echo '<div class="hints">';
@@ -441,7 +447,7 @@ class NewsletterControls {
     function yesno($name) {
         $value = isset($this->data[$name]) ? (int) $this->data[$name] : 0;
 
-        echo '<select style="width: 60px" name="options[' . esc_attr($name) . ']">';
+        echo '<select style="width: 60px" name="options[', esc_attr($name), ']">';
         echo '<option value="0"';
         if ($value == 0) {
             echo ' selected';
@@ -457,8 +463,9 @@ class NewsletterControls {
 
     function enabled($name = 'enabled', $attrs = []) {
         $value = isset($this->data[$name]) ? (int) $this->data[$name] : 0;
+        $name = esc_attr($name);
 
-        echo '<select style="width: 100px" name="options[', esc_attr($name), ']" id="options-', esc_attr($name), '"';
+        echo '<select style="width: 100px" name="options[', $name, ']" id="options-', $name, '"';
         if (isset($attrs['bind_to'])) {
             echo ' onchange="tnp_select_toggle(this, \'', $attrs['bind_to'], '\')"';
         }
@@ -702,8 +709,8 @@ class NewsletterControls {
 
     function select_grouped($name, $groups) {
         $value = $this->get_value($name);
-
-        echo '<select name="options[' . $name . ']">';
+        $name = esc_attr($name);
+        echo '<select name="options[', $name, ']">';
 
         foreach ($groups as $group) {
             echo '<optgroup label="' . esc_attr($group['']) . '">';
@@ -770,18 +777,20 @@ class NewsletterControls {
 
     function password($name, $size = 20, $placeholder = '') {
         $value = $this->get_value($name);
-        echo '<input id="options-', esc_attr($name), '" placeholder="' . esc_attr($placeholder) . '" name="options[' . $name . ']" type="password" autocomplete="off" ';
+        $name = esc_attr($name);
+        echo '<input id="options-', $name, '" placeholder="' . esc_attr($placeholder) . '" name="options[', $name, ']" type="password" autocomplete="off" ';
         if (!empty($size)) {
-            echo 'size="' . $size . '" ';
+            echo 'size="', $size, '" ';
         }
         echo 'value="', esc_attr($value), '">';
     }
 
     function text($name, $size = 20, $placeholder = '') {
         $value = $this->get_value($name);
-        echo '<input id="options-', esc_attr($name), '" placeholder="' . esc_attr($placeholder) . '" name="options[' . $name . ']" type="text" ';
+        $name = esc_attr($name);
+        echo '<input id="options-', $name, '" placeholder="' . esc_attr($placeholder) . '" name="options[', $name, ']" type="text" ';
         if (!empty($size)) {
-            echo 'size="' . $size . '" ';
+            echo 'size="', esc_attr($size), '" ';
         }
         echo 'value="', esc_attr($value), '">';
     }
@@ -848,9 +857,7 @@ class NewsletterControls {
     }
 
     function button_back($url, $label = null) {
-        echo '<a href="';
-        echo esc_attr($url);
-        echo '" class="button-primary"><i class="fas fa-chevron-left"></i>';
+        echo '<a href="', esc_attr($url), '" class="button-primary"><i class="fas fa-chevron-left"></i>';
         if (is_null($label)) {
             echo '&nbsp;';
             _e('Back', 'newsletter');
@@ -972,25 +979,26 @@ class NewsletterControls {
 
     function textarea_fixed($name, $width = '100%', $height = '200') {
         $value = $this->get_value($name);
-        echo '<textarea id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']" wrap="off" style="width:' . esc_attr($width) . ';height:' . esc_attr($height) . 'px">';
+        $name = esc_attr($name);
+        echo '<textarea id="options-', $name, '" name="options[', $name, ']" wrap="off" style="width:', esc_attr($width), ';height:', esc_attr($height), 'px">';
         echo esc_html($value);
         echo '</textarea>';
     }
 
     function textarea_preview($name, $width = '100%', $height = '200', $header = '', $footer = '', $switch_button = true) {
         $value = $this->get_value($name);
-        //do_action('newsletter_controls_textarea_preview', $name);
+        $name = esc_attr($name);
         if ($switch_button) {
-            echo '<input class="button-primary" type="button" onclick="newsletter_textarea_preview(\'options-' . esc_attr($name) . '\', \'\', \'\')" value="Switch editor/preview">';
+            echo '<input class="button-primary" type="button" onclick="newsletter_textarea_preview(\'options-', $name, '\', \'\', \'\')" value="Switch editor/preview">';
             echo '<br><br>';
         }
         echo '<div style="box-sizing: border-box; position: relative; margin: 0; padding: 0; width:' . esc_attr($width) . '; height:' . esc_attr($height) . '">';
-        echo '<textarea id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']" wrap="off" style="width:' . esc_attr($width) . ';height:' . esc_attr($height) . 'px">';
+        echo '<textarea id="options-', $name, '" name="options[', $name, ']" wrap="off" style="width:' . esc_attr($width) . ';height:' . esc_attr($height) . 'px">';
         echo esc_html($value);
         echo '</textarea>';
-        echo '<div id="options-' . esc_attr($name) . '-preview" style="box-sizing: border-box; background-color: #eee; border: 1px solid #bbb; padding: 15px; width: auto; position: absolute; top: 20px; left: 20px; box-shadow: 0 0 20px #777; z-index: 10000; display: none">';
-        echo '<iframe id="options-' . esc_attr($name) . '-iframe" class="tnp-editor-preview-desktop"></iframe>';
-        echo '<iframe id="options-' . esc_attr($name) . '-iframe-phone" class="tnp-editor-preview-mobile"></iframe>';
+        echo '<div id="options-', $name, '-preview" style="box-sizing: border-box; background-color: #eee; border: 1px solid #bbb; padding: 15px; width: auto; position: absolute; top: 20px; left: 20px; box-shadow: 0 0 20px #777; z-index: 10000; display: none">';
+        echo '<iframe id="options-', $name, '-iframe" class="tnp-editor-preview-desktop"></iframe>';
+        echo '<iframe id="options-', $name, '-iframe-phone" class="tnp-editor-preview-mobile"></iframe>';
         echo '</div>';
         echo '</div>';
     }
@@ -1086,14 +1094,9 @@ class NewsletterControls {
     }
 
     function color($name, $default = '') {
-
-        $value = $this->get_value($name);
-        if (empty($value) && $default) $value = $default;
-
-        //echo '<input id="options-', esc_attr($name), '" class="tnp-controls-color" name="options[' . $name . ']" type="text" value="';
-        echo '<input id="options-', esc_attr($name), '" name="options[' . $name . ']" type="color" value="';
-        echo esc_attr($value);
-        echo '">';
+        $value = esc_attr($this->get_value($name, $default));
+        $name = esc_attr($name);
+        echo '<input class="tnpf-color" id="options-', $name, '" name="options[', $name, ']" type="text" value="', $value, '">';
     }
 
     /** Creates a set of checkbox named $name_[category id] (so they are posted with distinct names).
@@ -1208,6 +1211,11 @@ class NewsletterControls {
         $lists = $this->get_list_options($empty_label);
         $this->select($name, $lists);
     }
+    
+    function public_lists_select($name = 'list', $empty_label = null) {
+        $lists = $this->get_public_list_options($empty_label);
+        $this->select($name, $lists);
+    }
 
     /**
      * Generates an associative array with the active lists to be used in a select.
@@ -1225,6 +1233,18 @@ class NewsletterControls {
         }
         return $lists;
     }
+    
+    function get_public_list_options($empty_label = null) {
+        $objs = Newsletter::instance()->get_lists_public();
+        $lists = array();
+        if ($empty_label) {
+            $lists[''] = $empty_label;
+        }
+        foreach ($objs as $list) {
+            $lists['' . $list->id] = '(' . $list->id . ') ' . esc_html($list->name);
+        }
+        return $lists;
+    }    
 
     function date($name) {
         $this->hidden($name);
@@ -1384,6 +1404,8 @@ class NewsletterControls {
         }
         echo '<script type="text/javascript">
     jQuery(document).ready(function(){
+    
+tnp_controls_init();
    
         jQuery("textarea.dynamic").focus(function() {
             jQuery("textarea.dynamic").css("height", "50px");
@@ -1459,6 +1481,8 @@ class NewsletterControls {
         var $state = jQuery("<span class=\"tnp-select2-option\"><img style=\"height: 20px!important; position: relative; top: 5px\" src=\"" + state.element.getAttribute("image") + "\"> " + state.text + "</span>");
         return $state;
     }
+    
+    
 </script>
 ';
         echo '<input name="act" type="hidden" value=""/>';
@@ -1502,7 +1526,7 @@ class NewsletterControls {
      * @param array $attrs
      */
     function css_font($name = 'font', $attrs = array()) {
-        $default = array('color' => true, 'weight' => true);
+        $default = ['color' => true, 'weight' => true];
         $attrs = array_merge($default, $attrs);
         $this->css_font_family($name . '_family');
         $this->css_font_size($name . '_size');
@@ -1517,7 +1541,7 @@ class NewsletterControls {
     function css_font_size($name = 'font_size') {
         $value = $this->get_value($name);
 
-        echo '<select id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']">';
+        echo '<select class="tnpf-font-size" id="options-', esc_attr($name), '" name="options[', esc_attr($name), ']">';
         for ($i = 8; $i < 50; $i++) {
             echo '<option value="' . $i . '"';
             if ($value == $i) {
@@ -1533,7 +1557,7 @@ class NewsletterControls {
 
         $fonts = array('normal' => 'Normal', 'bold' => 'Bold');
 
-        echo '<select id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']">';
+        echo '<select class="tnpf-font-weight" id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']">';
         foreach ($fonts as $key => $font) {
             echo '<option value="', esc_attr($key), '"';
             if ($value == $key) {
@@ -1557,7 +1581,7 @@ class NewsletterControls {
             'Times New Roman, Times, serif'=>'Times New Roman',
             'Verdana, Geneva, sans-serif'=>'Verdana, Geneva');
 
-        echo '<select id="options-' . esc_attr($name) . '" name="options[' . esc_attr($name) . ']">';
+        echo '<select class="tnpf-font-family" id="options-', esc_attr($name), '" name="options[', esc_attr($name), ']">';
         foreach ($fonts as $font=>$label) {
             echo '<option value="', esc_attr($font), '"';
             if ($value == $font) {

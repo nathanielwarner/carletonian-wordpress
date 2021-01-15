@@ -5,7 +5,7 @@ Tags: history, log, changes, changelog, audit, audit log, event log, user tracki
 Requires at least: 5.2
 Tested up to: 5.5
 Requires PHP: 5.6
-Stable tag: 2.36.0
+Stable tag: 2.38.0
 
 View changes made by users within WordPress. See who created a page, uploaded an attachment or approved an comment, and more.
 
@@ -147,7 +147,7 @@ to your language then read about how this is done over at the [Polyglots handboo
 #### Contribute at GitHub
 
 Development of this plugin takes place at GitHub. Please join in with feature requests, bug reports, or even pull requests!
-https://github.com/bonny/WordPress-Simple-History
+<a href="https://github.com/bonny/WordPress-Simple-History">https://github.com/bonny/WordPress-Simple-History</a>
 
 #### Donation
 
@@ -188,6 +188,27 @@ Events in the log are stored for 60 days by default. Events older than this will
    A simple way to see any uncommon activity, for example an increased number of logins or similar.
 
 == Changelog ==
+
+= 2.38.0 Unreleased =
+
+- Changed: It's now possible to log things before the `after_setup_theme` hook by using the `SimpleLogger()` function. Before this change calling `SimpleLogger()` before `after_setup_theme`, or on `after_setup_theme` with a prio smaller than 10, would result in a fatal error (`Fatal error: Uncaught Error: Class 'SimpleLogger' not found`). Props https://github.com/JoryHogeveen.
+
+- Changed: More custom post types that use the block editor ("Gutenberg") should now have their changes logged. Props https://github.com/claytoncollie.
+
+= 2.37.2 (September 2020) =
+
+- Fixed: Even more code that was to new for PHP 5.6 (I do have some tests, I just didn't look at them `¯\_(ツ)_/¯`.)
+
+= 2.37.1 (September 2020) =
+
+- Fixed: Some code was to new for PHP 5.6.
+
+= 2.37 (September 2020) =
+
+- Added: Enabling or disabling plugin auto-updates is now logged.
+- Added: Function `sh_d()` that echoes any number of variables to the screen.
+- Fixed: User logouts did show "other" instead of username of user logging out. Fixes #206, https://wordpress.org/support/topic/suspicious-logged-out-events/, https://wordpress.org/support/topic/login-logout-tracking/.
+- Updated: lots of code to be formatted more according to PSR12.
 
 = 2.36 (August 2020) =
 

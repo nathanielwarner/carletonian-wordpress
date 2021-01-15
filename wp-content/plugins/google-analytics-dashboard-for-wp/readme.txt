@@ -3,8 +3,8 @@ Contributors: chriscct7, smub
 Donate link: http://www.wpbeginner.com/wpbeginner-needs-your-help/
 Tags: analytics,google analytics,google analytics dashboard,google analytics plugin,google analytics widget,gtag
 Requires at least: 3.8.0
-Tested up to: 5.5
-Stable tag: 6.2.2
+Tested up to: 5.6
+Stable tag: 6.4.0
 Requires PHP: 5.2
 License: GPL v3
 
@@ -156,6 +156,33 @@ You can translate Google Analytics Dashboard for WP by ExactMetrics on [translat
 4. Want more features? <a href="https://www.exactmetrics.com/?utm_source=wprepo&utm_medium=link&utm_campaign=liteversion">Purchase ExactMetrics Pro</a>!
 
 == Changelog ==
+= 6.4.0: December 16, 2020 =
+- New: With our new, limited-time only, Year in Review report you’ll be able to see how your site performed in 2020 and how to improve in 2021.
+- Tweak: Our contextual notifications are now more efficient when using report data.
+- Tweak: Selecting the “no styles” option in the Popular Posts settings now also prevents any inline styles from being output.
+- Tweak: Our campaign URL tool now encodes values better.
+- Tweak: We removed a JavaScript dependency in the Popular Posts Widget settings.
+- Tweak: We added a limit to the number of dismissed notifications for better storage usage.
+- Fix: We added a value for the alt parameter of the images used in the Popular Posts widgets.
+- Fix: Our Popular Posts widgets had a potential infinite recursion error in certain situations so we added a check to prevent that.
+
+= 6.3.3: December 10, 2020 =
+- Fix: Prevent a notice from showing up in WordPress 5.6 when editing a post.
+
+= 6.3.2: November 24, 2020 =
+- Tweak: We improved performance by tweaking some of the contextual insights using report data.
+- Fix: Automatic inserting of the inline popular posts widget was not working as expected for sites using languages with multi-byte characters.
+
+= 6.3.0: November 3, 2020 =
+- New: Brand new Popular Posts feature to showcase your best posts using Gutenberg Blocks, Sidebar Widgets or directly in the post content. You can choose from multiple themes and customise styles individually.
+- New: Contextual Insights - get smart tips based on your analytics data directly in your ExactMetrics dashboard.
+- Tweak: We improved our site health checks for multiple trackers to support more legitimate uses of multiple UA codes.
+- Tweak: We adjusted our reports area to avoid some boxes not displaying when there was no data available.
+- Tweak: We made an adjustment to our dashboard widget for better compatibility with the WordPress 5.5 changes
+- Tweak: We adjusted our Headline Analyzer option loading to better match WordPress version compatibility.
+- Fix: We fixed an issue with the PDF export of the Overview Report getting cut off.
+- Fix: We adjusted our autoupdate integration to avoid a PHP notice in certain instances.
+
 = 6.2.2: August 10, 2020 =
 - Tweak: We adjusted our Headline Analyzer dependencies to improve reported compatibility issues with some page builder plugins.
 

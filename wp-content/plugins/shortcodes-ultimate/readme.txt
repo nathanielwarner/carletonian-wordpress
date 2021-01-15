@@ -4,9 +4,9 @@ License: GPLv3
 Donate link: https://paypal.me/anovladimir
 Tags: shortcode, toggle, columns, button, slider
 Requires at least: 4.6
-Tested up to: 5.5
+Tested up to: 5.6
 Requires PHP: 5.3
-Stable tag: 5.9.2
+Stable tag: 5.9.6
 
 A comprehensive collection of visual components for your site
 
@@ -33,7 +33,7 @@ A comprehensive collection of visual components for your site
 
 ### Links
 
-- [Available Shortcodes](https://getshortcodes.com/shortcodes/?utm_campaign=wporg&utm_source=readme&utm_medium=available-shortcodes)
+- [Available Shortcodes](https://getshortcodes.com/docs-category/shortcodes/?utm_campaign=wporg&utm_source=readme&utm_medium=available-shortcodes)
 - [Add-ons](https://getshortcodes.com/add-ons/?utm_campaign=wporg&utm_source=readme&utm_medium=add-ons)
 - [Documentation](https://getshortcodes.com/docs/?utm_campaign=wporg&utm_source=readme&utm_medium=docs)
 - [Support Forum](https://wordpress.org/support/plugin/shortcodes-ultimate)
@@ -146,19 +146,11 @@ First, visit the [Help Center](https://getshortcodes.com/support/). If you get s
 ## Changelog
 
 
-### 5.9.2
+### 5.9.6
 
-**What's new**
-
-- `[su_qrcode]` now supports nested shortcodes in the `data` attribute
-- Improved performance by reducing the number of DB queries
-
-**Fixes**
-
-- Fixed issue in the Insert Shortcode tool with Taxonomy and Tax terms fields
-- Fixed error `Posts: invalid template name` on some installations
-- This update also fixes the plugin options issue present in 5.9.1
-
+Added compatiblity with WordPress 5.6
+Minor improvements
+Fixed readme.txt information
 
 ---
-[Older changelog entries](https://plugins.trac.wordpress.org/browser/shortcodes-ultimate/trunk/changelog.txt).
+[Version history →](https://plugins.trac.wordpress.org/browser/shortcodes-ultimate/trunk/changelog.txt)

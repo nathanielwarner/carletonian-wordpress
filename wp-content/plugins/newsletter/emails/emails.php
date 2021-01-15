@@ -346,7 +346,8 @@ class NewsletterEmails extends NewsletterModule {
             'block_padding_bottom' => 0,
             'block_padding_right' => 0,
             'block_padding_left' => 0,
-            'block_background' => '#ffffff'
+            'block_background' => '#ffffff',
+            'block_background_2' => ''
         );
 
         $options = array_merge($common_defaults, $options);
@@ -502,14 +503,26 @@ class NewsletterEmails extends NewsletterModule {
         return $editor_type;
     }
 
+    /**
+     * 
+     * @global wpdb $wpdb
+     * @param type $action
+     * @param type $user
+     * @param type $email
+     * @return type
+     */
     function hook_newsletter_action($action, $user, $email) {
         global $wpdb;
 
         switch ($action) {
             case 'v':
             case 'view':
-                $email = $this->get_email($_GET['id']);
-
+                $id = $_GET['id'];
+                if ($id == 'last') {
+                    $email = $wpdb->get_row("select * from " . NEWSLETTER_EMAILS_TABLE . " where private=0 and type='message' and status='sent' order by send_on desc limit 1");
+                } else {
+                    $email = $this->get_email($_GET['id']);
+                }
                 if (empty($email)) {
                     header("HTTP/1.0 404 Not Found");
                     die('Email not found');

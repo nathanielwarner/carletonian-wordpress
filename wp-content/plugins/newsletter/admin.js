@@ -59,8 +59,6 @@ function tnp_select_toggle(s, t) {
 function tnp_date_onchange(field) {
     let id = field.id.substring(0, field.id.lastIndexOf('_'));
     let base_field = document.getElementById('options-' + id);
-    //console.log(base_field);
-    //let form = field.form;
     let year = document.getElementById(id + '_year');
     let month = document.getElementById(id + '_month');
     let day = document.getElementById(id + '_day');
@@ -139,4 +137,16 @@ window.onload = function () {
 
 };
 
-
+/**
+ * Initialize the color pickers (is invoked on document load and on AJAX forms load in the composer.
+ * https://seballot.github.io/spectrum/
+ */
+function tnp_controls_init() {
+    jQuery(".tnpf-color").spectrum({
+        type: 'color',
+        allowEmpty: true,
+        showAlpha: false,
+        showInput: true,
+        preferredFormat: 'hex'
+    });
+}

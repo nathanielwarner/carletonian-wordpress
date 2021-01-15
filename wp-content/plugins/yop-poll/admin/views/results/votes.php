@@ -80,7 +80,7 @@ $search_value = isset($_GET['q']) ? $_GET['q'] : '';
     <input type="hidden" name="_token" value="<?php echo wp_create_nonce( 'yop-poll-get-vote-details' ); ?>">
     <div id="icon-options-general" class="icon32"></div>
     <h1>
-        <i class="fa fa-bar-chart" aria-hidden="true"></i><?php _e( 'Poll results for', 'yop-poll' ); ?> <?php echo $poll->name; ?>
+        <span class="glyphicon glyphicon-signal" style="margin-right:10px;"></span><?php _e( 'Poll results for', 'yop-poll' ); ?> <?php echo $poll->name; ?>
         <a href="<?php echo esc_url( add_query_arg(
             array(
                 'page' => 'yop-polls',

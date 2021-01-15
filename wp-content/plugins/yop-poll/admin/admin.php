@@ -171,7 +171,6 @@ class YOP_Poll_Admin {
 			$( document ).on( 'click', '#yop-poll-feedback-submit', function( e ) {
 				e.preventDefault();
 				$('#yop-poll-deactivate-modal-wrapper').hide();
-				window.console.log( $( '#yop-poll-deactivate-modal form' ).serialize() );
 				$.ajax({
 					type 	 : 'POST',
 					url 	 : ajaxurl,
@@ -270,6 +269,30 @@ class YOP_Poll_Admin {
 			if ( true === version_compare( $installed_version, '6.1.8', '<' ) ) {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_1_8();
+			}
+			if ( true === version_compare( $installed_version, '6.1.9', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_1_9();
+			}
+			if ( true === version_compare( $installed_version, '6.2.0', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_2_0();
+			}
+			if ( true === version_compare( $installed_version, '6.2.1', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_2_1();
+			}
+			if ( true === version_compare( $installed_version, '6.2.2', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_2_2();
+			}
+			if ( true === version_compare( $installed_version, '6.2.3', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_2_3();
+			}
+			if ( true === version_compare( $installed_version, '6.2.4', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_2_4();
 			}
         }
 	}
@@ -1631,8 +1654,11 @@ class YOP_Poll_Admin {
 		}
 		$subject = "YOP Poll Deactivation Notification";
 		$message = '';
+		if ( isset( $form_data['yop-poll_disable_reason'] ) ) {
+			$message .= "Reason: " . sanitize_text_field( $form_data['yop-poll_disable_reason'] );
+		}
 	    if( isset( $form_data['yop-poll_deactivate_details'] ) ) {
-	        $message .= "\n\r\n\r";
+	        $message .= "\n\r";
 	        $message .= 'Message: ' . sanitize_text_field( implode('', $form_data['yop-poll_deactivate_details']) );
 	    } else {
 			$message = 'No extra details given';

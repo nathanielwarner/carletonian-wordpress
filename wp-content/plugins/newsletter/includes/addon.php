@@ -10,6 +10,7 @@ class NewsletterAddon {
     var $name;
     var $options;
     var $version;
+    var $labels;
 
     public function __construct($name, $version = '0.0.0') {
         $this->name = $name;
@@ -43,6 +44,18 @@ class NewsletterAddon {
         
     }
 
+    function get_current_language() {
+        return Newsletter::instance()->get_current_language();
+    }
+
+    function is_all_languages() {
+        return Newsletter::instance()->is_all_languages();
+    }
+
+    function is_allowed() {
+        return Newsletter::instance()->is_allowed();
+    }
+
     /**
      * General logger for this add-on.
      *
@@ -70,13 +83,26 @@ class NewsletterAddon {
     /**
      * Loads and prepares the options. It can be used to late initialize the options to save some resources on
      * add-ons which do not need to do something on each page load.
-     * @return array
      */
     function setup_options() {
         if ($this->options) {
             return;
         }
-        $this->options = get_option('newsletter_' . $this->name, array());
+        $this->options = get_option('newsletter_' . $this->name, []);
+    }
+
+    /**
+     * Retrieve the stored options, merged with the specified language set.
+     * 
+     * @param string $language
+     * @return array
+     */
+    function get_options($language = '') {
+        if ($language) {
+            return array_merge(get_option('newsletter_' . $this->name, []), get_option('newsletter_' . $this->name . '_' . $language, []));
+        } else {
+            return get_option('newsletter_' . $this->name, []);
+        }
     }
 
     /**
@@ -84,15 +110,43 @@ class NewsletterAddon {
      * property.
      * @param array $options
      */
-    function save_options($options) {
-        update_option('newsletter_' . $this->name, $options);
-        $this->options = $options;
+    function save_options($options, $language = '') {
+        if ($language) {
+            update_option('newsletter_' . $this->name . '_' . $language, $options);
+        } else {
+            update_option('newsletter_' . $this->name, $options);
+            $this->options = $options;
+        }
     }
 
     function merge_defaults($defaults) {
-        $options = get_option('newsletter_' . $this->name, array());
+        $options = get_option('newsletter_' . $this->name, []);
         $options = array_merge($defaults, $options);
         $this->save_options($options);
+    }
+
+    /**
+     * 
+     */
+    function setup_labels() {
+        if (!$this->labels) {
+            $labels = [];
+        }
+    }
+
+    function get_label($key) {
+        if (!$this->options)
+            $this->setup_options();
+
+        if (!empty($this->options[$key])) {
+            return $this->options[$key];
+        }
+
+        if (!$this->labels)
+            $this->setup_labels();
+
+        // We assume the required key is defined. If not there is an error elsewhere.
+        return $this->labels[$key];
     }
 
     /**
@@ -116,7 +170,7 @@ class NewsletterAddon {
 }
 
 /**
- * Used by mailers add-ons as base-class. Some specific options collected by the mailer
+ * Used by mailer add-ons as base-class. Some specific options collected by the mailer
  * are interpreted automatically.
  *
  * They are:
@@ -163,8 +217,8 @@ class NewsletterMailerAddon extends NewsletterAddon {
         update_option('newsletter_' . $this->name . '_last_run', $time);
     }
 
-    function save_options($options) {
-        parent::save_options($options);
+    function save_options($options, $language = '') {
+        parent::save_options($options, $language);
         $this->enabled = !empty($options['enabled']);
     }
 
@@ -200,7 +254,7 @@ class NewsletterMailerAddon extends NewsletterAddon {
         if ($type) {
             $message->subject .= ' - ' . $type . ' only';
         }
-        
+
         $message->from = Newsletter::instance()->options['sender_email'];
         $message->from_name = Newsletter::instance()->options['sender_name'];
         return $message;

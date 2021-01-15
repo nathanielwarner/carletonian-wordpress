@@ -74,7 +74,7 @@ if (empty($controls->data['enabled']) && !empty($controls->data['host'])) {
             On GoDaddy you should follow this <a href="https://www.thenewsletterplugin.com/godaddy-using-smtp-external-server-shared-hosting" target="_blank">special setup</a>.
         </p>
         <p>
-            Consider <a href="https://www.thenewsletterplugin.com/affiliate/sendgrid" target="_blank">SendGrid</a> for a serious and reliable SMTP service.
+            Consider <a href="https://www.sendinblue.com/?tap_a=30591-fb13f0&tap_s=626735-cdbaad" target="_blank">Sedinblue</a> (aff) for a serious and reliable SMTP service.
         </p>
     
     </div>

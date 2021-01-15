@@ -1,15 +1,17 @@
 <?php
 /*
 Plugin Name: Sticky Menu (or Anything!) on Scroll
-Plugin URI: https://wordpress.org/plugins/sticky-menu-or-anything-on-scroll/
+Plugin URI: https://wpsticky.com/
 Description: Pick any element on the page, and it will stick when it reaches the top of the page when you scroll down. Handy for navigation menus, but can be used for any element on the page.
 Author: WebFactory Ltd
 Author URI: https://www.webfactoryltd.com/
-Version: 2.21
+Version: 2.28
+Requires at least: 3.6
+Tested up to: 5.6
+Requires PHP: 5.2
 */
 
 defined('ABSPATH') or die('INSERT COIN');
-
 
 /**
  * === FUNCTIONS ========================================================================================
@@ -21,7 +23,7 @@ defined('ABSPATH') or die('INSERT COIN');
  */
 if (!function_exists('sticky_anthing_default_options')) {
 	function sticky_anthing_default_options() {
-		$versionNum = '2.1.1';
+		$versionNum = '2.25';
 		if (get_option('sticky_anything_options') === false) {
 			$new_options['sa_version'] = $versionNum;
 			$new_options['sa_element'] = '';
@@ -34,7 +36,8 @@ if (!function_exists('sticky_anthing_default_options')) {
 			$new_options['sa_dynamicmode'] = false;
 			$new_options['sa_debugmode'] = false;
 			$new_options['sa_pushup'] = '';
-			$new_options['sa_hide_review_notification'] = false;
+      $new_options['sa_hide_review_notification'] = false;
+      $new_options['sa_dismiss_upsell_auto_open'] = false;
 			add_option('sticky_anything_options',$new_options);
 		}
 	}
@@ -151,9 +154,21 @@ if (!function_exists('sticky_anything_settings_link')) {
 function sticky_anything_settings_link($links) {
   $settings_link = '<a href="options-general.php?page=stickyanythingmenu">Settings</a>';
   array_unshift($links, $settings_link);
+  $links[] = '<a href="https://wpsticky.com/?utm_source=sticky-free&utm_content=plugins-table" target="_blank"><b>Get PRO</b></a>';
+
   return $links;
 }
 }
+
+function sticky_plugin_meta_links($links, $file) {
+  $support_link = '<a target="_blank" href="https://wpsticky.com/documentation/?utm_source=sticky-free&utm_content=support" title="Get help">Support</a>';
+
+  if ($file == plugin_basename(__FILE__)) {
+    $links[] = $support_link;
+  }
+
+  return $links;
+} // sticky_plugin_meta_links
 
 
 /**
@@ -162,13 +177,13 @@ function sticky_anything_settings_link($links) {
 if (!function_exists('sticky_anything_config_page')) {
 	function sticky_anything_config_page() {
 	// Retrieve plugin configuration options from database
-	$sticky_anything_options = get_option( 'sticky_anything_options' );
+  $sticky_anything_options = get_option( 'sticky_anything_options' );
 	?>
 
 	<div id="sticky-anything-settings-general" class="wrap">
-		<h2><?php _e('Sticky Menu (or Anything!) Settings','sticky-menu-or-anything-on-scroll'); ?></h2>
+		<h2 style="margin-bottom: 12px;"><img class="header-logo" src="<?php echo plugin_dir_url(__FILE__); ?>assets/img/wp-sticky-pro.png" alt="<?php _e('Sticky Menu (or Anything!) on Scroll','sticky-menu-or-anything-on-scroll'); ?>" title="<?php _e('Sticky Menu (or Anything!) on Scroll','sticky-menu-or-anything-on-scroll'); ?>"><?php _e('Sticky Menu (or Anything!) on Scroll','sticky-menu-or-anything-on-scroll'); ?></h2>
 
-		<p><?php _e('Pick any element on your page, and it will stick when it reaches the top of the page when you scroll down. Usually handy for navigation menus, but can be used for any (unique) element on your page.','sticky-menu-or-anything-on-scroll'); ?></p>
+    <p><?php _e('Pick any element on your page, and it will stick when it reaches the top of the page when you scroll down. Great for navigation menus, but can be used for any element on the page.','sticky-menu-or-anything-on-scroll'); ?><br><br></p>
 <?php
   if (!empty($sticky_anything_options['sa_element']) && empty($sticky_anything_options['sa_hide_review_notification'])) {
     $dismiss_url = add_query_arg(array('action' => 'sticky_hide_review_notification', 'redirect' => urlencode($_SERVER['REQUEST_URI'])), admin_url('admin.php'));
@@ -197,7 +212,8 @@ if (!function_exists('sticky_anything_config_page')) {
 			<h2 class="nav-tab-wrapper">
 				<a class="nav-tab <?php if ($activeTab == 'main') { echo 'nav-tab-active'; } ?>" href="#main"><?php _e('Basic settings','sticky-menu-or-anything-on-scroll'); ?></a>
 				<a class="nav-tab <?php if ($activeTab == 'advanced') { echo 'nav-tab-active'; } ?>" href="#advanced"><?php _e('Advanced settings','sticky-menu-or-anything-on-scroll'); ?></a>
-				<a class="nav-tab <?php if ($activeTab == 'faq') { echo ' nav-tab-active'; } ?>" href="#faq"><?php _e('FAQ/Troubleshooting','sticky-menu-or-anything-on-scroll'); ?></a>
+        <a class="nav-tab <?php if ($activeTab == 'faq') { echo ' nav-tab-active'; } ?>" href="#faq"><?php _e('Support/FAQ','sticky-menu-or-anything-on-scroll'); ?></a>
+        <a class="nav-tab nav-tab-pro open-sticky-pro-dialog" href="#" data-pro-feature="tab">Get Sticky PRO</a>
 			</h2>
 
 			<br>
@@ -296,35 +312,81 @@ if (!function_exists('sticky_anything_config_page')) {
 										if (@$sticky_anything_options['sa_element'] != '#NO-ELEMENT') {
 											echo esc_html( @$sticky_anything_options['sa_element'] );
 										}
-									?>"/> <em><?php _e('(choose ONE element, e.g. <strong>#main-navigation</strong>, OR <strong>.main-menu-1</strong>, OR <strong>header nav</strong>, etc.)','sticky-menu-or-anything-on-scroll'); ?></em>
+                  ?>"/> <em><?php _e('(choose ONE element, e.g. <strong>#main-navigation</strong>, OR <strong>.main-menu-1</strong>, OR <strong>header nav</strong>, etc.)','sticky-menu-or-anything-on-scroll'); ?></em>
+                  <p>Don't know the element's ID or class? Don't even know what that is? Use the <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="visual-elements-picker">visual element picker</a> and just point to the element you want.</p>
 								</td>
-							</tr>
+              </tr>
 
-
-							<tr>
-								<th scope="row"><label for="sa_topspace"><?php _e('Space between top of page and sticky element: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('If you don\'t want the element to be sticky at the very top of the page, but a little lower, add the number of pixels that should be between your element and the \'ceiling\' of the page.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+              <tr>
+								<th scope="row"><label for=""><?php _e('Add Another Sticky Element:','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Need more than one element sticky on your site?','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
-									<input type="number" id="sa_topspace" name="sa_topspace" value="<?php echo esc_html( @$sticky_anything_options['sa_topspace'] ); ?>" style="width:80px;" /> pixels
+                  <p>Need two, three or ten elements on the site to be sticky? Upgrade to WP Sticky PRO and <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="multiple-elements">make as many elements sticky as you need</a> and configure settings for each element individually.</p>
 								</td>
 							</tr>
 
 							<tr>
-								<th scope="row"><?php _e('Check for Admin Toolbar:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('If the sticky element gets obscured by the Administrator Toolbar for logged in users (or vice versa), check this box.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+								<th scope="row"><label for="sa_topspace"><?php _e('Space between top of page and sticky element: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('If you don\'t want the element to be sticky at the very top of the page, but a little lower, add the number of pixels that should be between your element and the \'ceiling\' of the page.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
+								<td>
+                  <input type="number" id="sa_topspace" name="sa_topspace" value="<?php echo esc_html( @$sticky_anything_options['sa_topspace'] ); ?>" style="width:80px;"> pixels
+								</td>
+              </tr>
+
+              <tr>
+								<th scope="row"><label for="sa_opacity"><?php _e('Sticky element opacity when scrolling: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Sticky element opacity when element is sticky/scrolling','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
+								<td>
+                  <input type="number" id="sa_opacity" name="sa_opacity" value="100" style="width:80px;" disabled> %
+                  <em>This option is available in <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="opacity">WP Sticky PRO</a>.</em>
+								</td>
+							</tr>
+
+							<tr>
+								<th scope="row"><?php _e('Check for Admin Toolbar:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('If the sticky element gets obscured by the Administrator Toolbar for logged in users (or vice versa), check this box.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
 									<input type="checkbox" id="sa_adminbar" name="sa_adminbar" <?php if ($sticky_anything_options['sa_adminbar']  ) echo ' checked="checked" ';?> />
-									<label for="sa_adminbar"><strong><?php _e('Move the sticky element down a little if there is an Administrator Toolbar at the top (for logged in users).','sticky-menu-or-anything-on-scroll'); ?></strong></label>
+									<label for="sa_adminbar"><?php _e('Move the sticky element down a little if there is an Administrator Toolbar at the top (for logged in users).','sticky-menu-or-anything-on-scroll'); ?></label>
+								</td>
+              </tr>
+
+              <tr>
+								<th scope="row"><label for="sa_effects"><?php _e('Effects:','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Effects are added to the sticky element when scrolling','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
+								<td>
+                <input type="checkbox" disabled> <label>Fade-in</label><br>
+                <input type="checkbox" disabled> <label>Slide-down</label>
+                <br>
+                  <p>Effects are available in <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="effects">WP Sticky PRO</a>.</p>
+								</td>
+              </tr>
+
+              <tr>
+								<th scope="row"><label for="sa_bg_color"><?php _e('Background Color When Sticky:','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Element\'s background color when it\'s sticky','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
+								<td>
+                <input class="sticky-color-field" type="text" id="sa_bg_color" value="" style="width:80px;">
+                <br>
+                  <p>Set a background color for the element when it's sticky.<br>
+                    Background color is available in <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="bgcolor">WP Sticky PRO</a>.</p>
+								</td>
+              </tr>
+
+              <tr>
+								<th scope="row"><label for="custom_css"><?php _e('Custom CSS:','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Custom CSS that\'s added to the element when it\'s sticky','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
+								<td>
+                <textarea id="custom_css" cols="40" rows="3" placeholder="border: 2px solid black;" disabled></textarea>
+                <br>
+                  <p>CSS properties that will be applied to the element when it's sticky.<br>
+                  Do not wrap the properties in any selector, instead of <code>.classname{ color: #FFF; }</code> just write <code>color: #FFF;</code>
+                    <br>Custom CSS is available in <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="customcss">WP Sticky PRO</a>.</p>
 								</td>
 							</tr>
 
 							<tr>
-								<th scope="row"><label for="sa_minscreenwidth"><?php _e('Do not stick element when screen is smaller than: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Sometimes you do not want your element to be sticky when your screen is small (responsive menus, etc). If you enter a value here, your menu will not be sticky when your screen width is smaller than his value.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+								<th scope="row"><label for="sa_minscreenwidth"><?php _e('Do not stick element when screen is smaller than: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Sometimes you do not want your element to be sticky when your screen is small (responsive menus, etc). If you enter a value here, your menu will not be sticky when your screen width is smaller than his value.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
 									<input type="number" id="sa_minscreenwidth" name="sa_minscreenwidth" value="<?php echo esc_html( $sticky_anything_options['sa_minscreenwidth'] ); ?>" style="width:80px;" /> pixels
 								</td>
 							</tr>
 
 							<tr>
-								<th scope="row"><label for="sa_maxscreenwidth"><?php _e('Do not stick element when screen is larger than: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Sometimes you do not want your element to be sticky when your screen is large (responsive menus, etc). If you enter a value here, your menu will not be sticky when your screen width is wider than this value.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+								<th scope="row"><label for="sa_maxscreenwidth"><?php _e('Do not stick element when screen is larger than: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('Sometimes you do not want your element to be sticky when your screen is large (responsive menus, etc). If you enter a value here, your menu will not be sticky when your screen width is wider than this value.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
 									<input type="number" id="sa_maxscreenwidth" name="sa_maxscreenwidth" value="<?php echo esc_html( $sticky_anything_options['sa_maxscreenwidth'] ); ?>" style="width:80px;" /> pixels
 								</td>
@@ -343,34 +405,47 @@ if (!function_exists('sticky_anything_config_page')) {
 						<table class="form-table">
 
 							<tr>
-								<th scope="row"><label for="sa_zindex"><?php _e('Z-index: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('If there are other elements on the page that obscure/overlap the sticky element, adding a Z-index might help. If you have no idea what that means, try entering 99999.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+								<th scope="row"><label for="sa_zindex"><?php _e('Z-index: (optional)','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('If there are other elements on the page that obscure/overlap the sticky element, adding a Z-index might help. If you have no idea what that means, try entering 99999.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
 									<input type="number" id="sa_zindex" name="sa_zindex" value="<?php echo esc_html( @$sticky_anything_options['sa_zindex'] ); ?>" style="width:80px;" />
 								</td>
 							</tr>
 
 							<tr>
-								<th scope="row"><label for="sa_pushup"><?php _e('Push-up element (optional):','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('If you want your sticky element to be \'pushed up\' again by another element lower on the page, enter it here. Make sure this is a unique identifier.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+								<th scope="row"><label for="sa_pushup"><?php _e('Push-up element (optional):','sticky-menu-or-anything-on-scroll'); ?></label> <span tooltip="<?php _e('If you want your sticky element to be \'pushed up\' again by another element lower on the page, enter it here. Make sure this is a unique identifier.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
 									<input type="text" id="sa_pushup" name="sa_pushup" value="<?php
 										if ($sticky_anything_options['sa_pushup'] != '#NO-ELEMENT') {
 											echo esc_html( $sticky_anything_options['sa_pushup'] );
 										}
-									?>"/> <em><?php _e('(choose ONE element, e.g. <strong>#footer</strong>, OR <strong>.widget-bottom</strong>, etc.)','sticky-menu-or-anything-on-scroll'); ?></em>
+                  ?>"/> <em><?php _e('(choose ONE element, e.g. <strong>#footer</strong>, OR <strong>.widget-bottom</strong>, etc.)','sticky-menu-or-anything-on-scroll'); ?></em>
+                   <p>Don't know the element's ID or class? Don't even know what that is? Use the <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="visual-elements-picker-2">visual element picker</a> and just point to the element you want.</p>
 								</td>
 							</tr>
 
 							<tr>
-								<th scope="row"><!-- <span class="new"><?php _e('NEW!','sticky-menu-or-anything-on-scroll'); ?></span>--> <?php _e('Legacy mode:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('If you upgraded from an earlier version and it always worked before, use legacy mode to keep using the old method.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+								<th scope="row"><!-- <span class="new"><?php _e('NEW!','sticky-menu-or-anything-on-scroll'); ?></span>--> <?php _e('Legacy mode:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('If you upgraded from an earlier version and it always worked before, use legacy mode to keep using the old method.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
 									<input type="checkbox" id="sa_legacymode" name="sa_legacymode" <?php if ($sticky_anything_options['sa_legacymode'] == true ) echo ' checked="checked" ';?> />
 									<label for="sa_legacymode"><strong><?php _e('Legacy Mode (only recommended if you upgraded from earlier version).','sticky-menu-or-anything-on-scroll'); ?></strong></label>
 									<p class="description"><?php _e('In version 2.0, a new/better method for making elements sticky was introduced. However, if you upgraded this plugin from an earlier version, and the old method always worked for you, there is no need to use the new method and you should keep this option checked.<br>More information about this setting can be found in the <a href="#faq" class="faq">FAQ</a>.','sticky-menu-or-anything-on-scroll'); ?></p>
 								</td>
-							</tr>
+              </tr>
+
+              <tr>
+              <th scope="row"><?php _e('Don\'t use sticky on selected pages/posts:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('Pick pages, posts, categories, tags, or post types where sticky will not be active.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
+              <td>
+                    Posts: <select disabled><option>This option is available in the PRO version</option></select><br>
+                    Pages: <select disabled><option>This option is available in the PRO version</option></select><br>
+                    Categories: <select disabled><option>This option is available in the PRO version</option></select><br>
+                    Tags: <select disabled><option>This option is available in the PRO version</option></select><br>
+                    Post types: <select disabled><option>This option is available in the PRO version</option></select>
+                    <p>If you need sticky elements only on some pages instead of the whole site check out <a href="#" class="open-sticky-pro-dialog pro-feature" data-pro-feature="page-picker">WP Sticky PRO</a>.</p>
+              </td>
+              </tr>
 
 							<tr id="row-dynamic-mode" <?php if ($sticky_anything_options['sa_legacymode'] == false ) echo 'class="disabled-feature"';?>>
-								<th scope="row"><div class="showhide" <?php if ($sticky_anything_options['sa_legacymode'] == false ) echo 'style="display:none;"';?>><?php _e('Dynamic mode:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('When Dynamic Mode is OFF, a cloned element will be created upon page load. If this mode is ON, a cloned element will be created every time your scrolled position hits the \'sticky\' point (option available in Legacy Mode only).','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></div></th>
+								<th scope="row"><div class="showhide" <?php if ($sticky_anything_options['sa_legacymode'] == false ) echo 'style="display:none;"';?>><?php _e('Dynamic mode:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('When Dynamic Mode is OFF, a cloned element will be created upon page load. If this mode is ON, a cloned element will be created every time your scrolled position hits the \'sticky\' point (option available in Legacy Mode only).','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></div></th>
 								<td><div class="showhide" <?php if ($sticky_anything_options['sa_legacymode'] == false ) echo 'style="display:none;"';?>>
 									<input type="checkbox" id="sa_dynamicmode" name="sa_dynamicmode" <?php if ($sticky_anything_options['sa_dynamicmode']  ) echo ' checked="checked" ';?> />
 									<label for="sa_dynamicmode"><strong><?php _e('If the plugin doesn\'t work in your theme (often the case with responsive themes), try it in Dynamic Mode.','sticky-menu-or-anything-on-scroll'); ?></strong></label>
@@ -380,7 +455,7 @@ if (!function_exists('sticky_anything_config_page')) {
 							</tr>
 
 							<tr>
-								<th scope="row"><?php _e('Debug mode:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('When Debug Mode is on, error messages will be shown in your browser\'s console when the element you selected either doesn\'t exist, or when there are more elements on the page with your chosen selector.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></a></th>
+								<th scope="row"><?php _e('Debug mode:','sticky-menu-or-anything-on-scroll'); ?> <span tooltip="<?php _e('When Debug Mode is on, error messages will be shown in your browser\'s console when the element you selected either doesn\'t exist, or when there are more elements on the page with your chosen selector.','sticky-menu-or-anything-on-scroll'); ?>"><span class="dashicons dashicons-editor-help"></span></span></th>
 								<td>
 									<input type="checkbox" id="sa_debugmode" name="sa_debugmode" <?php if (@$sticky_anything_options['sa_debugmode']  ) echo ' checked="checked" ';?> />
 									<label for="sa_debugmode"><strong><?php _e('Log plugin errors in browser console','sticky-menu-or-anything-on-scroll'); ?></strong></label>
@@ -417,7 +492,16 @@ if (!function_exists('sticky_anything_config_page')) {
         include 'assets/sidebar.php';
         echo '</div>';
       }
+      $plugin_url = plugin_dir_url(__FILE__);
        ?>
+
+<div class="pro-ad-sidebar">
+<a title="WP Sticky PRO" href="#" class="open-sticky-pro-dialog" data-pro-feature="sidebar">
+<div class="inner center logo">
+  <img style="max-height: 100px;" src="<?php echo $plugin_url; ?>assets/img/wp-sticky-pro.png" alt="WP Sticky PRO" title="WP Sticky PRO"><br>
+  <h3>WP Sticky PRO is here!<br>Grab the <u>50% OFF</u> launch DISCOUNT 🚀</h3>
+</div></a>
+</div>
 
 	</div>
 
@@ -537,17 +621,137 @@ if (!function_exists('process_sticky_anything_options')) {
  */
 if (!function_exists('sticky_anything_styles')) {
 	function sticky_anything_styles($hook) {
+
+    // welcome pointer is shown on all pages except Sticky, only to admins, until dismissed
+    $pointers = sticky_get_pointers();
+    $dismissed_notices = sticky_get_dismissed_notices();
+
+    foreach ($dismissed_notices as $notice_name => $tmp) {
+      if ($tmp) {
+        unset($pointers[$notice_name]);
+      }
+    } // foreach
+
+    if (current_user_can('administrator') && !empty($pointers) && 'settings_page_stickyanythingmenu' != $hook) {
+      $pointers['_nonce_dismiss_notice'] = wp_create_nonce('sticky_dismiss_notice');
+
+      wp_enqueue_style('wp-pointer');
+
+      wp_enqueue_script('wp-sticky-pointers', plugins_url('assets/js/sticky-admin-pointers.js', __FILE__), array('jquery'), 1, true);
+      wp_enqueue_script('wp-pointer');
+      wp_localize_script('wp-pointer', 'sticky_pointers', $pointers);
+    }
+
 		if ($hook != 'settings_page_stickyanythingmenu') {
 			return;
 		}
+
+    $sticky_anything_options = get_option( 'sticky_anything_options' );
 
 		wp_register_script('stickyAnythingAdminScript', plugins_url('/assets/js/sticky-anything-admin.js', __FILE__), array( 'jquery' ), '2.1.1');
 		wp_enqueue_script('stickyAnythingAdminScript');
 
 		wp_register_style('stickyAnythingAdminStyle', plugins_url('/assets/css/sticky-anything-admin.css', __FILE__) );
-	    wp_enqueue_style('stickyAnythingAdminStyle');
+    wp_enqueue_style('stickyAnythingAdminStyle');
+
+    wp_enqueue_style('wp-jquery-ui-dialog');
+    wp_enqueue_script('jquery-ui-dialog');
+
+    wp_enqueue_style('wp-color-picker');
+    wp_enqueue_script('wp-color-picker');
+
+    $js_vars = array(
+      'auto_open_pro_dialog' => empty($sticky_anything_options['sa_dismiss_upsell_auto_open']),
+    );
+
+    wp_localize_script('jquery-ui-dialog', 'wpsticky', $js_vars);
+
+    $sticky_anything_options['sa_dismiss_upsell_auto_open'] = true;
+    update_option('sticky_anything_options', $sticky_anything_options);
 	}
 }
+
+function sticky_anything_admin_footer() {
+  $screen = get_current_screen();
+  if ($screen->id != 'settings_page_stickyanythingmenu') {
+    return;
+  }
+
+  $out = '';
+  $out .= '<div id="sticky-pro-dialog" style="display: none;" title="WP Sticky PRO is here!"><span class="ui-helper-hidden-accessible"><input type="text"/></span>';
+
+  $plugin_url = plugin_dir_url(__FILE__);
+
+  $out .= '<div class="center logo"><a href="https://wpsticky.com/?ref=sticky-free-popup" target="_blank"><img style="max-height: 100px;" src="' . $plugin_url . 'assets/img/wp-sticky-pro.png' . '" alt="WP Sticky PRO" title="WP Sticky PRO"></a><br>
+  <b>WP Sticky PRO is here!<br>Grab the <i>50% OFF</i> launch DISCOUNT 🚀</b></div>';
+
+  $out .= '<table id="sticky-table">';
+  $out .= '<tr>';
+  $out .= '<td class="center">Lifetime<br>Single License</td>';
+  $out .= '<td class="center">Lifetime<br>Team License</td>';
+  $out .= '<td class="center">Lifetime<br>Agency License</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span><b>1 Site License</b></td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span><b>3 Sites License</b></td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span><b>100 Sites License</b></td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-no"></span>Install on Client Sites</td>';
+  $out .= '<td><span class="dashicons dashicons-no"></span>Install on Client Sites</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Install on Client Sites</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>One Time Payment</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>One Time Payment</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>One Time Payment</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Lifetime Updates &amp; Support</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Lifetime Updates &amp; Support</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Lifetime Updates &amp; Support</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>All Plugin Features</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>All Plugin Features</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>All Plugin Features</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Unlimited Sticky Elements</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Unlimited Sticky Elements</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Unlimited Sticky Elements</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Visual Elements Picker</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Visual Elements Picker</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Visual Elements Picker</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Advanced Options &amp; Effects</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Advanced Options &amp; Effects</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Advanced Options &amp; Effects</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span>20% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=single-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=single-launch&ref=pricing-table" target="_blank">BUY NOW <del>$49</del> $39</a></td>';
+  $out .= '<td><span>25% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=team-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=team-launch&ref=pricing-table" target="_blank">BUY NOW <del>$79</del> $59</a></td>';
+  $out .= '<td><span>50% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=agency-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=agency-launch&ref=pricing-table" target="_blank">BUY NOW <del>$199</del> $99</a></td>';
+  $out .= '</tr>';
+
+  $out .= '</table>';
+
+  $out .= '<div class="center footer"><b>100% No-Risk Money Back Guarantee!</b>. If you don\'t like the plugin over the next 7 days, we will happily refund 100% of your money. No questions asked!</div>';
+
+  echo $out;
+} // sticky_anything_admin_footer
 
 /**
    * Helper function for adding plugins to featured list
@@ -641,6 +845,67 @@ if (!function_exists('sticky_anything_styles')) {
     exit;
   } // sticky_hide_review_notification
 
+
+   /**
+   * Returns all WP pointers
+   *
+   * @return array
+   */
+  function sticky_get_pointers()
+  {
+    $pointers = array();
+
+    $pointers['welcome'] = array('target' => '#menu-settings', 'edge' => 'left', 'align' => 'right', 'content' => 'Thank you for using the <b style="font-weight: 700;">Sticky Menu (or Anaything!) on Scroll</b> plugin.<br>Open <a href="' . admin_url('options-general.php?page=stickyanythingmenu') . '">Settings - Sticky Menu</a> to make anything sticky.');
+
+    return $pointers;
+  } // sticky_get_pointers
+
+
+  /**
+   * Get all dismissed notices, or check for one specific notice.
+   *
+   * @param string  $notice_name  Optional. Check if specified notice is dismissed.
+   *
+   * @return bool|array
+   */
+  function sticky_get_dismissed_notices($notice_name = '')
+  {
+    $notices = get_option('sticky_dismissed_notices', array());
+
+    if (empty($notice_name)) {
+      return $notices;
+    } else {
+      if (empty($notices[$notice_name])) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+  } // sticky_get_dismissed_notices
+
+
+  /**
+   * Dismiss notice via AJAX call
+   *
+   * @return null
+   */
+  function sticky_ajax_dismiss_notice()
+  {
+    check_ajax_referer('sticky_dismiss_notice');
+
+    if (empty($_POST['notice_name'])) {
+      wp_send_json_error('Notice name is undefined.');
+    } else {
+      $notice_name = substr(sanitize_key($_POST['notice_name']), 0, 64);
+    }
+
+    $notices = get_option('sticky_dismissed_notices', array());
+    $notices[$notice_name] = true;
+    update_option('sticky_dismissed_notices', $notices);
+
+    wp_send_json_success();
+  } // sticky_ajax_dismiss_notice
+
 /**
  * === HOOKS AND ACTIONS AND FILTERS AND SUCH ==========================================================
  */
@@ -651,9 +916,12 @@ register_activation_hook( __FILE__, 'sticky_anthing_default_options' );
 add_action('init','sticky_anything_update',1);
 add_action('wp_enqueue_scripts', 'load_sticky_anything');
 add_action('admin_menu', 'sticky_anything_menu');
-add_action('admin_init', 'sticky_anything_admin_init' );
+add_action('admin_init', 'sticky_anything_admin_init');
+add_action('admin_footer', 'sticky_anything_admin_footer');
 add_action('admin_enqueue_scripts', 'sticky_anything_styles' );
 add_filter("plugin_action_links_$plugin", 'sticky_anything_settings_link' );
+add_filter('plugin_row_meta', 'sticky_plugin_meta_links', 10, 2);
 add_filter('install_plugins_table_api_args_featured', 'sticky_featured_plugins_tab');
 add_filter('install_plugins_table_api_args_recommended', 'sticky_featured_plugins_tab');
 add_action('admin_action_sticky_hide_review_notification', 'sticky_hide_review_notification');
+add_action('wp_ajax_sticky_dismiss_notice', 'sticky_ajax_dismiss_notice');

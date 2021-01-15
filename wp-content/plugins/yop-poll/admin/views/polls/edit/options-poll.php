@@ -155,7 +155,7 @@
 						<input type="text" class="form-control start-date-custom" value="<?php echo $poll->meta_data['options']['poll']['startDateCustom'];?>" readonly />
 						<input type="hidden" class="form-control start-date-custom-hidden" value="<?php echo $poll->meta_data['options']['poll']['startDateCustom'];?>" />
 		                <div class="input-group-addon">
-							<i class="fa fa-calendar show-start-date" aria-hidden="true"></i>
+							<span class="dashicons dashicons-calendar-alt show-start-date"></span>
 		                </div>
 					</div>
 				</div>
@@ -190,7 +190,7 @@
 						<input type="text" class="form-control end-date-custom" value="<?php echo $poll->meta_data['options']['poll']['endDateCustom']?>" readonly />
 						<input type="hidden" class="form-control end-date-custom-hidden" value="<?php echo $poll->meta_data['options']['poll']['endDateCustom']?>" />
 		                <div class="input-group-addon">
-							<i class="fa fa-calendar show-end-date" aria-hidden="true"></i>
+							<span class="dashicons dashicons-calendar-alt show-end-date"></span>
 		                </div>
 					</div>
 				</div>
@@ -258,7 +258,7 @@
 						<input type="text" class="form-control reset-poll-stats-on" value="<?php echo $poll->meta_data['options']['poll']['resetPollStatsOn'];?>" readonly />
 						<input type="hidden" class="form-control reset-poll-stats-on-hidden" value="<?php echo $poll->meta_data['options']['poll']['resetPollStatsOn'];?>" />
 		                <div class="input-group-addon">
-							<i class="fa fa-calendar show-reset-poll-stats-on" aria-hidden="true"></i>
+							<span class="dashicons dashicons-calendar-alt show-reset-poll-stats-on"></span>
 		                </div>
 					</div>
 				</div>
@@ -320,6 +320,7 @@
 					$use_captcha_built_in_yes = '';
 					$use_reCaptcha_v2_checkbox_yes = '';
 					$use_reCaptcha_v2_invisible_yes = '';
+					$use_reCaptcha_v3_yes = '';
 					$use_captcha_no = '';
 					switch ( $poll->meta_data['options']['poll']['useCaptcha'] ) {
 						case 'yes': {
@@ -334,6 +335,10 @@
 							$use_reCaptcha_v2_invisible_yes = 'selected';
 							break;
 						}
+						case 'yes-recaptcha-v3': {
+							$use_reCaptcha_v3_yes = 'selected';
+							break;
+						}
 						case 'no': {
 							$use_captcha_no = 'selected';
 							break;
@@ -346,6 +351,7 @@
 							<option value="yes" <?php echo $use_captcha_built_in_yes;?>><?php _e( 'Use built in Captcha', 'yop-poll' );?></option>
 							<option value="yes-recaptcha"  <?php echo $use_reCaptcha_v2_checkbox_yes;?>><?php _e( 'Use reCaptcha v2 Checkbox', 'yop-poll' );?></option>
 							<option value="yes-recaptcha-invisible"  <?php echo $use_reCaptcha_v2_invisible_yes;?>><?php _e( 'Use reCaptcha v2 Invisible', 'yop-poll' );?></option>
+							<option value="yes-recaptcha-v3"  <?php echo $use_reCaptcha_v3_yes;?>><?php _e( 'Use reCaptcha v3', 'yop-poll' );?></option>
 						</optgroup>
 			        </select>
 				</div>

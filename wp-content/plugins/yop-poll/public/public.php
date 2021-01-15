@@ -51,6 +51,21 @@ class YOP_Poll_Public {
 			wp_register_script( 'yop-reCaptcha', add_query_arg( $args, 'https://www.google.com/recaptcha/api.js' ), '', null );
 			wp_enqueue_script( 'yop-reCaptcha' );
 			/* done adding reCaptcha */
+		} else {
+			if (
+				( true === isset( $plugin_settings_decoded['integrations']['reCaptchaV3']['enabled'] ) ) &&
+				( 'yes' === $plugin_settings_decoded['integrations']['reCaptchaV3']['enabled'] ) &&
+				( '' !== $plugin_settings_decoded['integrations']['reCaptchaV3']['site-key'] ) &&
+				( '' !== $plugin_settings_decoded['integrations']['reCaptchaV3']['secret-key'] )
+			) {
+				/* add reCaptcha if enabled */
+				$args = array(
+					'render' => isset( $plugin_settings_decoded['integrations']['reCaptchaV3']['site-key'] ) ? $plugin_settings_decoded['integrations']['reCaptchaV3']['site-key'] : ''
+				);
+				wp_register_script( 'yop-reCaptcha', add_query_arg( $args, 'https://www.google.com/recaptcha/api.js' ), '', null );
+				wp_enqueue_script( 'yop-reCaptcha' );
+				/* done adding reCaptcha */
+			}
 		}
 		$captcha_accessibility_description = str_replace( '[STRONG]', '<strong>', esc_html( $plugin_settings_decoded['messages']['captcha']['accessibility-description'] ) );
 		$captcha_accessibility_description = str_replace( '[/STRONG]', '</strong>', $captcha_accessibility_description );
@@ -68,6 +83,9 @@ class YOP_Poll_Public {
 					),
 					'reCaptchaV2Invisible' => array(
 						'siteKey' => isset( $plugin_settings_decoded['integrations']['reCaptchaV2Invisible']['site-key'] ) ? $plugin_settings_decoded['integrations']['reCaptchaV2Invisible']['site-key'] : ''
+					),
+					'reCaptchaV3' => array(
+						'siteKey' => isset( $plugin_settings_decoded['integrations']['reCaptchaV3']['site-key'] ) ? $plugin_settings_decoded['integrations']['reCaptchaV3']['site-key'] : ''
 					)
 				),
 				'captchaParams' => array(

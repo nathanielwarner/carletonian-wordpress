@@ -137,7 +137,7 @@ switch( $params['order_by'] ) {
 <div id="yop-main-area" class="bootstrap-yop wrap">
     <div id="icon-options-general" class="icon32"></div>
     <h1>
-		<i class="fa fa-bar-chart" aria-hidden="true"></i>Bans
+		<?php _e( 'Bans', 'yop-poll' );?>
 		<a href="<?php echo esc_url( add_query_arg(
             array(
                 'page' => 'yop-poll-bans',

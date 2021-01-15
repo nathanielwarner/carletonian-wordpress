@@ -226,7 +226,8 @@
 		</div>
 	</div>
     <?php
-    $page = rand( 1, 2 );
+    //$page = rand( 1, 2 );
+    $page = 1;
     if ( 1 === $page ) {
         include( YOP_POLL_PATH . 'admin/views/general/upgrade-short-1.php' );
     } else {

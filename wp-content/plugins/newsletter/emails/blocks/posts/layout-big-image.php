@@ -14,7 +14,7 @@ $size = ['width' => 600, 'height' => 0];
         padding: 0 0 5px 0;
         font-size: <?php echo $title_font_size ?>px;
         font-family: <?php echo $title_font_family ?>;
-        font-weight: normal;
+        font-weight: <?php echo $title_font_weight ?>;
         color: <?php echo $options['title_font_color'] ?>;
         line-height: normal;
     }

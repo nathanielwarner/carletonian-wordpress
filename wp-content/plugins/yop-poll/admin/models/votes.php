@@ -25,6 +25,7 @@ class YOP_Poll_Votes {
 			$vote->user->first_name = $current_user->user_firstname;
 			$vote->user->last_name = $current_user->user_lastname;
 			$vote->user->email = $current_user->user_email;
+			$vote->user->username = $current_user->user_login;
 		}
 		$vote->pollAuthor = $poll->author;
 		if ( false === self::$errors_present ) {
@@ -41,6 +42,9 @@ class YOP_Poll_Votes {
 		}
 		if ( ( false === self::$errors_present ) && ( 'yes-recaptcha' === $poll->meta_data['options']['poll']['useCaptcha'] ) ) {
 			self::validate_recaptcha( $vote, $poll );
+		}
+		if ( ( false === self::$errors_present ) && ( 'yes-recaptcha-v3' === $poll->meta_data['options']['poll']['useCaptcha'] ) ) {
+			self::validate_recaptcha_v3( $vote, $poll );
 		}
 		if ( false === self::$errors_present ) {
 			if ( 'yes' === $poll->meta_data['options']['poll']['enableGdpr']  ) {
@@ -240,6 +244,47 @@ class YOP_Poll_Votes {
 				$response = curl_exec( $curl_con );
 				$response_decoded = json_decode( $response );
 				if ( false === $response_decoded->success ) {
+					self::$errors_present = true;
+					array_push(
+						self::$error_text,
+                        self::$settings_messages['voting']['no-captcha-selected']
+					);
+				}
+			} else {
+				self::$errors_present = true;
+				array_push(
+					self::$error_text,
+                    self::$settings_messages['voting']['no-captcha-selected']
+				);
+			}
+		}
+	}
+	public static function validate_recaptcha_v3( $vote, $poll ) {
+		$captcha_result = false;
+		if ( 'yes-recaptcha-v3' === $poll->meta_data['options']['poll']['useCaptcha'] ) {
+			if ( '' !== $vote->reCaptcha ) {
+				$curl_link = 'https://www.google.com/recaptcha/api/siteverify';
+				$integrations = YOP_Poll_Settings::get_integrations();
+				$data = array(
+					'secret' => $integrations['reCaptchaV3']['secret-key'],
+					'response' => $vote->reCaptcha
+				);
+				$curl_con = curl_init();
+				curl_setopt( $curl_con, CURLOPT_URL, $curl_link );
+				curl_setopt( $curl_con, CURLOPT_POST, true );
+				curl_setopt( $curl_con, CURLOPT_POSTFIELDS, http_build_query( $data ) );
+				curl_setopt( $curl_con, CURLOPT_RETURNTRANSFER, true );
+				$response = curl_exec( $curl_con );
+				$response_decoded = json_decode( $response );
+				if ( true === $response_decoded->success ) {
+					if ( floatval( $integrations['reCaptchaV3']['min-allowed-score'] > floatval( $response_decoded->score ) ) ) {
+						self::$errors_present = true;
+						array_push(
+							self::$error_text,
+							self::$settings_messages['voting']['no-captcha-selected']
+						);
+					}
+				} else {
 					self::$errors_present = true;
 					array_push(
 						self::$error_text,
@@ -814,6 +859,17 @@ class YOP_Poll_Votes {
 		$email_body = str_replace( '%POLL-NAME%', $poll->name, $email_body );
 		$email_body = str_replace( '%VOTE_DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_body );
 		$email_body = str_replace( '%POLL_NAME%', $poll->name, $email_body );
+		if ( 'wordpress' == $vote->user->type ) {
+			$email_body = str_replace( '%VOTER-FIRST-NAME%', $vote->user->first_name, $email_body );
+			$email_body = str_replace( '%VOTER-LAST-NAME%', $vote->user->last_name, $email_body );
+			$email_body = str_replace( '%VOTER-EMAIL%', $vote->user->email, $email_body );
+			$email_body = str_replace( '%VOTER-USERNAME%', $vote->user->username, $email_body );
+		} else {
+			$email_body = str_replace( '%VOTER-FIRST-NAME%', '', $email_body );
+			$email_body = str_replace( '%VOTER-LAST-NAME%', '', $email_body );
+			$email_body = str_replace( '%VOTER-EMAIL%', '', $email_body );
+			$email_body = str_replace( '%VOTER-USERNAME%', '', $email_body );
+		}
 		$questions_tag = self::get_content_between_tags( $email_body, '[QUESTION]', '[/QUESTION]' );
 		$custom_fields_tag = self::get_content_between_tags( $email_body, '[CUSTOM_FIELDS]', '[/CUSTOM_FIELDS]' );
 		$questions_block = '';

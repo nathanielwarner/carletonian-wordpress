@@ -88,10 +88,6 @@
         "path": "magnifying-glass.png"
     },
     {
-        "name": "Man",
-        "path": "man.png"
-    },
-    {
         "name": "Music Note",
         "path": "music-note.png"
     },
@@ -138,10 +134,6 @@
     {
         "name": "Umbrella",
         "path": "umbrella.png"
-    },
-    {
-        "name": "Woman",
-        "path": "woman.png"
     },
     {
         "name": "World",

@@ -185,6 +185,56 @@
                                             </div>
                                             <div class="row submenu" style="padding-top: 20px;">
                                                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
+                                                    <?php _e( 'Use Google reCaptcha v3:', 'yop-poll' ); ?>
+                                                </div>
+                                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                                    <?php
+                                                    $reCaptcha_v3_integration_yes = '';
+                                                    $reCaptcha_v3_integration_no = '';
+                                                    $reCaptcha_v3_data_section = '';
+                                                    if ( ( true === isset( $settings['integrations']['reCaptchaV3']['enabled'] ) ) && ( 'yes' === $settings['integrations']['reCaptchaV3']['enabled'] ) ) {
+                                                        $reCaptcha_v3_integration_yes = 'selected';
+                                                    } else {
+                                                        $reCaptcha_v3_integration_no = 'selected';
+                                                        $reCaptcha_v3_data_section = 'hide';
+                                                    }
+                                                    ?>
+                                                    <select name="integrations-reCaptchaV3-enabled" id="integrations-reCaptchaV3-enabled" class="integrations-reCaptchaV3-enabled admin-select" style="width:100%">
+                                                        <option value="yes" <?php echo $reCaptcha_v3_integration_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
+                                                        <option value="no" <?php echo $reCaptcha_v3_integration_no;?>><?php _e( 'No', 'yop-poll' );?></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row submenu integrations-reCaptchaV3-section <?php echo $reCaptcha_v3_data_section;?>" style="padding-top: 20px; margin-left: 20px;">
+                                                <div class="col-md-12">
+                                                    <div class="row">
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 input-caption">
+                                                            <?php _e( '- Site Key:', 'yop-poll' ); ?>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                                            <input name="integrations-reCaptchaV3-site-key" id ="integrations-reCaptchaV3-site-key" class="form-control settings-required-field" value="<?php echo isset( $settings['integrations']['reCaptchaV3']['site-key'] ) ? esc_html ( $settings['integrations']['reCaptchaV3']['site-key'] ) : ''; ?>">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="padding-top: 10px;">
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 input-caption">
+                                                            <?php _e( '- Secret Key:', 'yop-poll' ); ?>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                                            <input name="integrations-reCaptchaV3-secret-key" id ="integrations-reCaptchaV3-secret-key" class="form-control settings-required-field" value="<?php echo isset( $settings['integrations']['reCaptchaV3']['secret-key'] ) ? esc_html ( $settings['integrations']['reCaptchaV3']['secret-key'] ) : ''; ?>">
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="padding-top: 10px;">
+                                                        <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3 input-caption">
+                                                            <?php _e( '- Min Allowed Score:', 'yop-poll' ); ?>
+                                                        </div>
+                                                        <div class="col-lg-9 col-md-9 col-sm-9 col-xs-9">
+                                                            <input name="integrations-reCaptchaV3-min-allowed-score" id ="integrations-reCaptchaV3-min-allowed-score" class="form-control settings-required-field" value="<?php echo isset( $settings['integrations']['reCaptchaV3']['min-allowed-score'] ) ? esc_html ( $settings['integrations']['reCaptchaV3']['min-allowed-score'] ) : ''; ?>">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row submenu" style="padding-top: 20px;">
+                                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-3">
                                                     <a href="#" class="upgrade-to-pro" data-screen="media-integration">
                                                         <img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
                                                     </a>
@@ -550,7 +600,8 @@
                 </div>
             </div>
             <?php
-            $page = rand( 1, 2 );
+            //$page = rand( 1, 2 );
+            $page = 1;
             if ( 1 === $page ) {
                 include( YOP_POLL_PATH . 'admin/views/general/upgrade-short-1.php' );
             } else {

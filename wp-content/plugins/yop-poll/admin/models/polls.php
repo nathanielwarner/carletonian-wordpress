@@ -6,7 +6,7 @@ class YOP_Poll_Polls {
 			$text_weight_allowed = array( 'normal', 'bold' ),
 			$text_align_allowed = array( 'left', 'center', 'right' ),
 			$yes_no_allowed = array( 'yes', 'no' ),
-			$captcha_allowed = array( 'yes', 'yes-recaptcha', 'yes-recaptcha-invisible', 'no' ),
+			$captcha_allowed = array( 'yes', 'yes-recaptcha', 'yes-recaptcha-invisible', 'yes-recaptcha-v3', 'no' ),
 			$answers_display_allowed = array( 'vertical', 'horizontal', 'columns' ),
 			$answers_sort_allowed = array( 'as-defined' ),
 			$date_values_allowed = array( 'now', 'custom', 'never', 'custom-date' ),
@@ -2075,9 +2075,20 @@ class YOP_Poll_Polls {
 				$element_results['type'] = $element->etype;
 				$element_results['answers'] = array();
 				foreach ( $element->answers as $subelement ) {
+					$answerText = str_replace( '[br]', '</br>', $subelement->stext );
+					$answerText = str_replace( '[p]', '<p>', $answerText );
+					$answerText = str_replace( '[/p]', '</p>', $answerText );
+					$answerText = str_replace( '[strong]', '<strong>', $answerText );
+					$answerText = str_replace( '[/strong]', '</strong>', $answerText );
+					$answerText = str_replace( '[b]', '<b>', $answerText );
+					$answerText = str_replace( '[/b]', '</b>', $answerText );
+					$answerText = str_replace( '[u]', '<u>', $answerText );
+					$answerText = str_replace( '[/u]', '</u>', $answerText );
+					$answerText = str_replace( '[i]', '<i>', $answerText );
+					$answerText = str_replace( '[/i]', '</i>', $answerText );
 					$element_results['answers'][] = array(
 						'id' => $subelement->id,
-						'text' => $subelement->stext,
+						'text' => $answerText,
 						'type' => $subelement->stype,
 						'makeLink' => isset( $subelement->meta_data['makeLink'] ) ? $subelement->meta_data['makeLink'] : '',
 						'link' => isset( $subelement->meta_data['link'] ) ? $subelement->meta_data['link'] : '',

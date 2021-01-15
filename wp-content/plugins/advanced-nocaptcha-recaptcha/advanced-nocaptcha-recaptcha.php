@@ -3,17 +3,18 @@
 Plugin Name: Advanced noCaptcha & invisible Captcha
 Plugin URI: https://www.shamimsplugins.com/contact-us/
 Description: Show noCaptcha or invisible captcha in Comment Form, bbPress, BuddyPress, WooCommerce, CF7, Login, Register, Lost Password, Reset Password. Also can implement in any other form easily.
-Version: 5.7.1
+Version: 6.1.5
 Author: Shamim Hasan
 Author URI: https://www.shamimsplugins.com/contact-us/
 Text Domain: advanced-nocaptcha-recaptcha
 License: GPLv2 or later
-WC tested up to: 4.0.1
+WC tested up to: 4.5.2
 */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit; // Exit if accessed directly.
 }
+require_once ABSPATH . '/wp-admin/includes/plugin.php';
 
 class ANR {
 
@@ -41,7 +42,7 @@ class ANR {
 	}
 
 	private function constants() {
-		define( 'ANR_PLUGIN_VERSION', '5.7.1' );
+		define( 'ANR_PLUGIN_VERSION', '6.1.5' );
 		define( 'ANR_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 		define( 'ANR_PLUGIN_URL', plugins_url( '/', __FILE__ ) );
 		define( 'ANR_PLUGIN_FILE', __FILE__ );
@@ -72,8 +73,13 @@ if ( function_exists( 'anr_fs' ) ) {
 		// Create a helper function for easy SDK access.
 		function anr_fs() {
 			global $anr_fs;
+			$for_network = is_plugin_active_for_network( plugin_basename( __FILE__ ) );
 	
 			if ( ! isset( $anr_fs ) ) {
+				// Activate multisite network integration.
+				if ( $for_network && ! defined( 'WP_FS__PRODUCT_5860_MULTISITE' ) ) {
+					define( 'WP_FS__PRODUCT_5860_MULTISITE', true );
+				}
 				// Include Freemius SDK.
 				require_once dirname(__FILE__) . '/freemius/start.php';
 	
@@ -90,13 +96,14 @@ if ( function_exists( 'anr_fs' ) ) {
 					'has_addons'          => false,
 					'has_paid_plans'      => true,
 					'anonymous_mode'      => true,
+					'navigation'          => 'tabs',
 					'is_live'             => true,
 					'menu'                => array(
 						'slug'           => 'anr-admin-settings',
 						'contact'        => false,
-						'network'        => true,
+						'network'        => $for_network,
 						'parent'         => array(
-							'slug' => 'options-general.php',
+							'slug' => $for_network ? 'settings.php' : 'options-general.php',
 						),
 					),
 				) );

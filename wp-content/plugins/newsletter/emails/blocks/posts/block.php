@@ -18,6 +18,7 @@ $defaults = array(
     'title_font_family' => 'Helvetica, Arial, sans-serif',
     'title_font_size' => '25',
     'title_font_color' => '#333333',
+    'title_font_weight' => 'normal',
     'max' => 4,
     'button_label' => __('Read more...', 'newsletter'),
     'categories' => '',
@@ -55,6 +56,7 @@ $excerpt_length = $options['excerpt_length'];
 
 $title_font_family = $options['title_font_family'];
 $title_font_size = $options['title_font_size'];
+$title_font_weight = $options['title_font_weight'];
 
 $show_image = !empty($options['show_image']);
 

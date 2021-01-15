@@ -29,7 +29,6 @@ $defaults = array(
     'button_font_weight' => 'bold',
     'button_font_size' => 20,
     'button_background' => '#256F9C',
-    'layout' => 'full',
     'block_padding_top' => 30,
     'block_padding_bottom' => 30,
     'block_padding_left' => 15,
@@ -63,7 +62,6 @@ if ($layout == 'full') {
 } else {
     $options = array_merge(array('block_padding_left' => 15, 'block_padding_right' => 15), $options);
 }
-$url = $options['button_url'];
 
 $font_family = $options['font_family'];
 $font_size = $options['font_size'];
@@ -79,13 +77,13 @@ $layout = $options['layout'];
 
 if (!empty($options['image']['id'])) {
     if ($layout == 'full') {
-        $media = tnp_resize($options['image']['id'], array(600, 0));
+        $media = tnp_resize_2x($options['image']['id'], array(600, 0));
         if ($media) {
             $media->set_width(600 - $options['block_padding_left'] - $options['block_padding_right']);
         }
     } else {
-        
-        $media = tnp_resize($options['image']['id'], array(600, 0));
+
+        $media = tnp_resize_2x($options['image']['id'], array(300, 0));
         if ($media) {
             $media->set_width(300 - $options['block_padding_left']);
         }

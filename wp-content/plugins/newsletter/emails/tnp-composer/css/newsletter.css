@@ -91,6 +91,11 @@ img.aligncenter{display:block;margin:0 auto;}
     td[class="mobile-wrapper"]{
         padding: 10px 5% 15px 5% !important;
     }
+    
+    td[class="responsive"]{
+        display: block;
+        width: 100% !important;
+    }
 
     table[class="mobile-button-container"]{
         margin:0 auto;

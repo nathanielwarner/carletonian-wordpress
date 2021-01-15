@@ -3,3 +3,4 @@
 /.idea/
 .env
 /wp-content/plugins/s3-uploads/
+/wp-content/s3-uploads*

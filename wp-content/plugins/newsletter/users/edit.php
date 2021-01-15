@@ -146,14 +146,14 @@ function percentValue($value, $total) {
                         <tr>
                             <th><?php _e('Status', 'newsletter'); ?></th>
                             <td>
-                                <?php $controls->select('status', array('C' => __('Confirmed', 'newsletter'), 'S' => __('Not confirmed', 'newsletter'), 
+                                <?php $controls->select('status', array('C' => __('Confirmed', 'newsletter'), 'S' => __('Not confirmed', 'newsletter'),
                                     'U' => __('Unsubscribed', 'newsletter'), 'B' => __('Bounced', 'newsletter'))); ?>
                             </td>
                         </tr>
                         <tr>
                             <th><?php _e('Language', 'newsletter'); ?></th>
                             <td>
-                                <?php $controls->language(); ?>
+                                <?php $controls->language('language', __('None', 'newsletter') ); ?>
                             </td>
                         </tr>
                         <tr>
@@ -227,6 +227,12 @@ function percentValue($value, $total) {
                             </td>
                         </tr>
                         <tr>
+                            <th><?php _e('Referrer', 'newsletter') ?></th>
+                            <td>
+                                <?php echo $controls->value('referrer'); ?>
+                            </td>
+                        </tr>
+                        <tr>
                             <th><?php _e('Last activity', 'newsletter') ?></th>
                             <td>
                                 <?php echo $controls->print_date($controls->data['last_activity']); ?>
@@ -284,6 +290,7 @@ function percentValue($value, $total) {
                         <table class="widefat" style="width: auto">
                             <thead>
                                 <tr>
+                                    <th>ID</th>
                                     <th>Date</th>
                                     <th>Source</th>
                                     <th>IP</th>
@@ -298,6 +305,7 @@ function percentValue($value, $total) {
                                         $data = $data['new'];
                                     ?>
                                     <tr>
+                                        <td><?php echo $log->id ?></td>
                                         <td><?php echo $controls->print_date($log->created) ?></td>
                                         <td><?php echo esc_html($log->source) ?></td>
                                         <td><?php echo esc_html($log->ip) ?></td>

@@ -100,6 +100,25 @@ class YOP_POLL_Maintenance {
 	public function update_to_version_6_1_8() {
 		update_option( 'yop_poll_version', '6.1.8' );
 	}
+	public function update_to_version_6_1_9() {
+		update_option( 'yop_poll_version', '6.1.9' );
+	}
+	public function update_to_version_6_2_0() {
+		YOP_Poll_Settings::update_settings_to_version_6_2_0();
+		update_option( 'yop_poll_version', '6.2.0' );
+	}
+	public function update_to_version_6_2_1() {
+		update_option( 'yop_poll_version', '6.2.1' );
+	}
+	public function update_to_version_6_2_2() {
+		update_option( 'yop_poll_version', '6.2.2' );
+	}
+	public function update_to_version_6_2_3() {
+		update_option( 'yop_poll_version', '6.2.3' );
+	}
+	public function update_to_version_6_2_4() {
+		update_option( 'yop_poll_version', '6.2.4' );
+	}
     public function create_archive_page() {
         $poll_archive_page = get_page_by_path( 'yop-poll-archive', ARRAY_A );
         if ( ! $poll_archive_page ) {

@@ -88,7 +88,7 @@
 						<input type="text" class="form-control custom-date-results" value="<?php echo $poll->meta_data['options']['results']['customDateResults'];?>" readonly />
 						<input type="hidden" class="form-control custom-date-results-hidden" value="<?php echo $poll->meta_data['options']['results']['customDateResults'];?>" />
 		                <div class="input-group-addon">
-							<i class="fa fa-calendar show-custom-date-results" aria-hidden="true"></i>
+							<span class="dashicons dashicons-calendar-alt show-custom-date-results"></span>
 		                </div>
 					</div>
 				</div>

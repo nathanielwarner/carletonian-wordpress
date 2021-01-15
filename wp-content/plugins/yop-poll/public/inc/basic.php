@@ -43,6 +43,14 @@ class YOP_Poll_Basic {
 			$answer_text = esc_html( $answer->stext );
 		}
 		$answer_text = str_replace( '[br]', '<br/>', $answer_text );
+		$answer_text = str_replace( '[p]', '<p>', $answer_text );
+		$answer_text = str_replace( '[/p]', '</p>', $answer_text );
+		$answer_text = str_replace( '[strong]', '<strong>', $answer_text );
+		$answer_text = str_replace( '[/strong]', '</strong>', $answer_text );
+		$answer_text = str_replace( '[i]', '<i>', $answer_text );
+		$answer_text = str_replace( '[/i]', '</i>', $answer_text );
+		$answer_text = str_replace( '[u]', '<u>', $answer_text );
+		$answer_text = str_replace( '[/u]', '</u>', $answer_text );
 		return $answer_text;
 	}
 	public static function get_answers_count( $question ) {
@@ -52,13 +60,13 @@ class YOP_Poll_Basic {
 		}
 		return $answers_count;
 	}
-	public static function get_gdpr_html( $poll ) {
+	public static function get_gdpr_html( $poll, $poll_uid ) {
 		$gdpr_html = '';
 		if ( 'yes' === $poll->meta_data['options']['poll']['enableGdpr'] ) {
 			if ( 'consent' === $poll->meta_data['options']['poll']['gdprSolution'] ) {
 				$gdpr_html = '<div class="basic-gdpr">'
-						. '<label class="basic-gdpr-consent-text" for="gdpr-consent">'
-							. '<input type="checkbox" name="gdpr-consent" id="gdpr-consent" class="gdpr-consent" value="agree">'
+						. '<label class="basic-gdpr-consent-text" for="gdpr-consent-' . $poll_uid . '">'
+							. '<input type="checkbox" name="gdpr-consent" id="gdpr-consent-' . $poll_uid . '" class="gdpr-consent" value="agree">'
 							. $poll->meta_data['options']['poll']['gdprConsentText']
 						. '</label>'
 					. '</div>';
@@ -89,6 +97,12 @@ class YOP_Poll_Basic {
 				}
 				case 'yes-recaptcha-invisible': {
 					$use_captcha[0] = '3';
+					$use_captcha[1] = '<div id="yop-poll-captcha-' . $uid . '" class="basic-captcha"></div>';
+					$use_captcha[2] = $uid;
+					break;
+				}
+				case 'yes-recaptcha-v3': {
+					$use_captcha[0] = '4';
 					$use_captcha[1] = '<div id="yop-poll-captcha-' . $uid . '" class="basic-captcha"></div>';
 					$use_captcha[2] = $uid;
 					break;
@@ -224,7 +238,6 @@ class YOP_Poll_Basic {
 				$messages = YOP_Poll_Settings::get_messages();
 				$anonymous_vote_code .= '<div class="basic-anonymous">'
 									. '<button type="button" class="btn btn-default">'
-										. '<i class="fa fa-user-secret" aria-hidden="true"></i>'
 										. $messages['buttons']['anonymous']
 									. '</button>'
 								. '</div>';
@@ -270,7 +283,11 @@ class YOP_Poll_Basic {
 				break;
 			}
 		}
-		if ( ( 'yes' === $element->meta_data['allowOtherAnswers'] ) && ( 'yes' === $element->meta_data['displayOtherAnswersInResults'] ) ) {
+		if ( 
+			( 'yes' === $element->meta_data['allowOtherAnswers'] ) &&
+			( 'yes' === $element->meta_data['displayOtherAnswersInResults'] ) &&
+			( 'no' === $element->meta_data['addOtherAnswers'] )
+		) {
 			$display_other_answers_in_results = 'yes';
 			$other_answers_results_color = isset( $element->meta_data['resultsColorForOtherAnswers'] ) ? $element->meta_data['resultsColorForOtherAnswers'] : '#000000';
 			$other_answers = YOP_Poll_Other_Answers::get_for_element( $element->id );
@@ -799,7 +816,7 @@ class YOP_Poll_Basic {
 													. '<div class="basic-elements">'
 														. $poll_elements
 													. '</div>'
-													. self::get_gdpr_html( $poll )
+													. self::get_gdpr_html( $poll, $use_captcha[2] )
 													. $use_captcha[1]
 													. self::do_show_total_votes_and_answers( $poll, $params )
 													. '<div class="basic-vote">'
@@ -959,7 +976,7 @@ class YOP_Poll_Basic {
 		} else {
 			$show_results_only = 'false';
 		}
-		$poll_ready_for_output = '<div class="basic-yop-poll-container"'
+		$poll_ready_for_output = '<div class="yop-poll-container"'
 										. ' data-id="' . esc_attr( $poll->id ) . '"'
 										. ' data-ajax="1"'
 										. ' data-tid="' . esc_attr( $params['tracking_id'] ) . '"'

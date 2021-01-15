@@ -3,7 +3,7 @@
  * Name: Social links
  * Section: footer
  * Description: Link with icons to social profiles
- * 
+ *
  */
 
 /* @var $options array */
@@ -98,6 +98,22 @@ $configured = false;
                     <a href="<?php echo esc_url($block_options['vimeo_url']) ?>"><img src="<?php echo $social_icon_url ?>/vimeo.png" alt="Vimeo"></a>
                 </span>
             <?php } ?>
+	        <?php
+	        if (!empty($block_options['telegram_url'])) {
+		        $configured = true;
+		        ?>
+                <span class="tnpc-row-edit" data-type="image">
+                    <a href="<?php echo esc_url($block_options['telegram_url']) ?>"><img src="<?php echo $social_icon_url ?>/telegram.png" alt="Telegram"></a>
+                </span>
+	        <?php } ?>
+	        <?php
+	        if (!empty($block_options['vk_url'])) {
+		        $configured = true;
+		        ?>
+                <span class="tnpc-row-edit" data-type="image">
+                    <a href="<?php echo esc_url($block_options['vk_url']) ?>"><img src="<?php echo $social_icon_url ?>/vk.png" alt="VK"></a>
+                </span>
+	        <?php } ?>
             <?php if (!$configured) { ?>
                 <p>Configure your social links in the <a href="?page=newsletter_main_info">Social configuration section</a>.<br/>
                     Then remove and add again this block.</p>

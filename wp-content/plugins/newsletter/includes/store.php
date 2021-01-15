@@ -189,7 +189,7 @@ class NewsletterStore {
             }
             $wpdb->query("delete from " . $table . " where id in (" . implode(',', $id) . ")");
         } else {
-            $wpdb->delete($table, array('id' => (int)$id));
+            $wpdb->delete($table, ['id' => (int)$id]);
         }
         if ($wpdb->last_error) {
             $this->logger->error($wpdb->last_error);

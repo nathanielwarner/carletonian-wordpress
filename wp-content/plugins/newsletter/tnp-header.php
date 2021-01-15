@@ -73,20 +73,27 @@ $warning |= empty($status_options['mail']);
         </li>
         <li><a href="#"><i class="fas fa-list"></i> <?php _e('List Building', 'newsletter') ?> <i class="fas fa-chevron-down"></i></a>
             <ul>
-                <li><a href="?page=newsletter_subscription_options"><i class="fas fa-sign-in-alt"></i> <?php _e('Subscription', 'newsletter') ?>
-                        <small><?php _e('The subscription process in detail', 'newsletter') ?></small></a></li>
-
-                <li><a href="?page=newsletter_subscription_antibot"><i class="fas fa-lock"></i> <?php _e('Security', 'newsletter') ?>
-                        <small><?php _e('Spam subscriptions control', 'newsletter') ?></small></a></li>
-
                 <li>
                     <a href="?page=newsletter_subscription_profile"><i class="fas fa-check-square"></i> <?php _e('Subscription Form Fields, Buttons, Labels', 'newsletter') ?>
                         <small><?php _e('When and what data to collect', 'newsletter') ?></small></a>
                 </li>
+
+                <li>
+                    <a href="?page=newsletter_subscription_options"><i class="fas fa-sign-in-alt"></i> <?php _e('Subscription', 'newsletter') ?>
+                        <small><?php _e('The subscription process in detail', 'newsletter') ?></small></a>
+                </li>
+                
                 <li>
                     <a href="?page=newsletter_subscription_lists"><i class="fas fa-th-list"></i> <?php _e('Lists', 'newsletter') ?>
                         <small><?php _e('Profile the subscribers for a better targeting', 'newsletter') ?></small></a>
                 </li>
+                
+                <li>
+                    <a href="?page=newsletter_subscription_antibot"><i class="fas fa-lock"></i> <?php _e('Security', 'newsletter') ?>
+                        <small><?php _e('Spam subscriptions control', 'newsletter') ?></small></a>
+                </li>
+
+
                 <li>
                     <a href="?page=newsletter_unsubscription_index"><i class="fas fa-sign-out-alt"></i> <?php _e('Unsubscription', 'newsletter') ?>
                         <small><?php _e('How to give the last goodbye (or avoid it!)', 'newsletter') ?></small></a>
