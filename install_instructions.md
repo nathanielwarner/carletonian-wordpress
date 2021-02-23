@@ -2,8 +2,9 @@
 2. Run `sudo apt update && sudo apt full-upgrade`
 3. Reboot (type `reboot`)
 4. Install the Apache web server: `sudo apt install apache2` (you'll need to start it with `sudo service apache2 start` if running on WSL)
-5. Install the MariaDB database system: `sudo apt install mariadb-server mariadb-client` (similarly, if you're on WSL, start it with `sudo service mysql start`)
-6. Run `sudo mysql_secure_installation`. Enter y for each question except the password.
+5. Enable rewrites: `sudo a2enmod rewrite`
+6. Install the MariaDB database system: `sudo apt install mariadb-server mariadb-client` (similarly, if you're on WSL, start it with `sudo service mysql start`)
+7. Run `sudo mysql_secure_installation`. Enter y for each question except the password.
 13. Create the wordpress database and user, keeping note of the password:
 ```
 sudo mysql
