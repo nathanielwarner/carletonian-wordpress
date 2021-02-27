@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 7.0.2
+  Version: 7.0.3
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,7 +35,7 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '7.0.2');
+define('NEWSLETTER_VERSION', '7.0.3');
 
 global $newsletter, $wpdb;
 
@@ -314,7 +314,7 @@ class Newsletter extends NewsletterModule {
         if (!$install_time) {
             update_option('newsletter_install_time', time(), false);
         }
-        
+
         touch(NEWSLETTER_LOG_DIR . '/index.html');
 
         Newsletter::instance()->upgrade();
@@ -436,7 +436,7 @@ class Newsletter extends NewsletterModule {
         delete_transient("tnp_extensions_json");
 
         touch(NEWSLETTER_LOG_DIR . '/index.html');
-        
+
         return true;
     }
 
@@ -606,7 +606,7 @@ class Newsletter extends NewsletterModule {
         $emails = $this->get_results("select * from " . NEWSLETTER_EMAILS_TABLE . " where status='sending' and send_on<" . time() . " order by id asc");
         $this->logger->debug(__METHOD__ . '> Emails found in sending status: ' . count($emails));
 
-        foreach ($emails as $email) {
+         foreach ($emails as $email) {
             $this->logger->info(__METHOD__ . '> Start newsletter ' . $email->id);
             $r = $this->send($email);
             if ($this->limits_exceeded()) {
@@ -690,6 +690,7 @@ class Newsletter extends NewsletterModule {
             if (empty($users)) {
                 $this->logger->info(__METHOD__ . '> No more users, set as sent');
                 $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set status='sent', total=sent where id=" . $email->id . " limit 1");
+                do_action('newsletter_ended_sending_newsletter', $email);
                 return true;
             }
         } else {
@@ -975,9 +976,9 @@ class Newsletter extends NewsletterModule {
             $mailer->from_name = $this->options['sender_name'];
         return $mailer->send($message);
     }
-    
+
     /**
-     * 
+     *
      * @param type $to
      * @param type $subject
      * @param string|array $message If string is considered HTML, is array should contains the keys "html" and "text"

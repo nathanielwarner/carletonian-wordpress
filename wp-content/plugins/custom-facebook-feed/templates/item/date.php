@@ -3,7 +3,7 @@
  * Custom Facebook Feed Item : Date Template
  * Displays the item date
  *
- * @version X.X.X Custom Facebook Feed by Smash Balloon
+ * @version 2.19 Custom Facebook Feed by Smash Balloon
  *
  */
 
@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $cff_date_styles = $this_class->get_style_attribute( 'date' );
 ?>
 
-<p class="cff-date" <?php echo $cff_date_styles ?>><?php 
+<p class="cff-date" <?php echo $cff_date_styles ?>><?php
 		echo CFF_Shortcode_Display::get_date( $options, $atts, $news );
 		if($cff_date_position == 'below' || (!$cff_show_author && $cff_date_position == 'author') ):
 	?>

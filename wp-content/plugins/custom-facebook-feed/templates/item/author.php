@@ -3,7 +3,7 @@
  * Custom Facebook Feed Item : Author Template
  * Displays the item author
  *
- * @version X.X.X Custom Facebook Feed by Smash Balloon
+ * @version 2.19 Custom Facebook Feed by Smash Balloon
  *
  */
 // Don't load directly
@@ -12,11 +12,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 use CustomFacebookFeed\CFF_Shortcode_Display;
 
-//Author Style	   	  
+//Author Style
 
 $cff_author_styles = $this_class->get_style_attribute( 'author' );
-
-if( isset($news->from->id) ) :
+$cff_from_id 	= isset($news->from->id) ? $news->from->id : '';
+if( isset($cff_from_id) ) :
 
 	$cff_author_name 		= CFF_Shortcode_Display::get_author_name( $news );
 	$cff_author_link_atts 	= CFF_Shortcode_Display::get_author_link_atts( $news, $target, $cff_nofollow, $cff_author_styles  );
@@ -51,18 +51,18 @@ if( isset($news->from->id) ) :
 <?php else: ?>
 	<div class="cff-author cff-no-author-info">
 		<div class="cff-author-text">
-			<?php if($cff_show_date && $cff_date_position !== 'above' && $cff_date_position !== 'below'):  ?>
+			<?php if($cff_show_date && $cff_date_position !== 'above' && $cff_date_position !== 'below'): ?>
 				<?php if(!empty($post_text_story)):  ?>
 					<div class="cff-page-name cff-author-date"><span class="cff-story"> <?php echo $post_text_story ?></span></div>
 					<?php echo $cff_date ?>
-				<?php endif; ?>				
+				<?php endif; ?>
 			<?php else: ?>
 				<?php if(!empty($post_text_story)):  ?>
 					<span class="cff-page-name"><span class="cff-story"> <?php echo $post_text_story ?></span></span>
-				<?php endif; ?>				
+				<?php endif; ?>
 			<?php endif; ?>
 		</div>
 		<div class="cff-author-img"></div>
 	</div>
-<?php 
-endif;	
+<?php
+endif;

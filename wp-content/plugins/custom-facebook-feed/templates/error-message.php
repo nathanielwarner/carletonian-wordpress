@@ -3,7 +3,7 @@
  * Custom Facebook Feed : Error Message Template
  * Display different error message
  *
- * @version X.X.X Custom Facebook Feed by Smash Balloon
+ * @version 2.19 Custom Facebook Feed by Smash Balloon
  *
  */
 
@@ -27,18 +27,18 @@ if( empty($FBdata->data) || isset($FBdata->cached_error) || $cff_ppca_check_erro
 		$FBdata->error->message = esc_html__('(#10) To use "Page Public Content Access", your use of this endpoint must be reviewed and approved by Facebook.' , 'custom-facebook-feed');
 		$FBdata->error->type = $FBdata->error->code = $FBdata->error->error_subcode = NULL;
 	}
-	
+
 	$cap 			= CFF_Shortcode_Display::get_error_message_cap();
 	$cff_ppca_error = CFF_Shortcode_Display::get_error_check_ppca( $FBdata )
 
 ?>
 <div class="cff-error-msg">
 	<div>
-		<i class="fa fa-lock" aria-hidden="true" style="margin-right: 5px;"></i><b><?php echo esc_html__('This message is only visible to admins.', 'custom-facebook-feed'); ?></b><br/>	
-		<?php 
+		<i class="fa fa-lock" aria-hidden="true" style="margin-right: 5px;"></i><b><?php echo esc_html__('This message is only visible to admins.', 'custom-facebook-feed'); ?></b><br/>
+		<?php
 			if ( !$cff_ppca_check_error ) echo esc_html__('Problem displaying Facebook posts.', 'custom-facebook-feed');
 			if ( isset($FBdata->cached_error) ) echo esc_html__(' Backup cache in use.', 'custom-facebook-feed');
-		?>	
+		?>
 		<?php if( $cff_ppca_check_error || $cff_ppca_error ): ?>
 			</div>
 			<?php if( $cff_ppca_error ): ?>
@@ -46,11 +46,11 @@ if( empty($FBdata->data) || isset($FBdata->cached_error) || $cff_ppca_check_erro
 			<?php else: ?>
 				<a class="cff_notice_dismiss" href="<?php echo esc_url( add_query_arg( 'cff_ppca_check_notice_dismiss', '0' )  ); ?>"><span class="fa fa-times-circle" aria-hidden="true"></span></a>
 				<b class="cff-warning-notice">PPCA Error:</b> <?php echo esc_html__('Due to Facebook API changes on September 4, 2020, it will no longer be possible to display a feed from a Facebook Page you are not an admin of. The Facebook feed below is not using a valid Access Token for this Facebook page and so will stop updating after this date.', 'custom-facebook-feed'); ?>
-			<?php endif; ?>		
+			<?php endif; ?>
 			<?php if(  current_user_can( $cap )  ): ?>
 				<br /><b style="margin-top: 5px; display: inline-block;"><?php echo esc_html__('Action Required.', 'custom-facebook-feed'); ?>:</b> <?php echo esc_html__('Please', 'custom-facebook-feed'); ?> <a href="https://smashballoon.com/facebook-ppca-error-notice/" target="_blank"><?php echo esc_html__('see here', 'custom-facebook-feed'); ?></a> <?php echo esc_html__('for information on how to fix this.', 'custom-facebook-feed'); ?>
-			<?php endif; ?>		
-		
+			<?php endif; ?>
+
 		<?php else: ?>
 			<br/><a href="javascript:void(0);" id="cff-show-error" onclick="cffShowError()"><?php echo esc_html__('Click to show error', 'custom-facebook-feed'); ?></a>
 			<script type="text/javascript">function cffShowError() { document.getElementById("cff-error-reason").style.display = "block"; document.getElementById("cff-show-error").style.display = "none"; }</script>
@@ -58,22 +58,22 @@ if( empty($FBdata->data) || isset($FBdata->cached_error) || $cff_ppca_check_erro
 			<div id="cff-error-reason">
 				<?php if( isset($FBdata->error->message) ): ?>
 					<b><?php echo esc_html__('Error', 'custom-facebook-feed'); ?>:</b> <?php echo $FBdata->error->message; ?>
-				<?php endif; ?>	
+				<?php endif; ?>
 				<?php if( isset($FBdata->error->type) ): ?>
 					<b><?php echo esc_html__('Type', 'custom-facebook-feed'); ?>:</b> <?php echo $FBdata->error->type; ?>
-				<?php endif; ?>	
+				<?php endif; ?>
 				<?php if( isset($FBdata->error->error_subcode) ): ?>
 					<b><?php echo esc_html__('Subcode', 'custom-facebook-feed'); ?>:</b> <?php echo $FBdata->error->error_subcode; ?>
-				<?php endif; ?>	
+				<?php endif; ?>
 				<?php if( isset($FBdata->error_msg) ): ?>
 					<b><?php echo esc_html__('Error', 'custom-facebook-feed'); ?>:</b> <?php echo $FBdata->error_msg; ?>
-				<?php endif; ?>		
+				<?php endif; ?>
 				<?php if( isset($FBdata->error_code) ): ?>
 					<?php echo esc_html__('Code', 'custom-facebook-feed'); ?>: <?php echo $FBdata->error_code; ?>
-				<?php endif; ?>	
+				<?php endif; ?>
 				<?php if( $FBdata == null ): ?>
 					<b><?php echo esc_html__('Error', 'custom-facebook-feed'); ?>:</b> <?php echo esc_html__('Server configuration issue', 'custom-facebook-feed'); ?>
-				<?php endif; ?>	
+				<?php endif; ?>
 				<?php if( empty($FBdata->error) && empty($FBdata->error_msg) && $FBdata !== null ): ?>
 					<b><?php echo esc_html__('Error', 'custom-facebook-feed'); ?>:</b> <?php echo esc_html__('No posts available for this Facebook ID', 'custom-facebook-feed'); ?>
 				<?php endif; ?>

@@ -1,12 +1,12 @@
 jQuery(document).ready(function($) {
 	//Tooltips
-	jQuery('#cff-admin .cff-tooltip-link').click(function(){
+	jQuery('#cff-admin .cff-tooltip-link').on('click', function(){
 		jQuery(this).closest('tr, h3, div').find('.cff-tooltip').slideToggle();
 	});
 
 	//Toggle Access Token field
 	if( jQuery('#cff_show_access_token').is(':checked') ) jQuery('.cff-access-token-hidden').show();
-	jQuery('#cff_show_access_token').change(function(){
+	jQuery('#cff_show_access_token').on('change', function(){
 		jQuery('.cff-access-token-hidden').fadeToggle();
 	});
 
@@ -87,7 +87,7 @@ jQuery(document).ready(function($) {
 	if(cff_page_type == 'group') $cff_group_error.show();
 
 	//When page type is changed show the relevant item
-	jQuery('.cff-page-type').change(function(){
+	jQuery('.cff-page-type').on('change', function(){
 		cff_page_type = jQuery('.cff-page-type select').val();
 
 		if( cff_page_type !== 'page' ) {
@@ -102,7 +102,7 @@ jQuery(document).ready(function($) {
 					$cff_group_error.hide();
 					$cff_profile_error.hide();
 				}
-			
+
 		} else {
 			$cff_page_type_options.show();
 			$cff_profile_error.hide();
@@ -124,7 +124,7 @@ jQuery(document).ready(function($) {
 		jQuery('#cff_limit_setting').val('manual');
 	}
 
-	jQuery('#cff_limit_setting').change(function(){
+	jQuery('#cff_limit_setting').on('change', function(){
 		cff_limit_setting = jQuery('#cff_limit_setting').val();
 
 		if(cff_limit_setting == 'auto'){
@@ -145,7 +145,7 @@ jQuery(document).ready(function($) {
 	if(cff_header_type !== 'text') $cff_text_header_options.hide();
 
 	//When Header type is changed show the relevant item
-	jQuery('.cff-header-type').change(function(){
+	jQuery('.cff-header-type').on('change', function(){
 		cff_header_type = jQuery('.cff-header-type select').val();
 
 		if( cff_header_type !== 'visual' ) {
@@ -162,7 +162,7 @@ jQuery(document).ready(function($) {
 	//Check the saved icon type on page load and display it
 	jQuery('#cff-header-icon-example').removeClass().addClass('fa fa-' + jQuery('#cff-header-icon').val() );
 	//Change the header icon when selected from the list
-	jQuery('#cff-header-icon').change(function() {
+	jQuery('#cff-header-icon').on('change', function() {
 	    var $self = jQuery(this);
 
 	    jQuery('#cff-header-icon-example').removeClass().addClass('fa fa-' + $self.val() );
@@ -170,19 +170,19 @@ jQuery(document).ready(function($) {
 
 
 	//Test Facebook API connection button
-	jQuery('#cff-api-test').click(function(e){
+	jQuery('#cff-api-test').on('click', function(e){
 		e.preventDefault();
 		//Show the JSON
 		jQuery('#cff-api-test-result textarea').css('display', 'block');
 	});
-	
+
 
 	//If '__ days ago' date is selected then show 'Translate this'
 	var $cffTranslateDate = jQuery('#cff-translate-date');
 
 	if ( jQuery("#cff-date-formatting option:selected").val() == '1' ) $cffTranslateDate.show();
-	
-	jQuery("#cff-date-formatting").change(function() {
+
+	jQuery("#cff-date-formatting").on('change', function() {
 		if ( jQuery("#cff-date-formatting option:selected").val() == '1' ) {
 			$cffTranslateDate.fadeIn();
 		} else {
@@ -191,7 +191,7 @@ jQuery(document).ready(function($) {
 	});
 
 	//Selecting a post style
-	jQuery('.cff-post-style').click(function(){
+	jQuery('.cff-post-style').on('click', function(){
         var $self = jQuery(this);
         $('.cff_post_style').trigger('change');
         $self.addClass('cff-layout-selected').find('#cff_post_style').attr('checked', 'checked');
@@ -204,7 +204,7 @@ jQuery(document).ready(function($) {
         }, 1);
     }
     cffChangePostStyleSettings();
-    jQuery('.cff_post_style').change(cffChangePostStyleSettings);
+    jQuery('.cff_post_style').on('change', cffChangePostStyleSettings);
 
 	//Add the color picker
 	if( jQuery('.cff-colorpicker').length > 0 ) jQuery('.cff-colorpicker').wpColorPicker();
@@ -218,11 +218,11 @@ jQuery(document).ready(function($) {
 		//Show initially if a width is set
 		if(cff_feed_width.length > 1 && cff_feed_width !== '100%') $cff_width_options.show();
 
-		jQuery('#cff_feed_width').change(function(){
+		jQuery('#cff_feed_width').on('change', function(){
 			cff_feed_width = jQuery(this).val();
 
 			if( cff_feed_width.length < 2 || cff_feed_width == '100%' ) {
-				$cff_width_options.slideUp();			
+				$cff_width_options.slideUp();
 			} else {
 				$cff_width_options.slideDown();
 			}
@@ -230,7 +230,7 @@ jQuery(document).ready(function($) {
 	}
 
 	//Scroll to hash for quick links
-	jQuery('#cff-admin a').click(function() {
+	jQuery('#cff-admin a').on('click', function() {
 	if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
 	  var target = jQuery(this.hash);
 	  target = target.length ? target : this.hash.slice(1);
@@ -244,23 +244,23 @@ jQuery(document).ready(function($) {
 	});
 
 	//Shortcode tooltips
-	jQuery('#cff-admin label').click(function(){
+	jQuery('#cff-admin label').on('click', function(){
 	  	var $el = jQuery(this);
 	    var $cff_shortcode = $el.siblings('.cff_shortcode');
 	    if($cff_shortcode.is(':visible')){
 	      $el.siblings('.cff_shortcode').css('display','none');
 	    } else {
 	      $el.siblings('.cff_shortcode').css('display','block');
-	    }  
+	    }
 	});
-	jQuery('#cff-admin th').hover(function(){
+	jQuery('#cff-admin th').on('hover', function(){
 		if( jQuery(this).find('.cff_shortcode').length > 0 ){
 		  jQuery(this).find('label').append('<code class="cff_shortcode_symbol">[]</code>');
 		}
 	}, function(){
 		jQuery(this).find('.cff_shortcode_symbol').remove();
 	});
-	jQuery('#cff-admin label').hover(function(){
+	jQuery('#cff-admin label').on('hover', function(){
 		if( jQuery(this).siblings('.cff_shortcode').length > 0 ){
 		  jQuery(this).attr('title', 'Click for shortcode option');
 		}
@@ -289,7 +289,7 @@ jQuery(document).ready(function($) {
 		}
 	}
 	cffToggleNummobile();
-	jQuery('#cff_show_num_mobile').change(cffToggleNummobile);
+	jQuery('#cff_show_num_mobile').on('change', cffToggleNummobile);
 
 	//Facebook login
 	$('#cff_fb_login').on('click', function(){
@@ -320,7 +320,7 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	
+
 
 
 
@@ -419,7 +419,7 @@ jQuery(document).ready(function($) {
 		$('#cff_manual_account_step_2').hide();
 	});
 	//Step 2
-	jQuery("#cff_manual_account_type").change(function() {
+	jQuery("#cff_manual_account_type").on('change', function() {
 		cff_go_to_step_2();
 	});
 	$('#cff-admin .cff_manual_forward').on('click', function(){
@@ -490,7 +490,7 @@ jQuery(document).ready(function($) {
 		createAccountHTML(cff_connected_accounts);
 	}
 
-	function removeConnectedAccount($account){		
+	function removeConnectedAccount($account){
 		//Remove account from array
 		delete cff_connected_accounts[$account.attr('data-page-id')];
 
@@ -654,7 +654,7 @@ jQuery(document).ready(function($) {
 
         	//Remove ID/token from fields
         	if( $selected_account.hasClass('cff_account_active') ){
-        		
+
         		removePrimaryAcount($selected_account);
 
 	        //Add ID/token to fields
@@ -693,7 +693,7 @@ jQuery(document).ready(function($) {
 	        		});
 
 	        	}
-        	
+
 
         	}
         }
@@ -751,7 +751,7 @@ jQuery(document).ready(function($) {
 	}
 
 	//Switch Page/Group app button in modal
-	jQuery("#cff_login_type").change(function() {
+	jQuery("#cff_login_type").on('change', function() {
 		if ( jQuery("#cff_login_type option:selected").val() == 'group' ) {
 			jQuery('#cff_page_app').hide();
 			jQuery('#cff_group_app').css('display', 'inline-block');
@@ -772,7 +772,7 @@ jQuery(document).ready(function($) {
     });
 
     //Group app setup screenshot
-	jQuery('#cff-group-app-tooltip').hover(function(){
+	jQuery('#cff-group-app-tooltip').on('hover', function(){
 	    jQuery('#cff-group-app-screenshot').fadeIn(100);
 	}, function(){
 		jQuery('#cff-group-app-screenshot').fadeOut(100);
@@ -795,7 +795,7 @@ jQuery(document).ready(function($) {
 		$cff_mobile_col_settings.show();
 	}
 
-	jQuery('#cff_cols').change(function(){
+	jQuery('#cff_cols').on('change', function(){
 		cff_cols_num = parseInt( jQuery('#cff_cols').val() );
 
 		if(cff_cols_num > 1){
@@ -814,7 +814,7 @@ jQuery(document).ready(function($) {
 		jQuery('#cff-notice-bar').show();
 	}
 
-	jQuery('#cff-notice-bar .dismiss').click(function(e) {
+	jQuery('#cff-notice-bar .dismiss').on('click', function(e) {
 		e.preventDefault();
 		jQuery('#cff-notice-bar').remove();
 		jQuery.ajax({
@@ -829,7 +829,7 @@ jQuery(document).ready(function($) {
 		});
 	});
 
-	jQuery('#cff-oembed-disable').click(function(e) {
+	jQuery('#cff-oembed-disable').on('click', function(e) {
 		e.preventDefault();
 		jQuery(this).addClass( 'loading' ).html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
 		jQuery.ajax({
@@ -843,7 +843,7 @@ jQuery(document).ready(function($) {
 				jQuery('#cff-oembed-disable').closest('p').html(data);
 			}
 		});
-		
+
 	});
 
 	jQuery('.cff_show_gdpr_list').on('click', function(){
@@ -878,7 +878,7 @@ jQuery(document).ready(function($) {
 			jQuery('#cff_enable_email_report').closest('td').find('.cff_box').slideUp();
 		}
 	}cffToggleEmail();
-	jQuery('#cff_enable_email_report').change(cffToggleEmail);
+	jQuery('#cff_enable_email_report').on('change', cffToggleEmail);
 	if (jQuery('#cff-goto').length) {
 		jQuery('#cff-goto').closest('tr').addClass('cff-goto');
 		$('html, body').animate({
@@ -886,11 +886,11 @@ jQuery(document).ready(function($) {
 		}, 500);
 	}
 
-	jQuery('.cff-error-directions .cff-reconnect').click(function(){
+	jQuery('.cff-error-directions .cff-reconnect').on('click', function(){
 		event.preventDefault();
 		jQuery('.cff_admin_btn').trigger('click');
 	});
-	jQuery('.cff-clear-errors-visit-page').click(function(event) {
+	jQuery('.cff-clear-errors-visit-page').on('click', function(event) {
 		event.preventDefault();
 		var $btn = jQuery(this);
 		$btn.prop( 'disabled', true ).addClass( 'loading' ).html('<i class="fa fa-spinner fa-spin" aria-hidden="true"></i>');
@@ -914,7 +914,7 @@ jQuery(document).ready(function($) {
 		jQuery('#wpcontent').css('padding', 0);
 	}
 
-	$('.cff-opt-in').click(function(event) {
+	$('.cff-opt-in').on('click', function(event) {
 		event.preventDefault();
 
 		var $btn = jQuery(this);
@@ -923,7 +923,7 @@ jQuery(document).ready(function($) {
 		cffSubmitOptIn(true);
 	}); // clear_comment_cache click
 
-	$('.cff-no-usage-opt-out').click(function(event) {
+	$('.cff-no-usage-opt-out').on('click', function(event) {
 		event.preventDefault();
 
 		var $btn = jQuery(this);
@@ -976,6 +976,13 @@ jQuery(document).ready(function($) {
         jQuery('.sb_cross_install_modal').remove();
     });
 
+    // Locator
+    jQuery('.cff-locator-more').click(function(e) {
+        e.preventDefault();
+        jQuery(this).closest('td').find('.cff-full-wrap').show();
+        jQuery(this).closest('td').find('.cff-condensed-wrap').hide();
+        jQuery(this).remove();
+    });
 });
 
 

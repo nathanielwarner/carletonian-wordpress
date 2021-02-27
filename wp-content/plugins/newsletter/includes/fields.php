@@ -1,8 +1,8 @@
 <?php
 
 class NewsletterFields {
-
     /* @var NewsletterControls */
+
     var $controls;
 
     public function __construct(NewsletterControls $controls) {
@@ -257,7 +257,7 @@ class NewsletterFields {
         $this->_close();
     }
 
-    /** 
+    /**
      * General field to collect an element dimension in pixels
      *  
      * Attributes:
@@ -277,7 +277,7 @@ class NewsletterFields {
         $this->_close();
     }
 
-    /** 
+    /**
      * Collects a color in HEX format with a picker. 
      */
     public function color($name, $label, $attrs = []) {
@@ -288,7 +288,7 @@ class NewsletterFields {
         $this->_close();
     }
 
-    /** 
+    /**
      * Configuration for a simple button with label and color
      *  
      * Attributes:
@@ -431,21 +431,43 @@ class NewsletterFields {
      * 
      * Attributes:
      * - alt: if true shows the alternate text field for the "alt" attribute
+     * - layout: if set to "mini" the controls is shown as a mini selector, no labels
      *
      * @param string $name
      * @param string $label
      * @param array $attrs
      */
     public function media($name, $label = '', $attrs = []) {
-        $attrs = $this->_merge_attrs($attrs, ['alt' => false]);
-        $this->_open('tnp-media');
-        $this->_label($label);
-        $this->controls->media($name);
-        if ($attrs['alt']) {
-            $this->controls->text($name . '_alt', 20, 'Alternative text');
+        $attrs = $this->_merge_attrs($attrs, ['alt' => false, 'layout' => '']);
+
+        if (empty($attrs['layout'])) {
+            $this->_open('tnp-media');
+            $this->_label($label);
+            $this->controls->media($name);
+            if ($attrs['alt']) {
+                $this->controls->text($name . '_alt', 20, 'Alternative text');
+            }
+            $this->_description($attrs);
+            $this->_close();
+        } else {
+            if (isset($this->controls->data[$name]['id'])) {
+                $media_id = (int) $this->controls->data[$name]['id'];
+                $media = wp_get_attachment_image_src($media_id, 'thumbnail');
+            } else {
+                $media = false;
+                $media_id = 0;
+            }
+            echo '<div class="tnpf-media-mini-select" data-name="' . esc_attr($name) . '" style="width: 100px; height: 100px; overflow: hidden; border: 1px dashed #999; position: relative" onclick="tnp_fields_media_mini_select(this)">';
+            echo '<a style="position: absolute; top: 5px; right: 5px; background-color: #000; color: #fff; padding: 0px 5px 6px 5px; font-size: 24px; display: block; text-decoration: none" href="#" onclick="tnp_fields_media_mini_remove(\'' . esc_attr($name) . '\'); return false;">&times;</a>';
+            if ($media) {
+                echo '<img style="max-width: 100%; height: auto; display: block" id="' . esc_attr($name) . '_img" src="' . esc_attr($media[0]) . '">';
+            } else {
+                echo '<img style="max-width: 100%; height: auto; display: block" id="' . esc_attr($name) . '_img" src="">';
+            }
+
+            echo '</div>';
+            echo '<input type="hidden" id="' . esc_attr($name) . '_id" name="options[' . esc_attr($name) . '][id]" value="' . esc_attr($media_id) . '">';
         }
-        $this->_description($attrs);
-        $this->_close();
     }
 
     public function categories($name = 'categories', $label = '', $attrs = []) {

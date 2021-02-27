@@ -305,13 +305,17 @@ class TNP_User {
 }
 
 /**
- * @property int $id The subscriber unique identifier
- * @property string $subject The subscriber email
- * @property string $message The subscriber name or first name
- * @property string $track The subscriber last name
- * @property array $options The subscriber status
+ * @property int $id The email unique identifier
+ * @property string $subject The email subject
+ * @property string $message The email html message
+ * @property int $track Check if the email stats should be active
+ * @property array $options Email options
+ * @property int $total Total emails to send
+ * @property int $sent Total sent emails by now
+ * @property int $open_count Total opened emails
+ * @property int $click_count Total clicked emails
  * */
-abstract class TNP_Email {
+class TNP_Email {
 
     const STATUS_DRAFT = 'new';
     const STATUS_SENT = 'sent';
@@ -844,7 +848,7 @@ class NewsletterModule {
     }
 
     function admin_menu() {
-        
+
     }
 
     function add_menu_page($page, $title, $capability = '') {
@@ -990,7 +994,7 @@ class NewsletterModule {
 
     /**
      * Delete one or more emails identified by ID (single value or array of ID)
-     * 
+     *
      * @global wpdb $wpdb
      * @param int|array $id Single numeric ID or an array of IDs to be deleted
      * @return boolean
@@ -2386,6 +2390,28 @@ class NewsletterModule {
                 $this->switch_language($current_language);
             }
         }
+        return $posts;
+    }
+
+    function get_wp_query($filters, $langiage = '') {
+        if ($language) {
+            if (class_exists('SitePress')) {
+                $this->switch_language($language);
+                $filters['suppress_filters'] = false;
+            }
+            if (class_exists('Polylang')) {
+                $filters['lang'] = $language;
+            }
+        }
+
+        $posts = new WP_Query($filters);
+
+        if ($language) {
+            if (class_exists('SitePress')) {
+                $this->switch_language($current_language);
+            }
+        }
+
         return $posts;
     }
 

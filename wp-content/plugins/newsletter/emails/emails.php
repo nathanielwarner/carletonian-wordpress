@@ -276,6 +276,11 @@ class NewsletterEmails extends NewsletterModule {
     static function get_outlook_wrapper_close() {
         echo "<!--[if mso | IE]></td></tr></table><![endif]-->";
     }
+    
+    function hook_safe_style_css($rules) {
+        $rules[] = 'display';
+        return $rules;
+    }
 
     /**
      * Renders a block identified by its id, using the block options and adding a wrapper
@@ -285,6 +290,8 @@ class NewsletterEmails extends NewsletterModule {
      * @param type $options
      */
     function render_block($block_id = null, $wrapper = false, $options = array(), $context = array()) {
+        static $kses_style_filter = false;
+        
         include_once NEWSLETTER_INCLUDES_DIR . '/helper.php';
 
         $width = 600;
@@ -296,8 +303,11 @@ class NewsletterEmails extends NewsletterModule {
         if (!is_array($options)) {
             $options = array();
         }
-
+        
+        
+        add_filter('safe_style_css', [$this, 'hook_safe_style_css']);
         $options = wp_kses_post_deep($options);
+        remove_filter('safe_style_css', [$this, 'hook_safe_style_css']);
 
         $block_options = get_option('newsletter_main');
 

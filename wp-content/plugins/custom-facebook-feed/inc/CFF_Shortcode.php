@@ -2,7 +2,7 @@
 /**
  * Custom Facebook Feed Main Shortcode Class
  *
- * @since X.X.X
+ * @since 2.19
  */
 
 namespace CustomFacebookFeed;
@@ -42,7 +42,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	/**
 	 * Shortcode constructor
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function __construct(){
 		$this->init();
@@ -53,25 +53,28 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	/**
 	 * Init.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function init(){
 		add_shortcode('custom-facebook-feed', array($this, 'display_cff'));
 	}
 
-	
+
 	/**
 	 * Get JSON data
 	 *
-	 * Returns a list of posts JSON form the FaceBook API API 
+	 * Returns a list of posts JSON form the FaceBook API API
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @return JSON OBJECT
 	 */
 	public function get_feed_json( $graph_query, $cff_post_limit, $cff_locale, $cff_show_access_token, $cache_seconds, $cff_cache_time, $show_posts_by ){
 		//Is it SSL?
 		$cff_ssl = is_ssl() ? '&return_ssl_resources=true' : '';
-		$cff_posts_json_url = 'https://graph.facebook.com/v4.0/' . $this->page_id . '/' . $graph_query . '?fields=id,from{picture,id,name,link},message,message_tags,story,story_tags,status_type,created_time,backdated_time,call_to_action,attachments{title,description,media_type,unshimmed_url,target{id},media{source}}&access_token=' . $this->access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
+		$attachments_desc = ( $this->atts['salesposts'] == 'true' ) ? '' : ',description';
+
+		$cff_posts_json_url = 'https://graph.facebook.com/v4.0/' . $this->page_id . '/' . $graph_query . '?fields=id,from{picture,id,name,link},message,message_tags,story,story_tags,status_type,created_time,backdated_time,call_to_action,attachments{title'. $attachments_desc . ',media_type,unshimmed_url,target{id},media{source}}&access_token=' . $this->access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
+
 		if( $cff_show_access_token && strlen($this->access_token) > 130 ){
 			//If using a Page Access Token then set caching time to be minimum of 5 minutes
 			if( $cache_seconds < 300 || !isset($cache_seconds) ) $cache_seconds = 300;
@@ -138,7 +141,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	 *
 	 * Getting the FaceBook Graph Query depending on the settings
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @return array
 	 */
 	public function get_graph_query($show_posts_by, $cff_is_group){
@@ -179,7 +182,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	 *
 	 * Getting the FaceBook Graph Query depending on the settings
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @return int
 	 */
 	public function get_post_limit($show_posts){
@@ -199,18 +202,51 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	}
 
 
+	function cff_get_shortcode_data_attribute_html( $feed_options ) {
 
-	
+	    //If an access token is set in the shortcode then set "use own access token" to be enabled
+	    if( isset($feed_options['accesstoken']) ){
+	        //Add an encryption string to protect token
+	        if ( strpos($feed_options['accesstoken'], ',') !== false ) {
+	            //If there are multiple tokens then just add the string after the colon to avoid having to de/reconstruct the array
+	            $feed_options['accesstoken'] = str_replace(":", ":02Sb981f26534g75h091287a46p5l63", $feed_options['accesstoken']);
+	        } else {
+	            //Add an encryption string to protect token
+	            $feed_options['accesstoken'] = substr_replace($feed_options['accesstoken'], '02Sb981f26534g75h091287a46p5l63', 25, 0);
+	        }
+	        $feed_options['ownaccesstoken'] = 'on';
+	    }
+
+	    if( !empty($feed_options) ){
+	        $json_data = '{';
+	        $i = 0;
+	        $len = count($feed_options);
+	        foreach( $feed_options as $key => $value ) {
+	            if ($i == $len - 1) {
+	                $json_data .= '&quot;'.$key.'&quot;: &quot;'.$value.'&quot;';
+	            } else {
+	                $json_data .= '&quot;'.$key.'&quot;: &quot;'.$value.'&quot;, ';
+	            }
+	            $i++;
+	        }
+	        $json_data .= '}';
+
+	        return $json_data;
+	    }
+
+	}
+
 
 
 	/**
 	 * Display.
 	 * The main Shortcode display
-	 * 
-	 * @since X.X.X
+	 *
+	 * @since 2.19
 	 */
-	public function display_cff($atts) {    
-		$this->options 			= get_option('cff_style_settings');	   
+	public function display_cff($atts) {
+		$this->options 			= get_option('cff_style_settings');
+		$data_att_html 			= $this->cff_get_shortcode_data_attribute_html( $atts );
 		$this->fb_feed_settings = new CFF_FB_Settings($atts, $this->options);
 		$this->atts 			= $this->fb_feed_settings->get_settings();
 		$id_and_token 			= $this->fb_feed_settings->get_id_and_token();
@@ -230,7 +266,6 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		($cff_page_type == 'group') ? $cff_is_group = true : $cff_is_group = false;
 
 
-
 		$cff_show_author = $this->atts[ 'showauthornew' ];
 		$cff_cache_time = $this->atts[ 'cachetime' ];
 		$cff_locale = $this->atts[ 'locale' ];
@@ -239,7 +274,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$cff_cache_time_unit = $this->atts[ 'cacheunit' ];
 
 		$like_box = CFF_Utils::print_template_part( 'likebox', get_defined_vars());
-		
+
 
 		if($cff_cache_time == 'nocaching') $cff_cache_time = 0;
 
@@ -271,10 +306,10 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		if( $cff_show_author_old == 'true' ) $cff_show_author = true;
 
 	    //See Less text
-		$cff_posttext_link_color = str_replace('#', '', $this->atts['textlinkcolor']);	   
+		$cff_posttext_link_color = str_replace('#', '', $this->atts['textlinkcolor']);
 		$cff_title_link = CFF_Utils::check_if_on( $this->atts['textlink'] );
 
-	    //Description Style	    
+	    //Description Style
 		$cff_body_styles = $this->get_style_attribute( 'body_description' );
 
 	    //Shared link box
@@ -286,7 +321,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$cff_date_position = ( !isset( $this->atts[ 'datepos' ] ) ) ? 'below' : $this->atts[ 'datepos' ];
 
 
-	    //Show Facebook link	    
+	    //Show Facebook link
 		$cff_link_to_timeline = $this->atts[ 'linktotimeline' ];
 
 	    //Post Style settings
@@ -294,7 +329,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$cff_post_bg_color_check 	= ($this->atts['postbgcolor'] !== '' && $this->atts['postbgcolor'] !== '#' && $cff_post_style != 'regular' ) ? true : false;
 		$cff_box_shadow				= CFF_Utils::check_if_on( $this->atts['boxshadow'] ) && $cff_post_style == 'boxed';
 
-	    //Text limits	    
+	    //Text limits
 		$body_limit = $this->atts['desclength'];
 
 	    //Get show posts attribute. If not set then default to 25
@@ -326,7 +361,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		if ( $desk_num < $mobile_num ) {
 			$this->atts['minnum'] = $mobile_num;
 		}
-		
+
 		$show_posts = isset( $this->atts['minnum'] ) ? $this->atts['minnum'] : $show_posts;
 		$cff_post_limit = $this->get_post_limit($show_posts);
 
@@ -344,11 +379,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$cache_seconds = $cff_cache_time * $cff_cache_time_unit;
 
 
-	    //Feed header
-		$cff_show_header 		= CFF_Utils::check_if_on( $this->atts['showheader'] );
-		$cff_header_outside 	= CFF_Utils::check_if_on( $this->atts['headeroutside'] );
-		$cff_header_type 		= strtolower( $this->atts['headertype'] );
-		$cff_header 			= CFF_Utils::print_template_part( 'header', get_defined_vars(), $this);
+
 
 
 	    //Misc Settings
@@ -362,12 +393,20 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 			$cff_post_limit = 1;
 		}
 
-		//***START FEED***	    
-		#$defined_vars = get_defined_vars();	    
+		//***START FEED***
+		#$defined_vars = get_defined_vars();
 		$cff_content = '';
 
 	    //Create CFF container HTML
 		$cff_content .= '<div class="cff-wrapper">';
+		$cff_style_class = $this->feed_style_class_compiler();
+		$cff_insider_style = $this->get_style_attribute( 'feed_wrapper_insider' );
+		$cff_feed_height = CFF_Utils::get_css_distance( $this->atts[ 'height' ] ) ;
+		//Feed header
+		$cff_show_header 		= CFF_Utils::check_if_on( $this->atts['showheader'] );
+		$cff_header_outside 	= CFF_Utils::check_if_on( $this->atts['headeroutside'] );
+		$cff_header_type 		= strtolower( $this->atts['headertype'] );
+		$cff_header 			= CFF_Utils::print_template_part( 'header', get_defined_vars(), $this);
 
 	    //Add the page header to the outside of the top of feed
 		if ($cff_show_header && $cff_header_outside) $cff_content .= $cff_header;
@@ -377,10 +416,12 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 
 
 		//Get Custom Class and Compiled CSS
-		$cff_style_class = $this->feed_style_class_compiler();
 
+	    $custom_wrp_class = !empty($cff_feed_height) ? ' cff-wrapper-fixed-height' : '';
+
+		$cff_content .= '<div class="cff-wrapper-ctn '.$custom_wrp_class.'" '.$cff_insider_style.'>';
 		$cff_content .= '<div id="cff" ' . $cff_style_class['cff_custom_class'] . ' ' . $cff_style_class['cff_feed_styles'] . ' ' . $cff_style_class['cff_feed_attributes'] . '>';
-		
+
 	    //Add the page header to the inside of the top of feed
 		if ($cff_show_header && !$cff_header_outside) $cff_content .= $cff_header;
 
@@ -396,7 +437,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$FBdata = $this->get_feed_json( $graph_query, $cff_post_limit, $cff_locale, $cff_show_access_token, $cache_seconds, $cff_cache_time, $show_posts_by );
 
 		global $current_user;
-		$user_id = $current_user->ID;	        
+		$user_id = $current_user->ID;
 
 	        //Print Pretty Message Error
 		$cff_content .= CFF_Utils::print_template_part( 'error-message', get_defined_vars());
@@ -409,6 +450,8 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 				$numeric_page_id = $first_post_id[0];
 			}
 		}
+
+        $cff_content .= '<div class="cff-posts-wrap">';
 
 	        //***STARTS POSTS LOOP***
 		if( isset($FBdata->data) ){
@@ -564,7 +607,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 
 
 	                //Story/post text vars
-					$post_text = '';	                    
+					$post_text = '';
 					$cff_story_raw = '';
 					$cff_message_raw = '';
 					$cff_name_raw = '';
@@ -578,7 +621,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	                    //Use the story
 					if (!empty($news->story)) {
 						$cff_story_raw = $news->story;
-						$post_text_story .= htmlspecialchars($cff_story_raw);                        
+						$post_text_story .= htmlspecialchars($cff_story_raw);
 
 
 	                        //Add message and story tags if there are any and the post text is the message or the story
@@ -639,7 +682,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 									if( strpos( $cff_story_tag_offsets, $c ) !== false && $c !== '0' ){
 										$cff_story_duplicate_offset = $c;
 									} else {
-										$cff_story_tag_offsets .= $c . ',';  
+										$cff_story_tag_offsets .= $c . ',';
 									}
 
 								}
@@ -669,10 +712,10 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	                        } //END STORY TAGS
 
 	                    }
-	                    
+
 	                    //POST AUTHOR
-	                    $cff_author = CFF_Utils::print_template_part( 'item/author', get_defined_vars(), $this);	                    
-	                    
+	                    $cff_author = CFF_Utils::print_template_part( 'item/author', get_defined_vars(), $this);
+
 	                    //Get the actual post text
 	                    //Which content should we use?
 	                    //Use the message
@@ -736,7 +779,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	                    				if( strpos( $cff_msg_tag_offsets, $c ) !== false && $c !== '0' ){
 	                    					$cff_msg_duplicate_offset = $c;
 	                    				} else {
-	                    					$cff_msg_tag_offsets .= $c . ',';  
+	                    					$cff_msg_tag_offsets .= $c . ',';
 	                    				}
 	                    			}
 
@@ -759,7 +802,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 
 	                    				}
 
-	                    			}   
+	                    			}
 
 	                            } // end if/else
 
@@ -780,7 +823,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	                    		$url = '';
 	                    	}
 	                        //Embeddable video strings
-	                    	$vimeo 				= 'vimeo';	                        
+	                    	$vimeo 				= 'vimeo';
 	                    	$youtube 			= CFF_Utils::stripos($url, 'youtube');
 	                    	$youtu 				= CFF_Utils::stripos($url, 'youtu');
 	                    	$youtubeembed 		= CFF_Utils::stripos($url, 'youtube.com/embed');
@@ -791,7 +834,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	                    		$cff_is_video_embed = true;
 	                    	}
 	                        //If it's soundcloud then add it into the shared link box at the bottom of the post
-	                    	if( $soundcloudembed ) $cff_soundcloud = true;   
+	                    	if( $soundcloudembed ) $cff_soundcloud = true;
 	                    }
 
 	                    //Add the story and message together
@@ -848,13 +891,13 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	                    //Use the name if there's no other text, unless it's a shared link post as then it's already used as the shared link box title
 	                    if ( !empty($news->name) && empty($news->message) && $cff_post_type != 'link' ) {
 	                    	$cff_name_raw = $news->name;
-	                    	$post_text = htmlspecialchars($cff_name_raw);	                        
+	                    	$post_text = htmlspecialchars($cff_name_raw);
 	                    }
 
 	                    //OFFER TEXT
 	                    if ($cff_post_type == 'offer'){
 	                    	isset($news->story) ? $post_text = htmlspecialchars($news->story) . '<br /><br />' : $post_text = '';
-	                    	$post_text .= htmlspecialchars($news->name);	                        
+	                    	$post_text .= htmlspecialchars($news->name);
 	                    }
 
 	                    //Add the description
@@ -870,7 +913,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 
 
 	                    //Create note
-	                    if ($cff_post_type == 'note') {	                        
+	                    if ($cff_post_type == 'note') {
 	                        //Notes don't include any post text and so just replace the post text with the note content
 	                    	if($cff_show_text) $post_text = CFF_Utils::print_template_part( 'item/type/note', get_defined_vars(), $this);
 	                    }
@@ -891,14 +934,14 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	                    }
 
 	                    //Create post action links HTML
-	                    $cff_link = CFF_Utils::print_template_part( 'item/post-link', get_defined_vars(), $this);	                    
-	                    /* MEDIA LINK */	             
+	                    $cff_link = CFF_Utils::print_template_part( 'item/post-link', get_defined_vars(), $this);
+	                    /* MEDIA LINK */
 	                    $cff_media_link = CFF_Utils::print_template_part( 'item/media-link', get_defined_vars(), $this);
 	                    //**************************//
 	                    //***CREATE THE POST HTML***//
 	                    //**************************//
 	                    //Start the container
-	                    $cff_post_item = CFF_Utils::print_template_part( 'item/container', get_defined_vars(), $this);	                    
+	                    $cff_post_item = CFF_Utils::print_template_part( 'item/container', get_defined_vars(), $this);
 
 	                    //PUSH TO ARRAY
 	                    $cff_posts_array = CFF_Utils::cff_array_push_assoc($cff_posts_array, $i_post, $cff_post_item);
@@ -926,24 +969,28 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	        	$p++;
 	        }
 
+
 	    //Add the Like Box inside
 	        if ($cff_like_box_position == 'bottom' && $cff_show_like_box && !$cff_like_box_outside) $cff_content .= $like_box;
 	        /* Credit link */
 
+            $cff_content .= '</div>'; // End cff-posts-wrap
+
 	        $cff_content .= CFF_Utils::print_template_part( 'credit', get_defined_vars());
 
 	    //End the feed
-	        $cff_content .= '</div><div class="cff-clear"></div>';
+	         $cff_content .= '<input class="cff-pag-url" type="hidden" data-cff-shortcode="'.$data_att_html.'" data-post-id="' . get_the_ID() . '" data-feed-id="'.$atts['id'].'">';
+	        $cff_content .= '</div></div><div class="cff-clear"></div>';
 
-	    //Add the Like Box outside
+	   	 	//Add the Like Box outside
 	        if ($cff_like_box_position == 'bottom' && $cff_show_like_box && $cff_like_box_outside) $cff_content .= $like_box;
 
-	    //If the feed is loaded via Ajax then put the scripts into the shortcode itself
+	    	//If the feed is loaded via Ajax then put the scripts into the shortcode itself
 	        $cff_content .= $this->ajax_loaded();
 	        $cff_content .= '</div>';
 
 	        if( isset( $cff_posttext_link_color ) && !empty( $cff_posttext_link_color ) ) $cff_content .= '<style>#cff .cff-post-text a{ color: #'.$cff_posttext_link_color.'; }</style>';
-	    //Return our feed HTML to display
+	   	 	//Return our feed HTML to display
 	        return $cff_content;
 	    }
 

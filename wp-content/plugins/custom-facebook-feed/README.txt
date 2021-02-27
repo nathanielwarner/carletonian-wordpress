@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook group, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.6
 Tested up to: 5.6
-Stable tag: 2.18.1
+Stable tag: 2.19
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -171,7 +171,7 @@ The Custom Facebook Feed plugin doesn't currently have a slideshow feature built
 3) Add the following to the plugin's **Custom JavaScript** section, which is under the 'Misc' tab on the plugin's 'Customize' page. Please note, if you change the class option in the shortcode above to be anything but "slideshow" then make sure to change that on the first line of the snippet below:
 
 `var shortcodeClass = 'slideshow',
-    cffSpeed = 5000, 
+    cffSpeed = 5000,
     $cff = $('#cff.'+ shortcodeClass);
     $cffItem = $cff.find('.cff-item'),
     cffNum = $cffItem.length,
@@ -262,6 +262,24 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.19 =
+* New: Improved the error reporting system to make resolving issues easier.
+* New: The locations of the Facebook feeds on your site will now be logged and listed on a single page for easier management. After this feature has been active for awhile, a "Feed Finder" link will appear under your connected accounts on the plugin Settings page which allows you to see a list of all feeds on your site along with their locations.
+* Tweak: When clearing the plugin cache, the cache in the Litespeed plugin will now also be cleared if being used on the site.
+* Fix: Fixed an issue with anonymous avatars not displaying correctly in group feeds.
+* Fix: Added a fix for apostrophes in connected accounts.
+
+= 2.18.3 =
+* Tweak: Updated deprecated jQuery functions to prevent potential issues with newer versions.
+* Tweak: Due to an API bug which Facebook hasn't resolved yet that affects buy/sell posts in groups, we have added a 'salesposts' shortcode option which will work around the issue until they fix it. If you are displaying posts from a group and receiving an "API Error 100" notice then adding `salesposts=true` to your shortcode and clearing the plugin cache should resolve the issue.
+* Fix: When displaying the feed in multiple columns, clicking the "See more" link in the post text wouldn't correctly reconfigure the layout.
+* Fix: Fixed a layout issue with the posts and Like Box which occurred when using a multi-column layout and applying feed padding.
+* Fix: Fixed an issue with the background color not being applied correctly when set to be black.
+
+= 2.18.2 =
+* Tweak: Now displays a notice to logged-in admins which lets you know if the Like Box or header cover photo is being intentionally hidden due to the GDPR setting.
+* Fix: Fixed an error which occurred when deleting the plugin.
+
 = 2.18.1 =
 * Fix: Fixed an issue with the integration with the Complianz plugin
 * Fix: Resolved a PHP warning related to the preg_replace_callback function which was displayed under certain conditions

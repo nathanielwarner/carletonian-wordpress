@@ -4,7 +4,7 @@
  *
  * Contains miscellaneous CFF functions
  *
- * @since X.X.X
+ * @since 2.19
  */
 namespace CustomFacebookFeed;
 
@@ -17,7 +17,7 @@ class CFF_Utils{
 	 * Get JSON object of feed data
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_fetchUrl($url){
 		$response = wp_remote_get( $url );
@@ -26,10 +26,9 @@ class CFF_Utils{
 			$feedData = wp_remote_retrieve_body( $response );
 
 			if ( ! CFF_Utils::cff_is_fb_error( $feedData ) ) {
-				
 
-				\cff_main()->cff_error_reporter->remove_error( 'api' );
-				\cff_main()->cff_error_reporter->remove_error( 'wp_remote_get' );
+
+				\cff_main()->cff_error_reporter->remove_error( 'connection' );
 
 				$feedData = apply_filters( 'cff_filter_api_data', $feedData );
 
@@ -53,10 +52,10 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_desc_tags($description){
 		preg_match_all( "/@\[(.*?)\]/", $description, $cff_tag_matches );
@@ -79,13 +78,13 @@ class CFF_Utils{
 
 		return $cff_description_tagged;
 	}
-	
+
 
 	/**
 	 * Sort message tags by offset value
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cffSortTags($a, $b){
 		return $a['offset'] - $b['offset'];
@@ -93,10 +92,10 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_is_wp_error( $response ) {
 		return is_wp_error( $response );
@@ -104,14 +103,14 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_log_wp_error( $response, $url ) {
 		if ( is_wp_error( $response ) ) {
-			
+
 			delete_option( 'cff_dismiss_critical_notice' );
 
 			$admin_message_error = '';
@@ -134,18 +133,18 @@ class CFF_Utils{
 				'post_id' => get_the_ID(),
 				'errorno' => 'wp_remote_get'
 			);
-
-
 			\cff_main()->cff_error_reporter->add_error( 'wp_remote_get', $error );
+		}else{
+			\cff_main()->cff_error_reporter->remove_error( 'connection' );
 		}
 	}
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_is_fb_error( $response ) {
 		return (strpos( $response, '{"error":' ) === 0);
@@ -153,16 +152,16 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_log_fb_error( $response, $url ) {
 		if ( is_admin() ) {
 			return;
 		}
-		
+
 		delete_option( 'cff_dismiss_critical_notice' );
 
 		$access_token_refresh_errors = array( 10, 4, 200 );
@@ -180,45 +179,16 @@ class CFF_Utils{
 			$accesstoken = $accesstoken_parts[0];
 
 			$api_error_number_message = sprintf( __( 'API Error %s:', 'custom-facebook-feed' ), $api_error_code );
-			$admin_message = '<strong>' . $api_error_number_message . '</strong><br>' . $response['error']['message'];
-			$public_message = __( 'There is a problem with your access token.', 'custom-facebook-feed' ) . ' ' . $api_error_number_message;
 			$link = admin_url( 'admin.php?page=cff-top' );
-			$frontend_directions = '<p class="cff-error-directions cff-reconnect"><a href="'. esc_url( $link ).'" target="_blank" rel="noopener">' . __( 'Reconnect Your Account in the Admin Area', 'custom-facebook-feed')  . '</a></p>';
-			$backend_directions = '<button class="cff-reconnect button button-primary" >' . __( 'Reconnect Your Account', 'custom-facebook-feed')  . '</button>';
 			$error = array(
 				'accesstoken' => $accesstoken,
 				'post_id' => get_the_ID(),
 				'errorno' => $api_error_code
 			);
 
-			\cff_main()->cff_error_reporter->add_error( 'accesstoken', $error );
+			\cff_main()->cff_error_reporter->add_error( 'accesstoken', $error, $accesstoken );
 		} else {
-			$api_error_number_message = sprintf( __( 'API Error %s:', 'custom-facebook-feed' ), $api_error_code );
-			$admin_message = '<strong>' . $api_error_number_message . '</strong><br>' . $response['error']['message'];
-			$public_message = __( 'Error connecting to the Facebook API.', 'custom-facebook-feed' ) . ' ' . $api_error_number_message;
-			$frontend_directions = '<p class="cff-error-directions"><a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
-			$backend_directions = '<a class="button button-primary" href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
-
-        	//Page Public Content Access admin error
-			if( $ppca_error ){
-				$api_error_number_message = false;
-				$admin_message = '<B>PPCA Error:</b> Due to Facebook API changes it is no longer possible to display a feed from a Facebook Page you are not an admin of. Please use the button below for more information on how to fix this.';
-				$public_message = __( 'Error connecting to the Facebook API.', 'custom-facebook-feed' ) . ' ' . $api_error_number_message;
-				$frontend_directions = '<p class="cff-error-directions"><a href="https://smashballoon.com/facebook-api-changes-september-4-2020/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
-				$backend_directions = '<a class="button button-primary" href="https://smashballoon.com/facebook-api-changes-september-4-2020/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
-			}
-
-			$error = array(
-				'accesstoken' => 'none',
-				'public_message' => $public_message,
-				'admin_message' => $admin_message,
-				'frontend_directions' => $frontend_directions,
-				'backend_directions' => $backend_directions,
-				'post_id' => get_the_ID(),
-				'errorno' => $api_error_code
-			);
-
-			\cff_main()->cff_error_reporter->add_error( 'api', $error );
+			\cff_main()->cff_error_reporter->add_error( 'api', $response );
 		}
 	}
 
@@ -227,19 +197,27 @@ class CFF_Utils{
 	 * Make links into span instead when the post text is made clickable
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_wrap_span($text) {
 		$pattern  = '#\b(([\w-]+://?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|/)))#';
 		return preg_replace_callback($pattern, array('CustomFacebookFeed\CFF_Utils','cff_wrap_span_callback'), $text);
 	}
-	
 
 	/**
-	 * 
+	 * @return Json Encode
+	 *
+	 * @since 2.1.1
+	 */
+	static function cff_json_encode( $thing ) {
+		return wp_json_encode( $thing );
+	}
+
+	/**
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_wrap_span_callback($matches) {
 		$max_url_length = 100;
@@ -284,7 +262,7 @@ class CFF_Utils{
 	 * Use the timezone to offset the date as all post dates are in UTC +0000
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_set_timezone($original, $cff_timezone){
 		$cff_date_time = new \DateTime(date('m/d g:i a'), new \DateTimeZone('UTC'));
@@ -295,13 +273,13 @@ class CFF_Utils{
 
 		return $original;
 	}
-	
+
 
 	/**
 	 * Time stamp functison - used for posts
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_getdate($original, $date_format, $custom_date, $cff_date_translate_strings, $cff_timezone) {
     	//Offset the date by the timezone
@@ -368,7 +346,7 @@ class CFF_Utils{
 			$now = time();
 
             // is it future date or past date
-			if($now > $original) {    
+			if($now > $original) {
 				$difference = $now - $original;
 				$tense = $cff_ago;
 			} else {
@@ -398,10 +376,10 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_eventdate($original, $date_format, $custom_date) {
 		switch ($date_format) {
@@ -456,7 +434,7 @@ class CFF_Utils{
 	 * Use custom stripos function if it's not available (only available in PHP 5+)
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function stripos($haystack, $needle){
 		if( empty( stristr( $haystack, $needle ) ) )
@@ -466,10 +444,10 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_stripos_arr($haystack, $needle) {
 		if(!is_array($needle)) $needle = array($needle);
@@ -481,10 +459,10 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_mb_substr_replace($string, $replacement, $start, $length=NULL) {
 		if (is_array($string)) {
@@ -527,8 +505,8 @@ class CFF_Utils{
 	 * Push to assoc array
 	 * @access public
   	 * @static
-	 * @since X.X.X
-	 */	
+	 * @since 2.19
+	 */
 	static function cff_array_push_assoc($array, $key, $value){
 		$array[$key] = $value;
 		return $array;
@@ -539,7 +517,7 @@ class CFF_Utils{
 	 * Convert string to slug
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_to_slug($string){
 		return strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $string)));
@@ -550,7 +528,7 @@ class CFF_Utils{
 	 * Convert string to slug
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_get_utc_offset() {
 		return get_option( 'gmt_offset', 0 ) * HOUR_IN_SECONDS;
@@ -568,20 +546,20 @@ class CFF_Utils{
 
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_is_pro_version() {
 		return defined( 'CFFWELCOME_VER' );
 	}
 
 	/**
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function cff_get_set_cache($cff_posts_json_url, $transient_name, $cff_cache_time, $cache_seconds, $data_att_html, $cff_show_access_token, $access_token, $backup=false) {
 		if( $cff_show_access_token && strlen($access_token) > 130 ){
@@ -683,10 +661,10 @@ class CFF_Utils{
 	/**
 	 * Check if On
 	 * Function to check if a shortcode options is set to ON or TRUE
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 * @return boolean
 	 */
 	static function check_if_on( $value ){
@@ -696,10 +674,10 @@ class CFF_Utils{
 	/**
 	 * Check if On
 	 * Function to check if a shortcode options is set to ON or TRUE
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 * @return boolean
 	 */
 	static function check_if_onexist( $value ){
@@ -708,11 +686,11 @@ class CFF_Utils{
 
 	/**
 	 * Check Value
-	 * Function to check a value if exists or return a default one 
-	 * 
+	 * Function to check a value if exists or return a default one
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 * @return mixed
 	 */
 	static function return_value( $value , $default = ''){
@@ -723,10 +701,10 @@ class CFF_Utils{
 	/**
 	 * Get CSS value
 	 * Checks if the value is a valid CSS distance
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 * @return string
 	 */
 	static function get_css_distance( $value ){
@@ -735,14 +713,14 @@ class CFF_Utils{
 
 
 	/**
-	 * 
-	 * 
-	 * This function will get the Profile Pic, Cover, Name, About  	 
+	 *
+	 *
+	 * This function will get the Profile Pic, Cover, Name, About
 	 * For the visual header display
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function fetch_header_data( $page_id, $cff_is_group, $access_token, $cff_cache_time ){
 		 // Create Transient Name
@@ -767,14 +745,14 @@ class CFF_Utils{
 
 
 	/**
-	 * 
-	 * 
+	 *
+	 *
 	 * Print Template
 	 * returns an HTML Template
-	 * 
+	 *
 	 * @access public
   	 * @static
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	static function print_template_part( $template_name, $args = array(), $this_class = null){
 		$this_class = $this_class;
@@ -784,6 +762,23 @@ class CFF_Utils{
 		$template = ob_get_contents();
 		ob_get_clean();
 		return $template;
+	}
+
+	/**
+	 *
+	 * Get Connected Accounts
+	 * @since 2.19
+	 */
+	static function cff_get_connected_accounts() {
+		$cff_connected_accounts = get_option('cff_connected_accounts', array());
+		if( !empty($cff_connected_accounts) ){
+			$cff_connected_accounts = str_replace('\"','"', $cff_connected_accounts);
+            $cff_connected_accounts = str_replace("\'","'", $cff_connected_accounts);
+            $cff_connected_accounts = json_decode( $cff_connected_accounts );
+		}else{
+			$cff_connected_accounts = [];
+		}
+		return $cff_connected_accounts;
 	}
 
 }

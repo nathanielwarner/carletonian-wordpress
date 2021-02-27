@@ -461,9 +461,12 @@ class NewsletterSubscription extends NewsletterModule {
      *
      * @return \TNP_Subscription
      */
-    function get_default_subscription($language = '') {
+    function get_default_subscription($language = null) {
         $subscription = new TNP_Subscription();
-        $subscription->data->language = $language;
+
+	    $language = is_null( $language ) ? $this->get_current_language() : $language;
+
+        $subscription->data->language = $language ;
         $subscription->optin = $this->is_double_optin() ? 'double' : 'single';
         $subscription->if_exists = empty($this->options['multiple']) ? TNP_Subscription::EXISTING_ERROR : TNP_Subscription::EXISTING_MERGE;
 
@@ -723,14 +726,14 @@ class NewsletterSubscription extends NewsletterModule {
      * @return TNP_Subscription
      */
     function build_subscription() {
-        
+
         $language = '';
         if (!empty($_REQUEST['nlang'])) {
             $language = $_REQUEST['nlang'];
         } else {
             $language = $this->get_current_language();
         }
-        
+
         $subscription = $this->get_default_subscription($language);
         $data = $subscription->data;
 
@@ -784,7 +787,7 @@ class NewsletterSubscription extends NewsletterModule {
                     continue;
                 }
                 $data->lists['' . $list_id] = 1;
-                
+
             }
         } else {
             $this->logger->debug('No lists received');
@@ -929,7 +932,7 @@ class NewsletterSubscription extends NewsletterModule {
         if (empty($template) || strpos($template, '{message}') === false) {
             $template = '{message}';
         }
-        
+
         if (is_array($message)) {
             $message['html'] = str_replace('{message}', $message['html'], $template);
             $message['html'] = $this->replace($message['html'], $user);
@@ -943,7 +946,7 @@ class NewsletterSubscription extends NewsletterModule {
         $headers = [];
 
         // Replaces tags from the template
-        
+
         $subject = $this->replace($subject, $user);
 
         return Newsletter::instance()->mail($user->email, $subject, $message, $headers);
@@ -1038,7 +1041,7 @@ class NewsletterSubscription extends NewsletterModule {
 
         return $this->mail($user, $subject, $message);
     }
-    
+
     function get_text_message($type) {
         switch ($type) {
             case 'confirmation':

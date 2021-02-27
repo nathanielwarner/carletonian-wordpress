@@ -3,7 +3,7 @@
  * Custom Facebook Feed Item : Post Links
  * Displays the custom feed item post links (View on Facebook & Share)
  *
- * @version X.X.X Custom Facebook Feed by Smash Balloon
+ * @version 2.19 Custom Facebook Feed by Smash Balloon
  *
  */
 use CustomFacebookFeed\CFF_Utils;
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 
 $cff_link_styles 			= $this_class->get_style_attribute( 'post_link' );
-$cff_show_facebook_link 	= CFF_Utils::check_if_on( $atts['showfacebooklink'] );	    
+$cff_show_facebook_link 	= CFF_Utils::check_if_on( $atts['showfacebooklink'] );
 $cff_show_facebook_share 	= CFF_Utils::check_if_on( $atts['showsharelink'] );
 $cff_post_text_to_share 	= CFF_Shortcode_Display::get_post_link_text_to_share( $cff_post_text );
 $link_text 					= CFF_Shortcode_Display::get_post_link_text_link( $atts, $cff_post_type );
@@ -40,12 +40,12 @@ if( $cff_show_facebook_link || $cff_show_facebook_share ):
 						<a href="<?php echo esc_url($social['share_link']) ?>" target="_blank" class="cff-<?php echo $social_key ?>-icon">
 							<span class="fa fab fa-<?php echo $social['icon'] ?>" aria-hidden="true"></span>
 							<span class="cff-screenreader"><?php echo $social['text'] ?></span>
-						</a>						
+						</a>
 					<?php endforeach; ?>
 				</p>
-			<?php endif; ?>			
+			<?php endif; ?>
 		</div>
 	<?php endif; ?>
 </div>
-<?php 
+<?php
 endif;

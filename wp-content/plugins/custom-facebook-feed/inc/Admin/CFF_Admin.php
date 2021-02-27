@@ -4,7 +4,7 @@
  *
  * Contains everything about the Admin area
  *
- * @since X.X.X
+ * @since 2.19
  */
 
 namespace CustomFacebookFeed\Admin;
@@ -17,7 +17,7 @@ class CFF_Admin{
 	/**
 	 * Admin constructor
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function __construct(){
 		$this->admin_hook();
@@ -28,10 +28,10 @@ class CFF_Admin{
 	/**
 	 * Admin Hooks + Enqueue
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	protected function admin_hook(){
-		//Adding Dashboard Menu 
+		//Adding Dashboard Menu
 		add_action( 'admin_menu', array(  $this, 'register_dashboard_menus' ), 9 );
 	}
 
@@ -39,7 +39,7 @@ class CFF_Admin{
 	/**
 	 * Register CFF dashboard Menus.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function register_dashboard_menus(){
 		$notice = '';
@@ -56,7 +56,7 @@ class CFF_Admin{
 			$cap,
 			'cff-top',
 			'cff_settings_page'
-		);	
+		);
 
 		add_submenu_page(
 			'cff-top',
@@ -138,9 +138,9 @@ class CFF_Admin{
 	}
 
 	/**
-	 * Register Assets 
+	 * Register Assets
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function register_assets(){
 		add_action( 'admin_enqueue_scripts' , array( $this, 'enqueue_styles_assets' ) );
@@ -150,42 +150,42 @@ class CFF_Admin{
 
 
 	/**
-	 * Enqueue & Register Styles 
+	 * Enqueue & Register Styles
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function enqueue_styles_assets(){
 		wp_register_style(
-			'custom_wp_admin_css', 
-			CFF_PLUGIN_URL . 'admin/assets/css/cff-admin-style.css', 
-			false, 
-			CFFVER 
+			'custom_wp_admin_css',
+			CFF_PLUGIN_URL . 'admin/assets/css/cff-admin-style.css',
+			false,
+			CFFVER
 		);
         wp_enqueue_style( 'custom_wp_admin_css' );
-        wp_enqueue_style( 
-        	'cff-font-awesome', 
-        	'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', 
-        	array(), 
-        	'4.5.0' 
+        wp_enqueue_style(
+        	'cff-font-awesome',
+        	'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
+        	array(),
+        	'4.5.0'
         );
         wp_enqueue_style( 'wp-color-picker' );
 	}
 
 
 	/**
-	 * Enqueue & Register Scripts 
+	 * Enqueue & Register Scripts
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
-	public function enqueue_scripts_assets(){		
+	public function enqueue_scripts_assets(){
 	    //Declare color-picker as a dependency
-	    wp_enqueue_script( 
-	    	'cff_admin_script', 
-	    	CFF_PLUGIN_URL . 'admin/assets/js/cff-admin-scripts.js', 
+	    wp_enqueue_script(
+	    	'cff_admin_script',
+	    	CFF_PLUGIN_URL . 'admin/assets/js/cff-admin-scripts.js',
 	    	false,
-	    	CFFVER 
+	    	CFFVER
 	    );
-		
+
 		wp_localize_script( 'cff_admin_script', 'cffA', array(
 				'ajax_url' => admin_url( 'admin-ajax.php' ),
 				'cff_nonce' => wp_create_nonce( 'cff_nonce' )
@@ -219,7 +219,7 @@ class CFF_Admin{
 			'cff_admin',
 			$strings
 		);
-	    if( !wp_script_is('jquery-ui-draggable') ) { 
+	    if( !wp_script_is('jquery-ui-draggable') ) {
 	        wp_enqueue_script(
 	            array(
 	            'jquery',

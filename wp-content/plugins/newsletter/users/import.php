@@ -150,6 +150,10 @@ if ($controls->is_action('import')) {
 
         <h2><?php _e('Import', 'newsletter') ?></h2>
         <p>
+            <strong>Please,consider to use the free <a href="?page=newsletter_main_extensions">Advanced import addon</a> 
+            to manage more fields and different file formats.</strong>
+        </p>
+        <p>
             The import and export functions <strong>ARE NOT for backup</strong>. If you want to backup you should consider to backup the
             wp_newsletter* tables. Please, read on bottom of this page the data format to use and other important notes.</p>
 

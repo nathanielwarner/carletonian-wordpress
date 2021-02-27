@@ -84,7 +84,7 @@ jQuery(function ($) {
     dialogClass: 'wp-dialog sticky-pro-dialog',
     modal: true,
     resizable: false,
-    width: 750,
+    width: 800,
     height: 'auto',
     show: 'fade',
     hide: 'fade',

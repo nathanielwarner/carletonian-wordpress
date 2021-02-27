@@ -4,7 +4,7 @@
  *
  * Creates a list of necessary options and atts for the Shortcode class
  *
- * @since X.X.X
+ * @since 2.19
  */
 namespace CustomFacebookFeed;
 if ( ! defined( 'ABSPATH' ) ) {
@@ -37,7 +37,6 @@ class CFF_FB_Settings {
 	 */
 	protected $access_token;
 
-
 	/**
 	 * CFF_FB_Options constructor.
 	 *
@@ -45,7 +44,7 @@ class CFF_FB_Settings {
 	 * @param array $atts shortcode settings
 	 * @param array $options settings from the wp_options table
 	 *
- 	 * @since X.X.X
+ 	 * @since 2.19
 	 */
 	public function __construct( $atts, $options ) {
 		$this->atts 		= $atts;
@@ -185,6 +184,7 @@ class CFF_FB_Settings {
 		        'disablestyles' 		=> isset($options[ 'cff_disable_styles' ]) ? $options[ 'cff_disable_styles' ] : '',
 		        'textissue' 			=> isset($options[ 'cff_format_issue' ]) ? $options[ 'cff_format_issue' ] : '',
 		        'restrictedpage' 		=> isset($options[ 'cff_restricted_page' ]) ? $options[ 'cff_restricted_page' ] : '',
+                'salesposts'            => 'false',
 
 		        //Page Header
 		        'showheader' 			=> isset($options[ 'cff_show_header' ]) ? $options[ 'cff_show_header' ] : '',
@@ -217,11 +217,11 @@ class CFF_FB_Settings {
 		        'seelesstext' 			=> isset( $options[ 'cff_see_less_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_see_less_text' ] ) ) : '',
 		        'photostext' 			=> isset( $options[ 'cff_translate_photos_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_photos_text' ] ) ) : '',
 		        'phototext' 			=> isset( $options[ 'cff_translate_photo_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_photo_text' ] ) ) : '',
-		        'videotext' 			=> isset( $options[ 'cff_translate_video_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_video_text' ] ) ) : '', 
+		        'videotext' 			=> isset( $options[ 'cff_translate_video_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_video_text' ] ) ) : '',
 
-		        'learnmoretext' 		=> isset( $options[ 'cff_translate_learn_more_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_learn_more_text' ] ) ) : '',    
-		        'shopnowtext' 			=> isset( $options[ 'cff_translate_shop_now_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_shop_now_text' ] ) ) : '',    
-		        'messagepage' 			=> isset( $options[ 'cff_translate_message_page_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_message_page_text' ] ) ) : '',     
+		        'learnmoretext' 		=> isset( $options[ 'cff_translate_learn_more_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_learn_more_text' ] ) ) : '',
+		        'shopnowtext' 			=> isset( $options[ 'cff_translate_shop_now_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_shop_now_text' ] ) ) : '',
+		        'messagepage' 			=> isset( $options[ 'cff_translate_message_page_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_message_page_text' ] ) ) : '',
 
 		        'facebooklinktext' 		=> isset( $options[ 'cff_facebook_link_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_facebook_link_text' ] ) ) : '',
 		        'sharelinktext' 		=> isset( $options[ 'cff_facebook_share_text' ] ) ? stripslashes( esc_attr( $options[ 'cff_facebook_share_text' ] ) ) : '',
@@ -249,18 +249,18 @@ class CFF_FB_Settings {
 
 	/**
 	 * @return array
-	 *	
-	 * @since X.X.X
+	 *
+	 * @since 2.19
 	 */
 	public function get_settings() {
 		return $this->settings;
 	}
 
 	/**
-	 * Get Include String for the Shortcode	
+	 * Get Include String for the Shortcode
 	 * @return array
-	 *	
-	 * @since X.X.X
+	 *
+	 * @since 2.19
 	 */
 	public function get_include_string() {
 		$include_string = '';
@@ -278,7 +278,7 @@ class CFF_FB_Settings {
 			'cff_show_link'					=> 'link,',
 			'cff_show_like_box'				=> 'likebox,'
 		];
-		foreach ($include_str_array as $key => $value) {			
+		foreach ($include_str_array as $key => $value) {
 			if( isset( $this->options[$key] ) &&  $this->options[$key]) $include_string .= $value;
 		}
 		return $include_string;
@@ -286,44 +286,56 @@ class CFF_FB_Settings {
 
 	/**
 	 * @return array
-	 *	
-	 * @since X.X.X
+	 *
+	 * @since 2.19
 	 */
 	public function get_id_and_token() {
 		$id_and_token = [
 			'id' 	=> trim($this->settings['id']),
-			'token' => $this->settings['accesstoken']
+			'token' => $this->settings['accesstoken'],
+			'pagetype' => $this->settings['pagetype']
 		];
 		//If an 'account' is specified then use that instead of the Page ID/token from the settings
 	    $cff_account = trim($this->settings['account']);
+		$cff_connected_accounts = get_option('cff_connected_accounts');
+		$cff_connected_accounts = json_decode( str_replace('\"','"', $cff_connected_accounts) );
 	    if( !empty( $cff_account ) ){
-	        $cff_connected_accounts = get_option('cff_connected_accounts');
 	        if( !empty($cff_connected_accounts) ){
-	            $cff_connected_accounts = json_decode( str_replace('\"','"', $cff_connected_accounts) );
 	            //Grab the ID and token from the connected accounts setting
 	            $id_and_token = [
 					'id' 	=> $cff_connected_accounts->{ $cff_account }->{'id'},
-					'token' => $cff_connected_accounts->{ $cff_account }->{'accesstoken'}
-				];	            
+					'token' => $cff_connected_accounts->{ $cff_account }->{'accesstoken'},
+					'name' => $cff_connected_accounts->{ $cff_account }->{'name'},
+					'pagetype' => $cff_connected_accounts->{ $cff_account }->{'pagetype'}
+				];
 	            //Replace the encryption string in the Access Token
 	            if (strpos($id_and_token['token'], '02Sb981f26534g75h091287a46p5l63') !== false) {
 	                $id_and_token['token'] = str_replace("02Sb981f26534g75h091287a46p5l63","",$id_and_token['token']);
 	            }
 	        }
-	    }	    
+	    }else{
+	        if( !empty($cff_connected_accounts) ){
+	        	$id_and_token['name'] = isset($cff_connected_accounts->{ $this->settings['id'] }->{'name'}) ? $cff_connected_accounts->{ $this->settings['id'] }->{'name'} : $this->settings['id'];
+	        	$id_and_token['pagetype'] = isset($cff_connected_accounts->{ $this->settings['id'] }->{'pagetype'}) ? $cff_connected_accounts->{ $this->settings['id'] }->{'pagetype'} : $this->settings['pagetype'];
+	    	}
+	    }
 	    $id_and_token['id'] 	= $this->check_page_id( $id_and_token['id'] );
 		$this->page_id 	 		= $id_and_token['id'];
 		$this->access_token 	= $id_and_token['token'];
+
 		return $id_and_token;
 	}
 
+	function set_page_id($page_id){
+		$this->settings['id'] = $page_id;
+	}
 
 
 	/**
 	 *
 	 * Check the Page ID
 	 * @return array
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	function check_page_id( $page_id ){
 		 //If user pastes their full URL into the Page ID field then strip it out
@@ -333,6 +345,26 @@ class CFF_FB_Settings {
 			$page_id = ( !preg_match($fb_url_pattern, $page_id, $matches) ) ? '' : $matches[1];
 	    }
 		return $page_id;
+	}
+
+	public static function feed_type_and_terms_display($connected_accounts, $result, $database_settings) {
+		$feeds_list =  explode(',', $result['feed_id']);
+		$types = []; $names =[];
+		foreach ($feeds_list as $feed_id) {
+			$account_settings = new CFF_FB_Settings(json_decode($result['shortcode_atts']), $database_settings);
+			$account_settings->set_page_id($feed_id);
+			$account_info =	$account_settings->get_id_and_token();
+			if(!in_array($account_info['pagetype'], $types)){
+				array_push($types, $account_info['pagetype']);
+			}
+			$account_name = ($account_info['name'] != '') ? urldecode($account_info['name']) : $feed_id;
+			array_push($names, $account_name);
+
+		}
+		return [
+			'type' 	=> $types,
+			'name' 	=> $names,
+		];
 	}
 
 }

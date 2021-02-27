@@ -11,7 +11,7 @@
 	font-weight: normal;
 }
 #cff-admin .cff-tooltip ul{
-	margin-top: 0;	
+	margin-top: 0;
 	margin-bottom: 0;
 }
 #cff-admin .cff-tooltip li{
@@ -33,7 +33,7 @@
 	font-size: 13px;
 	background: #f9f9f9;
 	background: rgba(255,255,255,0.8);
-	
+
 	-moz-border-radius: 8px;
 	-webkit-border-radius: 8px;
 	border-radius: 8px;
@@ -268,7 +268,7 @@
     width: 222px;
     padding: 15px 15px 10px 15px;
     margin-right: 15px;
-    
+
     background: #f6f6f6;
     border: 1px solid #ddd;
 
@@ -3032,4 +3032,38 @@
 	background: #F7E6E6;
 	border: 1px solid #BA7B7B;
 	color: #592626;
+}
+.cff_feeds_account_ctn{width: 100%; float: left;}
+.cff_feeds_account_ctn #cff_export_accounts{float: right;}
+/* Locator Summary */
+.cff-feed-locator-summary-wrap {
+	max-width: 1100px;
+	margin-bottom: 40px;
+}
+.cff-full-wrap {
+	display: none;
+}
+.cff-locator-more {
+	display: inline-block;
+	margin: 0 0 0 1px;
+	padding: 0 5px;
+	border: 1px solid rgba(0,0,0,0.1);
+	border-radius: 3px;
+	line-height: 1.6;
+}
+
+.cff_shortcode_visible .cff_locations_link {
+	display: none;
+}
+.cff_locations_link{
+	float: left;
+}
+.cff_locations_link a {
+	font-weight: normal;
+	text-decoration: none;
+}
+.cff_locations_link svg {
+	width: 11px;
+    position: relative;
+    top: 1px;
 }

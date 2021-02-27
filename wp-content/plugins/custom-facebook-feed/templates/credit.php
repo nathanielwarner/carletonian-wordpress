@@ -3,7 +3,7 @@
  * Custom Facebook Feed : Credit
  * Show a credit message to Smashballoon
  *
- * @version X.X.X Custom Facebook Feed by Smash Balloon
+ * @version 2.19 Custom Facebook Feed by Smash Balloon
  *
  */
 
@@ -25,4 +25,4 @@ if($cff_show_credit) :
 	</a>
 </p>
 <?php
-endif; 
+endif;

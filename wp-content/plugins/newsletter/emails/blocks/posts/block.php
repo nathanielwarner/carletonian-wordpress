@@ -75,7 +75,9 @@ if (!empty($options['categories'])) {
 }
 
 if (!empty($options['tags'])) {
-    $filters['tag'] = $options['tags'];
+    $tags = explode(',', $options['tags']);
+    $tags = array_unique(array_map('sanitize_title', $tags));
+    $filters['tag'] = $tags;
 }
 
 if ($context['type'] != 'automated') {

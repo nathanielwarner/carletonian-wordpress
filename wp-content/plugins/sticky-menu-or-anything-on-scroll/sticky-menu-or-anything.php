@@ -5,13 +5,16 @@ Plugin URI: https://wpsticky.com/
 Description: Pick any element on the page, and it will stick when it reaches the top of the page when you scroll down. Handy for navigation menus, but can be used for any element on the page.
 Author: WebFactory Ltd
 Author URI: https://www.webfactoryltd.com/
-Version: 2.28
+Version: 2.31
 Requires at least: 3.6
 Tested up to: 5.6
 Requires PHP: 5.2
 */
 
 defined('ABSPATH') or die('INSERT COIN');
+
+require_once dirname(__FILE__) . '/wf-flyout/wf-flyout.php';
+new wf_flyout(__FILE__);
 
 /**
  * === FUNCTIONS ========================================================================================
@@ -21,9 +24,9 @@ defined('ABSPATH') or die('INSERT COIN');
  * --- TRIGGERED ON ACTIVATION --------------------------------------------------------------------------
  * --- IF DATABASE VALUES ARE NOT SET AT ALL, ADD DEFAULT OPTIONS TO DATABASE ---------------------------
  */
-if (!function_exists('sticky_anthing_default_options')) {
-	function sticky_anthing_default_options() {
-		$versionNum = '2.25';
+if (!function_exists('sticky_anything_activate')) {
+	function sticky_anything_activate() {
+		$versionNum = '2.31';
 		if (get_option('sticky_anything_options') === false) {
 			$new_options['sa_version'] = $versionNum;
 			$new_options['sa_element'] = '';
@@ -154,14 +157,14 @@ if (!function_exists('sticky_anything_settings_link')) {
 function sticky_anything_settings_link($links) {
   $settings_link = '<a href="options-general.php?page=stickyanythingmenu">Settings</a>';
   array_unshift($links, $settings_link);
-  $links[] = '<a href="https://wpsticky.com/?utm_source=sticky-free&utm_content=plugins-table" target="_blank"><b>Get PRO</b></a>';
+  $links[] = '<a href="https://wpsticky.com/?ref=sticky-free-plugins-table" target="_blank"><b>Get PRO</b></a>';
 
   return $links;
 }
 }
 
 function sticky_plugin_meta_links($links, $file) {
-  $support_link = '<a target="_blank" href="https://wpsticky.com/documentation/?utm_source=sticky-free&utm_content=support" title="Get help">Support</a>';
+  $support_link = '<a target="_blank" href="https://wpsticky.com/documentation/?ref=sticky-free-support" title="Get help">Support</a>';
 
   if ($file == plugin_basename(__FILE__)) {
     $links[] = $support_link;
@@ -169,6 +172,20 @@ function sticky_plugin_meta_links($links, $file) {
 
   return $links;
 } // sticky_plugin_meta_links
+
+// additional powered by text in admin footer; only on Sticky page
+function sticky_admin_footer_text($text) {
+  $screen = get_current_screen();
+  if ($screen->id != 'settings_page_stickyanythingmenu') {
+    return;
+  }
+
+  $plugin_data = get_file_data(__FILE__, array('version' => 'Version'), 'plugin');
+
+  $text = '<i><a href="https://wpsticky.com/?ref=sticky-free-footer" title="Visit WP Sticky site for more info" target="_blank">WP Sticky</a> v' . $plugin_data['version'] . ' by <a href="https://www.webfactoryltd.com/" title="Visit our site to get more great plugins" target="_blank">WebFactory Ltd</a>. Please <a target="_blank" href="https://wordpress.org/support/plugin/sticky-menu-or-anything-on-scroll/reviews/#new-post" title="Rate the plugin">rate the plugin <span>★★★★★</span></a> to help us spread the word. Thank you!</i>';
+
+  return $text;
+} // admin_footer_text
 
 
 /**
@@ -183,7 +200,7 @@ if (!function_exists('sticky_anything_config_page')) {
 	<div id="sticky-anything-settings-general" class="wrap">
 		<h2 style="margin-bottom: 12px;"><img class="header-logo" src="<?php echo plugin_dir_url(__FILE__); ?>assets/img/wp-sticky-pro.png" alt="<?php _e('Sticky Menu (or Anything!) on Scroll','sticky-menu-or-anything-on-scroll'); ?>" title="<?php _e('Sticky Menu (or Anything!) on Scroll','sticky-menu-or-anything-on-scroll'); ?>"><?php _e('Sticky Menu (or Anything!) on Scroll','sticky-menu-or-anything-on-scroll'); ?></h2>
 
-    <p><?php _e('Pick any element on your page, and it will stick when it reaches the top of the page when you scroll down. Great for navigation menus, but can be used for any element on the page.','sticky-menu-or-anything-on-scroll'); ?><br><br></p>
+    <p><?php _e('Pick any element on the page, and it will stick when it reaches the top of the page when you scroll down. Great for headers and navigation menus, but can be used for any page element.','sticky-menu-or-anything-on-scroll'); ?><br><br></p>
 <?php
   if (!empty($sticky_anything_options['sa_element']) && empty($sticky_anything_options['sa_hide_review_notification'])) {
     $dismiss_url = add_query_arg(array('action' => 'sticky_hide_review_notification', 'redirect' => urlencode($_SERVER['REQUEST_URI'])), admin_url('admin.php'));
@@ -682,8 +699,8 @@ function sticky_anything_admin_footer() {
 
   $plugin_url = plugin_dir_url(__FILE__);
 
-  $out .= '<div class="center logo"><a href="https://wpsticky.com/?ref=sticky-free-popup" target="_blank"><img style="max-height: 100px;" src="' . $plugin_url . 'assets/img/wp-sticky-pro.png' . '" alt="WP Sticky PRO" title="WP Sticky PRO"></a><br>
-  <b>WP Sticky PRO is here!<br>Grab the <i>50% OFF</i> launch DISCOUNT 🚀</b></div>';
+  //$out .= '<div class="center logo"><a href="https://wpsticky.com/?ref=sticky-free-popup" target="_blank"><img style="max-height: 100px;" src="' . $plugin_url . 'assets/img/wp-sticky-pro.png' . '" alt="WP Sticky PRO" title="WP Sticky PRO"></a><br>
+  $out .= '<div class="center logo"><b><a href="https://wpsticky.com/?ref=sticky-free-popup" target="_blank">WP Sticky PRO</a> is here!<br>Grab the <i>50% OFF</i> launch DISCOUNT 🚀</b></div>';
 
   $out .= '<table id="sticky-table">';
   $out .= '<tr>';
@@ -700,11 +717,17 @@ function sticky_anything_admin_footer() {
 
   $out .= '<tr>';
   $out .= '<td><span class="dashicons dashicons-no"></span>Install on Client Sites</td>';
-  $out .= '<td><span class="dashicons dashicons-no"></span>Install on Client Sites</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Install on Client Sites</td>';
   $out .= '<td><span class="dashicons dashicons-yes"></span>Install on Client Sites</td>';
   $out .= '</tr>';
 
   $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-no"></span>White-Label Mode</td>';
+  $out .= '<td><span class="dashicons dashicons-no"></span>White-Label Mode</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>White-Label Mode</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
   $out .= '<td><span class="dashicons dashicons-yes"></span>One Time Payment</td>';
   $out .= '<td><span class="dashicons dashicons-yes"></span>One Time Payment</td>';
   $out .= '<td><span class="dashicons dashicons-yes"></span>One Time Payment</td>';
@@ -714,6 +737,12 @@ function sticky_anything_admin_footer() {
   $out .= '<td><span class="dashicons dashicons-yes"></span>Lifetime Updates &amp; Support</td>';
   $out .= '<td><span class="dashicons dashicons-yes"></span>Lifetime Updates &amp; Support</td>';
   $out .= '<td><span class="dashicons dashicons-yes"></span>Lifetime Updates &amp; Support</td>';
+  $out .= '</tr>';
+
+  $out .= '<tr>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Priority email support</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Priority email support</td>';
+  $out .= '<td><span class="dashicons dashicons-yes"></span>Priority email support</td>';
   $out .= '</tr>';
 
   $out .= '<tr>';
@@ -741,90 +770,17 @@ function sticky_anything_admin_footer() {
   $out .= '</tr>';
 
   $out .= '<tr>';
-  $out .= '<td><span>20% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=single-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=single-launch&ref=pricing-table" target="_blank">BUY NOW <del>$49</del> $39</a></td>';
-  $out .= '<td><span>25% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=team-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=team-launch&ref=pricing-table" target="_blank">BUY NOW <del>$79</del> $59</a></td>';
-  $out .= '<td><span>50% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=agency-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=agency-launch&ref=pricing-table" target="_blank">BUY NOW <del>$199</del> $99</a></td>';
+  $out .= '<td><span>20% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=single-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=single-launch&ref=pricing-table" target="_blank">BUY NOW <del>$49</del> $39</a><br>-or-<br><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=single-monthly&ref=pricing-table" href="https://wpsticky.com/buy/?product=single-monthly&ref=pricing-table" target="_blank">ONLY $5.99 <small>/month</small></a></td>';
+  $out .= '<td><span>40% discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=team-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=team-launch&ref=pricing-table" target="_blank">BUY NOW <del>$79</del> $49</a></td>';
+  $out .= '<td><span>$100 discount</span><a class="button button-buy" data-href-org="https://wpsticky.com/buy/?product=agency-launch&ref=pricing-table" href="https://wpsticky.com/buy/?product=agency-launch&ref=pricing-table" target="_blank">BUY NOW <del>$199</del> $99</a></td>';
   $out .= '</tr>';
 
   $out .= '</table>';
 
-  $out .= '<div class="center footer"><b>100% No-Risk Money Back Guarantee!</b>. If you don\'t like the plugin over the next 7 days, we will happily refund 100% of your money. No questions asked!</div>';
+  $out .= '<div class="center footer"><b>100% No-Risk Money Back Guarantee!</b> If you don\'t like the plugin over the next 7 days, we\'ll refund 100% of your money. No questions asked! Payments are processed by our merchant of records - <a href="https://paddle.com" target="_blank">Paddle</a>.</div></div>';
 
   echo $out;
 } // sticky_anything_admin_footer
-
-/**
-   * Helper function for adding plugins to featured list
-   *
-   * @return array
-   */
-  function sticky_featured_plugins_tab($args)
-  {
-    add_filter('plugins_api_result', 'sticky_plugins_api_result', 10, 3);
-
-    return $args;
-  } // sticky_featured_plugins_tab
-
-
-  /**
-   * Add single plugin to featured list
-   *
-   * @return object
-   */
-  function sticky_add_plugin_featured($plugin_slug, $res)
-  {
-    // check if plugin is already on the list
-    if (!empty($res->plugins) && is_array($res->plugins)) {
-      foreach ($res->plugins as $plugin) {
-        if (is_object($plugin) && !empty($plugin->slug) && $plugin->slug == $plugin_slug) {
-          return $res;
-        }
-      } // foreach
-    }
-
-    $plugin_info = get_transient('wf-plugin-info-' . $plugin_slug);
-
-    if (!$plugin_info) {
-      $plugin_info = plugins_api('plugin_information', array(
-        'slug'   => $plugin_slug,
-        'is_ssl' => is_ssl(),
-        'fields' => array(
-          'banners'           => true,
-          'reviews'           => true,
-          'downloaded'        => true,
-          'active_installs'   => true,
-          'icons'             => true,
-          'short_description' => true,
-        )
-      ));
-      if (!is_wp_error($plugin_info)) {
-        set_transient('wf-plugin-info-' . $plugin_slug, $plugin_info, DAY_IN_SECONDS * 7);
-      }
-    }
-
-    if (!empty($res->plugins) && is_array($res->plugins) && $plugin_info && is_object($plugin_info)) {
-      array_unshift($res->plugins, $plugin_info);
-    }
-
-    return $res;
-  } // sticky_add_plugin_featured
-
-
-  /**
-   * Add plugins to featured plugins list
-   *
-   * @return object
-   */
-  function sticky_plugins_api_result($res, $action, $args)
-  {
-    remove_filter('plugins_api_result', 'sticky_plugins_api_result', 10, 3);
-
-    $res = sticky_add_plugin_featured('wp-external-links', $res);
-    $res = sticky_add_plugin_featured('eps-301-redirects', $res);
-    $res = sticky_add_plugin_featured('simple-author-box', $res);
-
-    return $res;
-  } // sticky_plugins_api_result
 
 
   function sticky_hide_review_notification() {
@@ -855,7 +811,7 @@ function sticky_anything_admin_footer() {
   {
     $pointers = array();
 
-    $pointers['welcome'] = array('target' => '#menu-settings', 'edge' => 'left', 'align' => 'right', 'content' => 'Thank you for using the <b style="font-weight: 700;">Sticky Menu (or Anaything!) on Scroll</b> plugin.<br>Open <a href="' . admin_url('options-general.php?page=stickyanythingmenu') . '">Settings - Sticky Menu</a> to make anything sticky.');
+    $pointers['welcome'] = array('target' => '#menu-settings', 'edge' => 'left', 'align' => 'right', 'content' => 'Thank you for using the <b style="font-weight: 700;">Sticky Menu (or Anything!) on Scroll</b> plugin.<br>Open <a href="' . admin_url('options-general.php?page=stickyanythingmenu') . '">Settings - Sticky Menu</a> to make anything sticky.');
 
     return $pointers;
   } // sticky_get_pointers
@@ -906,13 +862,23 @@ function sticky_anything_admin_footer() {
     wp_send_json_success();
   } // sticky_ajax_dismiss_notice
 
+
+  function sticky_anything_deactivate() {
+    delete_option('sticky_dismissed_notices');
+
+    $sticky_anything_options = get_option('sticky_anything_options');
+    unset($sticky_anything_options['sa_dismiss_upsell_auto_open']);
+    update_option('sticky_anything_options', $sticky_anything_options);
+  }
+
 /**
  * === HOOKS AND ACTIONS AND FILTERS AND SUCH ==========================================================
  */
 
 $plugin = plugin_basename(__FILE__);
 
-register_activation_hook( __FILE__, 'sticky_anthing_default_options' );
+register_activation_hook( __FILE__, 'sticky_anything_activate' );
+register_deactivation_hook( __FILE__, 'sticky_anything_deactivate' );
 add_action('init','sticky_anything_update',1);
 add_action('wp_enqueue_scripts', 'load_sticky_anything');
 add_action('admin_menu', 'sticky_anything_menu');
@@ -921,7 +887,6 @@ add_action('admin_footer', 'sticky_anything_admin_footer');
 add_action('admin_enqueue_scripts', 'sticky_anything_styles' );
 add_filter("plugin_action_links_$plugin", 'sticky_anything_settings_link' );
 add_filter('plugin_row_meta', 'sticky_plugin_meta_links', 10, 2);
-add_filter('install_plugins_table_api_args_featured', 'sticky_featured_plugins_tab');
-add_filter('install_plugins_table_api_args_recommended', 'sticky_featured_plugins_tab');
+add_filter('admin_footer_text', 'sticky_admin_footer_text');
 add_action('admin_action_sticky_hide_review_notification', 'sticky_hide_review_notification');
 add_action('wp_ajax_sticky_dismiss_notice', 'sticky_ajax_dismiss_notice');

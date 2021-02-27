@@ -3,7 +3,7 @@
  * Custom Facebook Feed Item : Item Container
  * This is the item container
  *
- * @version X.X.X Custom Facebook Feed by Smash Balloon
+ * @version 2.19 Custom Facebook Feed by Smash Balloon
  *
  */
 $name = isset($news->from->name) ? $news->from->name : false;
@@ -19,7 +19,7 @@ $post_item_attr = $this_class->get_item_attributes($cff_post_type, $cff_album, $
 			echo $cff_date;
 		if( $cff_show_text || $cff_show_desc )
 			echo $cff_post_text;
-		if( $cff_show_shared_links ) 
+		if( $cff_show_shared_links )
 			echo $cff_shared_link;
 		if ( (!$cff_show_author && $cff_date_position == 'author') || $cff_show_date && $cff_date_position == 'below' )
 			echo $cff_date;

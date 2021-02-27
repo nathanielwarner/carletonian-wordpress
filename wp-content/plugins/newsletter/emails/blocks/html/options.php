@@ -25,7 +25,7 @@ $options = array_merge($default_options, $options);
             lineNumbers: true,
             mode: 'htmlmixed',
             lineWrapping: true,
-            extraKeys: {"Ctrl-Space": "autocomplete"}
+            //extraKeys: {"Ctrl-Space": "autocomplete"}
         });
     });
 </script>

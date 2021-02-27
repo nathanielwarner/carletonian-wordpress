@@ -3,7 +3,7 @@
  * Autolink
  *
  *
- * @since X.X.X
+ * @since 2.19
  */
 
 namespace CustomFacebookFeed;
@@ -144,7 +144,7 @@ class CFF_Autolink{
 	                #
 	                # add the url
 	                #
-	                
+
 	                if ($display_url != $link_url && !preg_match('@title=@msi',$tagfill) && $auto_title) {
 
 	                    $display_quoted = preg_quote($display_url, '!');
@@ -158,11 +158,11 @@ class CFF_Autolink{
 	                $link_url_enc = HtmlSpecialChars($link_url);
 	                $display_url_enc = HtmlSpecialChars($display_url);
 
-	                
+
 	                if( substr( $link_url_enc, 0, 4 ) !== "http" ) $link_url_enc = 'http://' . $link_url_enc;
 	                $buffer .= "<a href=\"{$link_url_enc}\" rel='nofollow noopener noreferrer'>{$display_url_enc}</a>";
-	                
-	            
+
+
 	            }else{
 	                #echo "fail 3 at $cursor<br />\n";
 

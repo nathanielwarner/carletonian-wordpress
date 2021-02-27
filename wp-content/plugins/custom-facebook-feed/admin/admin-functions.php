@@ -2,6 +2,7 @@
 use CustomFacebookFeed\CFF_Utils;
 use CustomFacebookFeed\CFF_Oembed;
 use CustomFacebookFeed\CFF_GDPR_Integrations;
+use CustomFacebookFeed\CFF_Feed_Locator;
 
 //Create Style page
 	function cff_style_page() {
@@ -331,7 +332,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	    $cff_hide_comments = $options[ 'cff_hide_comments' ];
 	    //Misc
 	    $cff_feed_width = $options[ 'cff_feed_width' ];
-	    $cff_feed_width_resp = $options[ 'cff_feed_width_resp' ]; 
+	    $cff_feed_width_resp = $options[ 'cff_feed_width_resp' ];
 	    $cff_feed_height = $options[ 'cff_feed_height' ];
 	    $cff_feed_padding = $options[ 'cff_feed_padding' ];
 	    $cff_like_box_position = $options[ 'cff_like_box_position' ];
@@ -393,7 +394,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	    $cff_author_size = $options[ 'cff_author_size' ];
 	    $cff_author_color = $options[ 'cff_author_color' ];
 
-    	$gdpr = $options[ 'gdpr' ];    
+    	$gdpr = $options[ 'gdpr' ];
 	    //New
 	    $cff_custom_css = $options[ 'cff_custom_css' ];
 	    $cff_custom_js = $options[ 'cff_custom_js' ];
@@ -404,7 +405,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	    $cff_video_action = $options[ 'cff_video_action' ];
 	    $cff_sep_color = $options[ 'cff_sep_color' ];
 	    $cff_sep_size = $options[ 'cff_sep_size' ];
-		
+
 		// Texts lengths
 		$cff_title_length   = 'cff_title_length';
 	    $cff_body_length    = 'cff_body_length';
@@ -771,7 +772,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                //Custom CSS
 	                if (isset($_POST[ 'cff_custom_css' ])) $cff_custom_css = $_POST[ 'cff_custom_css' ];
 	                if (isset($_POST[ 'cff_custom_js' ])) $cff_custom_js = $_POST[ 'cff_custom_js' ];
-	                
+
 	                if (isset($_POST[ 'cff_video_height' ])) $cff_video_height = sanitize_text_field( $_POST[ 'cff_video_height' ] );
 	                if (isset($_POST[ 'cff_video_action' ])) $cff_video_action = sanitize_text_field( $_POST[ 'cff_video_action' ] );
 	                if (isset($_POST[ 'cff_open_links' ])) $cff_open_links = sanitize_text_field( $_POST[ 'cff_open_links' ] );
@@ -903,7 +904,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                $options[ 'cff_translate_learn_more_text' ] = $cff_translate_learn_more_text;
 	                $options[ 'cff_translate_shop_now_text' ] = $cff_translate_shop_now_text;
 	                $options[ 'cff_translate_message_page_text' ] = $cff_translate_message_page_text;
-	                
+
 	                //Date translate
 	                $options[ 'cff_translate_second' ] = $cff_translate_second;
 	                $options[ 'cff_translate_seconds' ] = $cff_translate_seconds;
@@ -924,10 +925,10 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	            }
 	            //Update the array
 	            update_option( 'cff_style_settings', $options );
-	            // Put an settings updated message on the screen 
+	            // Put an settings updated message on the screen
 	        ?>
 	        <div class="updated"><p><strong><?php _e('Settings saved.', 'custom-facebook-feed' ); ?></strong></p></div>
-	        <?php } ?> 
+	        <?php } ?>
 
 	    <?php } //End nonce check ?>
 
@@ -942,7 +943,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	            </button>
 	        </div>
 	    <?php endif; ?>
-	 
+
 	    <div id="cff-admin" class="wrap">
 	        <div id="header">
 	            <h1><?php _e('Custom Facebook Feed', 'custom-facebook-feed'); ?></h1>
@@ -1050,7 +1051,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                                <option value="5" <?php if( $cff_cols == 5 ) { echo 'selected'; } ?>>5</option>
 	                                <option value="6" <?php if( $cff_cols == 6 ) { echo 'selected'; } ?>>6</option>
 	                            </select>
-	                        
+
 	                            <br />
 	                            <div class="cff-mobile-col-settings" <?php if( intval($cff_cols) > 1 ) echo 'style="display:block;"' ?>>
 	                                <div class="cff-row">
@@ -1070,7 +1071,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	            </table>
 
 	            <?php submit_button(); ?>
-	            
+
 	            <hr id="types" />
 	            <table class="form-table">
 	                <tbody>
@@ -1353,7 +1354,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                            <p class="cff-tooltip cff-more-info"><?php _e("This positions the Like Box widget outside of the feed container. It is useful if your feed has a vertical scrollbar as it places it outside of the scrollable area and fixes it at the top or bottom."); ?></p>
 	                        </td>
 	                    </tr>
-	                
+
 	                    <tr valign="top">
 	                        <th class="bump-left" scope="row"><label><?php _e('Show faces of fans', 'custom-facebook-feed'); ?></label><code class="cff_shortcode"> likeboxfaces
 	                        Eg: likeboxfaces=true</code></th>
@@ -1532,7 +1533,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                <p>Find out how to display <a href="https://smashballoon.com/using-shortcode-options-customize-facebook-feeds/" target="_blank"><b>multiple feeds</b></a>.</p>
 	            </div>
 
-	            
+
 	            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo CFF_PLUGIN_URL. 'admin/assets/img/pro.png?2019'  ?>" /></a>
 
 	            <?php } //End General tab ?>
@@ -1558,17 +1559,17 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                    <div class="cff-layout cff-thumb <?php if($cff_preset_layout == "thumb") echo "cff-layout-selected"; ?>">
 	                        <h3><input type="radio" name="cff_preset_layout" id="cff_preset_layout" value="thumb" disabled />&nbsp;<?php _e('Thumbnail'); ?></h3>
 	                            <img src="<?php echo CFF_PLUGIN_URL . 'admin/assets/img/layout-thumb.png'  ?>" alt="Thumbnail Layout" />
-	                            
+
 	                    </div>
 	                    <div class="cff-layout cff-half <?php if($cff_preset_layout == "half") echo "cff-layout-selected"; ?>">
 	                        <h3><input type="radio" name="cff_preset_layout" id="cff_preset_layout" value="half" disabled />&nbsp;<?php _e('Half-width'); ?></h3>
 	                            <img src="<?php echo CFF_PLUGIN_URL . 'admin/assets/img/layout-half.png' ?>" alt="Half Width Layout" />
-	                            
+
 	                    </div>
 	                    <div class="cff-layout cff-full <?php if($cff_preset_layout == "full") echo "cff-layout-selected"; ?>">
 	                        <h3><input type="radio" name="cff_preset_layout" id="cff_preset_layout" value="full" disabled />&nbsp;<?php _e('Full-width'); ?></h3>
 	                            <img src="<?php echo CFF_PLUGIN_URL . 'admin/assets/img/layout-full.png' ?>" alt="Full Width Layout" />
-	                            
+
 	                    </div>
 	                </div>
 
@@ -1711,7 +1712,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                    <tr id="poststyle"><!-- Quick link --></tr>
 	                </tbody>
 	            </table>
-	            
+
 	            <?php submit_button(); ?>
 	            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo CFF_PLUGIN_URL. 'admin/assets/img/pro.png'  ?>" /></a>
 	            <?php } //End Post Layout tab ?>
@@ -1734,7 +1735,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 
 	            <input type="hidden" name="<?php echo $style_typography_hidden_field_name; ?>" value="Y">
 	            <br />
-	            
+
 	            <h3><?php _e('Post Item'); ?></h3>
 	            <table class="form-table">
 	                <tbody>
@@ -1764,7 +1765,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                                </div>
 
 	                                <div class="cff-post-style-settings cff-regular">
-	                                    
+
 	                                    <div class="cff-row">
 	                                        <label><?php _e('Separating Line Color'); ?></label><code class="cff_shortcode"> sepcolor
 	                                        Eg: sepcolor=CFCFCF</code>
@@ -1998,7 +1999,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                    <tr>
 	                        <th class="bump-left"><label for="cff_body_color" class="bump-left"><?php _e('Text Color'); ?></label><code class="cff_shortcode"> desccolor
 	            Eg: desccolor=9F9F9F</code></th>
-	                        
+
 	                        <td>
 	                            <input name="cff_body_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_body_color) ); ?>" class="cff-colorpicker" />
 	                        </td>
@@ -2069,7 +2070,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                        <input name="cff_date_color" value="#<?php esc_attr_e( str_replace('#', '', $cff_date_color) ); ?>" class="cff-colorpicker" />
 	                    </td>
 	                </tr>
-	                        
+
 	                <tr>
 	                    <th class="bump-left"><label for="cff_date_formatting" class="bump-left"><?php _e('Date Formatting'); ?></label><code class="cff_shortcode"> dateformat
 	            Eg: dateformat=3</code></th>
@@ -2411,7 +2412,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                            </select>
 	                        </td>
 	                    </tr>
-	                    
+
 	                    <tr>
 	                        <th class="bump-left"><label for="cff_event_title_size" class="bump-left"><?php _e('Text Size'); ?></label><code class="cff_shortcode"> eventtitlesize
 	                Eg: eventtitlesize=12</code></th>
@@ -2464,7 +2465,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                </tbody>
 	            </table>
 	            <hr />
-	            
+
 	            <h3><?php _e('Event Date'); ?></h3>
 	            <table class="form-table">
 	                <tbody>
@@ -2623,7 +2624,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	            </table>
 
 	            <?php submit_button(); ?>
-	            
+
 	            <hr />
 
 	            <h3><?php _e('Post Action Links'); ?></span> <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What is this?'); ?></a>
@@ -2792,7 +2793,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	            </div>
 
 	            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo CFF_PLUGIN_URL. 'admin/assets/img/pro.png' ?>" /></a>
-	            
+
 	            <?php } //End Typography tab ?>
 	            <?php if( $cff_active_tab == 'misc' ) { //Start Misc tab ?>
 
@@ -2826,7 +2827,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                    <tr valign="top">
 	                        <td style="padding-top: 0;">
 	                            <p style="padding-bottom: 10px;"><?php _e('Enter your own custom JavaScript/jQuery in the box below', 'custom-facebook-feed'); ?> <i style="margin-left: 5px; font-size: 11px;"><a href="https://smashballoon.com/snippets/" target="_blank"><?php _e('See some examples', 'custom-facebook-feed'); ?></a></i></p>
-	                            <textarea name="cff_custom_js" id="cff_custom_js" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_js), 'custom-facebook-feed' ); ?></textarea>                  
+	                            <textarea name="cff_custom_js" id="cff_custom_js" style="width: 70%;" rows="7"><?php echo esc_textarea( stripslashes($cff_custom_js), 'custom-facebook-feed' ); ?></textarea>
 	                        </td>
 	                    </tr>
 	                </tbody>
@@ -2948,7 +2949,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 		            </tr>
 
 		            </tbody>
-		        </table>	
+		        </table>
 
 	            <hr />
 	            <h3><?php _e('Media'); ?></h3>
@@ -3205,7 +3206,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                            <p class="cff-tooltip"><?php _e("Understanding how you are using the plugin allows us to further improve it. The plugin will send a report in the background once per week which includes information about your plugin settings and statistics about your site, which we can use to help improve the features which matter most to you and improve your experience using the plugin. The plugin will never collect any sensitive information like access tokens, email addresses, or user information, and sending this data won't slow down your site at all. For more information,", 'custom-facebook-feed'); ?> <a href="https://smashballoon.com/custom-facebook-feed/docs/usage-tracking/" target="_blank"><?php _e("see here", 'custom-facebook-feed'); ?></a>.</p>
 	                        </td>
 	                    </tr>
-	                
+
 	                </tbody>
 	            </table>
 
@@ -3298,7 +3299,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	                        <td><input name="cff_translate_message_page_text" type="text" value="<?php echo stripslashes( esc_attr( $cff_translate_message_page_text ) ); ?>" /></td>
 	                        <td class="cff-context"><?php _e("Used for the 'Message Page' button", 'custom-facebook-feed'); ?></td>
 	                    </tr>
-	                    
+
 	                    <tr class="cff-table-header"><th colspan="3"><?php _e('Date', 'custom-facebook-feed'); ?></th></tr>
 	                    <tr>
 	                        <td><label for="cff_photos_text" class="bump-left"><?php _e('"Posted _ hours ago" text', 'custom-facebook-feed'); ?></label></td>
@@ -3354,7 +3355,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 
 	                </tbody>
 	            </table>
-	            
+
 	            <?php submit_button(); ?>
 	            <a href="https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free&utm_source=footer&utm_medium=ad" target="_blank" class="cff-pro-notice"><img src="<?php echo CFF_PLUGIN_URL. 'admin/assets/img/pro.png'  ?>" /></a>
 	            <?php } //End Custom Text tab ?>
@@ -3367,7 +3368,7 @@ use CustomFacebookFeed\CFF_GDPR_Integrations;
 	            <button id="cff-admin-show-share-links" class="button secondary" style="margin-bottom: 1px;"><i class="fa fa-share-alt" aria-hidden="true"></i>&nbsp;&nbsp;Share the plugin</button> <div id="cff-admin-share-links"></div>
 	        </div>
 
-	<?php 
+	<?php
 	} //End Style_Page
 
 
@@ -3449,16 +3450,17 @@ function cff_settings_page() {
             $options[ 'cff_timezone' ] = $cff_timezone;
             $options[ 'cff_num_mobile' ] = $cff_num_mobile;
             update_option( 'cff_style_settings', $options );
-            
+
             //Delete ALL transients
             cff_delete_cache();
-            // Put an settings updated message on the screen 
+            // Put an settings updated message on the screen
+        	\cff_main()->cff_error_reporter->add_action_log( 'Saved settings on the configure tab.' );
         ?>
         <div class="updated"><p><strong><?php _e('Settings saved.', 'custom-facebook-feed' ); ?></strong></p></div>
-        <?php } ?> 
+        <?php } ?>
 
-    <?php } //End nonce check ?> 
- 
+    <?php } //End nonce check ?>
+
     <div id="cff-admin" class="wrap">
 
 	<?php
@@ -3539,15 +3541,16 @@ function cff_settings_page() {
             </div>
 
             <a href="JavaScript:void(0);" class="cff_admin_btn" id="cff_fb_login"><i class="fa fa-facebook-square"></i> <?php _e( 'Connect a Facebook account', 'custom-facebook-feed' ); ?></a>
-            
+
 
             <?php
             if( isset($_GET['access_token']) && isset($_GET['final_response']) ){
 
                 if( $_GET['final_response'] == 'true' ){
-	                
 
-	                \cff_main()->cff_error_reporter->remove_error( 'accesstoken' );
+
+	                \cff_main()->cff_error_reporter->remove_error( 'connection' );
+                    \cff_main()->cff_error_reporter->add_action_log( 'Connection or updating account');
 
                     $access_token = $_GET['access_token'];
                     $cff_is_groups = false;
@@ -3629,9 +3632,9 @@ function cff_settings_page() {
                                 echo "<p>Facebook has not returned any groups for your user. It is only possible to display a feed from a group which you are either an admin or a member. Please note, if you are not an admin of the group then it is required that an admin add our app in the group settings in order to display a feed.</p><p>Please either create or join a Facebook group and then follow the directions when connecting your account on this page.</p>";
                                 echo '<a href="JavaScript:void(0);" class="button button-primary" id="cff-close-modal-primary-button">Close</a>';
                             } else {
-	                            
 
-	                            \cff_main()->cff_error_reporter->remove_error( 'accesstoken' );
+
+	                            \cff_main()->cff_error_reporter->remove_error( 'connection' );
                                 echo '<div class="cff-groups-list">';
                                     echo '<p style="margin-top: 0;"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i>Select a Facebook group below to get an Access Token.</p>';
 
@@ -3690,10 +3693,10 @@ function cff_settings_page() {
 
                         } else {
                             //PAGES
-	                        
 
-	                        \cff_main()->cff_error_reporter->remove_error( 'accesstoken' );
-                            
+
+	                        \cff_main()->cff_error_reporter->remove_error( 'connection' );
+
                             echo '<p class="cff-tokens-note"><i class="fa fa-check-circle" aria-hidden="true" style="font-size: 15px; margin: 0 8px 0 2px;"></i> Select a Facebook page below to connect it.</p>';
 
                             echo '<div class="cff-pages-wrap">';
@@ -3853,7 +3856,12 @@ function cff_settings_page() {
                 <h3 class="cff_connected_actions">Connected Accounts:</h3>
                 <div id="cff_connected_accounts_wrap"><?php //Add connected accounts here ?></div>
 
-                <div class="cff_connected_actions">
+                <div class="cff_connected_actions cff_feeds_account_ctn">
+                	<?php if ( CFF_Feed_Locator::count_unique() >= 1 ) : ?>
+                        <div class="cff_locations_link">
+                            <a href="?page=cff-top&amp;tab=allfeeds"><svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-search fa-w-16 fa-2x"><path fill="currentColor" d="M508.5 468.9L387.1 347.5c-2.3-2.3-5.3-3.5-8.5-3.5h-13.2c31.5-36.5 50.6-84 50.6-136C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c52 0 99.5-19.1 136-50.6v13.2c0 3.2 1.3 6.2 3.5 8.5l121.4 121.4c4.7 4.7 12.3 4.7 17 0l22.6-22.6c4.7-4.7 4.7-12.3 0-17zM208 368c-88.4 0-160-71.6-160-160S119.6 48 208 48s160 71.6 160 160-71.6 160-160 160z" class=""></path></svg> <?php _e('Feed Finder', 'custom-facebook-feed'); ?></a>
+                        </div>
+                    <?php endif; ?>
                     <a href="JavaScript:void(0);" id="cff_export_accounts">Show raw account data</a>
                     <div id="cff_export_accounts_wrap">
                         <textarea name="cff_connected_accounts" id="cff_connected_accounts" style="width: 100%;" rows="5" /><?php echo stripslashes( esc_attr( $cff_connected_accounts_val ) ); ?></textarea>
@@ -4139,10 +4147,10 @@ function cff_settings_page() {
                                 </select>
                             </td>
                         </tr>
-                    
+
                 </tbody>
             </table>
-            
+
             <div class="cff-save-settings-btn">
                 <?php submit_button('Save Settings & Clear Cache'); ?>
 
@@ -4171,6 +4179,10 @@ function cff_settings_page() {
 
     <?php } //End config tab ?>
 
+     <?php if ( $cff_active_tab == 'allfeeds' ) {
+        $locator_summary = CFF_Feed_Locator::summary();
+        include_once trailingslashit( CFF_PLUGIN_DIR ) . 'admin/templates/locator-summary.php';
+    } ?>
 
     <?php if( $cff_active_tab == 'support' ) { //Start Support tab ?>
 
@@ -4460,7 +4472,7 @@ echo '-----------------------------'."\n";
 } ?>
 
 ## FACEBOOK API RESPONSE: ##
-<?php 
+<?php
 $api_response_json = json_decode($posts_json);
 if( isset( $api_response_json->error ) ) echo $posts_json;
 if( isset( $api_response_json->data ) ){
@@ -4490,19 +4502,65 @@ foreach ( $cron as $key => $data ) {
 }
 ?>
 
-## Error Log: ##
+## Errors: ##
 <?php
 
 $errors = \cff_main()->cff_error_reporter->get_errors();
-if ( ! empty( $errors ) ) :
-	foreach ( $errors as $error ) :
-		echo $error['admin_message']."\n";
-		echo 'Feed with error: ' . esc_url( get_the_permalink( $error['post_id'] ) )."\n";
-
-	endforeach;
+if ( ! empty( $errors['resizing'] ) ) :
+    echo '* Resizing *' . "\n";
+    echo $errors['resizing'] . "\n";
 endif;
-
+if ( ! empty( $errors['database_create'] ) ) :
+    echo '* Database Create *' . "\n";
+    echo $errors['database_create'] . "\n";
+endif;
+if ( ! empty( $errors['upload_dir'] ) ) :
+    echo '* Uploads Directory *' . "\n";
+    echo $errors['upload_dir'] . "\n";
+endif;
+if ( ! empty( $errors['connection'] ) ) :
+    echo '* API/WP_HTTP Request *' . "\n";
+    var_export( $errors['connection'] );
+endif;
 ?>
+
+## Error Log: ##
+<?php
+$error_log = \cff_main()->cff_error_reporter->get_error_log();
+if ( ! empty( $error_log ) ) :
+    foreach ( $error_log as $error ) :
+        echo strip_tags($error) . "\n";
+    endforeach;
+endif;
+?>
+
+## Action Log: ##
+<?php
+$actions = \cff_main()->cff_error_reporter->get_action_log();
+
+if ( ! empty( $actions ) ) :
+    foreach ( $actions as $action ) :
+        echo strip_tags($action) . "\n";
+    endforeach;
+endif;
+?>
+
+## Location Summary: ##
+<?php
+$locator_summary = CFF_Feed_Locator::summary();
+
+if ( ! empty( $locator_summary) ) {
+
+    foreach ( $locator_summary as $locator_section ) {
+        if ( ! empty( $locator_section['results'] ) ) {
+            $first_five = array_slice( $locator_section['results'], 0, 5 );
+            foreach ( $first_five as $result ) {
+                echo esc_url( get_the_permalink( $result['post_id'] ) ) . "\n";
+            }
+
+        }
+    }
+}?>
 
 ## oEmbed: ##
 <?php
@@ -4783,9 +4841,9 @@ if( $cff_active_tab == 'more' ) { //Start More Social Feeds tab
 } //End More tab
 
 
-        
 
-} //End Settings_Page 
+
+} //End Settings_Page
 
 
 
@@ -4869,11 +4927,11 @@ function cff_oembeds_page() {
                 <?php if ( ! $saved_access_token_data && ! $valid_new_access_token && ! CFF_Oembed::can_do_oembed() ) {
                     if ( $access_token_error ) { ?>
                         <p><?php _e("There was a problem with the access token that was retrieved.", "custom-facebook-feed"); ?></p>
-                    <?php } 
+                    <?php }
                     $token_href = 'https://api.smashballoon.com/facebook-login.php?state=' . $admin_url_state;
                     if ( class_exists( 'SB_Instagram_Oembed' ) ) {
                         $sbi_oembed_token = SB_Instagram_Oembed::last_access_token();
-    
+
                         if ( ! empty( $sbi_oembed_token ) ) {
                             $token_href = add_query_arg( 'transfer', '1', $admin_url_state );
                         }
@@ -5060,11 +5118,8 @@ function cff_lite_dismiss() {
 add_action( 'wp_ajax_cff_lite_dismiss', 'cff_lite_dismiss' );
 
 function cff_reset_log() {
-    
-
-	\cff_main()->cff_error_reporter->remove_all_errors();
+	\cff_main()->cff_error_reporter->add_action_log( 'View feed and retry button clicked.' );
 	cff_delete_cache();
-
 	die();
 }
 add_action( 'wp_ajax_cff_reset_log', 'cff_reset_log' );
@@ -5119,7 +5174,7 @@ function cff_ppca_notice() {
                 <b>Action required: PPCA Error.</b> <span style='margin-right: 10px;'>Due to Facebook API changes it is no longer possible to display feeds from Facebook Pages you are not an admin of. Please <a href='https://smashballoon.com/facebook-ppca-error-notice/' target='_blank'>see here</a> for more information.</span><a href='admin.php?page=cff-top' class='cff-admin-notice-button'>Go to Facebook Feed Settings</a></p>
             </div>
             ");
-        } 
+        }
     }
 
 }
@@ -5137,12 +5192,12 @@ function cff_nag_ppca_ignore() {
 // Add a Settings link to the plugin on the Plugins page
 $cff_plugin_file = 'custom-facebook-feed/custom-facebook-feed.php';
 add_filter( "plugin_action_links_{$cff_plugin_file}", 'cff_add_settings_link', 10, 2 );
- 
+
 //modify the link by unshifting the array
 function cff_add_settings_link( $links, $file ) {
     $cff_settings_link = '<a href="' . admin_url( 'admin.php?page=cff-top' ) . '">' . __( 'Settings', 'cff-top', 'custom-facebook-feed' ) . '</a>';
     array_unshift( $links, $cff_settings_link );
- 
+
     return $links;
 }
 
@@ -5178,6 +5233,14 @@ function cff_delete_cache(){
     //W3 Total Cache
     if (function_exists('w3tc_flush_all')) {
         w3tc_flush_all();
+    }
+    if (function_exists('sg_cachepress_purge_cache')) {
+        sg_cachepress_purge_cache();
+    }
+
+    // Litespeed Cache
+    if ( method_exists( 'LiteSpeed_Cache_API', 'purge' ) ) {
+        LiteSpeed_Cache_API::purge( 'esi.custom-facebook-feed' );
     }
 
 }

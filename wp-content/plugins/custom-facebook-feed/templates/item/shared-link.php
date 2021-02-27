@@ -1,9 +1,9 @@
 <?php
 /**
  * Custom Facebook Feed Item : Shared Link
- * Displays the item shared link 
+ * Displays the item shared link
  *
- * @version X.X.X Custom Facebook Feed by Smash Balloon
+ * @version 2.19 Custom Facebook Feed by Smash Balloon
  *
  */
 // Don't load directly
@@ -30,7 +30,7 @@ if($cff_post_type == 'link' || $cff_soundcloud || $cff_is_video_embed):
 	<div class="cff-text-link cff-no-image">
 		<?php if( isset($news->name) ) : ?>
 			<<?php echo $cff_link_title_format ?> class="cff-link-title" <?php echo $cff_link_title_styles; ?>>
-				<a href="<?php echo esc_url($link) ?>" <?php echo $target.' '.$cff_nofollow_referrer; ?> style="color:#<?php echo $cff_link_title_color; ?>;"><?php echo $news->name; ?></a>		
+				<a href="<?php echo esc_url($link) ?>" <?php echo $target.' '.$cff_nofollow_referrer; ?> style="color:#<?php echo $cff_link_title_color; ?>;"><?php echo $news->name; ?></a>
 			</<?php echo $cff_link_title_format ?>>
 		<?php endif; ?>
 
@@ -38,20 +38,20 @@ if($cff_post_type == 'link' || $cff_soundcloud || $cff_is_video_embed):
 			<p class="cff-link-caption" <?php echo $cff_link_styles_html ?>><?php echo $cff_link_caption ?></p>
 		<?php endif; ?>
 
-		<?php 
+		<?php
 			//Description Text
-			if( $cff_show_desc ) : 
+			if( $cff_show_desc ) :
 				$description_text 		= CFF_Shortcode_Display::get_shared_link_description_text( $body_limit, $description_text, $cff_title_link, $cff_posttext_link_color );
-				$cff_link_description 	= CFF_Shortcode_Display::get_shared_link_description( $cff_title_link, $description_text );		
+				$cff_link_description 	= CFF_Shortcode_Display::get_shared_link_description( $cff_title_link, $description_text );
 				if( $description_text != $cff_link_caption ):
 		?>
 			<span class="cff-post-desc" <?php echo $cff_link_desc_styles_html ?>><?php echo $cff_link_description; ?></span>
-		<?php 
+		<?php
 				endif;
-			endif; 
+			endif;
 		?>
 
-	</div>	
+	</div>
 </div>
 
 <?php endif; ?>

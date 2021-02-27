@@ -4,7 +4,7 @@
  *
  * The main Custom_Facebook_Feed class that runs the plugins & registers all the ressources.
  *
- * @since X.X.X
+ * @since 2.19
  */
 
 namespace CustomFacebookFeed;
@@ -23,7 +23,7 @@ final class Custom_Facebook_Feed{
 	/**
 	 * Instance
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access private
 	 * @static
 	 * @var Custom_Facebook_Feed
@@ -36,7 +36,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * Admin admin panel.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_Admin
@@ -49,7 +49,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * About page panel.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_About
@@ -61,7 +61,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * Error Reporter panel.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_Error_Reporter
@@ -73,7 +73,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * Blocks.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var cff_blocks
@@ -85,7 +85,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * Notifications System.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_Notifications
@@ -97,7 +97,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * New User.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_New_User
@@ -109,7 +109,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * Oembed Element.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_Oembed
@@ -121,7 +121,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * Tracking System.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_Tracking
@@ -133,7 +133,7 @@ final class Custom_Facebook_Feed{
 	 *
 	 * Shortcode Class.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_Shortcode
@@ -144,50 +144,53 @@ final class Custom_Facebook_Feed{
 	 * CFF_SiteHealth.
 	 *
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 *
 	 * @var CFF_SiteHealth
 	 */
 	public $cff_sitehealth;
 
-		
-	
+
+
 	/**
 	 * Custom_Facebook_Feed Instance.
 	 *
 	 * Just one instance of the Custom_Facebook_Feed class
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 * @static
 	 *
-	 * @return Custom_Facebook_Feed 
+	 * @return Custom_Facebook_Feed
 	 */
 	public static function instance() {
-		if ( null === self::$instance) {	
+		if ( null === self::$instance) {
 			self::$instance = new self();
-	
+
 			if( !class_exists('CFF_Utils') ) include CFF_PLUGIN_DIR. 'inc/CFF_Utils.php';
 
 
 			add_action( 'plugins_loaded', [ self::$instance, 'load_textdomain' ], 10 );
 			add_action( 'init', [ self::$instance, 'init' ], 0 );
 
-			
+
 
 			add_action( 'wp_loaded', [ self::$instance, 'cff_check_for_db_updates' ] );
-		
+
 			add_action( 'wp_head', [ self::$instance, 'cff_custom_css' ] );
 			add_action( 'wp_footer', [ self::$instance, 'cff_js' ] );
 
             add_filter( 'cron_schedules', [ self::$instance, 'cff_cron_custom_interval' ] );
             add_filter('widget_text', 'do_shortcode');
 
+            add_action('wp_ajax_feed_locator', [self::$instance, 'cff_feed_locator']);
+			add_action('wp_ajax_nopriv_feed_locator', [self::$instance, 'cff_feed_locator']);
+
 			register_activation_hook( CFF_FILE, [ self::$instance, 'cff_activate' ] );
 			register_deactivation_hook( CFF_FILE, [ self::$instance, 'cff_deactivate' ] );
-			register_uninstall_hook( CFF_FILE, 'Custom_Facebook_Feed::cff_uninstall' );
-			
+			register_uninstall_hook( CFF_FILE, array('CustomFacebookFeed\Custom_Facebook_Feed','cff_uninstall'));
+
 
 		}
 		return self::$instance;
@@ -196,7 +199,7 @@ final class Custom_Facebook_Feed{
 	/**
  	 * Load Custom_Facebook_Feed textdomain.
  	 *
- 	 * @since X.X.X
+ 	 * @since 2.19
  	 *
  	 * @return void
 	 * @access public
@@ -208,15 +211,15 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * Init.
-	 * 
+	 *
 	 * Initialize Custom_Facebook_Feed plugin.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	public function init() {
-		//Load Composer Autoload	
-		require CFF_PLUGIN_DIR . 'vendor/autoload.php';		
+		//Load Composer Autoload
+		require CFF_PLUGIN_DIR . 'vendor/autoload.php';
 		$this->cff_tracking 		= new CFF_Tracking();
 		$this->cff_oembed 			= new CFF_Oembed();
 		$this->cff_error_reporter	= new CFF_Error_Reporter();
@@ -252,9 +255,9 @@ final class Custom_Facebook_Feed{
 
 
 	/**
-	 * Register Assets 
+	 * Register Assets
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function register_assets(){
 		add_action( 'wp_enqueue_scripts' , array( $this, 'enqueue_styles_assets' ) );
@@ -263,9 +266,9 @@ final class Custom_Facebook_Feed{
 
 
 	/**
-	 * Enqueue & Register Styles 
+	 * Enqueue & Register Styles
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 */
 	public function enqueue_styles_assets(){
 		//Minify files?
@@ -274,11 +277,11 @@ final class Custom_Facebook_Feed{
 	    $cff_minify ? $cff_min = '.min' : $cff_min = '';
 
 	    // Respects SSL, Style.css is relative to the current file
-	    wp_register_style( 
-	    	'cff', 
+	    wp_register_style(
+	    	'cff',
 	    	CFF_PLUGIN_URL . 'assets/css/cff-style'.$cff_min.'.css' ,
-	    	array(), 
-	    	CFFVER 
+	    	array(),
+	    	CFFVER
 	    );
 	    wp_enqueue_style( 'cff' );
 
@@ -294,11 +297,11 @@ final class Custom_Facebook_Feed{
 	        if( $options[ 'cff_font_source' ] == 'none' ){
 	            //Do nothing
 	        } else if( $options[ 'cff_font_source' ] == 'local' ){
-	            wp_enqueue_style( 
-	            	'sb-font-awesome', 
+	            wp_enqueue_style(
+	            	'sb-font-awesome',
 	    			CFF_PLUGIN_URL . 'assets/css/font-awesome.min.css',
-	            	array(), 
-	            	'4.7.0' 
+	            	array(),
+	            	'4.7.0'
 	            );
 	        } else {
 	            wp_enqueue_style( 'sb-font-awesome', 'https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' );
@@ -309,25 +312,25 @@ final class Custom_Facebook_Feed{
 
 
 	/**
-	 * Enqueue & Register Scripts 
-	 * 
+	 * Enqueue & Register Scripts
 	 *
-	 * @since X.X.X
+	 *
+	 * @since 2.19
 	 * @access public
 	 */
-	public function enqueue_scripts_assets(){		
+	public function enqueue_scripts_assets(){
 		//Minify files?
 	    $options = get_option('cff_style_settings');
 	    isset($options[ 'cff_minify' ]) ? $cff_minify = $options[ 'cff_minify' ] : $cff_minify = '';
 	    $cff_minify ? $cff_min = '.min' : $cff_min = '';
 
 	    //Register the script to make it available
-	    wp_register_script( 
-	    	'cffscripts', 
+	    wp_register_script(
+	    	'cffscripts',
 	    	CFF_PLUGIN_URL . 'assets/js/cff-scripts'.$cff_min.'.js' ,
-	    	array('jquery'), 
-	    	CFFVER, 
-	    	true 
+	    	array('jquery'),
+	    	CFFVER,
+	    	true
 	    );
 	    //Enqueue it to load it onto the page
 	    wp_enqueue_script('cffscripts');
@@ -336,10 +339,10 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * DB Update Checker.
-	 * 
+	 *
 	 * Check for the db updates
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	function cff_check_for_db_updates(){
@@ -389,15 +392,20 @@ final class Custom_Facebook_Feed{
 			}
 			update_option( 'cff_db_version', CFF_DBVERSION );
 		}
+
+		if ( (float) $db_ver < 1.3 ) {
+			CFF_Feed_Locator::create_table();
+			update_option( 'cff_db_version', CFF_DBVERSION );
+		}
 	}
 
 
 	/**
 	 * Activate
-	 * 
+	 *
 	 * CFF activation action.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	function cff_activate() {
@@ -460,10 +468,10 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * Deactivate
-	 * 
+	 *
 	 * CFF deactivation action.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	function cff_deactivate() {
@@ -474,10 +482,10 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * Uninstall
-	 * 
+	 *
 	 * CFF uninstallation action.
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	public static function cff_uninstall(){
@@ -525,10 +533,10 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * Custom CSS
-	 * 
+	 *
 	 * Adding custom CSS
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	function cff_custom_css() {
@@ -549,10 +557,10 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * Custom JS
-	 * 
+	 *
 	 * Adding custom JS
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	function cff_js() {
@@ -567,10 +575,11 @@ final class Custom_Facebook_Feed{
 	    isset($options[ 'cff_title_link' ]) ? $cff_title_link = $options[ 'cff_title_link' ] : $cff_title_link = false;
 	    ($cff_title_link == 'true' || $cff_title_link == 'on') ? $cff_title_link = true : $cff_title_link = false;
 	    if ($cff_title_link) $cff_link_hashtags = 'false';
-	    
+
 	    echo '<!-- Custom Facebook Feed JS -->';
 	    echo "\r\n";
 	    echo '<script type="text/javascript">';
+	    echo 'var cffajaxurl = "' . admin_url('admin-ajax.php') . '";';
 	    echo "\r\n";
 	    echo 'var cfflinkhashtags = "' . $cff_link_hashtags . '";';
 	    echo "\r\n";
@@ -587,10 +596,10 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * Notice Dismiss
-	 * 
+	 *
 	 * PPCA Check Notice Dismiss
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	function cff_ppca_check_notice_dismiss() {
@@ -604,10 +613,10 @@ final class Custom_Facebook_Feed{
 
 	/**
 	 * Cron Custom Interval
-	 * 
+	 *
 	 * Cron Job Custom Interval
 	 *
-	 * @since X.X.X
+	 * @since 2.19
 	 * @access public
 	 */
 	function cff_cron_custom_interval( $schedules ) {
@@ -618,6 +627,31 @@ final class Custom_Facebook_Feed{
 		return $schedules;
 	}
 
+	/**
+	 * Feed Locator Ajax Call
+	 *
+	 *
+	 * @since 2.19
+	 * @access public
+	 */
+	function cff_feed_locator(){
+		$feed_locator_data_array = isset($_POST['feedLocatorData']) && !empty($_POST['feedLocatorData']) && is_array($_POST['feedLocatorData']) ? $_POST['feedLocatorData'] : false;
+	  	if($feed_locator_data_array != false):
+	  		foreach ($feed_locator_data_array as $single_feed_locator) {
+	  			$feed_details = array(
+					'feed_id' => $single_feed_locator['feedID'],
+					'atts' =>  $single_feed_locator['shortCodeAtts'],
+					'location' => array(
+						'post_id' => $single_feed_locator['postID'],
+						'html' => $single_feed_locator['location']
+					)
+				);
+				$locator = new CFF_Feed_Locator( $feed_details );
+				$locator->add_or_update_entry();
+	  		}
+	  	endif;
+	    die();
+	}
 }
 
 

@@ -1,16 +1,16 @@
-<?php 
+<?php
 /*
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.18.1
+Version: 2.19
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
 Text Domain: custom-facebook-feed
 */
-/* 
-Copyright 2021  Smash Balloon LLC (email : hey@smashballoon.com)
+/*
+Copyright 2021 Smash Balloon LLC (email : hey@smashballoon.com)
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
@@ -25,11 +25,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-define('CFFVER', '2.18.1');
+define('CFFVER', '2.19');
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
-    define( 'CFF_DBVERSION', '1.2' );
+    define( 'CFF_DBVERSION', '1.3' );
 }
 
 // Plugin Folder Path.
@@ -48,22 +48,24 @@ if ( ! defined( 'CFF_FILE' ) ) {
 }
 
 if ( ! defined( 'CFF_FILE' ) ) {
-	define( 'CFF_PLUGIN_BASE', plugin_basename( CFF_FILE ) );
+    define( 'CFF_PLUGIN_BASE', plugin_basename( CFF_FILE ) );
 }
-
+if ( ! defined( 'CFF_FEED_LOCATOR' ) ) {
+    define( 'CFF_FEED_LOCATOR', 'cff_facebook_feed_locator' );
+}
 
 /**
  * Check PHP version
- * 
+ *
  * Check for minimum PHP 5.6 version
  *
- * @since X.X.X
+ * @since 2.19
 */
 if ( version_compare( phpversion(), '5.6', '<' ) ) {
-    if( !function_exists( 'cff_check_php_notice' ) ){    
+    if( !function_exists( 'cff_check_php_notice' ) ){
         include CFF_PLUGIN_DIR . 'admin/enqueu-script.php';
         function cff_check_php_notice(){
-            $include_revert = ( version_compare( phpversion(), '5.6', '<' ) &&  version_compare( phpversion(), '5.3', '>' ) );  
+            $include_revert = ( version_compare( phpversion(), '5.6', '<' ) &&  version_compare( phpversion(), '5.3', '>' ) );
             ?>
                 <div class="notice notice-error">
                     <div>
@@ -88,7 +90,7 @@ if ( version_compare( phpversion(), '5.6', '<' ) ) {
                         <?php endif; ?>
                     </div>
                 </div>
-            <?php 
+            <?php
         }
     }
     add_action( 'admin_notices', 'cff_check_php_notice' );
@@ -100,10 +102,10 @@ include CFF_PLUGIN_DIR . 'inc/Custom_Facebook_Feed.php';
 
 if ( function_exists('cff_main_pro') ){
     wp_die( "Please deactivate the Pro version of the Custom Facebook Feed plugin before activating this version.<br /><br />Back to the WordPress <a href='".get_admin_url(null, 'plugins.php')."'>Plugins page</a>." );
-} 
+}
 
 
 function cff_main() {
-	return CustomFacebookFeed\Custom_Facebook_Feed::instance();
+    return CustomFacebookFeed\Custom_Facebook_Feed::instance();
 }
 cff_main();

@@ -168,7 +168,7 @@ if(!cff_js_exists){
 
 
 			//Click function
-			$self.find('.cff-expand a').unbind('click').bind('click', function(e){
+			$self.find('.cff-expand a').on('click', function(e){
 				e.preventDefault();
 				var $expand = jQuery(this),
 					$more = $expand.find('.cff-more'),
@@ -187,6 +187,10 @@ if(!cff_js_exists){
 				cffLinkHashtags();
 				//Add target to links in text when expanded
 				$post_text.find('a').attr('target', '_blank');
+				//Re-init masonry for JS
+				if( $self.closest('.cff').hasClass('cff-masonry-js') && !$self.closest('.cff').hasClass('cff-masonry-css') ){
+                	cffAddMasonry($self.closest('.cff'));
+				}
 			});
 			//Add target attr to post text links via JS so aren't included in char count
 			$post_text.find('a').add( $self.find('.cff-post-desc a') ).attr({
@@ -244,7 +248,8 @@ if(!cff_js_exists){
 			});
 
 			//Share tooltip function
-			$self.find('.cff-share-link').unbind().bind('click', function(e){
+			$self.find('.cff-share-link').on('click', function(e){
+
 				e.preventDefault();
 				var $cffShareTooltip = $self.find('.cff-share-tooltip')
 
@@ -268,17 +273,18 @@ if(!cff_js_exists){
 
 
 		}); //End .cff-item each
-		
-		
+
+
 
 		jQuery('.cff-wrapper').each(function(){
 			var $cff = jQuery(this).find('#cff');
-			var $cffElm = jQuery(this);			
+			var $cffElm = jQuery(this);
 			setTimeout(function(){
 				var consent = checkConsent( $cffElm );
 				if(consent){
-					addFullFeatures( $cffElm);				
+					addFullFeatures( $cffElm);
 				}else{
+					jQuery('.cff-gdpr-notice').css({'display':'inline-block'});
 					if ($cffElm.find('.cff-visual-header').length) {
 	                    $cffElm.find('.cff-header-text').closest('.cff-visual-header').addClass('cff-no-consent');
 	                }
@@ -308,7 +314,7 @@ if(!cff_js_exists){
 				//Call it again in case post isn't fully loaded
 				setTimeout(function(){ cffAddMasonry($cff); }, 500);
 				// Resizing the window can affect the masonry feed so it is reset on resize
-				jQuery(window).resize(function () {
+				jQuery(window).on('resize', function () {
 					setTimeout(function(){
 						cffAddMasonry($cff);
 					}, 500);
@@ -342,7 +348,7 @@ if(!cff_js_exists){
 			});
 		}setTimeout(cffSizeVisualHeader, 200);
 
-		jQuery(window).resize(function () {
+		jQuery(window).on('resize', function () {
 			setTimeout(function(){
 				cffSizeVisualHeader();
 			}, 500);
@@ -378,7 +384,7 @@ if(!cff_js_exists){
             } else if (typeof window.Cookiebot !== "undefined") { // Cookiebot by Cybot A/S
                 consentGiven = Cookiebot.consented;
             } else if (typeof window.BorlabsCookie !== 'undefined') { // Borlabs Cookie by Borlabs
-                consentGiven = window.BorlabsCookie.checkCookieConsent('facebook');                
+                consentGiven = window.BorlabsCookie.checkCookieConsent('facebook');
             }
             return consentGiven; // GDPR not enabled
 		}
@@ -400,6 +406,7 @@ if(!cff_js_exists){
 
 		function addFullFeatures( ctn ){
 			ctn = jQuery( ctn );
+			jQuery('.cff-gdpr-notice').remove();
 			ctn.find('.cff-author-img').each(function() {
                 jQuery(this).find('img').attr('src',jQuery(this).attr('data-avatar'));
                 jQuery(this).removeClass('cff-no-consent');
@@ -425,7 +432,7 @@ if(!cff_js_exists){
                         jQuery(this).find('.cff-header-img').find('img').attr('src',jQuery(this).find('.cff-header-img').find('img').attr('data-avatar'))
                     }
                 });
-            }	
+            }
 		}
 
 		function afterConsentToggled( isConsent, ctn ) {
@@ -434,18 +441,53 @@ if(!cff_js_exists){
 			}
 		}
 
+		//Feed Locator Script
+		function cffGetFeedLocatorDataArray(){
+			var feedLocatorData = [];
+			jQuery('.cff-list-container').each(function(){
+				$cffPagUrl = jQuery(this).find('.cff-pag-url');
+				var singleFeedLocatorData = {
+					feedID : $cffPagUrl.attr('data-feed-id'),
+					postID : $cffPagUrl.attr('data-post-id'),
+					shortCodeAtts : jQuery.trim($cffPagUrl.attr('data-cff-shortcode')) == '' ? null : JSON.parse($cffPagUrl.attr('data-cff-shortcode')),
+					location : locationGuess(jQuery(this))
+				};
+				feedLocatorData.push(singleFeedLocatorData);
+			});
+			return feedLocatorData;
+		}
+
+		function locationGuess($cff = false) {
+			var $feed = ($cff == false) ? jQuery(this.el) : $cff,
+			location = 'content';
+
+			if ($feed.closest('footer').length) {
+				location = 'footer';
+			} else if ($feed.closest('.header').length
+				|| $feed.closest('header').length) {
+				location = 'header';
+			} else if ($feed.closest('.sidebar').length
+				|| $feed.closest('aside').length) {
+				location = 'sidebar';
+			}
+
+			return location;
+		}
+
+
+
 	jQuery(document).ready(function(){
 		var $ = jQuery;
-            $('#cookie-notice a').click(function() {
+            $('#cookie-notice a').on('click', function() {
                 setTimeout(function() {
-                    jQuery('.cff-wrapper').each(function(index){ 	           			
+                    jQuery('.cff-wrapper').each(function(index){
                         afterConsentToggled( checkConsent( jQuery(this) ), jQuery(this) );
                     });
                 },1000);
             });
 
             // Cookie Notice by dFactory
-            $('#cookie-law-info-bar a').click(function() {
+            $('#cookie-law-info-bar a').on('click', function() {
                 setTimeout(function() {
                     jQuery('.cff-wrapper').each(function(index){
                         afterConsentToggled( checkConsent( jQuery(this) ), jQuery(this) );
@@ -454,7 +496,7 @@ if(!cff_js_exists){
             });
 
             // GDPR Cookie Consent by WebToffee
-            $('.cli-user-preference-checkbox').click(function(){
+            $('.cli-user-preference-checkbox').on('click', function(){
                 setTimeout(function() {
                     jQuery('.cff-wrapper').each(function(index){
                         afterConsentToggled( false, jQuery(this) );
@@ -489,6 +531,17 @@ if(!cff_js_exists){
                 	afterConsentToggled( true, jQuery(this) );
                 });
             });
+            if( $('.cff-list-container').length ){
+	            var feedLocatorData =  cffGetFeedLocatorDataArray();
+	            $.ajax({
+                    url: cffajaxurl,
+                    type: 'POST',
+                    data:{
+                        action: 'feed_locator',
+                        feedLocatorData : feedLocatorData
+                    }
+                });
+            }
 	})
 
 } //End cff_js_exists check

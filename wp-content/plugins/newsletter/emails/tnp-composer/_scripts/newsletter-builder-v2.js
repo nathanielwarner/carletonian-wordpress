@@ -63,8 +63,9 @@ jQuery.fn.perform_block_edit = function () {
                 context_type: tnp_context_type,
                 options: options
             }, function () {
+                console.log('Block form options loaded');
                 start_options = jQuery("#tnpc-block-options-form").serialize();
-                tnp_controls_init();
+                //tnp_controls_init();
             });
 
         } else {
