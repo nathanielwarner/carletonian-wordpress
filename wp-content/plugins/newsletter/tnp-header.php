@@ -108,7 +108,7 @@ $warning |= empty($status_options['mail']);
         <li>
             <a href="#"><i class="fas fa-newspaper"></i> <?php _e('Newsletters', 'newsletter') ?> <i class="fas fa-chevron-down"></i></a>
             <ul>
-                <li><a href="?page=newsletter_emails_theme"><i class="fas fa-plus"></i> <?php _e('Create newsletter', 'newsletter') ?>
+                <li><a href="?page=newsletter_emails_composer"><i class="fas fa-plus"></i> <?php _e('Create newsletter', 'newsletter') ?>
                         <small><?php _e('Start your new campaign', 'newsletter') ?></small></a></li>
                 <li><a href="?page=newsletter_emails_index"><i class="fas fa-newspaper"></i> <?php _e('Newsletters', 'newsletter') ?>
                         <small><?php _e('The classic "write & send" newsletters', 'newsletter') ?></small></a></li>
@@ -159,6 +159,12 @@ $warning |= empty($status_options['mail']);
                     <i class="fas fa-exclamation-triangle" style="color: red;"></i>
                 <?php } ?>
             </a>
+            <ul>
+                <li>
+                    <a href="?page=newsletter_main_logs"><i class="fas fa-file"></i> <?php _e('Logs', 'newsletter') ?>
+                    <small><?php _e('Plugin and addons logs', 'newsletter') ?></small></a>
+                </li>
+            </ul>
         </li>
         <?php } ?>
         
@@ -259,9 +265,9 @@ $warning |= empty($status_options['mail']);
 <?php if (!defined('NEWSLETTER_CRON_WARNINGS') || NEWSLETTER_CRON_WARNINGS) {
             $x = wp_next_scheduled('newsletter');
             if ($x === false) {
-                echo '<div class="tnp-warning">The Newsletter delivery engine is off (it should never be off). Deactivate and reactivate the Newsletter plugin.</div>';
+                echo '<div class="tnpc-warning">The Newsletter delivery engine is off (it should never be off). Deactivate and reactivate the Newsletter plugin.</div>';
             } else if (time() - $x > 900) {
-                echo '<div class="tnp-warning">The WP scheduler doesn\'t seem to be running correctly for Newsletter. <a href="https://www.thenewsletterplugin.com/documentation/?p=6128" target="_blank"><strong>Read this page to solve the problem</strong></a>.</div>';
+                echo '<div class="tnpc-warning">The WP scheduler doesn\'t seem to be running correctly for Newsletter. <a href="https://www.thenewsletterplugin.com/documentation/?p=6128" target="_blank"><strong>Read this page to solve the problem</strong></a>.</div>';
             } else {
 //            if (empty($this->options['disable_cron_notice'])) {
 //                $cron_data = get_option('newsletter_diagnostic_cron_data');

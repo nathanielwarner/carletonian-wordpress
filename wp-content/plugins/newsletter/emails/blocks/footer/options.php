@@ -3,9 +3,15 @@
 ?>
 
 
-<?php $fields->text('view', 'View online label') ?>
-<?php $fields->text('profile', 'Subscription details label') ?>
+<?php $fields->text('view', __('View online label','newsletter')) ?>
+<?php $fields->text('profile', __('Subscription details label','newsletter')) ?>
 
-<?php $fields->font() ?>
+<?php $fields->select('url', '', array('profile'=>__('Use profile link','newsletter'), 'unsubscription' => __('Use unsubscription link','newsletter'))) ?>
+
+<?php $fields->font( 'font', __( 'Text', 'newsletter' ), [
+	'family_default' => true,
+	'size_default'   => true,
+	'weight_default' => true
+] ) ?>
 
 <?php $fields->block_commons() ?>

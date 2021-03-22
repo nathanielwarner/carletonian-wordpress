@@ -14,7 +14,7 @@ $default_options = array(
     'block_padding_right' => 15,
     'block_padding_bottom' => 15,
     'block_padding_top' => 15,
-    'block_background'=> '#ffffff'
+    'block_background'=> ''
 );
 $options = array_merge($default_options, $options);
 

@@ -534,6 +534,9 @@ class CFF_Shortcode_Display {
 
 			$cff_app_link = isset($news->call_to_action->value->app_link) ? $news->call_to_action->value->app_link : '';
 
+            // Set the message page cta to use the default messenger link as the API can sometimes send an invalid link
+            if ( $cff_button_type == 'MESSAGE_PAGE' ) $cff_cta_link = 'https://m.me/' . $news->from->id;
+
 			//Add the button to the post if the text isn't "NO_BUTTON"
 			if( $cff_button_type != 'NO_BUTTON' ):
 			?>

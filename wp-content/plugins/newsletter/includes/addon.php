@@ -55,6 +55,14 @@ class NewsletterAddon {
     function is_allowed() {
         return Newsletter::instance()->is_allowed();
     }
+    
+    function get_languages() {
+        return Newsletter::instance()->get_languages();
+    }
+    
+    function is_multilanguage() {
+        return Newsletter::instance()->is_multilanguage();
+    }
 
     /**
      * General logger for this add-on.

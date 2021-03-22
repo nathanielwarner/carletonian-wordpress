@@ -302,6 +302,18 @@ class TNP_User {
     const STATUS_UNSUBSCRIBED = 'U';
     const STATUS_BOUNCED = 'B';
 
+    public static function get_status_label($status) {
+        switch ($status) {
+            case self::STATUS_NOT_CONFIRMED: return __('NOT CONFIRMED', 'newsletter');
+                break;
+            case self::STATUS_CONFIRMED: return __('CONFIRMED', 'newsletter');
+                break;
+            case self::STATUS_UNSUBSCRIBED: return __('UNSUBSCRIBED', 'newsletter');
+                break;
+            case self::STATUS_BOUNCED: return __('BOUNCED', 'newsletter');
+                break;
+        }
+    }
 }
 
 /**
@@ -848,7 +860,7 @@ class NewsletterModule {
     }
 
     function admin_menu() {
-
+        
     }
 
     function add_menu_page($page, $title, $capability = '') {
@@ -965,12 +977,14 @@ class NewsletterModule {
         $email = $this->store->save(NEWSLETTER_EMAILS_TABLE, $email, $return_format);
         if ($return_format == OBJECT) {
             $email->options = maybe_unserialize($email->options);
-            if (!is_array($email->options))
-                $email->options = array();
+            if (!is_array($email->options)) {
+                $email->options = [];
+            }
         } else if ($return_format == ARRAY_A) {
             $email['options'] = maybe_unserialize($email['options']);
-            if (!is_array($email['options']))
-                $email['options'] = array();
+            if (!is_array($email['options'])) {
+                $email['options'] = [];
+            }
         }
         return $email;
     }

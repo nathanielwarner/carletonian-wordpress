@@ -492,7 +492,7 @@ class NewsletterDefaultSMTPMailer extends NewsletterMailer {
 
         require_once 'PHPMailerLoader.php';
         $this->mailer = PHPMailerLoader::make_instance();
-        
+
         $this->mailer->XMailer = ' '; // A space!
 
         $this->mailer->IsSMTP();
@@ -506,7 +506,7 @@ class NewsletterDefaultSMTPMailer extends NewsletterMailer {
             $this->mailer->Username = $this->options['user'];
             $this->mailer->Password = $this->options['pass'];
         }
-        $this->mailer->SMTPKeepAlive = true;
+
         $this->mailer->SMTPSecure = $this->options['secure'];
         $this->mailer->SMTPAutoTLS = false;
 

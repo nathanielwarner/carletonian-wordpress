@@ -126,7 +126,7 @@ class Hooks
         }
     }
 
-    public function purgeCacheByRelevantURLs($postId)
+    public function purgeCacheByRelevantURLs($postId, ...$args)
     {
         if ($this->isPluginSpecificCacheEnabled() || $this->isAutomaticPlatformOptimizationEnabled()) {
             $wpDomainList = $this->integrationAPI->getDomainList();
@@ -135,11 +135,28 @@ class Hooks
             }
             $wpDomain = $wpDomainList[0];
 
-            $validPostStatus = array('publish', 'trash');
+            $validPostStatus = array('publish', 'trash', 'private');
             $thisPostStatus = get_post_status($postId);
 
             if (get_permalink($postId) != true || !in_array($thisPostStatus, $validPostStatus)) {
                 return;
+            }
+
+            // We don't need to purge for private posts, except when they were just transitioned from public.
+            if ('private' === $thisPostStatus) {
+                // The action that fires on transition of status is "post_updated", which will have the old version
+                // in the extra args. If that arg is not there we can bail out.
+                if (! isset($args[1])) {
+                    return;
+                }
+                /**
+                 * @var \WP_Post $before Previous version of post.
+                 */
+                list(, $before) = $args;
+
+                if ('private' === $before->post_status) {
+                    return;
+                }
             }
 
             if (is_int(wp_is_post_autosave($postId)) ||  is_int(wp_is_post_revision($postId))) {
@@ -239,6 +256,20 @@ class Hooks
             array_push($listofurls, $pageLink);
         }
 
+        // Refresh pagination
+        $total_posts_count = wp_count_posts()->publish;
+        $posts_per_page = get_option('posts_per_page');
+        // Limit to up to 3 pages
+        $page_number_max = min(3, ceil($total_posts_count / $posts_per_page));
+
+        $this->logger->debug("total_posts_count $total_posts_count");
+        $this->logger->debug("posts_per_page  $posts_per_page");
+        $this->logger->debug("page_number_max $page_number_max");
+
+        foreach (range(1, $page_number_max) as $page_number) {
+            array_push($listofurls, home_url(sprintf('/page/%s/', $page_number)));
+        }
+
         // Attachments
         if ('attachment' == $postType) {
             $attachmentUrls = array();
@@ -321,5 +352,34 @@ class Hooks
         } else {
             header('cf-edge-cache: no-cache');
         }
+    }
+
+    public function purgeCacheOnCommentStatusChange($new_status, $old_status, $comment)
+    {
+        if (!isset($comment->comment_post_ID) || empty($comment->comment_post_ID)) {
+            return; // nothing to do
+        }
+
+      // in case the comment status changed, and either old or new status is "approved", we need to purge cache for the corresponding post
+        if (($old_status != $new_status) && (($old_status === 'approved') || ($new_status === 'approved'))) {
+            $this->purgeCacheByRelevantURLs($comment->comment_post_ID);
+            return;
+        }
+    }
+
+    public function purgeCacheOnNewComment($comment_id, $comment_status, $comment_data)
+    {
+        if ($comment_status != 1) {
+            return; // if comment is not approved, stop
+        }
+        if (!is_array($comment_data)) {
+            return; // nothing to do
+        }
+        if (!array_key_exists('comment_post_ID', $comment_data)) {
+            return; // nothing to do
+        }
+
+      // all clear, we ne need to purge cache related to this post id
+        $this->purgeCacheByRelevantURLs($comment_data['comment_post_ID']);
     }
 }

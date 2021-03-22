@@ -3,7 +3,7 @@
  * Name: Giphy
  * Section: content
  * Description: Add a Giphy image
- * 
+ *
  */
 
 /* @var $options array */
@@ -12,7 +12,6 @@
 $default_options = array(
     'view'=>'View online',
     'text'=>'Few words summary',
-    'block_background'=>'#ffffff',
     'font_family'=>$font_family,
     'font_size'=>13,
     'color'=>'#999999',
@@ -20,6 +19,7 @@ $default_options = array(
     'block_padding_bottom'=>15,
     'block_padding_left'=>0,
     'block_padding_right'=>0,
+    'block_background'=>'',
     'giphy_url' => ''
 );
 

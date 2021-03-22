@@ -2,7 +2,8 @@
 
 defined('ABSPATH') || exit;
 
-class NewsletterEmails extends NewsletterModule {
+class NewsletterEmails extends NewsletterModule
+{
 
     static $instance;
 
@@ -11,21 +12,25 @@ class NewsletterEmails extends NewsletterModule {
     const EDITOR_TINYMCE = 0;
 
     static $PRESETS_LIST;
+    const PRESET_EMAIL_TYPE = 'composer_template';
+
     // Cache
     var $blocks = null;
 
     /**
      * @return NewsletterEmails
      */
-    static function instance() {
+    static function instance()
+    {
         if (self::$instance == null) {
             self::$instance = new NewsletterEmails();
         }
         return self::$instance;
     }
 
-    function __construct() {
-        self::$PRESETS_LIST = array("cta", "invite", "announcement", "posts", "sales", "product", "tour", "simple", "blank");
+    function __construct()
+    {
+        self::$PRESETS_LIST = array("cta", "invite", "announcement", "posts", "sales", "product", "tour", "simple");
         $this->themes = new NewsletterThemes('emails');
         parent::__construct('emails', '1.1.5');
         add_action('newsletter_action', array($this, 'hook_newsletter_action'), 13, 3);
@@ -36,6 +41,8 @@ class NewsletterEmails extends NewsletterModule {
             add_action('wp_ajax_tnpc_css', array($this, 'tnpc_css_callback'));
             add_action('wp_ajax_tnpc_options', array($this, 'hook_wp_ajax_tnpc_options'));
             add_action('wp_ajax_tnpc_presets', array($this, 'hook_wp_ajax_tnpc_presets'));
+            add_action('wp_ajax_tnpc_delete_preset', array($this, 'hook_wp_ajax_tnpc_delete_preset'));
+            add_action('wp_ajax_tnpc_regenerate_email', array($this, 'hook_wp_ajax_tnpc_regenerate_email'));
 
             // Thank you to plugins which add the WP editor on other admin plugin pages...
             if (isset($_GET['page']) && $_GET['page'] == 'newsletter_emails_edit') {
@@ -45,7 +52,8 @@ class NewsletterEmails extends NewsletterModule {
         }
     }
 
-    function options_decode($options) {
+    function options_decode($options)
+    {
 
         // Start compatibility
         if (is_string($options) && strpos($options, 'options[') !== false) {
@@ -71,11 +79,13 @@ class NewsletterEmails extends NewsletterModule {
      *
      * @param array $options Options array
      */
-    function options_encode($options) {
+    function options_encode($options)
+    {
         return base64_encode(json_encode($options, JSON_HEX_TAG | JSON_HEX_AMP));
     }
 
-    function hook_wp_ajax_tnpc_options() {
+    function hook_wp_ajax_tnpc_options()
+    {
         global $wpdb;
 
         // TODO: Uniform to use id everywhere
@@ -90,7 +100,9 @@ class NewsletterEmails extends NewsletterModule {
         if (!class_exists('NewsletterControls')) {
             include NEWSLETTER_INCLUDES_DIR . '/controls.php';
         }
+
         $options = $this->options_decode(stripslashes_deep($_REQUEST['options']));
+        $composer = isset($_POST['composer']) ? $_POST['composer'] : [];
 
         $context = array('type' => '');
         if (isset($_REQUEST['context_type'])) {
@@ -123,40 +135,160 @@ class NewsletterEmails extends NewsletterModule {
      *
      * @return string
      */
-    function hook_wp_ajax_tnpc_presets() {
+    public function hook_wp_ajax_tnpc_presets()
+    {
 
-        $content = "";
+        if ($this->is_loading_preset_content_request()) {
 
-        if (!empty($_REQUEST['id'])) {
+            $preset_id = $_REQUEST['id'];
+            $response = $this->get_preset_content($preset_id);
 
-            // Preset render
-            $preset = $this->get_preset($_REQUEST['id']);
-
-            foreach ($preset->blocks as $item) {
-                $this->render_block($item->block, true, (array) $item->options);
-            }
         } else {
 
-            $content = "<div class='clear tnpc-presets-title'>" . __('Choose a preset:', 'newsletter') . "</div>";
+            $response = $this->get_all_preset();
 
-            foreach (self::$PRESETS_LIST as $id) {
-
-                $preset = $this->get_preset($id);
-
-                $content .= "<div class='tnpc-preset' onclick='tnpc_load_preset(\"$id\")'>";
-                $content .= "<img src='$preset->icon' title='$preset->name' />";
-                $content .= "<span class='tnpc-preset-label'>$preset->name</span>";
-                $content .= '</div>';
-            }
-
-            $content .= '<div class="clear"></div>';
-            echo $content;
         }
 
+        echo $response;
         die();
     }
 
-    function has_dynamic_blocks($theme) {
+    private function is_loading_preset_content_request()
+    {
+        return !empty($_REQUEST['id']);
+    }
+
+    private function get_preset_content($preset_id)
+    {
+
+        $content = '';
+
+        if ($this->is_a_tnp_default_preset($preset_id)) {
+
+            // Get preset from file
+            $preset = $this->get_preset_from_file($preset_id);
+
+            foreach ($preset->blocks as $item) {
+                ob_start();
+                $this->render_block($item->block, true, (array)$item->options);
+                $content .= trim(ob_get_clean());
+            }
+
+        } else {
+
+            // Get preset from db
+            $preset_email = $this->get_email(intval($_REQUEST['id']));
+            $content = $preset_email->message;
+
+        }
+
+        return $content;
+
+    }
+
+    private function is_a_tnp_default_preset($preset_id)
+    {
+        return in_array($preset_id, self::$PRESETS_LIST);
+    }
+
+    private function get_all_preset()
+    {
+
+        $content = "<div class='tnpc-preset-container'>";
+        $content .= "<div class='tnpc-preset-legacy-themes'><a href='" . $this->get_admin_page_url('theme') . "'>" . __('Looking for legacy themes?', 'newsletter') . "</a></div>";
+
+        // LOAD USER PRESETS
+        $user_preset_list = $this->get_emails(self::PRESET_EMAIL_TYPE);
+
+        foreach ($user_preset_list as $user_preset) {
+
+            $default_icon_url = NEWSLETTER_URL . "/emails/presets/default-icon.png?ver=2";
+            $preset_name = $user_preset->subject;
+            $delete_preset_text = __('Delete', 'newsletter');
+            $edit_preset_text = __('Edit', 'newsletter');
+
+            // esc_js() assumes the string will be in single quote (arghhh!!!)
+            $onclick_edit = 'tnpc_edit_preset(' . ((int)$user_preset->id) . ', \'' . esc_js($preset_name) . '\', event)';
+            $onclick_delete = 'tnpc_delete_preset(' . ((int)$user_preset->id) . ', \'' . esc_js($preset_name) . '\', event)';
+            $onclick_load = 'tnpc_load_preset(' . ((int)$user_preset->id) . ', \'' . esc_js($preset_name) . '\', event)';
+
+            $content .= "<div class='tnpc-preset' onclick='" . esc_attr($onclick_load) . "'>\n";
+            $content .= "<img src='$default_icon_url' title='" . esc_attr($preset_name) . "' alt='" . esc_attr($preset_name) . "'>\n";
+            $content .= "<span class='tnpc-preset-label'>" . esc_html($user_preset->subject) . "</span>\n";
+            $content .= "<span class='tnpc-delete-preset' onclick='" . esc_attr($onclick_delete) . "' title='" . esc_attr($delete_preset_text) . "'><i class='fas fa-times'></i></span>\n";
+            $content .= "<span class='tnpc-edit-preset' onclick='" . esc_attr($onclick_edit) . "' title='" . esc_attr($edit_preset_text) . "'><i class='fas fa-pencil-alt'></i></span>\n";
+            $content .= "</div>";
+
+        }
+
+        // LOAD TNP PRESETS
+        foreach (self::$PRESETS_LIST as $id) {
+            $preset = $this->get_preset_from_file($id);
+            $preset_name = esc_html($preset->name);
+            $content .= "<div class='tnpc-preset' onclick='tnpc_load_preset(\"$id\")'>";
+            $content .= "<img src='$preset->icon' title='$preset_name' alt='$preset_name'/>";
+            $content .= "<span class='tnpc-preset-label'>$preset_name</span>";
+            $content .= "</div>";
+        }
+
+        // Automated spot
+        $content .= "<div class='tnpc-preset'>";
+        if (class_exists('NewsletterAutomated')) {
+            $content .= "<a href='?page=newsletter_automated_index'>";
+        } else {
+            $content .= "<a href='https://www.thenewsletterplugin.com/automated?utm_source=plugin&utm_campaign=automated&utm_medium=composer'>";
+        }
+        $content .= "<img src='" . plugins_url('newsletter') . "/emails/images/automated.png' title='Automated addon' alt='Automated'/>";
+        $content .= "<span class='tnpc-preset-label'>Daily, weekly and monthly newsletters</span></a>";
+        $content .= "</div>";
+
+        // Autoresponder spot
+        $content .= "<div class='tnpc-preset'>";
+        if (class_exists('NewsletterAutoresponder')) {
+            $content .= "<a href='?page=newsletter_autoresponder_index'>";
+        } else {
+            $content .= "<a href='https://www.thenewsletterplugin.com/autoresponder?utm_source=plugin&utm_campaign=autoresponder&utm_medium=composer' target='_blank'>";
+        }
+        $content .= "<img src='" . plugins_url('newsletter') . "/emails/images/autoresponder.png' title='Autoresponder addon' alt='Autoresponder'/>";
+        $content .= "<span class='tnpc-preset-label'>Autoresponders</span></a>";
+        $content .= "</div>";
+
+        // RAW HTML
+        $content .= "<div class='tnpc-preset tnpc-preset-html' onclick='location.href=\"" . wp_nonce_url('admin.php?page=newsletter_emails_new&id=rawhtml', 'newsletter-new') . "\"'>";
+        $content .= "<img src='" . plugins_url('newsletter') . "/emails/images/rawhtml.png' title='RAW HTML' alt='RAW'/>";
+        $content .= "<span class='tnpc-preset-label'>Raw HTML</span>";
+        $content .= "</div>";
+
+        $content .= "<div class='clear'></div>";
+        $content .= "</div>";;
+
+        return $content;
+
+    }
+
+    /**
+     * Check if the preset name exists and adds an incremental suffix if the name exists.
+     *
+     * @param string $name
+     *
+     * @return string
+     */
+    public function sanitize_preset_name($name)
+    {
+        global $wpdb;
+
+        $name = empty($name) ? __('Empty name preset', 'newsletter') : $name;
+        $name = sanitize_text_field($name);
+        $type = self::PRESET_EMAIL_TYPE;
+        $count = (int)$wpdb->get_var("SELECT COUNT(*) FROM " . NEWSLETTER_EMAILS_TABLE . " WHERE type='$type' and subject='$name'");
+
+        $name = $count > 0 ? $name . " - " . ($count + 1) : $name;
+
+        return $name;
+    }
+
+    function has_dynamic_blocks($theme)
+    {
         preg_match_all('/data-json="(.*?)"/m', $theme, $matches, PREG_PATTERN_ORDER);
         foreach ($matches[1] as $match) {
             $a = html_entity_decode($match, ENT_QUOTES, 'UTF-8');
@@ -185,7 +317,8 @@ class NewsletterEmails extends NewsletterModule {
      * @param TNP_Email $email (Rinominare)
      * @return string
      */
-    function regenerate($email, $context = array()) {
+    function regenerate($email, $context = array())
+    {
 
         // Cannot be removed due to compatibility issues with old Automated versions
         if (is_object($email)) {
@@ -264,20 +397,24 @@ class NewsletterEmails extends NewsletterModule {
         return array('body' => $result, 'subject' => $subject);
     }
 
-    function remove_block_data($text) {
+    function remove_block_data($text)
+    {
         // TODO: Lavorare!
         return $text;
     }
 
-    static function get_outlook_wrapper_open($width = 600) {
+    static function get_outlook_wrapper_open($width = 600)
+    {
         return '<!--[if mso | IE]><table role="presentation" border="0" cellpadding="0" align="center" cellspacing="0" width="' . $width . '"><tr><td width="' . $width . '" style="vertical-align:top;width:' . $width . 'px;"><![endif]-->';
     }
 
-    static function get_outlook_wrapper_close() {
-        echo "<!--[if mso | IE]></td></tr></table><![endif]-->";
+    static function get_outlook_wrapper_close()
+    {
+        return "<!--[if mso | IE]></td></tr></table><![endif]-->";
     }
-    
-    function hook_safe_style_css($rules) {
+
+    function hook_safe_style_css($rules)
+    {
         $rules[] = 'display';
         return $rules;
     }
@@ -289,22 +426,55 @@ class NewsletterEmails extends NewsletterModule {
      * @param type $wrapper
      * @param type $options
      */
-    function render_block($block_id = null, $wrapper = false, $options = array(), $context = array()) {
+    function render_block($block_id = null, $wrapper = false, $options = [], $context = [], $composer = [])
+    {
         static $kses_style_filter = false;
-        
         include_once NEWSLETTER_INCLUDES_DIR . '/helper.php';
+
+        //Remove 'options_composer_' prefix
+        $composer_defaults = [];
+        foreach (TNP_Composer::get_global_style_defaults() as $global_option_name => $global_option) {
+            $composer_defaults[str_replace('options_composer_', '', $global_option_name)] = $global_option;
+        }
+        $composer = array_merge($composer_defaults, $composer);
+
+        // ========================================================= //
+        // ===============    GLOBAL VARIABLES    ================== //
+        // ========================================================= //
 
         $width = 600;
         $font_family = 'Helvetica, Arial, sans-serif';
 
+        $global_title_font_family = $composer['title_font_family'];
+        $global_title_font_size = $composer['title_font_size'];
+        $global_title_font_color = $composer['title_font_color'];
+        $global_title_font_weight = $composer['title_font_weight'];
+
+        $global_text_font_family = $composer['text_font_family'];
+        $global_text_font_size = $composer['text_font_size'];
+        $global_text_font_color = $composer['text_font_color'];
+        $global_text_font_weight = $composer['text_font_weight'];
+
+        $global_button_font_family = $composer['button_font_family'];
+        $global_button_font_size = $composer['button_font_size'];
+        $global_button_font_color = $composer['button_font_color'];
+        $global_button_font_weight = $composer['button_font_weight'];
+        $global_button_background_color = $composer['button_background_color'];
+
+        $global_block_background = $composer['block_background'];
+
         $info = Newsletter::instance()->get_options('info');
+
+        // ============================================================= //
+        // ===============    END GLOBAL VARIABLES    ================== //
+        // ============================================================= //
 
         // Just in case...
         if (!is_array($options)) {
             $options = array();
         }
-        
-        
+
+
         add_filter('safe_style_css', [$this, 'hook_safe_style_css']);
         $options = wp_kses_post_deep($options);
         remove_filter('safe_style_css', [$this, 'hook_safe_style_css']);
@@ -337,10 +507,9 @@ class NewsletterEmails extends NewsletterModule {
 
         $out = array('subject' => '', 'return_empty_message' => false, 'stop' => false, 'skip' => false);
 
-        $dir = is_rtl()?'rtl':'ltr';
-        $align_left = is_rtl()?'right':'left';
-        $align_right = is_rtl()?'left':'right';
-
+        $dir = is_rtl() ? 'rtl' : 'ltr';
+        $align_left = is_rtl() ? 'right' : 'left';
+        $align_right = is_rtl() ? 'left' : 'right';
 
         ob_start();
         $logger = $this->logger;
@@ -356,7 +525,7 @@ class NewsletterEmails extends NewsletterModule {
             'block_padding_bottom' => 0,
             'block_padding_right' => 0,
             'block_padding_left' => 0,
-            'block_background' => '#ffffff',
+            'block_background' => '',
             'block_background_2' => ''
         );
 
@@ -371,10 +540,12 @@ class NewsletterEmails extends NewsletterModule {
         // Requited for the server side parsing and rendering
         $options['block_id'] = $block_id;
 
-        $options['block_padding_top'] = (int) str_replace('px', '', $options['block_padding_top']);
-        $options['block_padding_bottom'] = (int) str_replace('px', '', $options['block_padding_bottom']);
-        $options['block_padding_right'] = (int) str_replace('px', '', $options['block_padding_right']);
-        $options['block_padding_left'] = (int) str_replace('px', '', $options['block_padding_left']);
+        $options['block_padding_top'] = (int)str_replace('px', '', $options['block_padding_top']);
+        $options['block_padding_bottom'] = (int)str_replace('px', '', $options['block_padding_bottom']);
+        $options['block_padding_right'] = (int)str_replace('px', '', $options['block_padding_right']);
+        $options['block_padding_left'] = (int)str_replace('px', '', $options['block_padding_left']);
+
+        $block_background = empty($options['block_background']) ? $global_block_background : $options['block_background'];
 
         // Internal TD wrapper
         $style = 'text-align: center; ';
@@ -383,13 +554,11 @@ class NewsletterEmails extends NewsletterModule {
         $style .= 'padding-left: ' . $options['block_padding_left'] . 'px; ';
         $style .= 'padding-right: ' . $options['block_padding_right'] . 'px; ';
         $style .= 'padding-bottom: ' . $options['block_padding_bottom'] . 'px; ';
-        $style .= 'background-color: ' . $options['block_background'] . ';';
+        $style .= 'background-color: ' . $block_background . ';';
 
         if (isset($options['block_background_gradient'])) {
-            $style .= 'background: linear-gradient(180deg, ' . $options['block_background'] . ' 0%, ' . $options['block_background_2'] . '  100%);';
+            $style .= 'background: linear-gradient(180deg, ' . $block_background . ' 0%, ' . $options['block_background_2'] . '  100%);';
         }
-
-
 
         $data = $this->options_encode($options);
         // First time block creation wrapper
@@ -404,7 +573,7 @@ class NewsletterEmails extends NewsletterModule {
 
         echo '<table type="options" data-json="', esc_attr($data), '" class="tnpc-block-content" border="0" cellpadding="0" align="center" cellspacing="0" width="100%" style="width: 100%!important; max-width: ', $width, 'px!important">', "\n";
         echo "<tr>";
-        echo '<td align="center" style="', $style, '" bgcolor="', $options['block_background'], '" width="100%">';
+        echo '<td align="center" style="', $style, '" bgcolor="', $block_background, '" width="100%">';
 
         //echo "<!-- block generated content -->\n";
         echo trim($content);
@@ -428,7 +597,8 @@ class NewsletterEmails extends NewsletterModule {
      * @param type $block_id
      * @param type $wrapper
      */
-    function tnpc_render_callback() {
+    function tnpc_render_callback()
+    {
         if (!check_ajax_referer('save')) {
             $this->dienow('Expired request');
         }
@@ -437,11 +607,71 @@ class NewsletterEmails extends NewsletterModule {
         $wrapper = isset($_POST['full']);
         $options = $this->restore_options_from_request();
 
-        $this->render_block($block_id, $wrapper, $options);
+        $this->render_block($block_id, $wrapper, $options, [], $_POST['composer']);
         wp_die();
     }
 
-    function tnpc_preview_callback() {
+    function hook_wp_ajax_tnpc_regenerate_email()
+    {
+
+        $content = stripslashes($_POST['content']);
+        $global_options = $_POST['composer'];
+
+        $regenerated_content = $this->regenerate_email_blocks($content, $global_options);
+
+        wp_send_json_success([
+            'content' => $regenerated_content,
+            'message' => __('Successfully updated', 'newsletter')
+        ]);
+
+    }
+
+    private function regenerate_email_blocks($content, $global_options)
+    {
+
+        $raw_block_options = $this->extract_encoded_blocks_options($content);
+
+        $regenerated_content = '';
+
+        foreach ($raw_block_options as $raw_block_option) {
+
+            /*		    $a             = html_entity_decode( $raw_block_option, ENT_QUOTES, 'UTF-8' );
+                        $block_options = $this->options_decode( $a );*/
+
+            $block_options = $this->options_decode($raw_block_option);
+
+            $block = $this->get_block($block_options['block_id']);
+            if (!$block) {
+                $this->logger->debug('Unable to load the block ' . $block_options['block_id']);
+            }
+
+            ob_start();
+            $this->render_block($block_options['block_id'], true, $block_options, [], $global_options);
+            $block_html = ob_get_clean();
+
+            $regenerated_content .= $block_html;
+        }
+
+        return $regenerated_content;
+
+    }
+
+    /**
+     * @param string $html_email_content Email html content
+     *
+     * @return string[] Encoded options of email blocks
+     */
+    private function extract_encoded_blocks_options($html_email_content)
+    {
+
+        preg_match_all('/data-json="(.*?)"/m', $html_email_content, $raw_block_options, PREG_PATTERN_ORDER);
+
+        return $raw_block_options[1];
+
+    }
+
+    function tnpc_preview_callback()
+    {
         $email = Newsletter::instance()->get_email($_REQUEST['id'], ARRAY_A);
 
         if (empty($email)) {
@@ -454,17 +684,22 @@ class NewsletterEmails extends NewsletterModule {
         wp_die();
     }
 
-    function tnpc_css_callback() {
+    function tnpc_css_callback()
+    {
         include NEWSLETTER_DIR . '/emails/tnp-composer/css/newsletter.css';
         wp_die();
     }
 
     /** Returns the correct admin page to edit the newsletter with the correct editor. */
-    function get_editor_url($email_id, $editor_type) {
+    function get_editor_url($email_id, $editor_type)
+    {
         switch ($editor_type) {
-            case NewsletterEmails::EDITOR_COMPOSER: return admin_url("admin.php") . '?page=newsletter_emails_composer&id=' . $email_id;
-            case NewsletterEmails::EDITOR_HTML: return admin_url("admin.php") . '?page=newsletter_emails_editorhtml&id=' . $email_id;
-            case NewsletterEmails::EDITOR_TINYMCE: return admin_url("admin.php") . '?page=newsletter_emails_editortinymce&id=' . $email_id;
+            case NewsletterEmails::EDITOR_COMPOSER:
+                return admin_url("admin.php") . '?page=newsletter_emails_composer&id=' . $email_id;
+            case NewsletterEmails::EDITOR_HTML:
+                return admin_url("admin.php") . '?page=newsletter_emails_editorhtml&id=' . $email_id;
+            case NewsletterEmails::EDITOR_TINYMCE:
+                return admin_url("admin.php") . '?page=newsletter_emails_editortinymce&id=' . $email_id;
         }
     }
 
@@ -474,7 +709,8 @@ class NewsletterEmails extends NewsletterModule {
      *
      * @param TNP_Email $email
      */
-    function get_edit_button($email) {
+    function get_edit_button($email, $only_icon = false)
+    {
 
         $editor_type = $this->get_editor_type($email);
         if ($email->status == 'new') {
@@ -493,14 +729,20 @@ class NewsletterEmails extends NewsletterModule {
                 $icon_class = 'edit';
                 break;
         }
+        if ($only_icon) {
+            return '<a class="button-primary" href="' . $edit_url . '" title="' . esc_attr__('Edit', 'newsletter') . '">' .
+                '<i class="fas fa-' . $icon_class . '"></i></a>';
 
-        return '<a class="button-primary" href="' . $edit_url . '">' .
+        } else {
+            return '<a class="button-primary" href="' . $edit_url . '" title="' . esc_attr__('Edit', 'newsletter') . '">' .
                 '<i class="fas fa-' . $icon_class . '"></i> ' . __('Edit', 'newsletter') . '</a>';
+        }
     }
 
     /** Returns the correct editor type for the provided newsletter. Contains backward compatibility code. */
-    function get_editor_type($email) {
-        $email = (object) $email;
+    function get_editor_type($email)
+    {
+        $email = (object)$email;
         $editor_type = $email->editor;
 
         // Backward compatibility
@@ -514,14 +756,15 @@ class NewsletterEmails extends NewsletterModule {
     }
 
     /**
-     * 
-     * @global wpdb $wpdb
+     *
      * @param type $action
      * @param type $user
      * @param type $email
      * @return type
+     * @global wpdb $wpdb
      */
-    function hook_newsletter_action($action, $user, $email) {
+    function hook_newsletter_action($action, $user, $email)
+    {
         global $wpdb;
 
         switch ($action) {
@@ -569,7 +812,7 @@ class NewsletterEmails extends NewsletterModule {
                 break;
 
             case 'emails-css':
-                $email_id = (int) $_GET['id'];
+                $email_id = (int)$_GET['id'];
 
                 $body = Newsletter::instance()->get_email_field($email_id, 'message');
 
@@ -641,7 +884,6 @@ class NewsletterEmails extends NewsletterModule {
                 break;
 
 
-
             case 'emails-create':
                 // Newsletter from themes are created on frontend context because sometime WP themes change the way the content,
                 // excerpt, thumbnail are extracted.
@@ -706,7 +948,8 @@ class NewsletterEmails extends NewsletterModule {
         }
     }
 
-    function admin_menu() {
+    function admin_menu()
+    {
         $this->add_menu_page('index', 'Newsletters');
         $this->add_admin_page('list', 'Email List');
         $this->add_admin_page('new', 'Email New');
@@ -724,7 +967,8 @@ class NewsletterEmails extends NewsletterModule {
      * @param string $dir
      * @return array | WP_Error
      */
-    function build_block($dir) {
+    function build_block($dir)
+    {
         $file = basename($dir);
         $block_id = sanitize_key($file);
         $full_file = $dir . '/block.php';
@@ -759,7 +1003,8 @@ class NewsletterEmails extends NewsletterModule {
      * @param type $dir
      * @return type
      */
-    function scan_blocks_dir($dir) {
+    function scan_blocks_dir($dir)
+    {
 
         if (!is_dir($dir)) {
             return array();
@@ -791,7 +1036,8 @@ class NewsletterEmails extends NewsletterModule {
      *
      * @return array
      */
-    function get_blocks() {
+    function get_blocks()
+    {
 
         if (!is_null($this->blocks)) {
             return $this->blocks;
@@ -839,7 +1085,8 @@ class NewsletterEmails extends NewsletterModule {
      * @param string $id
      * @return array
      */
-    function get_block($id) {
+    function get_block($id)
+    {
         switch ($id) {
             case 'content-03-text.block':
                 $id = 'text';
@@ -866,9 +1113,11 @@ class NewsletterEmails extends NewsletterModule {
             case 'content-06-posts.block':
                 $id = 'posts';
                 break;
-            case 'content-04-cta.block': $id = 'cta';
+            case 'content-04-cta.block':
+                $id = 'cta';
                 break;
-            case 'content-01-hero.block': $id = 'hero';
+            case 'content-01-hero.block':
+                $id = 'hero';
                 break;
 //            case 'content-02-heading.block': $id = '/plugins/newsletter/emails/blocks/heading';
 //                break;
@@ -885,7 +1134,8 @@ class NewsletterEmails extends NewsletterModule {
         return $blocks[$id];
     }
 
-    function scan_presets_dir($dir = null) {
+    function scan_presets_dir($dir = null)
+    {
 
         if (is_null($dir)) {
             $dir = __DIR__ . '/presets';
@@ -920,7 +1170,8 @@ class NewsletterEmails extends NewsletterModule {
         return $list;
     }
 
-    function get_preset($id, $dir = null) {
+    function get_preset_from_file($id, $dir = null)
+    {
 
         if (is_null($dir)) {
             $dir = __DIR__ . '/presets';
@@ -935,12 +1186,13 @@ class NewsletterEmails extends NewsletterModule {
         $json_content = file_get_contents("$dir/$id/preset.json");
         $json_content = str_replace("{placeholder_base_url}", plugins_url('newsletter') . '/emails/presets', $json_content);
         $json = json_decode($json_content);
-        $json->icon = NEWSLETTER_URL . "/emails/presets/$id/icon.png";
+        $json->icon = NEWSLETTER_URL . "/emails/presets/$id/icon.png?ver=2";
 
         return $json;
     }
 
-    function get_composer_css() {
+    function get_composer_css()
+    {
         $css = file_get_contents(__DIR__ . '/tnp-composer/css/newsletter.css');
         $blocks = $this->get_blocks();
         foreach ($blocks as $block) {
@@ -960,7 +1212,8 @@ class NewsletterEmails extends NewsletterModule {
      * @param TNP_Email $email Could be any object with the TNP_Email attributes
      * @param NewsletterControls $controls
      */
-    function send_test_email($email, $controls) {
+    function send_test_email($email, $controls)
+    {
         if (!$email) {
             $controls->errors = __('Newsletter should be saved before send a test', 'newsletter');
             return;
@@ -975,8 +1228,8 @@ class NewsletterEmails extends NewsletterModule {
         $users = NewsletterUsers::instance()->get_test_users();
         if (count($users) == 0) {
             $controls->errors = '' . __('There are no test subscribers to send to', 'newsletter') .
-                    '. <a href="https://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank"><strong>' .
-                    __('Read more', 'newsletter') . '</strong></a>.';
+                '. <a href="https://www.thenewsletterplugin.com/plugins/newsletter/subscribers-module#test" target="_blank"><strong>' .
+                __('Read more', 'newsletter') . '</strong></a>.';
         } else {
             $r = Newsletter::instance()->send($email, $users, true);
             $emails = array();
@@ -996,14 +1249,15 @@ class NewsletterEmails extends NewsletterModule {
                 $controls->messages .= ' ' . implode(', ', $emails);
                 $controls->messages .= '.<br>';
                 $controls->messages .= '<a href="https://www.thenewsletterplugin.com/documentation/subscribers#test" target="_blank"><strong>' .
-                        __('Read more about test subscribers', 'newsletter') . '</strong></a>.<br>';
+                    __('Read more about test subscribers', 'newsletter') . '</strong></a>.<br>';
                 $controls->messages .= '<a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank"><strong>' . __('Read more about delivery issues', 'newsletter') . '</strong></a>.';
             }
         }
         $email->subject = $original_subject;
     }
 
-    function restore_options_from_request() {
+    function restore_options_from_request()
+    {
 
         if (isset($_POST['options']) && is_array($_POST['options'])) {
             // Get all block options
@@ -1011,9 +1265,9 @@ class NewsletterEmails extends NewsletterModule {
 
             // Deserialize inline edits when
             // render is preformed on saving block options
-	        if ( isset( $options['inline_edits'] ) && ! is_array( $options['inline_edits'] ) ) {
-		        $options['inline_edits'] = $this->options_decode( $options['inline_edits'] );
-	        }
+            if (isset($options['inline_edits']) && !is_array($options['inline_edits'])) {
+                $options['inline_edits'] = $this->options_decode($options['inline_edits']);
+            }
 
             // Restore inline edits from data-json
             // coming from inline editing
@@ -1044,6 +1298,33 @@ class NewsletterEmails extends NewsletterModule {
         }
 
         return array();
+    }
+
+    public function hook_wp_ajax_tnpc_delete_preset()
+    {
+
+        if (!wp_verify_nonce($_POST['_wpnonce'], 'preset')) {
+            wp_send_json_error('Expired request');
+        }
+
+        $preset_id = (int)$_REQUEST['presetId'];
+
+        $newsletter = Newsletter::instance();
+
+        if ($preset_id > 0) {
+            $preset = $newsletter->get_email($preset_id);
+
+            if ($preset && $preset->type === self::PRESET_EMAIL_TYPE) {
+                Newsletter::instance()->delete_email($preset_id);
+                wp_send_json_success();
+            } else {
+                wp_send_json_error(__('Is not a preset!', 'newsletter'));
+            }
+
+        } else {
+            wp_send_json_error();
+        }
+
     }
 
 }

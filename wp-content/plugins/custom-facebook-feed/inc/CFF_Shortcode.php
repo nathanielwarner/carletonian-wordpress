@@ -72,8 +72,10 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		//Is it SSL?
 		$cff_ssl = is_ssl() ? '&return_ssl_resources=true' : '';
 		$attachments_desc = ( $this->atts['salesposts'] == 'true' ) ? '' : ',description';
+        $story_tags = ( $this->atts['storytags'] == 'true' ) ? '' : ',story_tags';
 
-		$cff_posts_json_url = 'https://graph.facebook.com/v4.0/' . $this->page_id . '/' . $graph_query . '?fields=id,from{picture,id,name,link},message,message_tags,story,story_tags,status_type,created_time,backdated_time,call_to_action,attachments{title'. $attachments_desc . ',media_type,unshimmed_url,target{id},media{source}}&access_token=' . $this->access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
+
+		$cff_posts_json_url = 'https://graph.facebook.com/v4.0/' . $this->page_id . '/' . $graph_query . '?fields=id,updated_time,from{picture,id,name,link},message,message_tags,story'. $story_tags .',status_type,created_time,backdated_time,call_to_action,attachments{title'. $attachments_desc . ',media_type,unshimmed_url,target{id},media{source}}&access_token=' . $this->access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
 
 		if( $cff_show_access_token && strlen($this->access_token) > 130 ){
 			//If using a Page Access Token then set caching time to be minimum of 5 minutes
@@ -236,7 +238,69 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 
 	}
 
+	function cff_get_processed_options($feed_options){
+		$page_id = $feed_options['id'];
+		$cff_facebook_string = 'facebook.com';
+		( stripos($page_id, $cff_facebook_string) !== false) ? $cff_page_id_url_check = true : $cff_page_id_url_check = false;
+		if ( $cff_page_id_url_check === true ) {
+	        //Remove trailing slash if exists
+			$page_id = preg_replace('{/$}', '', $page_id);
+	        //Get last part of url
+			$page_id = substr( $page_id, strrpos( $page_id, '/' )+1 );
+		}
+	    //If the Page ID contains a query string at the end then remove it
+		if ( stripos( $page_id, '?') !== false ) $page_id = substr($page_id, 0, strrpos($page_id, '?'));
 
+	    //Always remove slash from end of Page ID
+		$page_id = preg_replace('{/$}', '', $page_id);
+
+	    //Update the page ID in the feed options array for use everywhere
+		$feed_options['id'] = $page_id;
+
+
+	    //If an 'account' is specified then use that instead of the Page ID/token from the settings
+		$cff_account = trim($feed_options['account']);
+
+		if( !empty( $cff_account ) ){
+			$cff_connected_accounts = get_option('cff_connected_accounts');
+			if( !empty($cff_connected_accounts) ){
+
+	            //Replace both single and double quotes before decoding
+				$cff_connected_accounts = str_replace('\"','"', $cff_connected_accounts);
+				$cff_connected_accounts = str_replace("\'","'", $cff_connected_accounts);
+
+				$cff_connected_accounts = json_decode( $cff_connected_accounts );
+
+				if ( isset( $cff_account ) && is_object( $cff_connected_accounts ) ) {
+		            //Grab the ID and token from the connected accounts setting
+					if( isset( $cff_connected_accounts->{ $cff_account } ) ){
+						$feed_options['id'] = $cff_connected_accounts->{ $cff_account }->{'id'};
+						$feed_options['accesstoken'] = $cff_connected_accounts->{ $cff_account }->{'accesstoken'};
+					}
+
+				}
+
+	            //Replace the encryption string in the Access Token
+				if (strpos($feed_options['accesstoken'], '02Sb981f26534g75h091287a46p5l63') !== false) {
+					$feed_options['accesstoken'] = str_replace("02Sb981f26534g75h091287a46p5l63","",$feed_options['accesstoken']);
+				}
+			}
+		}
+
+	    //Replace the encryption string in the Access Token
+		if (strpos($feed_options['accesstoken'], '02Sb981f26534g75h091287a46p5l63') !== false) {
+			$feed_options['accesstoken'] = str_replace("02Sb981f26534g75h091287a46p5l63","",$feed_options['accesstoken']);
+		}
+		$cff_connected_accounts = get_option('cff_connected_accounts');
+		if(!empty($cff_connected_accounts)){
+			$connected_accounts = (array)json_decode(stripcslashes($cff_connected_accounts));
+			if(array_key_exists($feed_options['id'], $connected_accounts)){
+				$feed_options['pagetype'] = $connected_accounts[$feed_options['id']]->pagetype;
+			}
+		}
+
+		return $feed_options;
+	}
 
 	/**
 	 * Display.
@@ -252,6 +316,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$id_and_token 			= $this->fb_feed_settings->get_id_and_token();
 		$this->page_id 			= $id_and_token['id'];
 		$this->access_token 	= $id_and_token['token'];
+		$this->atts 			= $this->cff_get_processed_options( $this->atts  );
 
 		#var_dump($this->atts);
 
@@ -260,6 +325,11 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$options 		= $this->options;
 		$access_token 	= $this->access_token;
 		$page_id 		= $this->page_id;
+
+        if ( $atts['cff_enqueue_with_shortcode'] === 'on' || $atts['cff_enqueue_with_shortcode'] === 'true' ) {
+            wp_enqueue_style( 'cff' );
+            wp_enqueue_script( 'cffscripts' );
+        }
 
 		/********** GENERAL **********/
 		$cff_page_type = $this->atts[ 'pagetype' ];
@@ -334,6 +404,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 
 	    //Get show posts attribute. If not set then default to 25
 		$show_posts = ( empty( $this->atts['num'] ) || $this->atts['num'] == 'undefined' ) ? 25 : $this->atts['num'];
+	    $show_posts_number = isset( $this->atts['minnum'] ) ? $this->atts['minnum'] : $this->atts['num'];
 
 	    //If the 'Enter my own Access Token' box is unchecked then don't use the user's access token, even if there's one in the field
 		get_option('cff_show_access_token') ? $cff_show_access_token = true : $cff_show_access_token = false;
@@ -434,7 +505,21 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$cff_posts_array = array();
 
 	    //ALL POSTS
+
 		$FBdata = $this->get_feed_json( $graph_query, $cff_post_limit, $cff_locale, $cff_show_access_token, $cache_seconds, $cff_cache_time, $show_posts_by );
+		if( $cff_is_group ){
+			$cff_ssl = is_ssl() ? '&return_ssl_resources=true' : '';
+			$attachments_desc = ( $this->atts['salesposts'] == 'true' ) ? '' : ',description';
+			$cff_posts_json_url = 'https://graph.facebook.com/v4.0/' . $this->page_id . '/' . $graph_query . '?fields=id,updated_time,from{picture,id,name,link},message,message_tags,story,story_tags,status_type,created_time,backdated_time,call_to_action,attachments{title'. $attachments_desc . ',media_type,unshimmed_url,target{id},media{source}}&access_token=' . $this->access_token . '&limit=' . $cff_post_limit . '&locale=' . $cff_locale . $cff_ssl;
+			$this->atts['type'] = 'links_events_videos_photos_albums_statuses_';
+			$groups_post = new CFF_Group_Posts($this->page_id, $this->atts, $cff_posts_json_url, $data_att_html, false);
+			$groups_post_result = $groups_post->init_group_posts(json_encode($FBdata), false, $show_posts_number);
+			$posts_json = $groups_post_result['posts_json'];
+			$FBdata = json_decode($posts_json);
+		}
+
+
+
 
 		global $current_user;
 		$user_id = $current_user->ID;

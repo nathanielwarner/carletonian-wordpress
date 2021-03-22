@@ -2,36 +2,49 @@
 $size = ['width' => 600, 'height' => 0];
 ?>
 <style>
-    .post-date {
-        padding: 0 0 5px 0;
-        font-size: 13px;
-        font-family: <?php echo $font_family ?>;
-        font-weight: normal;
-        color: #aaaaaa;
-    }
-
     .post-title {
-        padding: 0 0 5px 0;
-        font-size: <?php echo $title_font_size ?>px;
         font-family: <?php echo $title_font_family ?>;
+        font-size: <?php echo $title_font_size ?>px;
         font-weight: <?php echo $title_font_weight ?>;
-        color: <?php echo $options['title_font_color'] ?>;
+        color: <?php echo $title_font_color ?>;
         line-height: normal;
+        padding: 0 0 5px 0;
     }
 
     .post-excerpt {
-        padding: 10px 0 15px 0;
-        font-family: <?php echo $font_family ?>;
-        color: <?php echo $options['font_color'] ?>;
-        font-size: <?php echo $font_size ?>px;
+        font-family: <?php echo $text_font_family ?>;
+        font-size: <?php echo $text_font_size ?>px;
+        font-weight: <?php echo $text_font_weight ?>;
+        color: <?php echo $text_font_color ?>;
         line-height: 1.5em;
+        padding: 10px 0 15px 0;
     }
+
+    .post-date {
+        font-family: <?php echo $text_font_family ?>;
+        color: <?php echo $text_font_color ?>;
+        font-size: <?php echo round($text_font_size * 0.8)  ?>px;
+        font-weight: normal;
+        padding: 0 0 5px 0;
+    }
+
+    .post-author {
+        font-family: <?php echo $text_font_family ?>;
+        color: <?php echo $text_font_color ?>;
+        font-size: <?php echo round($text_font_size * 0.8)  ?>px;
+        font-weight: normal;
+        padding: 0 0 5px 0;
+    }
+
 </style>
 
 
 <?php foreach ($posts as $post) { ?>
+
     <?php
     $url = tnp_post_permalink($post);
+	$options['button_url'] = $url;
+
     $media = null;
     if ($show_image) {
         $media = tnp_composer_block_posts_get_media($post, $size);
@@ -40,10 +53,15 @@ $size = ['width' => 600, 'height' => 0];
             $media->link = $url;
         }
     }
-    $options['button_url'] = $url;
+
+    $author = '';
+	if ($show_author) {
+		$author_object = get_user_by('id', $post->post_author);
+		if ($author_object) {
+			$author = $author_object->display_name;
+		}
+	}
     ?>
-
-
 
     <?php if ($media) { ?>
         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px">
@@ -61,13 +79,22 @@ $size = ['width' => 600, 'height' => 0];
 
                 <!-- ARTICLE -->
                 <table border="0" cellspacing="0" cellpadding="0" width="100%">
-                    <?php if (!empty($options['show_date'])) { ?>
+                    <?php if ($show_date) { ?>
                         <tr>
                             <td align="<?php echo $align_left ?>" inline-class="post-date">
                                 <?php echo tnp_post_date($post) ?>
                             </td>
                         </tr>
                     <?php } ?>
+
+	                <?php if ($show_author) { ?>
+                        <tr>
+                            <td align="<?php echo $align_left ?>" inline-class="post-author">
+				                <?php echo $author ?>
+                            </td>
+                        </tr>
+	                <?php } ?>
+
                     <tr>
                         <td align="<?php echo $align_left ?>"
                             inline-class="post-title"
@@ -92,12 +119,14 @@ $size = ['width' => 600, 'height' => 0];
                                 ?>
                         </td>
                     </tr>
-                    <tr>
-                        <td align="<?php echo $align_left ?>" align="center">
-                            <?php echo TNP_Composer::button($options) ?>
-                            <br><br>
-                        </td>
-                    </tr>
+	                <?php if ($show_read_more_button) { ?>
+                        <tr>
+                            <td align="<?php echo $align_left ?>">
+	                            <?php echo TNP_Composer::button( array_merge( $button_options, [ 'button_url' => $url ] ) ) ?>
+                                <br><br>
+                            </td>
+                        </tr>
+	                <?php } ?>
                 </table>
 
             </td>

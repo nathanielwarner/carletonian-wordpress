@@ -774,8 +774,9 @@ class CFF_Utils{
 		if( !empty($cff_connected_accounts) ){
 			$cff_connected_accounts = str_replace('\"','"', $cff_connected_accounts);
             $cff_connected_accounts = str_replace("\'","'", $cff_connected_accounts);
-            $cff_connected_accounts = json_decode( $cff_connected_accounts );
-		}else{
+            $cff_connected_accounts = json_decode( $cff_connected_accounts, true );
+		}
+		if(!is_array($cff_connected_accounts) || $cff_connected_accounts == null){
 			$cff_connected_accounts = [];
 		}
 		return $cff_connected_accounts;

@@ -4,6 +4,12 @@ use CustomFacebookFeed\CFF_Oembed;
 use CustomFacebookFeed\CFF_GDPR_Integrations;
 use CustomFacebookFeed\CFF_Feed_Locator;
 
+add_action('group_post_scheduler_cron', 'cff_group_cache_function');
+function cff_group_cache_function(){
+    CustomFacebookFeed\CFF_Group_Posts::cron_update_group_persistent_cache();
+}
+
+
 //Create Style page
 	function cff_style_page() {
 	    //Declare variables for fields
@@ -143,6 +149,7 @@ use CustomFacebookFeed\CFF_Feed_Locator;
 	        'cff_app_id'                => '',
 	        'cff_show_credit'           => '',
 	        'cff_font_source'           => '',
+            'cff_enqueue_with_shortcode' => false,
 	        'cff_minify'                => false,
 	        'disable_admin_notice'      => false,
 	        'cff_sep_color'             => '',
@@ -364,6 +371,7 @@ use CustomFacebookFeed\CFF_Feed_Locator;
 	    $cff_disable_styles = $options[ 'cff_disable_styles' ];
 	    $cff_format_issue = $options[ 'cff_format_issue' ];
 	    $cff_restricted_page = $options[ 'cff_restricted_page' ];
+        $cff_enqueue_with_shortcode = $options[ 'cff_enqueue_with_shortcode' ];
 	    $cff_minify = $options[ 'cff_minify' ];
 	    $cff_cols = $options[ 'cff_cols' ];
 	    $cff_cols_mobile = $options[ 'cff_cols_mobile' ];
@@ -416,7 +424,6 @@ use CustomFacebookFeed\CFF_Feed_Locator;
 	    //Ajax
 	    $cff_ajax = 'cff_ajax';
 	    $cff_ajax_val = get_option( $cff_ajax );
-
 
 	    //Check nonce before saving data
 	    if ( ! isset( $_POST['cff_customize_nonce'] ) || ! wp_verify_nonce( $_POST['cff_customize_nonce'], 'cff_saving_customize' ) ) {
@@ -787,6 +794,7 @@ use CustomFacebookFeed\CFF_Feed_Locator;
 	                (isset($_POST[ 'cff_disable_styles' ])) ? $cff_disable_styles = sanitize_text_field( $_POST[ 'cff_disable_styles' ] ) : $cff_disable_styles = '';
 	                (isset($_POST[ 'cff_format_issue' ])) ? $cff_format_issue = sanitize_text_field( $_POST[ 'cff_format_issue' ] ) : $cff_format_issue = '';
 	                (isset($_POST[ 'cff_restricted_page' ])) ? $cff_restricted_page = sanitize_text_field( $_POST[ 'cff_restricted_page' ] ) : $cff_restricted_page = '';
+                    (isset($_POST[ 'cff_enqueue_with_shortcode' ])) ? $cff_enqueue_with_shortcode = $_POST[ 'cff_enqueue_with_shortcode' ] : $cff_enqueue_with_shortcode = '';
 	                (isset($_POST[ 'cff_minify' ])) ? $cff_minify = sanitize_text_field( $_POST[ 'cff_minify' ] ) : $cff_minify = '';
 		            (isset($_POST[ 'cff_disable_admin_notice' ])) ? $cff_disable_admin_notice = sanitize_text_field( $_POST[ 'cff_disable_admin_notice' ] ) : $cff_disable_admin_notice = '';
 
@@ -810,6 +818,7 @@ use CustomFacebookFeed\CFF_Feed_Locator;
 	                $options[ 'cff_disable_styles' ] = $cff_disable_styles;
 	                $options[ 'cff_format_issue' ] = $cff_format_issue;
 	                $options[ 'cff_restricted_page' ] = $cff_restricted_page;
+                    $options[ 'cff_enqueue_with_shortcode' ] = $cff_enqueue_with_shortcode;
 	                $options[ 'cff_minify' ] = $cff_minify;
 		            $options[ 'disable_admin_notice' ] = $cff_disable_admin_notice;
 
@@ -819,15 +828,13 @@ use CustomFacebookFeed\CFF_Feed_Locator;
 	                if( $cff_cron == 'yes' ){
 	                    //Clear the existing cron event
 	                    wp_clear_scheduled_hook('cff_cron_job');
-
 	                    $cff_cache_time = get_option( 'cff_cache_time' );
-	                    $cff_cache_time_unit = get_option( 'cff_cache_time_unit' );
+		                $cff_cache_time_unit = get_option( 'cff_cache_time_unit' );
 
-	                    //Set the event schedule based on what the caching time is set to
-	                    $cff_cron_schedule = 'hourly';
-	                    if( $cff_cache_time_unit == 'hours' && $cff_cache_time > 5 ) $cff_cron_schedule = 'twicedaily';
-	                    if( $cff_cache_time_unit == 'days' ) $cff_cron_schedule = 'daily';
-
+		                    //Set the event schedule based on what the caching time is set to
+		                $cff_cron_schedule = 'hourly';
+		                if( $cff_cache_time_unit == 'hours' && $cff_cache_time > 5 ) $cff_cron_schedule = 'twicedaily';
+		                if( $cff_cache_time_unit == 'days' ) $cff_cron_schedule = 'daily';
 	                    wp_schedule_event(time(), $cff_cron_schedule, 'cff_cron_job');
 	                }
 
@@ -3033,6 +3040,15 @@ use CustomFacebookFeed\CFF_Feed_Locator;
 	                        </td>
 	                    </tr>
 
+                        <tr>
+                            <th class="bump-left"><label class="bump-left"><?php _e("Enqueue CSS/JS with the shortcode"); ?></label></th>
+                            <td>
+                                <input name="cff_enqueue_with_shortcode" type="checkbox" id="cff_enqueue_with_shortcode" <?php if($cff_enqueue_with_shortcode == true) echo "checked"; ?> />
+                                <a class="cff-tooltip-link" href="JavaScript:void(0);"><?php _e('What does this mean?', 'custom-facebook-feed'); ?></a>
+                                <p class="cff-tooltip cff-more-info"><?php _e("Check this box if you'd like to only include the CSS and JS files for the plugin when the feed is on the page.", 'custom-facebook-feed'); ?></p>
+                            </td>
+                        </tr>
+
 	                    <tr>
 	                        <th class="bump-left"><label class="bump-left"><?php _e("Minify CSS and JavaScript files"); ?></label></th>
 	                        <td>
@@ -3416,6 +3432,7 @@ function cff_settings_page() {
     if ( ! isset( $_POST['cff_settings_nonce'] ) || ! wp_verify_nonce( $_POST['cff_settings_nonce'], 'cff_saving_settings' ) ) {
         //Nonce did not verify
     } else {
+
         // See if the user has posted us some information. If they did, this hidden field will be set to 'Y'.
         if( isset($_POST[ $hidden_field_name ]) && $_POST[ $hidden_field_name ] == 'Y' ) {
             // Read their posted value
@@ -3450,6 +3467,10 @@ function cff_settings_page() {
             $options[ 'cff_timezone' ] = $cff_timezone;
             $options[ 'cff_num_mobile' ] = $cff_num_mobile;
             update_option( 'cff_style_settings', $options );
+			$cff_cron_schedule = 'hourly';
+			if( $cff_cache_time_unit_val == 'hours' && $cff_cache_time_val > 5 ) $cff_cron_schedule = 'twicedaily';
+			if( $cff_cache_time_unit_val == 'days' ) $cff_cron_schedule = 'daily';
+			CustomFacebookFeed\CFF_Group_Posts::group_reschedule_event(time(), $cff_cron_schedule);
 
             //Delete ALL transients
             cff_delete_cache();
@@ -3528,9 +3549,9 @@ function cff_settings_page() {
                                 $admin_url_state = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
                             }
                             ?>
-                            <a href="https://api.smashballoon.com/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_page_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
+                            <a href="https://api.smashballoon.com/v2/v2/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_page_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
 
-                            <a href="https://api.smashballoon.com/facebook-group-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_group_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
+                            <a href="https://api.smashballoon.com/v2/facebook-group-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_group_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
 
                         </p>
                     </div>
@@ -3544,20 +3565,19 @@ function cff_settings_page() {
 
 
             <?php
-            if( isset($_GET['access_token']) && isset($_GET['final_response']) ){
+            if( isset($_GET['cff_access_token']) && isset($_GET['cff_final_response']) ){
 
-                if( $_GET['final_response'] == 'true' ){
-
+                if( $_GET['cff_final_response'] == 'true' ) {
 
 	                \cff_main()->cff_error_reporter->remove_error( 'connection' );
                     \cff_main()->cff_error_reporter->add_action_log( 'Connection or updating account');
 
-                    $access_token = $_GET['access_token'];
+                    $access_token = $_GET['cff_access_token'];
                     $cff_is_groups = false;
                     $pages_data_arr = '';
                     $groups_data_arr = '';
 
-                    if( isset($_GET['group']) ){
+                    if( isset($_GET['cff_group']) ){
                         //Get Groups
 
                         $cff_is_groups = true;
@@ -3761,9 +3781,9 @@ function cff_settings_page() {
                     <?php
                     //When connecting an account check the current access token to see if it has an error. If so then add a class to the field and replace it automatically in JS when getting a new one.
                     $cff_replace_token = false;
-                    if( isset($_GET['access_token']) && isset($_GET['final_response']) ){
+                    if( isset($_GET['cff_access_token']) && isset($_GET['cff_final_response']) ){
 
-                        if( $_GET['final_response'] == 'true' ){
+                        if( $_GET['cff_final_response'] == 'true' ){
                             $api_page_id = trim($page_id_val);
                             $url = 'https://graph.facebook.com/'.$api_page_id.'?limit=1&fields=id&access_token='.$access_token_val;
                             $accounts_data = CFF_Utils::cff_fetchUrl($url);
@@ -4571,6 +4591,7 @@ foreach( $oembed_token_settings as $key => $value ) {
 
  ?>
         </textarea>
+        <div style="margin-bottom: 20px;"><input id="cff_reset_log" class="button-secondary" type="submit" value="<?php esc_attr_e( 'Reset Error Log' ); ?>" style="vertical-align: middle;"/></div>
 
     <?php } //End support tab
 
@@ -4895,7 +4916,7 @@ function cff_oembeds_page() {
                 $access_token_error = false;
                 $valid_new_access_token = false;
                 $show_token_expiration_modal = false;
-                if ( ! empty( $_GET['access_token'] ) && strlen( $_GET['access_token'] ) <= 20 ) {
+                if ( ! empty( $_GET['cff_access_token'] ) && strlen( $_GET['cff_access_token'] ) <= 20 ) {
                     $access_token_error = true;
                 } elseif ( ! empty( $_GET['transfer'] ) ) {
                     if ( class_exists( 'SB_Instagram_Oembed' ) ) {
@@ -4903,8 +4924,8 @@ function cff_oembeds_page() {
                         $valid_new_access_token = $sbi_oembed_token;
                     }
                 } else {
-                    $valid_new_access_token = ! empty( $_GET['access_token'] ) && strlen( $_GET['access_token'] ) > 20 && $saved_access_token_data !== $_GET['access_token'] ? sanitize_text_field( $_GET['access_token'] ) : false;
-                    if ( $valid_new_access_token && ! empty( $_GET['access_token'] ) ) {
+                    $valid_new_access_token = ! empty( $_GET['cff_access_token'] ) && strlen( $_GET['cff_access_token'] ) > 20 && $saved_access_token_data !== $_GET['cff_access_token'] ? sanitize_text_field( $_GET['cff_access_token'] ) : false;
+                    if ( $valid_new_access_token && ! empty( $_GET['cff_access_token'] ) ) {
                         $url = esc_url_raw( 'https://graph.facebook.com/me/accounts?limit=500&access_token=' . $valid_new_access_token );
                         $pages_data_connection = wp_remote_get( $url );
 
@@ -4927,8 +4948,9 @@ function cff_oembeds_page() {
                 <?php if ( ! $saved_access_token_data && ! $valid_new_access_token && ! CFF_Oembed::can_do_oembed() ) {
                     if ( $access_token_error ) { ?>
                         <p><?php _e("There was a problem with the access token that was retrieved.", "custom-facebook-feed"); ?></p>
-                    <?php }
-                    $token_href = 'https://api.smashballoon.com/facebook-login.php?state=' . $admin_url_state;
+
+                    <?php } 
+                    $token_href = 'https://api.smashballoon.com/v2/facebook-login.php?state=' . $admin_url_state;
                     if ( class_exists( 'SB_Instagram_Oembed' ) ) {
                         $sbi_oembed_token = SB_Instagram_Oembed::last_access_token();
 
@@ -4967,7 +4989,7 @@ function cff_oembeds_page() {
                                 </p>
                                 <p style="text-align: center;">
                                     <a style="display: inline-block; float: none; margin-bottom: 0;" href="https://smashballoon.com/doc/how-to-prevent-your-oembed-access-token-from-expiring/?facebook" class="cff_admin_btn" target="blank" rel="noopener"><?php _e( 'How to Create a Facebook Page', 'custom-facebook-feed' ); ?></a>
-                                    &nbsp;&nbsp;<a href="https://api.smashballoon.com/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="button button-secondary" style="height: 47px;line-height: 47px;font-size: 14px;padding: 0 21px;"><?php _e( 'Try Again', 'custom-facebook-feed' ); ?></a>
+                                    &nbsp;&nbsp;<a href="https://api.smashballoon.com/v2/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="button button-secondary" style="height: 47px;line-height: 47px;font-size: 14px;padding: 0 21px;"><?php _e( 'Try Again', 'custom-facebook-feed' ); ?></a>
                                 </p>
 
                                 <a href="JavaScript:void(0);" class="cff-modal-close"><i class="fa fa-times"></i></a>
@@ -5001,7 +5023,7 @@ function cff_oembeds_page() {
                                         <?php echo sprintf(  __( 'Facebook requires that users have a role on a Facebook page in order to create access tokens that don\'t expire. Visit %1sthis link%2s for instructions on extending your access token to never expire.', 'custom-facebook-feed' ), $link_1, $link_2 ); ?>
                                     </p>
                                     <p>
-                                        <a href="https://api.smashballoon.com/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_fb_login"><i class="fa fa-facebook-square"></i> <?php _e( 'Connect to Facebook and Recheck Access Token', 'custom-facebook-feed' ); ?></a>
+                                        <a href="https://api.smashballoon.com/v2/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_fb_login"><i class="fa fa-facebook-square"></i> <?php _e( 'Connect to Facebook and Recheck Access Token', 'custom-facebook-feed' ); ?></a>
                                     </p>
                                 </div>
 
@@ -5457,3 +5479,15 @@ function cff_oembed_disable() {
 	die();
 }
 add_action( 'wp_ajax_cff_oembed_disable', 'cff_oembed_disable' );
+
+function cff_clear_error_log() {
+
+	\cff_main()->cff_error_reporter->remove_all_errors();        
+
+    cff_delete_cache();
+
+    echo "1";
+
+	die();
+}
+add_action( 'wp_ajax_cff_clear_error_log', 'cff_clear_error_log' );

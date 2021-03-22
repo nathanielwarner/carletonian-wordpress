@@ -3,7 +3,7 @@
  * Name: Separator
  * Section: content
  * Description: Separator
- * 
+ *
  */
 
 /* @var $options array */
@@ -15,8 +15,8 @@ $default_options = array(
     'block_padding_bottom'=>20,
     'block_padding_right'=>20,
     'block_padding_left'=>20,
-    'block_background'=>'#ffffff'
-    
+    'block_background'=>''
+
 );
 
 $options = array_merge($default_options, $options);

@@ -1,30 +1,39 @@
 <?php
-$size = ['width' => 300, 'height' => 0];
+$size = ['width' => 600, 'height' => 0];
 ?>
 <style>
-    .post-date {
-        padding: 0 0 5px 0;
-        font-size: 13px;
-        font-family: <?php echo $font_family ?>;
-        font-weight: normal;
-        color: #aaaaaa;
-    }
-
     .post-title {
-        padding: 0 0 5px 0;
-        font-size: <?php echo $title_font_size ?>px;
         font-family: <?php echo $title_font_family ?>;
+        font-size: <?php echo $title_font_size ?>px;
         font-weight: <?php echo $title_font_weight ?>;
-        color: <?php echo $options['title_font_color'] ?>;
+        color: <?php echo $title_font_color ?>;
         line-height: normal;
+        padding: 0 0 5px 0;
     }
 
     .post-excerpt {
-        padding: 10px 0 15px 0;
-        font-family: <?php echo $font_family ?>;
-        color: <?php echo $options['font_color'] ?>;
-        font-size: <?php echo $font_size ?>px;
+        font-family: <?php echo $text_font_family ?>;
+        font-size: <?php echo $text_font_size ?>px;
+        font-weight: <?php echo $text_font_weight ?>;
+        color: <?php echo $text_font_color ?>;
         line-height: 1.5em;
+        padding: 10px 0 15px 0;
+    }
+
+    .post-date {
+        font-family: <?php echo $text_font_family ?>;
+        color: <?php echo $text_font_color ?>;
+        font-size: <?php echo round($text_font_size * 0.8) ?>px;
+        font-weight: normal;
+        padding: 0 0 5px 0;
+    }
+
+    .post-author {
+        font-family: <?php echo $text_font_family ?>;
+        color: <?php echo $text_font_color ?>;
+        font-size: <?php echo round($text_font_size * 0.8) ?>px;
+        font-weight: normal;
+        padding: 0 0 5px 0;
     }
 </style>
 
@@ -34,15 +43,25 @@ $size = ['width' => 300, 'height' => 0];
     <?php foreach ($posts as $post) { ?>
         <?php
         $url = tnp_post_permalink($post);
+	    $options['button_url'] = $url;
+
         $media = null;
         if ($show_image) {
             $media = tnp_composer_block_posts_get_media($post, $size);
             if ($media) {
                 $media->link = $url;
-                $media->set_width(105);
+                $media->set_width(250);
             }
         }
-        $options['button_url'] = $url;
+
+	    $author = '';
+	    if ($show_author) {
+		    $author_object = get_user_by('id', $post->post_author);
+		    if ($author_object) {
+			    $author = $author_object->display_name;
+		    }
+	    }
+
         ?>
 
         <tr>
@@ -50,7 +69,7 @@ $size = ['width' => 300, 'height' => 0];
             <td valign="top" style="padding: 20px 0 0 0;" class="td-1">
 
                 <?php if ($media) { ?>
-                    <table width="20%" cellpadding="0" cellspacing="0" border="0" align="left" class="1-column" style="margin-bottom: 20px">
+                    <table width="40%" cellpadding="0" cellspacing="0" border="0" align="left" class="1-column" style="margin-bottom: 20px">
                         <tr>
                             <td>
                                 <?php echo TNP_Composer::image($media) ?>
@@ -59,19 +78,28 @@ $size = ['width' => 300, 'height' => 0];
                     </table>
                 <?php } ?>
 
-                <table width="<?php echo $media ? '78%' : '100%' ?>" cellpadding="0" cellspacing="0" border="0" class="responsive-table" align="right">
+                <table width="<?php echo $media ? '57%' : '100%' ?>" cellpadding="0" cellspacing="0" border="0" class="responsive-table" align="right">
                     <tr>
                         <td>
 
                             <!-- ARTICLE -->
                             <table border="0" cellspacing="0" cellpadding="0" width="100%">
-                                <?php if (!empty($options['show_date'])) { ?>
+                                <?php if ($show_date) { ?>
                                     <tr>
                                         <td align="<?php echo $align_left ?>" inline-class="post-date">
                                             <?php echo tnp_post_date($post) ?>
                                         </td>
                                     </tr>
                                 <?php } ?>
+
+	                            <?php if ($show_author) { ?>
+                                <tr>
+                                    <td align="<?php echo $align_left ?>" inline-class="post-author">
+			                            <?php echo $author ?>
+                                    </td>
+                                </tr>
+	                            <?php } ?>
+
                                 <tr>
                                     <td align="<?php echo $align_left ?>"
                                         inline-class="post-title"
@@ -96,11 +124,15 @@ $size = ['width' => 300, 'height' => 0];
                                             ?>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td align="<?php echo $align_left ?>" class="padding">
-                                        <?php echo TNP_Composer::button($options) ?>
-                                    </td>
-                                </tr>
+	                            <?php if ($show_read_more_button) { ?>
+                                    <tr>
+                                        <td align="<?php echo $align_left ?>" class="padding">
+	                                        <?php $button_options['button_url'] = $url; ?>
+	                                        <?php echo TNP_Composer::button( $button_options ) ?>
+                                            <br><br>
+                                        </td>
+                                    </tr>
+	                            <?php } ?>
                             </table>
 
                         </td>

@@ -1,4 +1,5 @@
 <?php
+/* @var $this NewsletterEmails */
 defined('ABSPATH') || exit;
 
 /* @var $wpdb wpdb */
@@ -15,7 +16,7 @@ function tnp_prepare_controls($email, $controls) {
 }
 
 // Always required
-$email = $module->get_email($_GET['id'], ARRAY_A);
+$email = $this->get_email($_GET['id'], ARRAY_A);
 
 if (empty($email)) {
     echo 'Wrong email identifier';
@@ -27,28 +28,28 @@ $email_id = $email['id'];
 /* Satus changes which require a reload */
 if ($controls->is_action('pause')) {
     $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'paused'), array('id' => $email_id));
-    $email = $module->get_email($_GET['id'], ARRAY_A);
+    $email = $this->get_email($_GET['id'], ARRAY_A);
     tnp_prepare_controls($email, $controls);
 }
 
 if ($controls->is_action('continue')) {
     $wpdb->update(NEWSLETTER_EMAILS_TABLE, array('status' => 'sending'), array('id' => $email_id));
-    $email = $module->get_email($_GET['id'], ARRAY_A);
+    $email = $this->get_email($_GET['id'], ARRAY_A);
     tnp_prepare_controls($email, $controls);
 }
 
 if ($controls->is_action('abort')) {
     $wpdb->query("update " . NEWSLETTER_EMAILS_TABLE . " set last_id=0, sent=0, status='new' where id=" . $email_id);
-    $email = $module->get_email($_GET['id'], ARRAY_A);
+    $email = $this->get_email($_GET['id'], ARRAY_A);
     tnp_prepare_controls($email, $controls);
     $controls->messages = __('Delivery definitively cancelled', 'newsletter');
 }
 
 if ($controls->is_action('change-private')) {
-    $data = array();
+    $data = [];
     $data['private'] = $controls->data['private'] ? 1 : 0;
     $data['id'] = $email['id'];
-    $email = Newsletter::instance()->save_email($data, ARRAY_A);
+    $email = $this->save_email($data, ARRAY_A);
     $controls->add_message_saved();
 
     tnp_prepare_controls($email, $controls);
@@ -93,7 +94,7 @@ if (!$controls->is_action()) {
 
 if ($controls->is_action('html')) {
 
-    $data = array();
+    $data = [];
     $data['editor'] = NewsletterEmails::EDITOR_HTML;
     $data['id'] = $email_id;
 
@@ -102,7 +103,7 @@ if ($controls->is_action('html')) {
     unset($data['options']['composer']);
     // End backward compatibility
 
-    $email = Newsletter::instance()->save_email($data, ARRAY_A);
+    $email = $this->save_email($data, ARRAY_A);
     $controls->messages = 'You can now edit the newsletter as pure HTML';
 
     tnp_prepare_controls($email, $controls);

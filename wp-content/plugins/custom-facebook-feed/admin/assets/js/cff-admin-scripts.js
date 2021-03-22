@@ -983,6 +983,34 @@ jQuery(document).ready(function($) {
         jQuery(this).closest('td').find('.cff-condensed-wrap').hide();
         jQuery(this).remove();
     });
+
+
+    //cff_reset_log
+    var $cffClearLog = $('#cff_reset_log');
+
+    $cffClearLog.on('click', function(event) {
+        event.preventDefault();
+
+        jQuery('#cff-clear-cache-success').remove();
+        jQuery(this).prop("disabled",true);
+
+        $.ajax({
+            url : cffA.ajax_url,
+            type : 'post',
+            data : {
+                action : 'cff_clear_error_log'
+            },
+            success : function(data) {
+                $cffClearLog.prop('disabled',false);
+                if(data=='1') {
+                    $cffClearLog.after('<i id="cff-clear-cache-success" class="fa fa-check-circle cff-success"></i>');
+                } else {
+                    $cffClearLog.after('<span>error</span>');
+                }
+            }
+        }); // ajax call
+    }); // clear_error_log click
+
 });
 
 

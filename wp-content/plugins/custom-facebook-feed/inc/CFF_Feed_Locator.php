@@ -119,7 +119,8 @@ class CFF_Feed_Locator{
 			foreach ( $this->matching_entries as $index => $matching_entry ) {
 				$shortcode_atts = json_decode( $matching_entry['shortcode_atts'], true );
 				$shortcode_atts = ( $shortcode_atts == null) ? [] : $shortcode_atts;
-				$atts_diff = array_diff($shortcode_atts , $this->feed_details['atts'] ); // determines if the shortcode settings match the shortcode settings of an existing feed
+				$atts = is_array( $this->feed_details['atts'] ) ? $this->feed_details['atts'] : array();
+				$atts_diff = array_diff($shortcode_atts , $atts ); // determines if the shortcode settings match the shortcode settings of an existing feed
 				if ( empty( $atts_diff ) ) {
 					$matching_indices[] = $matching_entry['id'];
 					if ( $matching_entry['html_location'] === $this->feed_details['location']['html'] ) {

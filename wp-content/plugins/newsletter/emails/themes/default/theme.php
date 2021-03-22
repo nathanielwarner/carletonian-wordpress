@@ -65,7 +65,7 @@ if (isset($theme_options['theme_posts'])) {
         * {
             line-height: normal;
         }
-        h1, h2, h3, h4 {
+        h1, h2, h3, h4, h5 {
             line-height: normal;
         }
         a {

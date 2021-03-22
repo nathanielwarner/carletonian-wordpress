@@ -12,7 +12,7 @@ $defaults = array(
     'image' => '',
     'url' => '',
     'width' => 0,
-    'block_background' => '#ffffff',
+    'block_background' => '',
     'block_padding_left' => 0,
     'block_padding_right' => 0,
     'block_padding_bottom' => 15,
@@ -21,18 +21,22 @@ $defaults = array(
 
 $options = array_merge($defaults, $options);
 
-$alt = '';
 if (empty($options['image']['id'])) {
-    $media = new TNP_Media();
-    // A placeholder can be set by a preset and it is kept indefinitely
-    if (!empty($options['placeholder'])) {
-        $media->url = $options['placeholder'];
-        $media->width = 600;
-        $media->height = 250;
+    if (!empty($options['image-url'])) {
+        $media = new TNP_Media();
+        $media->url = $options['image-url'];
     } else {
-        $media->url = 'https://source.unsplash.com/1200x500/daily';
-        $media->width = 600;
-        $media->height = 250;
+        $media = new TNP_Media();
+        // A placeholder can be set by a preset and it is kept indefinitely
+        if (!empty($options['placeholder'])) {
+            $media->url = $options['placeholder'];
+            $media->width = 600;
+            $media->height = 250;
+        } else {
+            $media->url = 'https://source.unsplash.com/1200x500/daily';
+            $media->width = 600;
+            $media->height = 250;
+        }
     }
 } else {
     $media = tnp_resize_2x($options['image']['id'], array(600, 0));
@@ -41,14 +45,22 @@ if (empty($options['image']['id'])) {
         echo 'The selected media file cannot be processed';
         return;
     }
-    $media->alt = $options['image_alt'];
 }
 
 if (!empty($options['width'])) {
     $media->set_width($options['width']);
 }
 $media->link = $options['url'];
+if (!empty($options['image-alt'])) {
+    $media->alt = $options['image-alt'];
+}
 $image_class_name = 'image';
+
+$img_align = '';
+if (isset($options['img_align']) && in_array($options['img_align'], array('left', 'right'))) {
+    $img_align = 'float: ' . $options['img_align'] .';';
+}
+
 ?>
 <style>
     .<?php echo $image_class_name ?> {
@@ -58,7 +70,9 @@ $image_class_name = 'image';
         width: <?php echo $media->width ?>px;
         line-height: 0;
         margin: 0 auto;
+        <?php echo $img_align ?>
     }
 </style>
 
 <?php echo TNP_Composer::image( $media, [ 'class' => $image_class_name ] ); ?>
+

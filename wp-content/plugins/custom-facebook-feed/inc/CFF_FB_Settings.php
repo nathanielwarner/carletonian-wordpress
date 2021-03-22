@@ -67,6 +67,7 @@ class CFF_FB_Settings {
 		        'ajax' 					=> get_option('cff_ajax'),
 		        'offset' 				=> '',
 		        'account' 				=> '',
+	        'cff_enqueue_with_shortcode' => isset($options[ 'cff_enqueue_with_shortcode' ]) ? $options[ 'cff_enqueue_with_shortcode' ] : false,
 
 		        //General
 		        'width' 				=> isset($options[ 'cff_feed_width' ]) ? $options[ 'cff_feed_width' ] : '',
@@ -185,6 +186,7 @@ class CFF_FB_Settings {
 		        'textissue' 			=> isset($options[ 'cff_format_issue' ]) ? $options[ 'cff_format_issue' ] : '',
 		        'restrictedpage' 		=> isset($options[ 'cff_restricted_page' ]) ? $options[ 'cff_restricted_page' ] : '',
                 'salesposts'            => 'false',
+                'storytags'            => 'false',
 
 		        //Page Header
 		        'showheader' 			=> isset($options[ 'cff_show_header' ]) ? $options[ 'cff_show_header' ] : '',
@@ -300,7 +302,7 @@ class CFF_FB_Settings {
 		$cff_connected_accounts = get_option('cff_connected_accounts');
 		$cff_connected_accounts = json_decode( str_replace('\"','"', $cff_connected_accounts) );
 	    if( !empty( $cff_account ) ){
-	        if( !empty($cff_connected_accounts) ){
+	        if( !empty($cff_connected_accounts) && isset($cff_connected_accounts->{ $cff_account }) ){
 	            //Grab the ID and token from the connected accounts setting
 	            $id_and_token = [
 					'id' 	=> $cff_connected_accounts->{ $cff_account }->{'id'},
@@ -357,7 +359,7 @@ class CFF_FB_Settings {
 			if(!in_array($account_info['pagetype'], $types)){
 				array_push($types, $account_info['pagetype']);
 			}
-			$account_name = ($account_info['name'] != '') ? urldecode($account_info['name']) : $feed_id;
+			$account_name = (isset($account_info['name']) && $account_info['name'] != '') ? urldecode($account_info['name']) : $feed_id;
 			array_push($names, $account_name);
 
 		}

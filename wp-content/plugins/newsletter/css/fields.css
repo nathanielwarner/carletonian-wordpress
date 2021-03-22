@@ -1,7 +1,4 @@
-/* DEBUG - Disable when done */
-/*.tnp-field {*/
-   /*border: 1px dashed #999;*/
-/*}*/
+
 
 /* STRUCTURE */
 .tnp-field-row {
@@ -140,15 +137,15 @@ tnp-field.tnp-font {
     width: auto;
 }
 
-.tnp-field.tnp-button .tnpf-font-family {
+.tnp-field.tnpf-button .tnpf-font-family {
     font-size: 13px;
 }
 
-.tnp-field.tnp-button .tnpf-font-size {
+.tnp-field.tnpf-button .tnpf-font-size {
     font-size: 13px;
 }
 
-.tnp-field.tnp-button .tnpf-font-weight {
+.tnp-field.tnpf-button .tnpf-font-weight {
     font-size: 13px;
 }
 
@@ -166,9 +163,4 @@ tnp-field.tnp-font {
     font-style: italic;
     font-weight: normal;
     color: #999999;
-}
-
-.tnpf-color {
-    width: 40px;
-    font-size: 12px;
 }

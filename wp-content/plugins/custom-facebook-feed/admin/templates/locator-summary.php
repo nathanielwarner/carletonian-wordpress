@@ -34,37 +34,51 @@ if ( ! empty( $locator_summary ) ) : ?>
 			</thead>
 			<tbody>
 
-			<?php foreach ( $locator_section['results'] as $result ) :
-				$shortcode_atts = $result['shortcode_atts'] != '[""]' ? json_decode( $result['shortcode_atts'], true ) : [];
-				$shortcode_atts = is_array( $shortcode_atts ) ? $shortcode_atts : array();
-                $display_terms = CFF_FB_Settings::feed_type_and_terms_display( $connected_accounts, $result, $database_settings );
-                $comma_separated =  implode(',',$display_terms['name']);
+			<?php
+				$atts_for_page = array();
+				foreach ( $locator_section['results'] as $result ) :
+					$should_add = true;
+					if ( ! empty( $atts_for_page[ $result['post_id'] ] ) ) {
+						foreach ( $atts_for_page[ $result['post_id'] ] as $existing_atts ) {
+							if ( $existing_atts === $result['shortcode_atts'] ) {
+								$should_add = false;
+							}
+						}
+					}
+				if ( $should_add ) {
+					$atts_for_page[ $result['post_id'] ][] = $result['shortcode_atts'];
+					$shortcode_atts = $result['shortcode_atts'] != '[""]' ? json_decode( $result['shortcode_atts'], true ) : [];
+					$shortcode_atts = is_array( $shortcode_atts ) ? $shortcode_atts : array();
+	                $display_terms = CFF_FB_Settings::feed_type_and_terms_display( $connected_accounts, $result, $database_settings );
+	                $comma_separated =  implode(',',$display_terms['name']);
 
-				$display = $comma_separated;
-                if ( strlen( $comma_separated ) > 31 ) {
-	                $display = '<span class="cff-condensed-wrap">' . substr( $comma_separated, 0, 30 ) . '<a class="cff-locator-more" href="JavaScript:void(0);">...</a></span>';
-                    $comma_separated = '<span class="cff-full-wrap">' . esc_html( $comma_separated ) . '</span>';
-                } else {
-	                $comma_separated = '';
-                }
-				$type = implode(',',$display_terms['type']);
+					$display = $comma_separated;
+	                if ( strlen( $comma_separated ) > 31 ) {
+		                $display = '<span class="cff-condensed-wrap">' . substr( $comma_separated, 0, 30 ) . '<a class="cff-locator-more" href="JavaScript:void(0);">...</a></span>';
+	                    $comma_separated = '<span class="cff-full-wrap">' . esc_html( $comma_separated ) . '</span>';
+	                } else {
+		                $comma_separated = '';
+	                }
+					$type = implode(',',$display_terms['type']);
 
-				$full_shortcode_string = '[custom-facebook-feed';
-				foreach ( $shortcode_atts as $key => $value ) {
-					$full_shortcode_string .= ' ' . esc_html( $key ) . '="' . esc_html( $value ) . '"';
+					$full_shortcode_string = '[custom-facebook-feed';
+					foreach ( $shortcode_atts as $key => $value ) {
+						$full_shortcode_string .= ' ' . esc_html( $key ) . '="' . esc_html( $value ) . '"';
+					}
+					$full_shortcode_string .= ']';
+					?>
+				<tr>
+	                <td><?php echo esc_html( $type ); ?></td>
+	                <td><?php echo $display . $comma_separated; ?></td>
+	                <td>
+	                    <span class="cff-condensed-wrap"><a class="cff-locator-more" href="JavaScript:void(0);"><?php esc_html_e( 'Show', 'custom-facebook-feed' ); ?></a></span>
+	                    <span class="cff-full-wrap"><?php echo $full_shortcode_string; ?></span>
+	                </td>
+					<td><a href="<?php echo esc_url( get_the_permalink( $result['post_id'] ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( get_the_title( $result['post_id'] ) ); ?></a></td>
+				</tr>
+				<?php
 				}
-				$full_shortcode_string .= ']';
-				?>
-			<tr>
-                <td><?php echo esc_html( $type ); ?></td>
-                <td><?php echo $display . $comma_separated; ?></td>
-                <td>
-                    <span class="cff-condensed-wrap"><a class="cff-locator-more" href="JavaScript:void(0);"><?php esc_html_e( 'Show', 'custom-facebook-feed' ); ?></a></span>
-                    <span class="cff-full-wrap"><?php echo $full_shortcode_string; ?></span>
-                </td>
-				<td><a href="<?php echo esc_url( get_the_permalink( $result['post_id'] ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( get_the_title( $result['post_id'] ) ); ?></a></td>
-			</tr>
-			<?php endforeach; ?>
+			endforeach; ?>
 
 
 			</tbody>

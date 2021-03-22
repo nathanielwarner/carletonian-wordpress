@@ -5,7 +5,7 @@ Tags: history, log, changes, changelog, audit, audit log, event log, user tracki
 Requires at least: 5.2
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 2.39.0
+Stable tag: 2.41.2
 
 View changes made by users within WordPress. See who created a page, uploaded an attachment or approved an comment, and more.
 
@@ -50,7 +50,7 @@ Out of the box Simple History has support for:
 By default Simple History comes with built in support for the following plugins:
 
 **Jetpack**<br>
-The [Jetpack plugin](https://wordpress.org/plugins/jetpack/) is a plugin from Automattic (the creators of WordPress) that lets you supercharge your website by adding a lot of extra functions.
+The [Jetpack plugin](https://wordpress.org/plugins/jetpack/) is a plugin from Automattic (the company behind the WordPress.com service) that lets you supercharge your website by adding a lot of extra functions.
 In Simple History you will see what Jetpack modules that are activated and deactivated.
 (The creator of Simple History recommends this plugin and its [brute force attack protection](https://jetpack.com/features/security/brute-force-attack-protection/) functions btw. It's a really good way to block unwanted login attempts from malicious botnets and distributed attacks.
 
@@ -192,6 +192,34 @@ Events in the log are stored for 60 days by default. Events older than this will
    A simple way to see any uncommon activity, for example an increased number of logins or similar.
 
 == Changelog ==
+
+= 2.41.2 (March 2021) =
+
+- Fixed: Error when running on PHP version 7.2 or lower.
+
+= 2.41.1 (March 2021) =
+
+- Fixed: Get information for correct IP Address when multiple IP addresses are shown.
+
+= 2.41.0 (March 2021) =
+
+- Fixed: Error when visiting settings screen on PHP 8. 
+  Fixes https://wordpress.org/support/topic/simple-history-fatal-error/.
+  [#239](https://github.com/bonny/WordPress-Simple-History/issues/239)
+
+= 2.40.0 (March 2021) =
+
+- Changed: IP address is now also shown when a user successfully logs in.
+  Previously the IP address was only shown for failed login attempts. Note that the IP address/es of all events are always logged and can be seen in the "context data" table that is displayed when you click the date and time of an event.
+  [#233](https://github.com/bonny/WordPress-Simple-History/issues/233)
+
+- Added: If multiple IP addresses are detected, for example when a website is running behind a proxy or similar, all IP addresses are now shown for failed and sucessful logins.
+
+- Added: Filter `simple_history/row_header_output/display_ip_address` that can be used to control when the IP address/es should be visible in the main log. By default sucessful and failed logins are shown.
+
+- Added: Show message when failing to get IP address due to for example ad blocker. IPInfo.io is for example blocked in the EasyList filter list that for example [Chrome extension uBlock Origin](https://chrome.google.com/webstore/detail/ublock-origin/cjpalhdlnbpafiamejdnhcphjbkeiagm) uses.
+
+- Added: Filter `simple_history/row_header_output/template` that controls the output of the header row in the main event log.
 
 = 2.39.0 (January 2021) =
 

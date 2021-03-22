@@ -229,6 +229,7 @@ final class Custom_Facebook_Feed{
 
 		$this->cff_ppca_check_notice_dismiss();
 		$this->register_assets();
+		$this->group_posts_process();
 
 		if ( $this->cff_blocks->allow_load() ) {
 			$this->cff_blocks->load();
@@ -253,6 +254,21 @@ final class Custom_Facebook_Feed{
 		}
 	}
 
+	/**
+ 	 * Launch the Group Posts Cache Process
+ 	 *
+ 	 *
+ 	 * @return void
+	 * @access public
+ 	*/
+	function group_posts_process(){
+		$cff_cron_schedule = 'hourly';
+		$cff_cache_time = get_option( 'cff_cache_time' );
+		$cff_cache_time_unit = get_option( 'cff_cache_time_unit' );
+		if( $cff_cache_time_unit == 'hours' && $cff_cache_time > 5 ) $cff_cron_schedule = 'twicedaily';
+		if( $cff_cache_time_unit == 'days' ) $cff_cron_schedule = 'daily';
+		CFF_Group_Posts::group_schedule_event(time(), $cff_cron_schedule);
+	}
 
 	/**
 	 * Register Assets
@@ -283,7 +299,11 @@ final class Custom_Facebook_Feed{
 	    	array(),
 	    	CFFVER
 	    );
-	    wp_enqueue_style( 'cff' );
+	    
+        $options['cff_enqueue_with_shortcode'] = isset( $options['cff_enqueue_with_shortcode'] ) ? $options['cff_enqueue_with_shortcode'] : false;
+        if ( isset( $options['cff_enqueue_with_shortcode'] ) && !$options['cff_enqueue_with_shortcode'] ) {
+            wp_enqueue_style( 'cff' );
+        }
 
 	    $options = get_option('cff_style_settings');
 
@@ -332,8 +352,10 @@ final class Custom_Facebook_Feed{
 	    	CFFVER,
 	    	true
 	    );
-	    //Enqueue it to load it onto the page
-	    wp_enqueue_script('cffscripts');
+	    $options['cff_enqueue_with_shortcode'] = isset( $options['cff_enqueue_with_shortcode'] ) ? $options['cff_enqueue_with_shortcode'] : false;		
+        if ( isset( $options['cff_enqueue_with_shortcode'] ) && !$options['cff_enqueue_with_shortcode'] ) {
+            wp_enqueue_script( 'cffscripts' );
+        }
 	}
 
 

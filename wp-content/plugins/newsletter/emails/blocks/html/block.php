@@ -3,7 +3,7 @@
  * Name: Html
  * Section: content
  * Description: Free HTML block
- * 
+ *
  */
 
 /* @var $options array */
@@ -15,7 +15,7 @@ $default_options = array(
     'block_padding_right' => 15,
     'block_padding_top' => 20,
     'block_padding_bottom' => 20,
-    'block_background' => '#ffffff',
+    'block_background' => '',
     'font_family' => 'Helvetica, Arial, sans-serif',
     'font_size' => 16,
     'font_color' => '#000'

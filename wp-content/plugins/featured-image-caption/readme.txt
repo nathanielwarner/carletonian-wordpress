@@ -1,10 +1,10 @@
 === Featured Image Caption ===
 Contributors: cconover
-Donate link: https://christiaanconover.com/code/wp-featured-image-caption?ref=plugin-readme
+Donate link: https://christiaanconover.com/
 Tags: image, caption, featured image, shortcode
 Requires at least: 3.5
-Tested up to: 5.1.1
-Stable tag: 0.8.9
+Tested up to: 5.7
+Stable tag: 0.8.10
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,8 +13,6 @@ Easily add and display a caption for the featured image of a post.
 == Description ==
 
 Featured Image Caption makes it simple to show a caption with the featured image of a post or page. It works seamlessly with most themes, with no coding required. If you like to mess about in the code, it supports that too.
-
-For full details about the plugin and usage documentation, [check out the plugin wiki on GitHub](https://github.com/cconover/wp-featured-image-caption/wiki).
 
 == Installation ==
 
@@ -107,27 +105,30 @@ Initial release.
 
 == Changelog ==
 
+= 0.8.10 =
+* Tested up to WordPress 5.7.
+
 = 0.8.9 =
-Fix how the plugin checks that PHP is a compatible version.
+* Fix how the plugin checks that PHP is a compatible version.
 
 = 0.8.8 =
-Replace the Composer autoloader with an inline autoloader, to reduce plugin size and improve performance.
+* Replace the Composer autoloader with an inline autoloader, to reduce plugin size and improve performance.
 
 = 0.8.7 =
-Fix an error caused by a relative include path.
+* Fix an error caused by a relative include path.
 
 = 0.8.6 =
-Fix an error thrown due to a deprecated function call for the WP REST API.
+* Fix an error thrown due to a deprecated function call for the WP REST API.
 
 = 0.8.5 =
-Fix an issue with [empty caption data causing `Undefined Index` errors for the REST API](https://github.com/cconover/featured-image-caption/pull/56).
+* Fix an issue with [empty caption data causing `Undefined Index` errors for the REST API](https://github.com/cconover/featured-image-caption/pull/56).
 Credit: [github/brockpetrie](https://github.com/brockpetrie)
 
 = 0.8.4 =
-Fix a bug with the REST API throwing errors for posts with no caption data.
+* Fix a bug with the REST API throwing errors for posts with no caption data.
 
 = 0.8.3 =
-Add support for the WordPress REST API. The caption fields are added as properties in the `posts` response. See [plugin documentation for the REST API](https://github.com/cconover/featured-image-caption/wiki/REST-API) for usage information.
+* Add support for the WordPress REST API. The caption fields are added as properties in the `posts` response. See [plugin documentation for the REST API](https://github.com/cconover/featured-image-caption/wiki/REST-API) for usage information.
 
 = 0.8.2 =
 * When automatic caption appending is enabled, the plugin can optionally only append the caption when viewing a single post.

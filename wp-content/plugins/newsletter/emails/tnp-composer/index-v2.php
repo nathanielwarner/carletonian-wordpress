@@ -2,7 +2,6 @@
 /**
  * This file is included by NewsletterControls to create the composer.
  */
-
 /* @var $this NewsletterControls */
 
 defined('ABSPATH') || exit;
@@ -25,7 +24,14 @@ $blocks = array_merge(array_flip(array('header', 'content', 'footer')), $blocks)
 $block_options = get_option('newsletter_main');
 
 $fields = new NewsletterFields($controls);
+
+$dir = is_rtl()?'rtl':'ltr';
+$rev_dir = is_rtl()?'ltr':'rlt';
 ?>
+<script type="text/javascript">
+    // collapse wp menu
+    document.body.classList.add('folded');
+</script>
 <style>
     .placeholder {
         border: 3px dashed #ddd!important;
@@ -38,38 +44,61 @@ $fields = new NewsletterFields($controls);
     #newsletter-builder-area-center-frame-content {
         min-height: 300px!important;
     }
+    
+    #tnpc-subject-wrap th[dir=rtl] {
+        text-align: left;
+    }
+    #tnpc-subject-wrap td[dir=rtl] {
+        text-align: right;
+    }
+    #tnpc-subject-wrap td[dir=rtl] #options-title {
+        margin-right: 0;
+    }
 </style>
 
 <style>
 <?php echo NewsletterEmails::instance()->get_composer_css(); ?>
 </style>
-
-<div id="newsletter-builder">
+<div id="newsletter-builder" dir="ltr">
 
     <div id="newsletter-builder-area" class="tnp-builder-column">
 
         <?php if ($tnpc_show_subject) { ?>
-            <p>
-                <?php $this->text('title', 60, 'Newsletter subject'); ?>
-                <a href="#" class="tnp-suggest-button" onclick="tnp_suggest_subject(); return false;"><?php _e('Get ideas', 'newsletter') ?></a>
-            </p>
+        <div id="tnpc-subject-wrap" dir="<?php echo $dir?>">
+                <table role="presentation" style="width: 100%">
+                    <tr>
+                        <th dir="<?php echo $dir?>">From</th>
+                        <td dir="<?php echo $dir?>"><?php echo esc_html(Newsletter::instance()->options['sender_email']) ?></td>
+                    </tr>
+                    <tr>
+                        <th dir="<?php echo $dir?>">Subject</th>
+                        <td dir="<?php echo $dir?>">
+                            <div id="tnpc-subject">
+                                <?php $this->subject('title'); ?>
+                            </div>
+                        </td>
+
+                    </tr>
+                </table>
+
+            </div>
         <?php } ?>
 
-        <div id="newsletter-builder-area-center-frame-content">
+        <div id="newsletter-builder-area-center-frame-content" dir="<?php echo $dir?>">
 
             <!-- Composer content -->
 
         </div>
     </div>
 
-    <div id="newsletter-builder-sidebar" class="tnp-builder-column">
+    <div id="newsletter-builder-sidebar" dir="<?php echo is_rtl()?'rtl':'ltr'?>">
 
         <div class="tnpc-tabs">
-            <button class="tablinks" onclick="openTab(event, 'tnpc-blocks')" id="defaultOpen"><?php _e('Blocks', 'newsletter') ?></button>
-            <button class="tablinks" onclick="openTab(event, 'tnpc-global-styles')"><?php _e('Global Styles', 'newsletter') ?></button>
-            <button class="tablinks" onclick="openTab(event, 'tnpc-mobile-tab')"><i class="fas fa-mobile"></i> <?php _e('Mobile Preview', 'newsletter') ?></button>
+            <button class="tablinks" onclick="openTab(event, 'tnpc-blocks')" data-tab-id='tnpc-blocks' id="defaultOpen"><?php _e('Blocks', 'newsletter') ?></button>
+            <button class="tablinks" onclick="openTab(event, 'tnpc-global-styles')" data-tab-id='tnpc-global-styles'><?php _e('Settings', 'newsletter') ?></button>
+            <button class="tablinks" onclick="openTab(event, 'tnpc-mobile-tab')" data-tab-id='tnpc-mobile-tab'><i class="fas fa-mobile"></i> <?php _e('Mobile', 'newsletter') ?></button>
             <?php if ($show_test) { ?>
-                <button class="tablinks" onclick="openTab(event, 'tnpc-test-tab')"><i class="fas fa-paper-plane"></i> <?php _e('Test', 'newsletter') ?></button>
+                <button class="tablinks" onclick="openTab(event, 'tnpc-test-tab')" data-tab-id='tnpc-test-tab'><i class="fas fa-paper-plane"></i> <?php _e('Test', 'newsletter') ?></button>
             <?php } ?>
 
         </div>
@@ -91,8 +120,25 @@ $fields = new NewsletterFields($controls);
 
             <form id="tnpc-global-styles-form">
 
-		        <?php $fields->color( 'options_composer_background', __( 'Background color', 'newsletter' ), [ 'default' => '#FFFFFF' ] ) ?>
-		        <?php $fields->text( 'options_preheader', __( 'Snippet', 'newsletter' ), ['description'=>'Short content preview shown by Gmail']) ?>
+                <?php //$fields->section('Colors') ?>
+
+                <div class="tnp-field-row">
+                    <div class="tnp-field-col-2">
+                        <?php $fields->color('options_composer_background', __('Main background', 'newsletter')) ?>
+                    </div>
+                    <div class="tnp-field-col-2">
+                        <?php $fields->color('options_composer_block_background', 'Blocks background') ?>
+                    </div>
+                </div>
+
+                <?php //$fields->section('Fonts are applied to new blocks or when refreshed') ?>
+	            <?php $fields->font( 'options_composer_title_font', __( 'Titles font', 'newsletter' ) ) ?>
+	            <?php $fields->font( 'options_composer_text_font', __( 'Text font', 'newsletter' ) ) ?>
+	            <?php $fields->button_style( 'options_composer_button', __( 'Button style', 'newsletter' ) ); ?>
+
+                <?php $fields->textarea('options_preheader', __('Snippet', 'newsletter'), ['description'=>'Show by some email clients as excerpt', 'height'=>'70']) ?>
+
+                <button class="button-secondary" name="apply"><?php _e("Apply", 'newsletter') ?></button>
 
             </form>
 
@@ -127,7 +173,6 @@ $fields = new NewsletterFields($controls);
                 <span id="tnpc-block-options-save" class="button-primary"><?php _e("Apply", "newsletter") ?></span>
             </div>
             <form id="tnpc-block-options-form" onsubmit="return false;"></form>
-
         </div>
 
     </div>
@@ -147,8 +192,11 @@ $fields = new NewsletterFields($controls);
     TNP_PLUGIN_URL = "<?php echo esc_js(NEWSLETTER_URL) ?>";
     TNP_HOME_URL = "<?php echo esc_js(home_url('/', is_ssl() ? 'https' : 'http')) ?>";
     tnp_context_type = "<?php echo esc_js($context_type) ?>";
-    tnp_nonce = '<?php echo esc_js(wp_create_nonce('save'))?>';
+    tnp_nonce = '<?php echo esc_js(wp_create_nonce('save')) ?>';
+    tnp_preset_nonce = '<?php echo esc_js(wp_create_nonce('preset')) ?>';
 </script>
+<script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/emails/tnp-composer/_scripts/modal.js?ver=<?php echo time() ?>"></script>
+<script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/emails/tnp-composer/_scripts/tnp-toast.js?ver=<?php echo time() ?>"></script>
 <script type="text/javascript" src="<?php echo plugins_url('newsletter'); ?>/emails/tnp-composer/_scripts/newsletter-builder-v2.js?ver=<?php echo time() ?>"></script>
 
 <?php include NEWSLETTER_DIR . '/emails/subjects.php'; ?>

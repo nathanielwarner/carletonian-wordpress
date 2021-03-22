@@ -104,7 +104,7 @@ class NewsletterUnsubscription extends NewsletterModule {
             return true;
         }
 
-        $message = $options['unsubscribed_message'];
+	    $message = do_shortcode( $options['unsubscribed_message'] );
         $subject = $options['unsubscribed_subject'];
 
         return NewsletterSubscription::instance()->mail($user, $subject, $message);

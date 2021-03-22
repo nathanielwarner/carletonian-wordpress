@@ -221,6 +221,9 @@ function tnp_resize($media_id, $size) {
 
     if (substr($relative_file, -4) === '.gif') {
         $editor = wp_get_image_editor($absolute_file);
+        if (is_wp_error($editor)) {
+            return _tnp_get_default_media($media_id, $size);
+        }
         $new_size = $editor->get_size();
         $media = new TNP_Media();
         $media->width = $new_size['width'];
@@ -298,9 +301,6 @@ function tnp_resize_2x($media_id, $size) {
 	$media->set_width( $size[0] / 2 );
 	return $media;
 }
-
-//TODO creare funzione che quando fa il resize fa anche il resize
-// al doppio della risoluzione e salva url del file in TNP_Media->url2x o urls ??
 
 /**
  * Get media for "posts" composer block

@@ -55,6 +55,25 @@ img.aligncenter{display:block;margin:0 auto;}
         width:100%!important;
         max-width: 100%!important;
     }
+    
+    table[class="responsive"]{
+        width:100%!important;
+        max-width: 100%!important;
+    }  
+    
+    img.responsive {
+        width:100%!important;
+        max-width: 100%!important;
+    }   
+    
+    .block {
+        display: block;
+    }
+    
+    td[class="responsive"]{
+        width:100%!important;
+        max-width: 100%!important;
+    }    
 
     /* UTILITY CLASSES FOR ADJUSTING PADDING ON MOBILE */
     td[class="padding"]{

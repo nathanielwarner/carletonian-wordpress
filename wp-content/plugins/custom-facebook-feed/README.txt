@@ -4,7 +4,7 @@ Tags: Facebook, Facebook feed, Facebook posts, Facebook group, Facebook page
 Requires at least: 3.0
 Requires PHP: 5.6
 Tested up to: 5.6
-Stable tag: 2.19
+Stable tag: 2.19.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -262,12 +262,22 @@ The most common reason for this is that an add-on or extension you have installe
 9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 2.19.1 =
+* New: In this update, the plugin will now use a persistent cache to store your Facebook group posts. This will help minimize any affects of a Facebook API change on May 25th which will only allow Facebook Groups to retrieve content from the past 90 days. The plugin will store your group posts in the persistent cache so that those posts can continue to be displayed beyond 90 days. This update will also make a one-time request to get the last 100 posts from your group and store those too, so that the affect of this change will be minimal for our users. Please [see here](https://smashballoon.com/doc/facebook-api-change-limits-groups-to-90-days/) for more information.
+* Tweak: Updated jQuery methods in preparation for jQuery migrate removal in an upcoming WordPress core update.
+* Tweak: Added option to enqueue CSS and JS files only when shortcode is on the page.
+* Tweak: Added an reset error log button to the settings page.
+* Tweak: Added an option to hide the call-to-action button in the post content.
+* Fix: Changed how access tokens are retrieved to prevent conflict with the "Rank Math SEO" plugin when connecting an account.
+* Fix: Fixed an error in the Feed Finder tool when removing accounts.
+* Fix: Fixed an issue with duplicated records in the feed finder.
+* Fix: Fixed "Unknown error" response with API story tag calls.
+
 = 2.19 =
 * New: Improved the error reporting system to make resolving issues easier.
 * New: The locations of the Facebook feeds on your site will now be logged and listed on a single page for easier management. After this feature has been active for awhile, a "Feed Finder" link will appear under your connected accounts on the plugin Settings page which allows you to see a list of all feeds on your site along with their locations.
 * Tweak: When clearing the plugin cache, the cache in the Litespeed plugin will now also be cleared if being used on the site.
 * Fix: Fixed an issue with anonymous avatars not displaying correctly in group feeds.
-* Fix: Added a fix for apostrophes in connected accounts.
 
 = 2.18.3 =
 * Tweak: Updated deprecated jQuery functions to prevent potential issues with newer versions.
