@@ -92,7 +92,9 @@ class LLAR_App {
 		}
 
 		$link = 'https://' . $link;
-		$link = add_query_arg( 'domain', $_SERVER['SERVER_NAME'], $link );
+
+		$domain = parse_url( home_url( '/' ) );
+		$link = add_query_arg( 'domain', $domain['host'], $link );
 
 		$plugin_data = get_plugin_data( LLA_PLUGIN_DIR . '/limit-login-attempts-reloaded.php' );
 		$link = add_query_arg( 'version', $plugin_data['Version'], $link );
@@ -185,6 +187,44 @@ class LLAR_App {
 	public function acl_delete( $data ) {
 
 		return $this->request( 'acl/delete', 'post', $data );
+	}
+
+	/**
+	 * @return bool|mixed
+	 * @throws Exception
+	 */
+	public function country() {
+
+		return $this->request( 'country', 'get' );
+	}
+
+	/**
+	 * @param $data
+	 * @return bool|mixed
+	 * @throws Exception
+	 */
+	public function country_add( $data ) {
+
+		return $this->request( 'country/add', 'post', $data );
+	}
+
+	/**
+	 * @param $data
+	 * @return bool|mixed
+	 * @throws Exception
+	 */
+	public function country_remove( $data ) {
+
+		return $this->request( 'country/remove', 'post', $data );
+	}
+
+	/**
+	 * @param $data
+	 * @return bool|mixed
+	 */
+	public function country_rule( $data ) {
+
+		return $this->request( 'country/rule', 'post', $data );
 	}
 
 	/**

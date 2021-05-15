@@ -24,7 +24,7 @@
 #tnp-wrap h4,
 #tnp-wrap input,
 #tnp-wrap select,
-#tnp-wrap textarea, 
+#tnp-wrap textarea,
 #tnp-wrap button,
 #tnp-wrap li,
 #tnp-wrap a
@@ -181,7 +181,7 @@
 }
 
 /******************************************************************************
-* BODY                                     
+* BODY
 ******************************************************************************/
 
 #tnp-body {
@@ -361,13 +361,15 @@ table.clicks {
     border-left: 5px solid #27AE60;
 }
 
-.tnp-notice a {
+.tnp-notice a,
+.tnp-warning a {
     color: #0073aa;
     text-decoration: none;
     font-weight: bold;
 }
 
-.tnp-notice a.tnp-dismiss {
+.tnp-notice a.tnp-dismiss,
+.tnp-warning a.tnp-dismiss{
     display: block;
     position: absolute;
     right: 10px;
@@ -602,9 +604,16 @@ table.clicks {
     margin: 0px;
 }
 
-#tnp-heading p {
+#tnp-heading p, #tnp-heading ul {
     margin: 0px;
     color: #ccc;
+}
+
+#tnp-heading ul {
+    list-style-type: circle;
+    list-style-position: inside;
+    margin-left: 2em;
+    margin-top: 1em;
 }
 
 /* Style for WP global notices */
@@ -1259,8 +1268,12 @@ iframe.tnp-editor-preview-desktop {
     transition: width .6s ease;
 }
 
-.tnp-progress.sent .tnp-progress-bar {
+.tnp-progress--sent .tnp-progress-bar {
     background-color: green;
+}
+
+.tnp-progress--error .tnp-progress-bar {
+    background-color: #E74C3C;
 }
 
 .tnp-progress-numbers {
@@ -1273,45 +1286,37 @@ iframe.tnp-editor-preview-desktop {
     font-style: italic;
 }
 
+span.tnp-email-status {
+    background-color: #95A5A6;
+    padding: 2px 10px;
+    border-radius: 4px;
+    color: #fff;
+    white-space: nowrap;
+}
+
 /* Email status label */
-span.tnp-email-status-new {
+span.tnp-email-status.tnp-email-status--new {
     background-color: #8E44AD;
-    padding: 2px 10px;
-    border-radius: 4px;
-    color: #fff;
-    white-space: nowrap;
 }
 
-span.tnp-email-status-paused {
+span.tnp-email-status.tnp-email-status--paused {
     background-color: #95A5A6;
-    padding: 2px 10px;
-    border-radius: 4px;
-    color: #fff;
-    white-space: nowrap;
 }
 
-span.tnp-email-status-sending {
-    background-color:#27AE60;
-    padding: 2px 10px;
-    border-radius: 4px;
-    color: #fff;
-    white-space: nowrap;
+span.tnp-email-status.tnp-email-status--sending {
+    background-color: #27AE60;
 }
 
-span.tnp-email-status-scheduled {
+span.tnp-email-status.tnp-email-status--scheduled {
     background-color: #E67E22;
-    padding: 2px 10px;
-    border-radius: 4px;
-    color: #fff;
-    white-space: nowrap;
 }
 
-span.tnp-email-status-sent {
+span.tnp-email-status.tnp-email-status--sent {
     background-color: #95A5A6;
-    padding: 2px 10px;
-    border-radius: 4px;
-    color: #fff;
-    white-space: nowrap;
+}
+
+span.tnp-email-status.tnp-email-status--error {
+    background-color: #E74C3C;
 }
 
 /* Schedule buttons styles */

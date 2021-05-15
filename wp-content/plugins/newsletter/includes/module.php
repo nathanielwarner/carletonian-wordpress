@@ -16,6 +16,7 @@ class TNP_Media {
     var $height;
     var $alt;
     var $link;
+    var $align = 'center';
 
     /** Sets the width recalculating the height */
     public function set_width($width) {
@@ -333,6 +334,7 @@ class TNP_Email {
     const STATUS_SENT = 'sent';
     const STATUS_SENDING = 'sending';
     const STATUS_PAUSED = 'paused';
+    const STATUS_ERROR = 'error';
 
 }
 
@@ -925,6 +927,37 @@ class NewsletterModule {
         return $list;
     }
 
+	/**
+	 * @param string $key
+	 * @param mixed $value
+	 * @return TNP_Email[]
+	 */
+	function get_emails_by_field( $key, $value) {
+		global $wpdb;
+
+		$value_placeholder = is_int( $value ) ? '%d' : '%s';
+
+		$query = $wpdb->prepare( "SELECT * FROM " . NEWSLETTER_EMAILS_TABLE . " WHERE %1s=$value_placeholder ORDER BY id DESC", $key, $value );
+
+		$email_list = $wpdb->get_results( $query );
+
+		if ( $wpdb->last_error || empty( $email_list ) ) {
+			$this->logger->error( $wpdb->last_error );
+
+			return [];
+		}
+
+		//Unserialize options
+		array_walk( $email_list, function ( $email ) {
+			$email->options = maybe_unserialize( $email->options );
+			if ( ! is_array( $email->options ) ) {
+				$email->options = [];
+			}
+		} );
+
+		return $email_list;
+	}
+
     /**
      * Retrieves an email from DB and unserialize the options.
      *
@@ -1059,7 +1092,7 @@ class NewsletterModule {
     }
 
     function show_email_status_label($email) {
-        echo '<span class="tnp-email-status-', $this->get_email_status_slug($email), '">', esc_html($this->get_email_status_label($email)), '</span>';
+        echo '<span class="tnp-email-status tnp-email-status--', $this->get_email_status_slug($email), '">', esc_html($this->get_email_status_label($email)), '</span>';
     }
 
     function get_email_progress($email, $format = 'percent') {
@@ -1086,7 +1119,7 @@ class NewsletterModule {
             $percent = $this->get_email_progress($email);
         }
 
-        echo '<div class="tnp-progress ', $email->status, '">';
+	    echo '<div class="tnp-progress tnp-progress--' . $email->status . '">';
         echo '<div class="tnp-progress-bar" role="progressbar" style="width: ', $percent, '%;">&nbsp;', $percent, '%&nbsp;</div>';
         echo '</div>';
         if ($attrs['numbers']) {
@@ -1333,6 +1366,10 @@ class NewsletterModule {
             set_transient('newsletter_user_count', $user_count, DAY_IN_SECONDS);
         }
         return $user_count;
+    }
+    
+    function get_profile($id, $language = '') {
+        return TNP_Profile_Service::get_profile_by_id($id, $language);
     }
 
     /**

@@ -25,8 +25,9 @@ $block_options = get_option('newsletter_main');
 
 $fields = new NewsletterFields($controls);
 
-$dir = is_rtl()?'rtl':'ltr';
-$rev_dir = is_rtl()?'ltr':'rlt';
+$dir = is_rtl() ? 'rtl' : 'ltr';
+$rev_dir = is_rtl() ? 'ltr' : 'rlt';
+
 ?>
 <script type="text/javascript">
     // collapse wp menu
@@ -44,7 +45,7 @@ $rev_dir = is_rtl()?'ltr':'rlt';
     #newsletter-builder-area-center-frame-content {
         min-height: 300px!important;
     }
-    
+
     #tnpc-subject-wrap th[dir=rtl] {
         text-align: left;
     }
@@ -64,15 +65,15 @@ $rev_dir = is_rtl()?'ltr':'rlt';
     <div id="newsletter-builder-area" class="tnp-builder-column">
 
         <?php if ($tnpc_show_subject) { ?>
-        <div id="tnpc-subject-wrap" dir="<?php echo $dir?>">
+            <div id="tnpc-subject-wrap" dir="<?php echo $dir ?>">
                 <table role="presentation" style="width: 100%">
                     <tr>
-                        <th dir="<?php echo $dir?>">From</th>
-                        <td dir="<?php echo $dir?>"><?php echo esc_html(Newsletter::instance()->options['sender_email']) ?></td>
+                        <th dir="<?php echo $dir ?>">From</th>
+                        <td dir="<?php echo $dir ?>"><?php echo esc_html($controls->data['sender_email']) ?></td>
                     </tr>
                     <tr>
-                        <th dir="<?php echo $dir?>">Subject</th>
-                        <td dir="<?php echo $dir?>">
+                        <th dir="<?php echo $dir ?>">Subject</th>
+                        <td dir="<?php echo $dir ?>">
                             <div id="tnpc-subject">
                                 <?php $this->subject('title'); ?>
                             </div>
@@ -81,17 +82,21 @@ $rev_dir = is_rtl()?'ltr':'rlt';
                     </tr>
                 </table>
 
-            </div>
+                <div style="text-align: left; margin-left: 1em;">
+                <a href="https://www.thenewsletterplugin.com/documentation/newsletters/newsletter-tags/" target="_blank">You can use tags to inject subscriber fields</a>. Even on subject.
+                </div>
+                </div>
         <?php } ?>
 
-        <div id="newsletter-builder-area-center-frame-content" dir="<?php echo $dir?>">
+       
+        <div id="newsletter-builder-area-center-frame-content" dir="<?php echo $dir ?>">
 
             <!-- Composer content -->
 
         </div>
     </div>
 
-    <div id="newsletter-builder-sidebar" dir="<?php echo is_rtl()?'rtl':'ltr'?>">
+    <div id="newsletter-builder-sidebar" dir="<?php echo is_rtl() ? 'rtl' : 'ltr' ?>">
 
         <div class="tnpc-tabs">
             <button class="tablinks" onclick="openTab(event, 'tnpc-blocks')" data-tab-id='tnpc-blocks' id="defaultOpen"><?php _e('Blocks', 'newsletter') ?></button>
@@ -132,11 +137,11 @@ $rev_dir = is_rtl()?'ltr':'rlt';
                 </div>
 
                 <?php //$fields->section('Fonts are applied to new blocks or when refreshed') ?>
-	            <?php $fields->font( 'options_composer_title_font', __( 'Titles font', 'newsletter' ) ) ?>
-	            <?php $fields->font( 'options_composer_text_font', __( 'Text font', 'newsletter' ) ) ?>
-	            <?php $fields->button_style( 'options_composer_button', __( 'Button style', 'newsletter' ) ); ?>
+                <?php $fields->font('options_composer_title_font', __('Titles font', 'newsletter')) ?>
+                <?php $fields->font('options_composer_text_font', __('Text font', 'newsletter')) ?>
+                <?php $fields->button_style('options_composer_button', __('Button style', 'newsletter')); ?>
 
-                <?php $fields->textarea('options_preheader', __('Snippet', 'newsletter'), ['description'=>'Show by some email clients as excerpt', 'height'=>'70']) ?>
+                <?php $fields->textarea('options_preheader', __('Snippet', 'newsletter'), ['description' => 'Show by some email clients as excerpt', 'height' => '70']) ?>
 
                 <button class="button-secondary" name="apply"><?php _e("Apply", 'newsletter') ?></button>
 

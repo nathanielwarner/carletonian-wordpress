@@ -213,21 +213,38 @@ class TNP_Composer {
 
     /**
      * Prepares a controls object injecting the relevant fields from an email
-     * which cannot be directly used by controls.
+     * which cannot be directly used by controls. If $email is null or missing,
+     * $controls is prepared with default values.
      *
-     * @param Newsletter $controls
+     * @param NewsletterControls $controls
      * @param TNP_Email $email
      */
-    static function prepare_controls($controls, $email) {
+    static function prepare_controls($controls, $email = null) {
 
-        foreach ($email->options as $name => $value) {
-            //if (strpos($name, 'composer_') === 0) {
-            $controls->data['options_' . $name] = $value;
-            //}
+        // Controls for a new email (which actually does not exist yet
+        if (!empty($email)) {
+
+            foreach ($email->options as $name => $value) {
+                //if (strpos($name, 'composer_') === 0) {
+                $controls->data['options_' . $name] = $value;
+                //}
+            }
+
+            $controls->data['message'] = TNP_Composer::unwrap_email($email->message);
+            $controls->data['subject'] = $email->subject;
         }
 
-        $controls->data['message'] = TNP_Composer::unwrap_email($email->message);
-        $controls->data['subject'] = $email->subject;
+        if (!empty($email->options['sender_email'])) {
+            $controls->data['sender_email'] = $email->options['sender_email'];
+        } else {
+            $controls->data['sender_email'] = Newsletter::instance()->options['sender_email'];
+        }
+
+        if (!empty($email->options['sender_name'])) {
+            $controls->data['sender_name'] = $email->options['sender_name'];
+        } else {
+            $controls->data['sender_name'] = Newsletter::instance()->options['sender_name'];
+        }
 
         $controls->data = array_merge(TNP_Composer::get_global_style_defaults(), $controls->data);
     }
@@ -346,27 +363,27 @@ class TNP_Composer {
         //Class and style attribute are mutually exclusive.
         //Class take priority to style because classes will transform to inline style inside block rendering operation
         if (!empty($attr['class'])) {
-            $styling = ' inline-class="' . $attr['class'] . '" ';
+            $styling = ' inline-class="' . esc_attr($attr['class']) . '" ';
         } else {
-            $styling = ' style="' . $attr['style'] . '" ';
+            $styling = ' style="' . esc_attr($attr['style']) . '" ';
         }
 
         //Class and style attribute are mutually exclusive.
         //Class take priority to style because classes will transform to inline style inside block rendering operation
         if (!empty($attr['link-class'])) {
-            $link_styling = ' inline-class="' . $attr['link-class'] . '" ';
+            $link_styling = ' inline-class="' . esc_attr($attr['link-class']) . '" ';
         } else {
-            $link_styling = ' style="' . $attr['link-style'] . '" ';
+            $link_styling = ' style="' . esc_attr($attr['link-style']) . '" ';
         }
 
         $b = '';
         if ($media->link) {
-            $b .= '<a href="' . $media->link . '" target="_blank" rel="noopener nofollow" ' . $link_styling . '>';
+            $b .= '<a href="' . esc_attr($media->link) . '" target="_blank" rel="noopener nofollow" ' . $link_styling . '>';
         }
 
         if ($media) {
-            $b .= '<img src="' . $media->url . '" width="' . $media->width . '"'
-                    . ' height="auto"'
+            $b .= '<img src="' . esc_attr($media->url) . '" width="' . esc_attr($media->width) . '"'
+                    . ' height="' . esc_attr($media->height) . '"'
                     . ' alt="' . esc_attr($media->alt) . '"'
                     . ' border="0" '
                     . $styling
@@ -450,8 +467,8 @@ class TNP_Composer {
     static function get_global_style_defaults() {
         return [
             'options_composer_title_font_family' => 'Verdana, Geneva, sans-serif',
-            'options_composer_title_font_size' => 36,
-            'options_composer_title_font_weight' => 'bold',
+            'options_composer_title_font_size' => 32,
+            'options_composer_title_font_weight' => 'normal',
             'options_composer_title_font_color' => '#222222',
             'options_composer_text_font_family' => 'Verdana, Geneva, sans-serif',
             'options_composer_text_font_size' => 16,
@@ -459,7 +476,7 @@ class TNP_Composer {
             'options_composer_text_font_color' => '#222222',
             'options_composer_button_font_family' => 'Verdana, Geneva, sans-serif',
             'options_composer_button_font_size' => 16,
-            'options_composer_button_font_weight' => 'bold',
+            'options_composer_button_font_weight' => 'normal',
             'options_composer_button_font_color' => '#FFFFFF',
             'options_composer_button_background_color' => '#256F9C',
             'options_composer_background' => '#FFFFFF',

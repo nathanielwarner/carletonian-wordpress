@@ -6,7 +6,7 @@ include_once __DIR__ . '/fields.php';
 
 class NewsletterControls {
 
-    var $data;
+    var $data = [];
     var $action = false;
     var $button_data = '';
     var $errors = '';
@@ -274,13 +274,17 @@ class NewsletterControls {
         'A2' => 'Satellite IP'
     );
 
+    /**
+     * 
+     * @param array $options
+     */
     function __construct($options = null) {
-        if ($options == null) {
+        if ($options === null) {
             if (isset($_POST['options'])) {
                 $this->data = stripslashes_deep($_POST['options']);
             }
         } else {
-            $this->data = $options;
+            $this->data = (array)$options;
         }
 
         if (isset($_REQUEST['act'])) {
@@ -932,8 +936,8 @@ class NewsletterControls {
         $this->btn('save', __('Save', 'newsletter'), ['icon' => 'fa-save']);
     }
 
-    function button_reset() {
-        $this->btn('reset', __('Reset', 'newsletter'), ['icon' => 'fa-reply', 'confirm' => true]);
+    function button_reset($action = 'reset') {
+        $this->btn($action, __('Reset', 'newsletter'), ['icon' => 'fa-reply', 'confirm' => true]);
     }
 
     function button_copy($data = '') {

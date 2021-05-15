@@ -4,7 +4,7 @@ Donate link: https://www.paypal.com/donate?hosted_button_id=FKD4MYFCMNVQQ
 Tags: brute force, login, security, firewall, protection
 Requires at least: 3.0
 Tested up to: 5.7
-Stable tag: 2.20.4
+Stable tag: 2.21.1
 
 Reloaded version of the original Limit Login Attempts plugin for Login Protection by a team of WordPress developers. GDPR compliant.
 
@@ -97,6 +97,22 @@ By default, you will need to copy and paste the lists to each site manually. For
 Please follow this link: <a href="https://www.limitloginattempts.com/resources/">https://www.limitloginattempts.com/resources/</a>
 
 == Changelog ==
+
+= 2.21.1 =
+* Fixed: Uncaught Error: Call to a member function stats()
+* Cloud API: added block by country.
+* Refactoring.
+
+= 2.21.0 =
+* GDPR compliance: IPs obfuscation replaced with a customizable consent message on the login page.
+* Cloud API: fixed removing of blocked IPs from the access lists under certain conditions.
+* Cloud API: domain for Setup Code is taken from the WordPress settings now.
+
+= 2.20.6 =
+* Multisite tab links fixed.
+
+= 2.20.5 =
+* Option to show and hide the top-level menu item.
 
 = 2.20.4 =
 * Sucuri compatibility verified.

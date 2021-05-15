@@ -144,6 +144,7 @@ class NewsletterSubscription extends NewsletterModule {
 
                 $captcha = !empty($options_antibot['captcha']);
 
+
                 if (!empty($options_antibot['disabled']) || $this->antibot_form_check($captcha)) {
 
                     $subscription = $this->build_subscription();
@@ -166,7 +167,9 @@ class NewsletterSubscription extends NewsletterModule {
                         $this->show_message('confirmation', $user);
                     }
                 } else {
-                    $this->request_to_antibot_form('Subscribe', $captcha);
+                    $language = isset($_REQUEST['nlang']) ? $_REQUEST['nlang'] : '';
+                    $options = $this->get_form_options($language);
+                    $this->request_to_antibot_form($options['subscribe'], $captcha);
                 }
                 die();
 
@@ -182,15 +185,20 @@ class NewsletterSubscription extends NewsletterModule {
                 $user = $this->subscribe2($subscription);
 
                 if (is_wp_error($user)) {
-                    $this->dienow('Registration failed.', $user->get_error_message(), 400);
-                }
+                    if ($user->get_error_code() === 'exists') {
+                        echo $this->options['error_text'];
+                        die();
+                    } else {
+                        $this->dienow('Registration failed.', $user->get_error_message(), 400);
+                    }
+                } else {
+                    if ($user->status == TNP_User::STATUS_CONFIRMED) {
+                        $key = 'confirmed';
+                    }
 
-                if ($user->status == TNP_User::STATUS_CONFIRMED) {
-                    $key = 'confirmed';
-                }
-
-                if ($user->status == TNP_User::STATUS_NOT_CONFIRMED) {
-                    $key = 'confirmation';
+                    if ($user->status == TNP_User::STATUS_NOT_CONFIRMED) {
+                        $key = 'confirmation';
+                    }
                 }
 
                 $message = $this->replace($this->options[$key . '_text'], $user);
@@ -343,10 +351,10 @@ class NewsletterSubscription extends NewsletterModule {
         if ($sub == '') {
             // For compatibility the options are wrongly named
             if ($language) {
-                $options = get_option('newsletter_' . $language, array());
-                $options = array_merge(get_option('newsletter', array()), $options);
+                $options = get_option('newsletter_' . $language, []);
+                $options = array_merge(get_option('newsletter', []), $options);
             } else {
-                $options = get_option('newsletter', array());
+                $options = get_option('newsletter', []);
             }
             if (!is_array($options)) {
                 $options = array();
@@ -358,22 +366,24 @@ class NewsletterSubscription extends NewsletterModule {
             if ($language) {
                 // All that because for unknown reasome, sometime the options are returned as string, maybe a WPML
                 // interference...
-                $i18n_options = get_option('newsletter_profile_' . $language, array());
-                if (!is_array($i18n_options))
-                    $i18n_options = array();
-                $options = get_option('newsletter_profile', array());
-                if (!is_array($options))
-                    $options = array();
+                $i18n_options = get_option('newsletter_profile_' . $language, []);
+                if (!is_array($i18n_options)) {
+                    $i18n_options = [];
+                }
+                $options = get_option('newsletter_profile', []);
+                if (!is_array($options)) {
+                    $options = [];
+                }
                 $options = array_merge($options, array_filter($i18n_options));
             } else {
-                $options = get_option('newsletter_profile', array());
+                $options = get_option('newsletter_profile', []);
             }
             // For compatibility the options are wrongly named
             return $options;
         }
         if ($sub == 'forms') {
             // For compatibility the options are wrongly named
-            return get_option('newsletter_forms', array());
+            return get_option('newsletter_forms', []);
         }
         return parent::get_options($sub, $language);
     }
@@ -459,7 +469,7 @@ class NewsletterSubscription extends NewsletterModule {
     /**
      * Builds a default subscription object to be used to collect data and subscription options.
      *
-     * @return \TNP_Subscription
+     * @return TNP_Subscription
      */
     function get_default_subscription($language = null) {
         $subscription = new TNP_Subscription();
@@ -537,7 +547,7 @@ class NewsletterSubscription extends NewsletterModule {
             }
 
             // If the existing subscriber esists and is already confirmed, park the data until the new subscription is confirmed itself
-            if ($user->status == Newsletter::STATUS_CONFIRMED && $subscription->optin == 'double') {
+            if ($user->status == TNP_User::STATUS_CONFIRMED && $subscription->optin == 'double') {
 
                 set_transient('newsletter_subscription_' . $user->id, $subscription->data, 3600 * 48);
 
@@ -559,7 +569,7 @@ class NewsletterSubscription extends NewsletterModule {
 
             $user->token = $this->get_token();
 
-            $user->status = $subscription->optin == 'single' ? Newsletter::STATUS_CONFIRMED : Newsletter::STATUS_NOT_CONFIRMED;
+            $user->status = $subscription->optin == 'single' ? TNP_User::STATUS_CONFIRMED : TNP_User::STATUS_NOT_CONFIRMED;
             $user->updated = time();
         }
 
@@ -570,14 +580,14 @@ class NewsletterSubscription extends NewsletterModule {
         $this->add_user_log($user, 'subscribe');
 
         // Notification to admin (only for new confirmed subscriptions)
-        if ($user->status == Newsletter::STATUS_CONFIRMED) {
+        if ($user->status == TNP_User::STATUS_CONFIRMED) {
             do_action('newsletter_user_confirmed', $user);
             $this->notify_admin_on_subscription($user);
             setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
         }
 
         if ($subscription->send_emails) {
-            $this->send_message(($user->status == Newsletter::STATUS_CONFIRMED) ? 'confirmed' : 'confirmation', $user);
+            $this->send_message(($user->status == TNP_User::STATUS_CONFIRMED) ? 'confirmed' : 'confirmation', $user);
         }
 
         // Used by Autoresponder (probably)
@@ -625,7 +635,7 @@ class NewsletterSubscription extends NewsletterModule {
             // If a status is forced and it is requested to be "confirmed" is like a single opt in
             // $status here can only be confirmed or not confirmed
             // TODO: Add a check on status values
-            if ($status == Newsletter::STATUS_CONFIRMED) {
+            if ($status == TNP_User::STATUS_CONFIRMED) {
                 $opt_in = self::OPTIN_SINGLE;
             } else {
                 $opt_in = self::OPTIN_DOUBLE;
@@ -657,7 +667,7 @@ class NewsletterSubscription extends NewsletterModule {
 
             // If the subscriber is confirmed, we cannot change his data in double opt in mode, we need to
             // temporary store and wait for activation
-            if ($user->status == Newsletter::STATUS_CONFIRMED && $opt_in == self::OPTIN_DOUBLE) {
+            if ($user->status == TNP_User::STATUS_CONFIRMED && $opt_in == self::OPTIN_DOUBLE) {
 
                 set_transient($this->get_user_key($user), $_REQUEST, 3600 * 48);
 
@@ -687,7 +697,7 @@ class NewsletterSubscription extends NewsletterModule {
         $ip = $this->process_ip($ip);
         $user['ip'] = $ip;
         $user['geo'] = 0;
-        $user['status'] = $opt_in == self::OPTIN_SINGLE ? Newsletter::STATUS_CONFIRMED : Newsletter::STATUS_NOT_CONFIRMED;
+        $user['status'] = $opt_in == self::OPTIN_SINGLE ? TNP_User::STATUS_CONFIRMED : TNP_User::STATUS_NOT_CONFIRMED;
 
         $user['updated'] = time();
 
@@ -698,14 +708,14 @@ class NewsletterSubscription extends NewsletterModule {
         $this->add_user_log($user, 'subscribe');
 
         // Notification to admin (only for new confirmed subscriptions)
-        if ($user->status == Newsletter::STATUS_CONFIRMED) {
+        if ($user->status == TNP_User::STATUS_CONFIRMED) {
             do_action('newsletter_user_confirmed', $user);
             $this->notify_admin_on_subscription($user);
             setcookie('newsletter', $user->id . '-' . $user->token, time() + 60 * 60 * 24 * 365, '/');
         }
 
         if ($emails) {
-            $this->send_message(($user->status == Newsletter::STATUS_CONFIRMED) ? 'confirmed' : 'confirmation', $user);
+            $this->send_message(($user->status == TNP_User::STATUS_CONFIRMED) ? 'confirmed' : 'confirmation', $user);
         }
 
         $user = apply_filters('newsletter_user_post_subscribe', $user);
@@ -976,7 +986,7 @@ class NewsletterSubscription extends NewsletterModule {
             $data->merge_in($user);
             //$this->merge($user, $data);
             $user = $this->save_user($user);
-            $user->status = Newsletter::STATUS_NOT_CONFIRMED;
+            $user->status = TNP_User::STATUS_NOT_CONFIRMED;
             delete_transient('newsletter_subscription_' . $user->id);
         } else {
             $new_email = get_transient('newsletter_user_' . $user->id . '_email');
@@ -1032,7 +1042,7 @@ class NewsletterSubscription extends NewsletterModule {
         $message = [];
         $message['html'] = do_shortcode($options[$type . '_message']);
         $message['text'] = $this->get_text_message($type);
-        if ($user->status == Newsletter::STATUS_NOT_CONFIRMED) {
+        if ($user->status == TNP_User::STATUS_NOT_CONFIRMED) {
             $message['html'] = $this->add_microdata($message['html']);
         }
         $subject = $options[$type . '_subject'];
