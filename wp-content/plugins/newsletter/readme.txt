@@ -1,8 +1,8 @@
 === Newsletter ===
 Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
 Requires at least: 3.4.0
-Tested up to: 5.7.1
-Stable tag: 7.1.4
+Tested up to: 5.7.2
+Stable tag: 7.1.8
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 License: GPLv2 or later
@@ -121,6 +121,24 @@ Thank you, The Newsletter Team
 
 == Changelog ==
 
+= 7.1.8 =
+
+* Fixed alignment of single big image on Outlook Android
+
+= 7.1.7 =
+
+* Fix of permalink onm email with multilanguage plugins
+
+= 7.1.6 =
+
+* [COMPOSER] Fixed one column big image Read more links
+
+= 7.1.5 =
+
+* [COMPOSER] Improve buttons on posts layout
+* [COMPOSER] Improved header layout and logo
+* [COMPOSER] Generally improved block spacing
+  
 = 7.1.4 =
 
 * [COMPOSER] Fixed image block for Outlook

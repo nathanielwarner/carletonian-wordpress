@@ -17,71 +17,22 @@ img.aligncenter{display:block;margin:0 auto;}
         width:100% !important;
     }
 
-    table[class="mobile-full-width"] {
-        width:100% !important;
-    }
-
-    img[class="mobile-full-width"] {
-        width:100% !important;
-        display: block;
-    }
-
-    /* ADJUSTS LAYOUT OF LOGO IMAGE */
-    td[class="logo"]{
-        text-align: left;
-        padding: 20px 0 20px 0 !important;
-    }
-
-    td[class="logo"] img{
-        margin:0 auto!important;
-    }
-
-    /* USE THESE CLASSES TO HIDE CONTENT ON MOBILE */
-    td[class="mobile-hide"]{
-        display:none;}
-
-    img[class="mobile-hide"]{
-        display: none !important;
-    }
-
-    img[class="img-max"]{
-        max-width: 100% !important;
-        /*width: 100% !important;*/
-        height:auto !important;
-    }
-
-    /* FULL-WIDTH TABLES */
-    table[class="responsive-table"]{
+    table[class="responsive"]{
         width:100%!important;
-        max-width: 100%!important;
-    }
-    
-    .responsive {
-        width:100%!important;
-        max-width: 100%!important;
         float: none;
-        display: block;
+        display: table;
         padding-left: 0;
         padding-right: 0;
     }
-    
-    table[class="responsive"]{
-        width:100%!important;
-        max-width: 100%!important;
-        float: none;
-        display: block;
-    }  
-    
-    img.responsive {
-        width:100%!important;
+
+    img[class="responsive"] {
         max-width: 100%!important;
     } 
-    
-    
+
     .block {
         display: block;
     }
-    
+
     td[class="responsive"]{
         width:100%!important;
         max-width: 100%!important;
@@ -90,29 +41,6 @@ img.aligncenter{display:block;margin:0 auto;}
         padding-right: 0 !important;
         float: none;
     }    
-
-    /* UTILITY CLASSES FOR ADJUSTING PADDING ON MOBILE */
-    td[class="padding"]{
-        padding: 10px 5% 15px 5% !important;
-    }
-
-    td[class="padding-copy"]{
-        padding: 10px 5% 10px 5% !important;
-        text-align: center;
-    }
-
-    td[class="padding-meta"]{
-        padding: 30px 5% 0px 5% !important;
-        text-align: center;
-    }
-
-    td[class="no-pad"]{
-        padding: 0 0 20px 0 !important;
-    }
-
-    td[class="no-padding"]{
-        padding: 0 !important;
-    }
 
     td[class="section-padding"]{
         padding: 50px 15px 50px 15px !important;
@@ -126,7 +54,7 @@ img.aligncenter{display:block;margin:0 auto;}
     td[class="mobile-wrapper"]{
         padding: 10px 5% 15px 5% !important;
     }
-    
+
     td[class="responsive"]{
         display: block;
         width: 100% !important;
@@ -142,5 +70,9 @@ img.aligncenter{display:block;margin:0 auto;}
         padding: 15px !important;
         border: 0 !important;
         font-size: 16px !important;
+    }
+
+    .tnp-grid-column {
+        max-width: 100%!important;
     }
 }

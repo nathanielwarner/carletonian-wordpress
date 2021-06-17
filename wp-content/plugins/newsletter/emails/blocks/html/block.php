@@ -31,9 +31,9 @@ $options = array_merge($default_options, $options);
         color: <?php echo $options['font_color']?>;
     }
 </style>
-<table width="100%" border="0" cellpadding="0" align="center" cellspacing="0">
+<table width="100%" border="0" cellpadding="0" cellspacing="0">
     <tr>
-        <td width="100%" valign="top" align="center" inline-class="html-td" class="html-td-global">
+        <td valign="top" align="center" inline-class="html-td" class="html-td-global">
             <?php echo $options['html'] ?>
         </td>
     </tr>

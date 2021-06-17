@@ -2,6 +2,7 @@
 
 /* @var $fields NewsletterFields */
 ?>
+<p>Obsolete: use the snippet global option instead.</p>
 
 <?php $fields->text('text', __('Text', 'newsletter')) ?>
 <?php $fields->text('view', __('View online', 'newsletter')) ?>

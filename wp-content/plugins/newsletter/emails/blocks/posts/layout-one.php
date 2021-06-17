@@ -6,7 +6,7 @@ $column_width = $total_width / 2 - 10;
 <style>
     .title {
         font-family: <?php echo $title_font_family ?>;
-        font-size: <?php echo round($title_font_size*0.9) ?>px;
+        font-size: <?php echo round($title_font_size * 0.9) ?>px;
         font-weight: <?php echo $title_font_weight ?>;
         color: <?php echo $title_font_color ?>;
         line-height: normal !important;
@@ -29,6 +29,9 @@ $column_width = $total_width / 2 - 10;
         font-weight: normal;
         padding: 0 0 10px 0;
         line-height: normal !important;
+    }
+    .button {
+        padding: 15px 0;
     }
 </style>
 
@@ -60,17 +63,17 @@ $column_width = $total_width / 2 - 10;
                 $meta[] = $author_object->display_name;
             }
         }
-        
+
         $button_options['button_url'] = $url;
         ?>
 
         <tr>
-            <td valign="top" style="padding: 20px 0 0 0;" class="td-1">
+            <td valign="top" style="padding: 20px 0 0 0;">
 
                 <?php if ($media) { ?>
                     <table width="<?php echo $column_width ?>" cellpadding="0" cellspacing="0" border="0" align="left" class="responsive">
                         <tr>
-                            <td>
+                            <td style="padding-bottom: 20px;">
                                 <?php echo TNP_Composer::image($media) ?>
                             </td>
                         </tr>
@@ -98,7 +101,7 @@ $column_width = $total_width / 2 - 10;
                                             ?>
                                     </td>
                                 </tr>
-                                
+
                                 <tr>
                                     <td align="<?php echo $align_left ?>" inline-class="excerpt" class="tnpc-row-edit tnpc-inline-editable"
                                         data-type="text" data-id="<?php echo $post->ID ?>" dir="<?php echo $dir ?>">
@@ -109,13 +112,11 @@ $column_width = $total_width / 2 - 10;
                                             ?>
                                     </td>
                                 </tr>
-                                
+
                                 <?php if ($show_read_more_button) { ?>
                                     <tr>
-                                        <td align="<?php echo $align_left ?>">
-                                            <br>
+                                        <td align="<?php echo $align_left ?>" inline-class="button">
                                             <?php echo TNP_Composer::button($button_options) ?>
-                                            <br><br>
                                         </td>
                                     </tr>
                                 <?php } ?>

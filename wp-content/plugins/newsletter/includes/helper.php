@@ -177,6 +177,20 @@ function _tnp_get_default_media($media_id, $size) {
         return null;
     }
     $media = new TNP_Media();
+    $media->id = $media_id;
+    $media->url = $src[0];
+    $media->width = $src[1];
+    $media->height = $src[2];
+    return $media;
+}
+
+function tnp_get_media($media_id, $size) {
+    $src = wp_get_attachment_image_src($media_id, $size);
+    if (!$src) {
+        return null;
+    }
+    $media = new TNP_Media();
+    $media->id = $media_id;
     $media->url = $src[0];
     $media->width = $src[1];
     $media->height = $src[2];
@@ -226,6 +240,7 @@ function tnp_resize($media_id, $size) {
         }
         $new_size = $editor->get_size();
         $media = new TNP_Media();
+        $media->id = $media_id;
         $media->width = $new_size['width'];
         $media->height = $new_size['height'];
         if ($media->width > $width) {

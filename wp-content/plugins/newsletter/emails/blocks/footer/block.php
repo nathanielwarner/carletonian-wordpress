@@ -21,25 +21,23 @@ $default_options = array(
 );
 $options = array_merge($default_options, $options);
 
-$text_font_family = empty( $options['font_family'] ) ? $global_text_font_family : $options['font_family'];
-$text_font_size   = empty( $options['font_size'] ) ? $global_text_font_size : $options['font_size'];
-$text_font_color  = empty( $options['font_color'] ) ? $global_text_font_color : $options['font_color'];
-$text_font_weight = empty( $options['font_weight'] ) ? $global_text_font_weight : $options['font_weight'];
+$text_style = TNP_Composer::get_style($options, '', $composer, 'text');
 
 ?>
 <style>
-    .footer-text {
-        font-family: <?php echo $text_font_family ?>;
-        font-size: <?php echo $text_font_size ?>px;
-        font-weight: <?php echo $text_font_weight ?>;
-        color: <?php echo $text_font_color ?>;
+    .text {
+        font-family: <?php echo $text_style->font_family ?>;
+        font-size: <?php echo round($text_style->font_size*0.9) ?>px;
+        font-weight: <?php echo $text_style->font_weight ?>;
+        color: <?php echo $text_style->font_color ?>;
         text-decoration: none;
+        line-height: normal;
     }
 </style>
 
-<a inline-class="footer-text" href="<?php if ($options['url'] == 'unsubscription') echo '{unsubscription_url}'; else echo '{profile_url}' ?>" target="_blank"><?php echo esc_html($options['profile']) ?></a>
+<a inline-class="text" href="<?php if ($options['url'] == 'unsubscription') echo '{unsubscription_url}'; else echo '{profile_url}' ?>" target="_blank"><?php echo esc_html($options['profile']) ?></a>
 
-<span inline-class="footer-text">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
+<span inline-class="text">&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;</span>
 
-<a inline-class="footer-text" href="{email_url}" target="_blank"><?php echo esc_html($options['view']) ?></a>
+<a inline-class="text" href="{email_url}" target="_blank"><?php echo esc_html($options['view']) ?></a>
 

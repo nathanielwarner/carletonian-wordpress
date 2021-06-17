@@ -300,18 +300,26 @@ class Limit_Login_Attempts {
 		return in_array( $username, (array) $this->get_option( 'blacklist_usernames' ) );
 	}
 
-	public function ip_in_range( $ip, $list )
-	{
-		foreach ( $list as $range )
-		{
+	public function ip_in_range( $ip, $list ) {
+
+	    foreach ( $list as $range ) {
+
 			$range = array_map('trim', explode('-', $range) );
-			if ( count( $range ) == 1 )
-			{
-				if ( (string)$ip === (string)$range[0] )
-					return true;
-			}
-			else
-			{
+			if ( count( $range ) == 1 ) {
+
+			    // CIDR
+			    if( strpos( $range[0], '/' ) !== false && LLA_Helpers::check_ip_cidr( $ip, $range[0] ) ) {
+
+			        return true;
+				}
+			    // Single IP
+			    else if ( (string)$ip === (string)$range[0] ) {
+
+					 return true;
+				}
+
+			} else {
+
 				$low = ip2long( $range[0] );
 				$high = ip2long( $range[1] );
 				$needle = ip2long( $ip );
@@ -978,17 +986,21 @@ class Limit_Login_Attempts {
 		$blogname = $this->use_local_options ? get_option( 'blogname' ) : get_site_option( 'site_name' );
 		$blogname = htmlspecialchars_decode( $blogname, ENT_QUOTES );
 
-        $subject = sprintf( __( "[%s] Failed login attempt alert", 'limit-login-attempts-reloaded' ), $blogname );
+        $subject = sprintf(
+            __( "[%s] Failed WordPress login attempt by IP %s", 'limit-login-attempts-reloaded' ),
+            $blogname,
+            $ip 
+        );
 
-        $message = __( '<p>Hello%1$s,</p>' .
-                       '<p>%2$d failed login attempts (%3$d lockout(s)) from IP <b>%4$s</b><br>' .
-                       'Last user attempted: <b>%5$s</b><br>'.
-                       'IP was blocked for %6$s</p>'.
-                       '<p>This notification was sent automatically via Limit Login Attempts Reloaded Plugin. ' .
-                       '<b>This is installed on your %7$s WordPress site.</b></p>'.
-                       '<p>Under Attack? Try our <a href="%8$s" target="_blank">advanced protection</a>. ' .
-                       'Have Questions? Visit our <a href="%9$s" target="_blank">help section</a>.</p>' .
-                       '<hr><a href="%10$s">Unsubscribe</a> from these notifications.', 'limit-login-attempts-reloaded' );
+        $message = __(
+                '<p>Hello%1$s,</p>
+<p>%2$d failed login attempts (%3$d lockout(s)) from IP <b>%4$s</b><br>
+Last user attempted: <b>%5$s</b><br>
+IP was blocked for %6$s</p>
+<p>This notification was sent automatically via Limit Login Attempts Reloaded Plugin. 
+<b>This is installed on your %7$s WordPress site. Please login to your WordPress dashboard to view more info.</b></p>
+<p>Under Attack? Try our <a href="%8$s" target="_blank">advanced protection</a>. 
+Have Questions? Visit our <a href="%9$s" target="_blank">help section</a>.</p>', 'limit-login-attempts-reloaded' );
 
 		$plugin_data = get_plugin_data( LLA_PLUGIN_DIR . '/limit-login-attempts-reloaded.php' );
 
@@ -1002,8 +1014,22 @@ class Limit_Login_Attempts {
             $when,
 			$site_domain,
 			'https://www.limitloginattempts.com/info.php?from=plugin-lockout-email&v='.$plugin_data['Version'],
-			'https://www.limitloginattempts.com/resources/?from=plugin-lockout-email',
-            admin_url( 'options-general.php?page=limit-login-attempts&tab=settings' )
+			'https://www.limitloginattempts.com/resources/?from=plugin-lockout-email'
+        );
+
+		if( LLA_Helpers::is_mu() ) {
+
+			$message .= sprintf( __(
+				'<p><i>This alert was sent by your website where Limit Login Attempts Reloaded free version 
+is installed and you are listed as the admin. If you are a GoDaddy customer, the plugin is installed 
+into a must-use (MU) folder. You can read more <a href="%s" target="_blank">here</a>.</i></p>', 'limit-login-attempts-reloaded' ),
+				'https://www.limitloginattempts.com/how-to-tell-if-i-have-limit-login-attempts-reloaded-on-my-site-a-survival-guide-for-godaddy-customers/'
+            );
+		}
+
+		$message .= sprintf( __(
+            '<hr><a href="%s">Unsubscribe</a> from these notifications.', 'limit-login-attempts-reloaded' ),
+			admin_url( 'options-general.php?page=limit-login-attempts&tab=settings' )
         );
 
 		@wp_mail( $admin_email, $subject, $message, array( 'content-type: text/html' ) );
@@ -1115,9 +1141,9 @@ class Limit_Login_Attempts {
 			$ip = $this->get_address();
 		}
 
-		$whitelisted = apply_filters( 'limit_login_blacklist_ip', false, $ip );
+		$blacklisted = apply_filters( 'limit_login_blacklist_ip', false, $ip );
 
-		return ( $whitelisted === true );
+		return ( $blacklisted === true );
 	}
 
 	public function is_username_blacklisted( $username ) {
@@ -1647,7 +1673,7 @@ class Limit_Login_Attempts {
 
                 if( !empty( $_POST['llar_app_settings'] ) && $this->app ) {
 
-                    if( ( $app_setup_code = $this->get_option( 'app_setup_code' ) ) && $setup_result = LLAR_App::setup( strrev( $app_setup_code ), true ) ) {
+                    if( ( $app_setup_code = $this->get_option( 'app_setup_code' ) ) && $setup_result = LLAR_App::setup( strrev( $app_setup_code ) ) ) {
 
                         if( $setup_result['success'] && $active_app_config = $setup_result['app_config'] ) {
 

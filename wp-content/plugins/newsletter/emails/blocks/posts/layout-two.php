@@ -30,6 +30,17 @@ $column_width = $total_width / 2 - 20;
         padding: 10px 0 0 0;
         font-style: italic;
     }
+    .button {
+        padding: 15px 0;
+    }
+    .column-left {
+        padding-right: 10px; 
+        padding-bottom: 20px;
+    }
+    .column-right {
+        padding-left: 10px; 
+        padding-bottom: 20px;
+    }
 
 </style>
 
@@ -60,7 +71,7 @@ $column_width = $total_width / 2 - 20;
         $button_options['button_url'] = tnp_post_permalink($row[0]);
         ?>
         <tr>
-            <td style="padding-right: 10px" width="50%" valign="top" class="responsive">
+            <td inline-class="column-left" width="50%" valign="top" class="responsive">
 
 
                 <table cellpadding="0" cellspacing="0" border="0" width="100%">
@@ -101,15 +112,15 @@ $column_width = $total_width / 2 - 20;
                     </tr>
                     <?php if ($show_read_more_button) { ?>
                         <tr>
-                            <td align="center">
-                                <br><?php echo TNP_Composer::button($button_options) ?><br><br>
+                            <td align="center" inline-class="button">
+                                <?php echo TNP_Composer::button($button_options) ?>
                             </td>
                         </tr>
                     <?php } ?>
                 </table>
             </td>
 
-            <td style="padding-left: 10px" width="50%" valign="top" class="responsive">
+            <td inline-class="column-right" width="50%" valign="top" class="responsive">
                 <?php
                 if (isset($row[1])) {
 
@@ -132,7 +143,7 @@ $column_width = $total_width / 2 - 20;
                             $meta[] = $author_object->display_name;
                         }
                     }
-                    
+
                     $button_options['button_url'] = tnp_post_permalink($row[1]);
                     ?>
 
@@ -173,8 +184,8 @@ $column_width = $total_width / 2 - 20;
                         </tr>
                         <?php if ($show_read_more_button) { ?>
                             <tr>
-                                <td align="center">
-                                    <br><?php echo TNP_Composer::button($button_options) ?><br><br>
+                                <td align="center" inline-class="button">
+                                    <?php echo TNP_Composer::button($button_options) ?>
                                 </td>
                             </tr>
                         <?php } ?>

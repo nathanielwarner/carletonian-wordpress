@@ -25,22 +25,6 @@ $title_font_size = empty($options['font_size']) ? $global_title_font_size : $opt
 $title_font_color = empty($options['font_color']) ? $global_title_font_color : $options['font_color'];
 $title_font_weight = empty($options['font_weight']) ? $global_title_font_weight : $options['font_weight'];
 
-//if (!empty($options['schema'])) {
-//    if ($options['schema'] === 'dark') {
-//        $options['block_background'] = '#000000';
-//        $options['font_color'] = '#ffffff';
-//    }
-//
-//    if ($options['schema'] === 'bright') {
-//        $options['block_background'] = '#ffffff';
-//        $options['font_color'] = '#444444';
-//    }
-//
-//    if ($options['schema'] === 'red') {
-//        $options['block_background'] = '#c00000';
-//        $options['font_color'] = '#ffffff';
-//    }
-//}
 ?>
 
 <style>
@@ -55,9 +39,9 @@ $title_font_weight = empty($options['font_weight']) ? $global_title_font_weight 
     }
 </style>
 
-<table border="0" cellspacing="0" cellpadding="0" width="100%" class="responsive">
+<table border="0" cellspacing="0" cellpadding="0" width="100%">
     <tr>
-        <td align="<?php echo esc_attr($options['align']) ?>" valign="middle" width="100%" inline-class="title">
+        <td align="<?php echo esc_attr($options['align']) ?>" valign="middle" inline-class="title">
             <?php echo $options['text'] ?>
         </td>
     </tr>

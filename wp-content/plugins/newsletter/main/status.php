@@ -880,7 +880,7 @@ function tnp_status_print_flag($condition) {
                             <?php } else { ?>
 
                             <?php } ?>
-                            Url: <?php echo esc_html(site_url('/wp-cron.php')) ?><br>
+                            Cron URL: <?php echo esc_html(site_url('/wp-cron.php')) ?><br>
                             <br>
                             <a href="https://www.thenewsletterplugin.com/documentation/delivery-and-spam/newsletter-delivery-engine/" target="_blank">Read more</a>
                         </td>

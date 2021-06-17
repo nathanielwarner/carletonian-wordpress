@@ -11,6 +11,7 @@ require_once __DIR__ . '/themes.php';
 
 class TNP_Media {
 
+    var $id;
     var $url;
     var $width;
     var $height;
@@ -20,8 +21,15 @@ class TNP_Media {
 
     /** Sets the width recalculating the height */
     public function set_width($width) {
-        $this->height = floor($width / $this->width * $this->height);
+        $this->height = floor(($width / $this->width) * $this->height);
         $this->width = $width;
+    }
+    
+    /** Sets the height recalculating the width */
+    public function set_height($height) {
+        $height = (int)$height;
+        $this->width = floor(($height / $this->height) * $this->width);
+        $this->height = $height;
     }
 
 }

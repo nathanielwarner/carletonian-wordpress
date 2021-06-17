@@ -31,6 +31,9 @@ $column_width = $total_width / 2 - 10;
         padding: 0 0 5px 0;
         line-height: normal !important;
     }
+    .button {
+        padding: 15px 0;
+    }
 </style>
 
 
@@ -48,7 +51,7 @@ $column_width = $total_width / 2 - 10;
                 $media->set_width($column_width);
             }
         }
-        
+
         $meta = [];
 
         if ($show_date) {
@@ -61,8 +64,8 @@ $column_width = $total_width / 2 - 10;
                 $meta[] = $author_object->display_name;
             }
         }
-        
-        $button_options['button_url'] = $url; 
+
+        $button_options['button_url'] = $url;
         ?>
 
         <tr>
@@ -80,19 +83,19 @@ $column_width = $total_width / 2 - 10;
             <td valign="top" style="padding: 20px 0 25px 0;">
 
                 <?php if ($media) { ?>
-                    <table width="<?php echo $column_width ?>" cellpadding="0" cellspacing="0" border="0" align="left" class="responsive">
+                    <table width="<?php echo $column_width ?>" cellpadding="0" cellspacing="0" border="0" align="left" style="margin: 0;" class="responsive">
                         <tr>
                             <td>
-                                <?php echo TNP_Composer::image($media, ['class' => 'responsive']) ?>
+                                <?php echo TNP_Composer::image($media) ?>
                             </td>
                         </tr>
                     </table>
                 <?php } ?>
 
-                <table width="<?php echo $media ? $column_width : '100%' ?>" cellpadding="0" cellspacing="0" border="0" class="responsive" align="right">
+                <table width="<?php echo $media ? $column_width : '100%' ?>" cellpadding="0" cellspacing="0" border="0" style="margin: 0;" class="responsive" align="right">
                     <tr>
                         <td>
-                            <table border="0" cellspacing="0" cellpadding="0" width="100%">
+                            <table border="0" cellspacing="0" cellpadding="0" width="100%" style="margin: 0;">
                                 <?php if ($meta) { ?>
                                     <tr>
                                         <td inline-class="meta" dir="<?php echo $dir ?>" align="<?php echo $align_left ?>">
@@ -102,8 +105,8 @@ $column_width = $total_width / 2 - 10;
                                 <?php } ?>
 
                                 <tr>
-                                    <td align="<?php echo $align_left ?>" data-id="<?php echo $post->ID ?>" dir="<?php echo $dir ?>">
-                                        <a href="<?php $url ?>" inline-class="excerpt" class="tnpc-row-edit tnpc-inline-editable" data-type="text">
+                                    <td align="<?php echo $align_left ?>" dir="<?php echo $dir ?>">
+                                        <a href="<?php $url ?>" data-id="<?php echo $post->ID ?>" inline-class="excerpt" class="tnpc-row-edit tnpc-inline-editable" data-type="text">
                                             <?php
                                             echo TNP_Composer::is_post_field_edited_inline($options['inline_edits'], 'text', $post->ID) ?
                                                     TNP_Composer::get_edited_inline_post_field($options['inline_edits'], 'text', $post->ID) :
@@ -112,11 +115,10 @@ $column_width = $total_width / 2 - 10;
                                         </a>
                                     </td>
                                 </tr>
-                                
+
                                 <?php if ($show_read_more_button) { ?>
                                     <tr>
-                                        <td align="<?php echo $align_left ?>">
-                                            <br>
+                                        <td align="<?php echo $align_left ?>" inline-class="button">
                                             <?php echo TNP_Composer::button($button_options) ?>
                                         </td>
                                     </tr>

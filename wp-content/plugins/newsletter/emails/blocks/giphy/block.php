@@ -21,11 +21,18 @@ $defaults = array(
 $options = array_merge($defaults, $options);
 
 ?>
-
-<table width="100%" border="0" cellpadding="0" align="center" cellspacing="0" class="responsive">
+<style>
+    .image {
+        display: inline-block; 
+        max-width: 100%!important; 
+        height: auto!important;
+        font-size: 0;
+    }
+</style>
+<table width="100%" border="0" cellpadding="0" cellspacing="0" class="responsive">
     <tr>
-        <td width="100%" valign="top" align="center">
-            <img src="<?php echo $options['giphy_url'] ?>" style="max-width: 100%!important; height: auto!important;">
+        <td align="center">
+            <img src="<?php echo $options['giphy_url'] ?>" inline-class="image">
         </td>
     </tr>
 </table>

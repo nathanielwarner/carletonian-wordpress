@@ -33,12 +33,17 @@ if (!$valid_socials) {
     return;
 }
 ?>
-
+<style>
+    .link {
+        line-height: normal;
+        text-decoration: none;
+    }
+</style>
 <table border="0" cellspacing="0" cellpadding="0" width="100%" class="responsive">
     <tr>
-        <td align="center" valign="middle" width="100%" style="line-height: 0">
+        <td align="center" valign="middle">
             <?php foreach ($valid_socials as &$social) { ?>
-                <a href="<?php echo esc_url($block_options[$social . '_url']) ?>"><img src="<?php echo $social_icon_url ?>/<?php echo $social ?>.png" alt="<?php echo $social ?>"></a>
+                <a href="<?php echo esc_url($block_options[$social . '_url']) ?>" inline-class="link"><img src="<?php echo $social_icon_url ?>/<?php echo $social ?>.png" alt="<?php echo $social ?>"></a>&nbsp;
             <?php } ?>
         </td>
     </tr>

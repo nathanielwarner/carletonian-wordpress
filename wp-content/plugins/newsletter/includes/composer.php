@@ -81,16 +81,45 @@ class TNP_Composer {
         return preg_match($pattern, $block);
     }
 
+    /**
+     * Sources:
+     * - https://webdesign.tutsplus.com/tutorials/creating-a-future-proof-responsive-email-without-media-queries--cms-23919
+     * 
+     * @param type $email
+     * @return type
+     */
     static function get_html_open($email) {
         $open = "<!DOCTYPE html>\n";
-        $open .= "<html>\n<head>\n<title>{email_subject}</title>\n";
+        $open .= "<html xmlns=\"https://www.w3.org/1999/xhtml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n<title>{email_subject}</title>\n";
         $open .= "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n";
-        $open .= "<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n";
+
+        $open .= '<!--[if !mso]><!-->' . "\n";
+        $open .= '<meta http-equiv="X-UA-Compatible" content="IE=edge" />' . "\n";
+        $open .= '<!--<![endif]-->' . "\n";
+
+        $open .= '<!--[if mso]>' . "\n";
+        ;
+        $open .= '<style type="text/css">';
+        $open .= 'table {border-collapse:collapse;border-spacing:0;margin:0;}';
+        $open .= 'div, td {padding:0;}';
+        $open .= 'div {margin:0 !important;}';
+        $open .= '</style>';
+        $open .= "\n";
+        $open .= '<noscript>';
+        $open .= '<xml>';
+        $open .= '<o:OfficeDocumentSettings>';
+        $open .= '<o:PixelsPerInch>96</o:PixelsPerInch>';
+        $open .= '</o:OfficeDocumentSettings>';
+        $open .= '</xml>';
+        $open .= '</noscript>';
+        $open .= "\n";
+        $open .= '<![endif]-->';
+        $open .= "\n";
         $open .= "<style type=\"text/css\">\n";
         $open .= NewsletterEmails::instance()->get_composer_css();
         $open .= "\n</style>\n";
         $open .= "</head>\n";
-        $open .= '<body style="margin: 0; padding: 0;" dir="' . (is_rtl() ? 'rtl' : 'ltr') . '">';
+        $open .= '<body style="margin: 0; padding: 0; line-height: normal; word-spacing: normal;" dir="' . (is_rtl() ? 'rtl' : 'ltr') . '">';
         $open .= "\n";
         $open .= self::get_html_preheader($email);
 
@@ -323,7 +352,7 @@ class TNP_Composer {
 
         $options = array_merge($defaults, array_filter($options));
 
-        $b = '<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:separate;line-height:100%;"';
+        $b = '<table border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin: 0 auto"';
         if (!empty($options[$prefix . '_align'])) {
             $b .= ' align="' . esc_attr($options[$prefix . '_align']) . '"';
         }
@@ -352,9 +381,9 @@ class TNP_Composer {
     static function image($media, $attr = []) {
 
         $default_attrs = [
-            'style' => 'max-width: 100%; height: auto;',
+            'style' => 'max-width: 100%; height: auto; display: inline-block',
             'class' => null,
-            'link-style' => 'text-decoration: none;',
+            'link-style' => 'text-decoration: none; display: inline-block',
             'link-class' => null,
         ];
 
@@ -378,16 +407,18 @@ class TNP_Composer {
 
         $b = '';
         if ($media->link) {
-            $b .= '<a href="' . esc_attr($media->link) . '" target="_blank" rel="noopener nofollow" ' . $link_styling . '>';
+            $b .= '<a href="' . esc_attr($media->link) . '" target="_blank" rel="noopener nofollow" style="display: inline-block; font-size: 0; text-decoration: none; line-height: normal!important">';
         }
 
         if ($media) {
-            $b .= '<img src="' . esc_attr($media->url) . '" width="' . esc_attr($media->width) . '"'
-                    . ' height="' . esc_attr($media->height) . '"'
-                    . ' alt="' . esc_attr($media->alt) . '"'
-                    . ' border="0" '
-                    . $styling
-                    . ' class="responsive" '
+            $b .= '<img src="' . esc_attr($media->url) . '" width="' . esc_attr($media->width) . '"';
+            if ($media->height) {
+                $b .= ' height="' . esc_attr($media->height) . '"';
+            }
+            $b .= ' alt="' . esc_attr($media->alt) . '"'
+                    . ' border="0"'
+                    . ' style="display: inline-block; max-width: 100%!important; padding: 0; border: 0;"'
+                    . ' class="" '
                     . '>';
         }
 
@@ -402,6 +433,8 @@ class TNP_Composer {
      * Returns a WP media ID for the specified post (or false if nothing can be found)
      * looking for the featured image or, if missing, taking the first media in the gallery and
      * if again missing, searching the first reference to a media in the post content.
+     * 
+     * The media ID is not checked for real existance of the associated attachment.
      *
      * @param int $post_id
      * @return int
@@ -432,6 +465,28 @@ class TNP_Composer {
         }
 
         return false;
+    }
+
+    /**
+     * Builds a TNP_Media object to be used in newsletters from a WP media/attachement ID. The returned 
+     * media has a size which best match the one requested (this is the standard WP behavior, plugins
+     * could change it).
+     * 
+     * @param int $media_id
+     * @param array $size
+     * @return \TNP_Media
+     */
+    function get_media($media_id, $size) {
+        $src = wp_get_attachment_image_src($media_id, $size);
+        if (!$src) {
+            return null;
+        }
+        $media = new TNP_Media();
+        $media->id = $media_id;
+        $media->url = $src[0];
+        $media->width = $src[1];
+        $media->height = $src[2];
+        return $media;
     }
 
     static function post_content($post) {
@@ -484,6 +539,66 @@ class TNP_Composer {
         ];
     }
 
+    /**
+     * Inspired by: https://webdesign.tutsplus.com/tutorials/creating-a-future-proof-responsive-email-without-media-queries--cms-23919
+     * @param string[] $items
+     * @param array $attrs
+     * @return string
+     */
+    static function grid($items = [], $attrs = []) {
+        $attrs = wp_parse_args($attrs, ['width' => 600, 'columns' => 2, 'padding' => 10]);
+        $width = (int) $attrs['width'];
+        $columns = (int) $attrs['columns'];
+        $padding = (int) $attrs['padding'];
+        $column_width = $width / $columns;
+        $td_width = 100 / $columns;
+        $chunks = array_chunk($items, $columns);
+
+        $e = '<div style="text-align:center;font-size:0;">';
+        foreach ($chunks as &$chunk) {
+
+            $e .= '<!--[if mso]><table role="presentation" width="100%"><tr><![endif]-->';
+            foreach ($chunk as &$item) {
+                $e .= '<!--[if mso]><td style="width:' . $td_width . '%;padding:' . $padding . 'px" valign="top"><![endif]-->';
+
+                $e .= '<div class="tnp-grid-column" style="width:100%;max-width:' . $column_width . 'px;display:inline-block;vertical-align: top;box-sizing: border-box;">';
+
+                // This element to add padding without deal with border-box not well supported
+                $e .= '<div style="padding:' . $padding . 'px;">';
+                $e .= $item;
+                $e .= '</div>';
+                $e .= '</div>';
+
+                $e .= '<!--[if mso]></td><![endif]-->';
+            }
+            $e .= '<!--[if mso]></tr></table><![endif]-->';
+            $e .= '</div>';
+        }
+        return $e;
+    }
+    
+    static function get_style($options, $prefix, $composer, $type = 'text') {
+        $style = new TNP_Style();
+        if (!empty($prefix)) $prefix .= '_';
+        
+        $style->font_family = empty($options[$prefix . 'font_family']) ? $composer[$type . '_font_family'] : $options[$prefix . 'font_family'];
+        $style->font_size = empty($options[$prefix . 'font_size']) ? $composer[$type . '_font_size'] : $options[$prefix . 'font_size'];
+        $style->font_color = empty($options[$prefix . 'font_color']) ? $composer[$type . '_font_color'] : $options[$prefix . 'font_color'];
+        $style->font_weight = empty($options[$prefix . 'font_weight']) ? $composer[$type . '_font_weight'] : $options[$prefix . 'font_weight'];
+        if ($type === 'button') {
+            $style->background = empty($options[$prefix . 'background']) ? $composer[$type . '_background_color'] : $options[$prefix . 'background'];
+        }
+        return $style;
+    }
+
+}
+
+class TNP_Style {
+    var $font_family;
+    var $font_size;
+    var $font_weight;
+    var $font_color;
+    var $background;
 }
 
 /**

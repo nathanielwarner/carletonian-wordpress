@@ -143,6 +143,8 @@ $button_options['button_background']  = empty( $options['button_background'] ) ?
 
 $show_read_more_button = (bool) $options['show_read_more_button'];
 
+Newsletter::instance()->switch_language( $options['language'] );
+
 if ( $options['layout'] == 'one' ) {
 	include __DIR__ . '/layout-one.php';
 } else if ( $options['layout'] == 'one-2' ) {
@@ -155,4 +157,4 @@ if ( $options['layout'] == 'one' ) {
 	include __DIR__ . '/layout-big-image.php';
 }
 
-Newsletter::instance()->switch_language( $options['language'] );
+

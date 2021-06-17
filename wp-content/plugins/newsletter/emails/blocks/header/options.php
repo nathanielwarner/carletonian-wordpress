@@ -2,7 +2,7 @@
 
 /* @var $options array contains all the options the current block we're ediging contains */
 /* @var $controls NewsletterControls */
-/* @var $controls NewsletterFields */
+/* @var $fields NewsletterFields */
 ?>
 
 <p>
@@ -18,5 +18,7 @@ $fields->select('layout', __('Layout', 'newsletter'), ['' => __('Default', 'news
 	'size_default'   => true,
 	'weight_default' => true
 ] ) ?>
+
+<?php $fields->number('logo_height', __('Height'))?>
 
 <?php $fields->block_commons() ?>

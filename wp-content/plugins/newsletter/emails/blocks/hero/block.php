@@ -21,12 +21,12 @@ $defaults = array(
     'title_font_weight' => '',
     'title_font_color' => '',
     'layout' => 'full',
-    'button_url'         => '',
-    'button_label'       => __( 'Click Here', 'newsletter' ),
-    'button_background'  => '',
-    'button_font_color'  => '',
+    'button_url' => '',
+    'button_label' => __('Click Here', 'newsletter'),
+    'button_background' => '',
+    'button_font_color' => '',
     'button_font_family' => '',
-    'button_font_size'   => '',
+    'button_font_size' => '',
     'button_font_weight' => '',
     'block_padding_top' => 30,
     'block_padding_bottom' => 30,
@@ -63,37 +63,26 @@ if ($layout == 'full') {
     $options = array_merge(array('block_padding_left' => 15, 'block_padding_right' => 15), $options);
 }
 
-$title_font_family = empty( $options['title_font_family'] ) ? $global_title_font_family : $options['title_font_family'];
-$title_font_size   = empty( $options['title_font_size'] ) ? $global_title_font_size : $options['title_font_size'];
-$title_font_color  = empty( $options['title_font_color'] ) ? $global_title_font_color : $options['title_font_color'];
-$title_font_weight = empty( $options['title_font_weight'] ) ? $global_title_font_weight : $options['title_font_weight'];
-
-$text_font_family = empty( $options['font_family'] ) ? $global_text_font_family : $options['font_family'];
-$text_font_size   = empty( $options['font_size'] ) ? $global_text_font_size : $options['font_size'];
-$text_font_color  = empty( $options['font_color'] ) ? $global_text_font_color : $options['font_color'];
-$text_font_weight = empty( $options['font_weight'] ) ? $global_text_font_weight : $options['font_weight'];
+$title_style = TNP_Composer::get_style($options, 'title', $composer, 'title');
+$text_style = TNP_Composer::get_style($options, '', $composer, 'text');
 
 $layout = $options['layout'];
 
 $button_options = $options;
-$button_options['button_font_family'] = empty( $options['button_font_family'] ) ? $global_button_font_family : $options['button_font_family'];
-$button_options['button_font_size']   = empty( $options['button_font_size'] ) ? $global_button_font_size : $options['button_font_size'];
-$button_options['button_font_color']  = empty( $options['button_font_color'] ) ? $global_button_font_color : $options['button_font_color'];
-$button_options['button_font_weight'] = empty( $options['button_font_weight'] ) ? $global_button_font_weight : $options['button_font_weight'];
-$button_options['button_background']  = empty( $options['button_background'] ) ? $global_button_background_color : $options['button_background'];
+$button_options['button_font_family'] = empty($options['button_font_family']) ? $global_button_font_family : $options['button_font_family'];
+$button_options['button_font_size'] = empty($options['button_font_size']) ? $global_button_font_size : $options['button_font_size'];
+$button_options['button_font_color'] = empty($options['button_font_color']) ? $global_button_font_color : $options['button_font_color'];
+$button_options['button_font_weight'] = empty($options['button_font_weight']) ? $global_button_font_weight : $options['button_font_weight'];
+$button_options['button_background'] = empty($options['button_background']) ? $global_button_background_color : $options['button_background'];
 
 if (!empty($options['image']['id'])) {
-    if ($layout == 'full') {
-        $media = tnp_resize_2x($options['image']['id'], array(600, 0));
-        if ($media) {
-            $media->set_width(600 - $options['block_padding_left'] - $options['block_padding_right']);
-        }
+    if ($layout === 'full') {
+        $image_width = 600 - $options['block_padding_left'] - $options['block_padding_right'];
+        $media = tnp_resize_2x($options['image']['id'], [$image_width, 0]);
     } else {
-
-        $media = tnp_resize_2x($options['image']['id'], array(300, 0));
-        if ($media) {
-            $media->set_width(300 - $options['block_padding_left']);
-        }
+        $td_width = round((600 - $options['block_padding_left'] - $options['block_padding_right'] - 20)/2);
+        //$image_width = 300 - $options['block_padding_left'];
+        $media = tnp_resize_2x($options['image']['id'], [$td_width, 0]);
     }
     if ($media) {
         if (!empty($options['image_alt'])) {
