@@ -1714,7 +1714,7 @@ class YOP_Poll_Polls {
 								'poll_id' => $poll_id,
 								'element_id' => $poll_element->id,
 								'stext' => $other_answer->answer,
-								'author' => '',
+								'author' => '0',
 								'textExtra' => '',
 								'stype' => 'text',
 								'status' => 'active',
@@ -2076,7 +2076,8 @@ class YOP_Poll_Polls {
 				$element_results['type'] = $element->etype;
 				$element_results['answers'] = array();
 				foreach ( $element->answers as $subelement ) {
-					$answerText = str_replace( '[br]', '</br>', $subelement->stext );
+					$answerText = esc_html( $subelement->stext );
+					$answerText = str_replace( '[br]', '</br>', $answerText );
 					$answerText = str_replace( '[p]', '<p>', $answerText );
 					$answerText = str_replace( '[/p]', '</p>', $answerText );
 					$answerText = str_replace( '[strong]', '<strong>', $answerText );

@@ -24,10 +24,10 @@ class TNP_Media {
         $this->height = floor(($width / $this->width) * $this->height);
         $this->width = $width;
     }
-    
+
     /** Sets the height recalculating the width */
     public function set_height($height) {
-        $height = (int)$height;
+        $height = (int) $height;
         $this->width = floor(($height / $this->height) * $this->width);
         $this->height = $height;
     }
@@ -259,6 +259,21 @@ class TNP_Subscription_Data {
         }
     }
 
+    /** Sets to active a set of lists. Accepts incorrect data (and ignores it).
+     * 
+     * @param array $list_ids Array of list IDs
+     */
+    function add_lists($list_ids) {
+        if (empty($list_ids) || !is_array($list_ids))
+            return;
+        foreach ($list_ids as $list_id) {
+            $list_id = (int) $list_id;
+            if ($list_id < 0 || $list_id > NEWSLETTER_LIST_MAX)
+                continue;
+            $this->lists[$list_id] = 1;
+        }
+    }
+
 }
 
 /**
@@ -323,6 +338,7 @@ class TNP_User {
                 break;
         }
     }
+
 }
 
 /**
@@ -395,7 +411,6 @@ class NewsletterModule {
         $this->prefix = 'newsletter_' . $module;
         array_unshift($components, '');
         $this->components = $components;
-
 
         $this->logger = new NewsletterLogger($module);
         $this->options = $this->get_options();
@@ -935,36 +950,36 @@ class NewsletterModule {
         return $list;
     }
 
-	/**
-	 * @param string $key
-	 * @param mixed $value
-	 * @return TNP_Email[]
-	 */
-	function get_emails_by_field( $key, $value) {
-		global $wpdb;
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @return TNP_Email[]
+     */
+    function get_emails_by_field($key, $value) {
+        global $wpdb;
 
-		$value_placeholder = is_int( $value ) ? '%d' : '%s';
+        $value_placeholder = is_int($value) ? '%d' : '%s';
 
-		$query = $wpdb->prepare( "SELECT * FROM " . NEWSLETTER_EMAILS_TABLE . " WHERE %1s=$value_placeholder ORDER BY id DESC", $key, $value );
+        $query = $wpdb->prepare("SELECT * FROM " . NEWSLETTER_EMAILS_TABLE . " WHERE %1s=$value_placeholder ORDER BY id DESC", $key, $value);
 
-		$email_list = $wpdb->get_results( $query );
+        $email_list = $wpdb->get_results($query);
 
-		if ( $wpdb->last_error || empty( $email_list ) ) {
-			$this->logger->error( $wpdb->last_error );
+        if ($wpdb->last_error) {
+            $this->logger->error($wpdb->last_error);
 
-			return [];
-		}
+            return [];
+        }
 
-		//Unserialize options
-		array_walk( $email_list, function ( $email ) {
-			$email->options = maybe_unserialize( $email->options );
-			if ( ! is_array( $email->options ) ) {
-				$email->options = [];
-			}
-		} );
+        //Unserialize options
+        array_walk($email_list, function ($email) {
+            $email->options = maybe_unserialize($email->options);
+            if (!is_array($email->options)) {
+                $email->options = [];
+            }
+        });
 
-		return $email_list;
-	}
+        return $email_list;
+    }
 
     /**
      * Retrieves an email from DB and unserialize the options.
@@ -1127,7 +1142,7 @@ class NewsletterModule {
             $percent = $this->get_email_progress($email);
         }
 
-	    echo '<div class="tnp-progress tnp-progress--' . $email->status . '">';
+        echo '<div class="tnp-progress tnp-progress--' . $email->status . '">';
         echo '<div class="tnp-progress-bar" role="progressbar" style="width: ', $percent, '%;">&nbsp;', $percent, '%&nbsp;</div>';
         echo '</div>';
         if ($attrs['numbers']) {
@@ -1375,7 +1390,7 @@ class NewsletterModule {
         }
         return $user_count;
     }
-    
+
     function get_profile($id, $language = '') {
         return TNP_Profile_Service::get_profile_by_id($id, $language);
     }
@@ -2084,7 +2099,6 @@ class NewsletterModule {
         $text = str_replace('{company_address}', $options['footer_contact'], $text);
         $text = str_replace('{company_name}', $options['footer_title'], $text);
         $text = str_replace('{company_legal}', $options['footer_legal'], $text);
-
 
         $this->switch_language($initial_language);
 //$this->logger->debug('Replace end');

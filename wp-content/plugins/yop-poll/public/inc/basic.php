@@ -339,7 +339,7 @@ class YOP_Poll_Basic {
 			if ( null !== $other_answers ) {
 				foreach ( $other_answers as $other_answer ) {
 					$other_answers_processed[] = array(
-						'an' => $other_answer->answer,
+						'an' => esc_html( $other_answer->answer ),
 						'vn' => $other_answer->total_submits
 					);
 				}

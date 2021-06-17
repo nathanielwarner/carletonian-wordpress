@@ -215,12 +215,15 @@ class NewsletterFields {
      * @param type $attrs
      */
     public function select($name, $label = '', $options = [], $attrs = []) {
-        $attrs = $this->_merge_attrs($attrs, ['reload' => false, 'after-rendering' => '']);
+        $attrs = $this->_merge_attrs($attrs, ['reload' => false, 'after-rendering' => '', 'class' => '']);
         $this->_open();
         $this->_label($label);
         $value = $this->controls->get_value($name);
 
         echo '<select id="', $this->_id($name), '" name="', $this->_name($name), '"';
+        if ($attrs['class']) {
+            echo ' class="', esc_attr($attrs['class']), '"';
+        }
         if ($attrs['reload']) {
             echo ' onchange="tnpc_reload_options(event)"';
         }

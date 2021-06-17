@@ -133,6 +133,7 @@ class NewsletterStore {
                 if ($r === false) {
                     $this->logger->fatal($wpdb->last_error);
                     $this->logger->fatal($wpdb->last_query);
+                    $this->logger->debug($data);
                     die('Database error. If you were saving a newsletter try a table upgrade from the status panel.');
                 }
             }
@@ -142,6 +143,7 @@ class NewsletterStore {
             if ($r === false) {
                 $this->logger->fatal($wpdb->last_error);
                 $this->logger->fatal($wpdb->last_query);
+                $this->logger->debug($data);
                 die('Database error. If you were saving a newsletter try a table upgrade from the status panel.');
             }
             $id = $wpdb->insert_id;

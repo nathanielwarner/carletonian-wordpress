@@ -166,6 +166,23 @@ class YOP_Poll_Votes {
 									);
 								}
 							}
+							if (
+								( 'yes' === $element->meta_data['addOtherAnswers'] ) ||
+								( 'yes' === $element->meta_data['displayOtherAnswersInResults'] )
+							 ) {
+								 foreach ( $question->data as $question_answer ) {
+									 if ( '0' === strval( $question_answer->id ) ) {
+										$other_answer_cleaned = sanitize_text_field( $question_answer->data );
+										if ( '' === $other_answer_cleaned ) {
+											self::$errors_present = true;
+											array_push(
+												self::$error_text,
+												self::$settings_messages['voting']['no-answer-for-other']
+											);
+										}
+									 }
+								 }
+							 }
 						}
 					}
 					break;
@@ -173,8 +190,9 @@ class YOP_Poll_Votes {
 				case 'custom-field': {
 					foreach ( $vote->data as $vote_element ) {
 						if ( intval( $element->id ) === intval( $vote_element->id ) ) {
+							$custom_field_cleaned = sanitize_text_field( $vote_element->data );
 							if ( 'yes' === $element->meta_data['makeRequired'] ) {
-								if ( '' === trim( $vote_element->data ) ) {
+								if ( '' === $custom_field_cleaned ) {
 									self::$errors_present = true;
 									array_push(
 										self::$error_text,
@@ -527,20 +545,30 @@ class YOP_Poll_Votes {
 			switch ( $element->type ) {
 				case 'question': {
 					foreach ( $element->data as $data ) {
-						array_push(
-							$element_data,
-							array(
-								'id' => $data->id,
-								'data' => $data->data
-							)
-						);
+						if ( '0' === strval( $data->id ) ) {
+							array_push(
+								$element_data,
+								array(
+									'id' => $data->id,
+									'data' => sanitize_text_field( $data->data )
+								)
+							);
+						} else {
+							array_push(
+								$element_data,
+								array(
+									'id' => $data->id,
+									'data' => $data->data
+								)
+							);
+						}
 					}
 					break;
 				}
 				case 'custom-field': {
 					array_push(
 						$element_data,
-						$element->data
+						sanitize_text_field( $element->data )
 					);
 					break;
 				}
@@ -669,7 +697,7 @@ class YOP_Poll_Votes {
 										$sub_element_data = new StdClass();
 										$sub_element_data->poll_id = $vote->pollId;
 										$sub_element_data->element_id = $poll_element->id;
-										$sub_element_data->stext = $vote_subelement->data;
+										$sub_element_data->stext = sanitize_text_field( $vote_subelement->data );
 										$sub_element_data->author = '0';
 										$sub_element_data->type = 'text';
 										$sub_element_data->status = 'active';
@@ -752,7 +780,7 @@ class YOP_Poll_Votes {
 					if ( count( $element_others ) > 0 ) {
 						foreach( $element_others as $other_answer ) {
 							$element_others_processed[] = array(
-								'an' => $other_answer->answer,
+								'an' => esc_html( $other_answer->answer ),
 								'vn' => $other_answer->total_submits
 							);
 						}

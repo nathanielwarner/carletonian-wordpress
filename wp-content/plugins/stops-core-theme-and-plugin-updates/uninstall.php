@@ -25,6 +25,9 @@ foreach ($all_plugins as $key => $value) {
 	}
 }
 
+$freeActive = false;
+$premiumActive = false;
+
 foreach ($all_plugins as $plugin) {
 	if ('Easy Updates Manager Premium' == $plugin['Name']) $premiumActive = true;
 	if ('Easy Updates Manager' == $plugin['Name']) $freeActive = true;

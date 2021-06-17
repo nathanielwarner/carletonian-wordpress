@@ -259,10 +259,12 @@ class MPSUM_Admin {
 		// Get options
 		$options = MPSUM_Updates_Manager::get_options('core');
 
-		// Modal dependencies on the plugins tab
+		// Modal dependencies on the plugins and logs tab
 		if ('plugins' === $is_active_tab) {
 			wp_enqueue_script('plugin-install');
 			wp_enqueue_script('updates');
+		}
+		if ('plugins' === $is_active_tab || 'logs' === $is_active_tab) {
 			wp_enqueue_script('common');
 			wp_enqueue_style('common');
 			wp_enqueue_script('thickbox');
@@ -370,6 +372,10 @@ class MPSUM_Admin {
 			'emails_save'                                => __('Save e-mail addresses', 'stops-core-theme-and-plugin-updates'),
 			'emails_save_empty'                          => __('Please enter an e-mail address', 'stops-core-theme-and-plugin-updates'),
 			'emails_saving'                              => __('Saving...', 'stops-core-theme-and-plugin-updates'),
+			'plugin_auto_updates_notification_label'     => __('Automatic plugin updates notification e-mails', 'stops-core-theme-and-plugin-updates'),
+			'plugin_auto_updates_notification_description' => __('Be notified when a plugin automatically updates.', 'stops-core-theme-and-plugin-updates'),
+			'plugin_auto_notification_emails_off_status'   => __('E-mail notifications for automatic plugin updates are now off.', 'stops-core-theme-and-plugin-updates'),
+			'plugin_auto_notification_emails_on_status'  => __('E-mail notifications for automatic plugin updates are now on.', 'stops-core-theme-and-plugin-updates'),
 			'core_updates'                               => __('WordPress core updates', 'stops-core-theme-and-plugin-updates'),
 			'core_updates_description'                   => __('This allows you to configure how WordPress updates are handled, including automatic updates.', 'stops-core-theme-and-plugin-updates'),
 			'core_updates_label_on'                      => __('Manually update', 'stops-core-theme-and-plugin-updates'),

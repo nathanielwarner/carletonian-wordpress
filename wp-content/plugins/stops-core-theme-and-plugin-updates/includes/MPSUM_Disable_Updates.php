@@ -169,6 +169,13 @@ class MPSUM_Disable_Updates {
 		// Automatic Updates E-mail Address
 		add_filter('automatic_updates_debug_email', array( $this, 'maybe_change_automatic_update_email' ), PHP_INT_MAX - 10);
 		add_filter('auto_core_update_email', array( $this, 'maybe_change_automatic_update_email' ), PHP_INT_MAX - 10);
+		
+		// Disable Plugin Auto-updates E-mail Notifications
+		if (isset($core_options['plugin_auto_updates_notification_emails'])) {
+			if ('off' === $core_options['plugin_auto_updates_notification_emails']) {
+				add_filter('auto_plugin_update_send_email',  '__return_false', PHP_INT_MAX - 10, 2);
+			}
+		}
 
 
 		// Prevent updates on themes/plugins
@@ -397,15 +404,21 @@ class MPSUM_Disable_Updates {
 
 		if (isset($r['body']['plugins'])) {
 			$r_plugins = json_decode($r['body']['plugins'], true);
-			$plugin_options = MPSUM_Updates_Manager::get_options('plugins');
-			foreach ($plugin_options as $plugin) {
-				unset($r_plugins[$plugin]);
-				if (false !== $key = array_search($plugin, $r_plugins['active'])) {
-					unset($r_plugins['active'][$key]);
-					$r_plugins['active'] = array_values($r_plugins['active']);
+			if (!empty($r_plugins['active'])) {
+				if (is_array($r_plugins['active'])) {
+					$plugin_options = MPSUM_Updates_Manager::get_options('plugins');
+					foreach ($plugin_options as $plugin) {
+						unset($r_plugins[$plugin]);
+						if (false !== $key = array_search($plugin, $r_plugins['active'])) {
+							unset($r_plugins['active'][$key]);
+							$r_plugins['active'] = array_values($r_plugins['active']);
+						}
+					}
+				} else {
+					error_log("EUM: http_request_args_remove_plugins_themes(): the 'plugins' parameter was non-empty, but not an array; please report this in a support channel: ".serialize($r_plugins['active']));
 				}
+				$r['body']['plugins'] = json_encode($r_plugins);
 			}
-			$r['body']['plugins'] = json_encode($r_plugins);
 		}
 		if (isset($r['body']['themes'])) {
 			$r_themes = json_decode($r['body']['themes'], true);

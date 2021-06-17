@@ -188,6 +188,10 @@ $warning |= empty($status_options['mail']);
                             <small><?php _e('WP native site health checks', 'newsletter') ?></small></a>
                     </li>
                     <li>
+                        <a href="?page=newsletter_main_delivery"><i class="fas fa-file"></i> <?php _e('Delivery Diagnostic', 'newsletter') ?>
+                            <small><?php _e('Delivery analysis and test', 'newsletter') ?></small></a>
+                    </li>
+                    <li>
                         <a href="?page=newsletter_main_status"><i class="fas fa-file"></i> <?php _e('Status', 'newsletter') ?>
                             <small><?php _e('Checks and parameters', 'newsletter') ?></small></a>
                     </li>
@@ -338,3 +342,5 @@ if ( $_GET['page'] !== 'newsletter_emails_edit' ) {
     }
     ?>
 </div>
+
+

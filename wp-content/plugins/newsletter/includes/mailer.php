@@ -18,7 +18,7 @@ class NewsletterMailer {
     private $delta;
     protected $batch_size = 1;
 
-    public function __construct($name, $options = array()) {
+    public function __construct($name, $options = []) {
         $this->name = $name;
         $this->options = $options;
     }
@@ -123,44 +123,6 @@ class NewsletterMailer {
     }
 
     /**
-     *
-     * @param TNP_Mailer_Message $message
-     * @return bool|WP_Error
-     */
-    public function enqueue(TNP_Mailer_Message $message) {
-        // Optimization when there is no queue
-        if ($this->queue_max == 0) {
-            $r = $this->send($message);
-            return $r;
-        }
-
-        $this->queue[] = $message;
-        if (count($this->queue) >= $this->queue_max) {
-            return $this->flush();
-        }
-        return true;
-    }
-
-    public function flush() {
-        $undelivered = array();
-        foreach ($this->queue as $message) {
-            $r = $this->deliver($message);
-            if (is_wp_error($r)) {
-                $message->error = $r;
-                $undelivered[] = $message;
-            }
-        }
-
-        $this->queue = array();
-
-        if ($undelivered) {
-            return new WP_Error(self::ERROR_GENERAL, 'Error while flushing messages', $undelivered);
-        }
-
-        return true;
-    }
-
-    /**
      * Original mail function simulation for compatibility.
      * @deprecated
      *
@@ -180,9 +142,6 @@ class NewsletterMailer {
         $mailer_message->body = $message['html'];
         $mailer_message->body_text = $message['text'];
 
-        if ($enqueue) {
-            return !is_wp_error($this->enqueue($mailer_message));
-        }
         return !is_wp_error($this->send($mailer_message));
     }
 
@@ -337,7 +296,8 @@ class NewsletterDefaultMailer extends NewsletterMailer {
             if (!empty($newsletter->options['content_transfer_encoding'])) {
                 $mailer->Encoding = $newsletter->options['content_transfer_encoding'];
             } else {
-                $mailer->Encoding = 'base64';
+                // Setting and encoding sometimes conflict with SMTP plugins
+                //$mailer->Encoding = 'base64';
             }
         }
 

@@ -306,6 +306,10 @@ class YOP_Poll_Admin {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_2_7();
 			}
+			if ( true === version_compare( $installed_version, '6.2.8', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_2_8();
+			}
         }
 	}
     public function load_translations() {
@@ -1413,13 +1417,13 @@ class YOP_Poll_Admin {
                 $details_string = '';
                 foreach ( $results as $res ) {
                     if ( 'custom-field' === $res['question']) {
-                        $details_string .= "<div>" . __('Custom Field', 'yop-poll' ) . ': ' . $res['caption'];
+                        $details_string .= "<div>" . __( 'Custom Field', 'yop-poll' ) . ': ' . $res['caption'];
                         $details_string .= '<div style="padding-left: 10px;">' . __( 'Answer', 'yop-poll' ) . ': ' .
-                            $res['answers'][0]['answer_value'] . '</div>';
+                            esc_html( $res['answers'][0]['answer_value'] ) . '</div>';
                     } else {
                         $details_string .= "<div>" . __('Question', 'yop-poll' ). ': ' . $res['question'];
                         foreach ( $res['answers'] as $ra ) {
-                            $details_string .= '<div style="padding-left: 10px;">' . __( 'Answer', 'yop-poll' ) . ': ' . $ra['answer_value'] . '</div>';
+                            $details_string .= '<div style="padding-left: 10px;">' . __( 'Answer', 'yop-poll' ) . ': ' . esc_html( $ra['answer_value'] ) . '</div>';
                         }
                     }
                     $details_string .= '</div>';

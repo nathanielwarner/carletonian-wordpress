@@ -346,6 +346,13 @@ class MPSUM_Admin_Ajax {
 					wp_clear_scheduled_hook('eum_notification_updates_monthly');
 				}
 				break;
+			case 'plugin-auto-updates-notification-emails':
+				if ('on' === $value) {
+					$options['plugin_auto_updates_notification_emails'] = 'on';
+				} else {
+					$options['plugin_auto_updates_notification_emails'] = 'off';
+				}
+				break;
 			case 'notification-emails-send_now':
 				MPSUM_Update_Notifications::get_instance()->maybe_send_update_notification_email();
 				break;
@@ -373,6 +380,11 @@ class MPSUM_Admin_Ajax {
 		// Check if update notification emails is set
 		if (!isset($options['update_notification_updates'])) {
 			$options['update_notification_updates'] = 'off';
+		}
+		
+		// Check if plugin auto updates notification emails is set
+		if (!isset($options['plugin_auto_updates_notification_emails'])) {
+			$options['plugin_auto_updates_notification_emails'] = 'on';
 		}
 
 		// Add error to options for returning
@@ -423,6 +435,12 @@ class MPSUM_Admin_Ajax {
 		if (!isset($options['update_notification_updates'])) {
 			$options['update_notification_updates'] = 'off';
 		}
+		
+		// Check if plugin auto updates notification emails is set
+		if (!isset($options['plugin_auto_updates_notification_emails'])) {
+			$options['plugin_auto_updates_notification_emails'] = 'on';
+		}
+		
 
 		if (isset($options['email_addresses']) && ! is_array($options['email_addresses'])) {
 			$options['email_addresses'] = array();
@@ -902,9 +920,6 @@ class MPSUM_Admin_Ajax {
 		global $wpdb;
 		// Reset options
 		MPSUM_Updates_Manager::update_options(array());
-
-		// Remove table version
-		delete_site_option('mpsum_log_table_version');
 
 		// Remove Webhook
 		delete_site_option('easy_updates_manager_webhook');

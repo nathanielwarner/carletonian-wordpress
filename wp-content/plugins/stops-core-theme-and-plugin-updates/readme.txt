@@ -5,7 +5,7 @@ Requires at least: 5.1
 Requires PHP: 5.6
 Donate link: https://easyupdatesmanager.com
 Tested up to: 5.7
-Stable tag: 9.0.8
+Stable tag: 9.0.9
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -125,6 +125,16 @@ Since third-party providers use custom update mechanisms, we cannot always guara
 For additional information and FAQs for Easy Updates Manager <a href="https://easyupdatesmanager.com">check out our website</a>.
 
 == Changelog ==
+
+= 9.0.9 - 2021-06-12 =
+
+* FEATURE: Add the ability to disable update notification emails completely when a plugin updates automatically
+* TWEAK: Added Update URI header field to avoid accidentally being overwritten with an update of a plugin of a similar name from the WordPress.org Plugin Directory.
+* TWEAK: Added stacktrace column to the logging table to log a PHP stack trace
+* TWEAK: Correct misnamed array key when migrating theme options
+* TWEAK: Prevent a couple of PHP undefined variable log notices upon de-installation
+* TWEAK: Prevent a potential unwanted PHP debugging notice in MPSUM_Disable_Updates::http_request_args_remove_plugins_themes()
+* TWEAK: Update seasonal notices
 
 = 9.0.8 - 2021-03-08 =
 
@@ -334,4 +344,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 9.0.8 : * Correctly log 'from' version for themes when scheduled update is run. Adjust a method definition that caused a PHP notice in PHP 8. Escape existing super admin usernames in SQL query to avoid code notice. Adjust escaping method used for an SQL function (not believed to have any security implications).
+* 9.0.9 : * Add the ability to disable unwanted automatic plugin update notifications. Other tweaks and improvements; a recommended update for all.

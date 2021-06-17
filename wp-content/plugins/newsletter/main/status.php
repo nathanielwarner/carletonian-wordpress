@@ -63,7 +63,7 @@ if ($controls->is_action('conversion')) {
             $controls->errors .= 'It was not possible to run the conversion for the table ' . NEWSLETTER_EMAILS_TABLE . ' - ';
             $controls->errors .= $wpdb->last_error . '<br>';
         }
-        $controls->messages = 'Done.';
+        $controls->messages .= 'Done.';
     } else {
         $controls->errors = 'Table conversion function not available';
     }
@@ -124,14 +124,14 @@ if ($controls->is_action('test')) {
     }
 }
 
-if ($controls->is_action( 'stats_email_column_upgrade') ) {
-	$this->query( "alter table " . NEWSLETTER_STATS_TABLE . " drop index email_id" );
-	$this->query( "alter table " . NEWSLETTER_STATS_TABLE . " drop index user_id" );
-	$this->query( "alter table `" . NEWSLETTER_STATS_TABLE . "` modify column `email_id` int(11) not null default 0" );
-	$this->query( "create index email_id on " . NEWSLETTER_STATS_TABLE . " (email_id)" );
-	$this->query( "create index user_id on " . NEWSLETTER_STATS_TABLE . " (user_id)" );
-	$controls->add_message_done();
-	update_option('newsletter_stats_email_column_upgraded', true);
+if ($controls->is_action('stats_email_column_upgrade')) {
+    $this->query("alter table " . NEWSLETTER_STATS_TABLE . " drop index email_id");
+    $this->query("alter table " . NEWSLETTER_STATS_TABLE . " drop index user_id");
+    $this->query("alter table `" . NEWSLETTER_STATS_TABLE . "` modify column `email_id` int(11) not null default 0");
+    $this->query("create index email_id on " . NEWSLETTER_STATS_TABLE . " (email_id)");
+    $this->query("create index user_id on " . NEWSLETTER_STATS_TABLE . " (user_id)");
+    $controls->add_message_done();
+    update_option('newsletter_stats_email_column_upgraded', true);
 }
 
 $options = $this->get_options('status');
@@ -156,6 +156,14 @@ function tnp_status_print_flag($condition) {
             break;
     }
 }
+
+class TNP_WPDB extends wpdb {
+    public function get_table_charset($table) {
+        return parent::get_table_charset($table);
+    }
+}
+
+$tnp_wpdb = new TNP_WPDB(DB_USER, DB_PASSWORD, DB_NAME, DB_HOST);
 ?>
 <style>
     table.widefat tbody tr>td:first-child {
@@ -178,7 +186,8 @@ function tnp_status_print_flag($condition) {
         <form method="post" action="">
             <?php $controls->init(); ?>
 
-            <h3>Mailing test</h3>
+
+            <h3>Delivery</h3>
             <table class="widefat" id="tnp-status-table">
 
                 <thead>
@@ -187,42 +196,153 @@ function tnp_status_print_flag($condition) {
                         <th><?php _e('Status', 'newsletter') ?></th>
                         <th>Action</th>
                     </tr>
+
                 </thead>
 
                 <tbody>
-                    <tr>
-                        <td>Mailing</td>
-                        <td>
-                            <?php if (empty($options['mail'])) { ?>
-                                <span class="tnp-ko">KO</span>
-                            <?php } else { ?>
-                                <span class="tnp-ok">OK</span>
-                            <?php } ?>
 
+                    <tr>
+                        <td>Delivering</td>
+                        <td>
+                            &nbsp;
                         </td>
                         <td>
-                            <?php if (empty($options['mail'])) { ?>
-                                <?php if (empty($options['mail_error'])) { ?>
-                                    A test has never run.
-                                <?php } else { ?>
-                                    Last test failed with error "<?php echo esc_html($options['mail_error']) ?>".
+                            <?php if (count($emails)) { ?>
+                                Delivering <?php echo count($emails) ?> newsletters to about <?php echo $queued ?> recipients.
+                                At speed of <?php echo $speed ?> emails per hour it will take <?php printf('%.1f', $queued / $speed) ?> hours to finish.
 
-                                <?php } ?>
                             <?php } else { ?>
-                                Last test was successful. If you didn't receive the test email:
-                                <ol>
-                                    <li>If you set the Newsletter SMTP, do a test from that panel</li>
-                                    <li>If you're using a integration extension do a test from its configuration panel</li>
-                                    <li>If previous points do not apply to you, ask for support to your provider reporting the emails from your blog are not delivered</li>
-                                </ol>
+                                Nothing delivering right now
                             <?php } ?>
-                            <br>
-                            <a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank">Read more to solve your issues, if any</a>.
-                            <br>
-                            Email: <?php $controls->text_email('test_email') ?> <?php $controls->button('test', __('Send a test message')) ?>
                         </td>
 
                     </tr>
+                    <tr>
+                        <td>Mailer</td>
+                        <td>
+                            &nbsp;
+                        </td>
+                        <td>
+                            <?php
+                            $mailer = Newsletter::instance()->get_mailer();
+                            $name = 'Unknown';
+                            if (is_object($mailer)) {
+                                if (method_exists($mailer, 'get_description')) {
+                                    $name = $mailer->get_description();
+                                } else {
+                                    $name = get_class($mailer);
+                                }
+                            }
+                            ?>
+
+                            <?php echo esc_html($name) ?>
+                        </td>
+                    </tr>
+                    <?php
+                    // Send calls stats
+                    $send_calls = get_option('newsletter_diagnostic_send_calls', array());
+                    if (count($send_calls)) {
+                        $send_max = 0;
+                        $send_min = PHP_INT_MAX;
+                        $send_total_time = 0;
+                        $send_total_emails = 0;
+                        $send_completed = 0;
+                        for ($i = 0; $i < count($send_calls); $i++) {
+                            if (empty($send_calls[$i][2]))
+                                continue;
+
+                            $delta = $send_calls[$i][1] - $send_calls[$i][0];
+                            $send_total_time += $delta;
+                            $send_total_emails += $send_calls[$i][2];
+                            $send_mean = $delta / $send_calls[$i][2];
+                            if ($send_min > $send_mean) {
+                                $send_min = $send_mean;
+                            }
+                            if ($send_max < $send_mean) {
+                                $send_max = $send_mean;
+                            }
+                            if (isset($send_calls[$i][3]) && $send_calls[$i][3]) {
+                                $send_completed++;
+                            }
+                        }
+                        $send_mean = $send_total_time / $send_total_emails;
+                        ?>
+                        <tr>
+                            <td>
+                                Send details
+                            </td>
+                            <td>
+                                <?php if ($send_mean > 1) { ?>
+                                    <span class="tnp-ko">KO</span>
+                                <?php } else { ?>
+                                    <span class="tnp-ok">OK</span>
+                                <?php } ?>
+                            </td>
+                            <td>
+                                <?php if ($send_mean > 1) { ?>
+                                    <strong>Sending an email is taking more than 1 second, rather slow.</strong>
+                                    <a href="https://www.thenewsletterplugin.com/documentation/status-panel#status-performance" target="_blank">Read more</a>.
+                                <?php } ?>
+                                Average time to send an email: <?php echo sprintf("%.2f", $send_mean) ?> seconds<br>
+                                <?php if ($send_mean > 0) { ?>
+                                    Max speed: <?php echo sprintf("%.2f", 1.0 / $send_mean * 3600) ?> emails per hour<br>
+                                <?php } ?>
+
+                                Max mean time measured: <?php echo sprintf("%.2f", $send_max) ?> seconds<br>
+                                Min mean time measured: <?php echo sprintf("%.2f", $send_min) ?> seconds<br>
+                                Total email in the sample: <?php echo $send_total_emails ?><br>
+                                Runs in the sample: <?php echo count($send_calls); ?><br>
+                                Runs prematurely interrupted: <?php echo sprintf("%.2f", (count($send_calls) - $send_completed) * 100.0 / count($send_calls)) ?>%<br>
+                                <br>
+                                <?php $controls->button_reset('reset_send_stats') ?>
+                            </td>
+                        </tr>
+                    <?php } else { ?>
+                        <tr>
+                            <td>
+                                Send details
+                            </td>
+                            <td>
+                                <span class="tnp-maybe">MAYBE</span>
+                            </td>
+                            <td>
+                                No data avaiable. Send a newsletter to collect some sending statistics.
+                            </td>
+                        </tr>
+                    <?php } ?>
+
+                    <tr>
+                        <?php
+                        $time = wp_next_scheduled('newsletter');
+                        $res = true;
+                        $condition = 1;
+                        if ($time === false) {
+                            $res = false;
+                            $condition = 0;
+                        }
+                        $delta = $time - time();
+                        if ($delta <= -600) {
+                            $res = false;
+                            $condition = 0;
+                        }
+                        ?>
+                        <td>Newsletter delivery engine job</td>
+                        <td>
+                            <?php tnp_status_print_flag($condition) ?>
+                        </td>
+                        <td>
+                            <?php if ($time === false) { ?>
+                                No next execution is planned.
+                                <?php $controls->button('reschedule', 'Reset') ?>
+                            <?php } else if ($delta <= -600) { ?>
+                                The scheduler is very late: <?php echo $delta ?> seconds (<a href="https://www.thenewsletterplugin.com/plugins/newsletter/newsletter-delivery-engine" target="_blank">read more</a>)
+                                <?php $controls->button('trigger', 'Trigger') ?>
+                            <?php } else { ?>
+                                Next execution is planned in <?php echo $delta ?> seconds (negative values are ok).
+                            <?php } ?>
+                        </td>
+                    </tr>
+
                 </tbody>
             </table>
 
@@ -333,43 +453,7 @@ function tnp_status_print_flag($condition) {
                         </td>
 
                     </tr>
-                    <tr>
-                        <td>Delivering</td>
-                        <td>
-                            &nbsp;
-                        </td>
-                        <td>
-                            <?php if (count($emails)) { ?>
-                                Delivering <?php echo count($emails) ?> newsletters to about <?php echo $queued ?> recipients.
-                                At speed of <?php echo $speed ?> emails per hour it will take <?php printf('%.1f', $queued / $speed) ?> hours to finish.
 
-                            <?php } else { ?>
-                                Nothing delivering right now
-                            <?php } ?>
-                        </td>
-
-                    </tr>
-                    <tr>
-                        <td>Mailer</td>
-                        <td>
-                            &nbsp;
-                        </td>
-                        <td>
-                            <?php
-                            $mailer = Newsletter::instance()->get_mailer();
-                            $name = 'Unknown';
-                            if (is_object($mailer)) {
-                                if (method_exists($mailer, 'get_description')) {
-                                    $name = $mailer->get_description();
-                                } else {
-                                    $name = get_class($mailer);
-                                }
-                            }
-                            ?>
-
-                            <?php echo esc_html($name) ?>
-                        </td>
-                    </tr>
 
 
 
@@ -438,37 +522,7 @@ function tnp_status_print_flag($condition) {
 
 
 
-                    <tr>
-                        <?php
-                        $time = wp_next_scheduled('newsletter');
-                        $res = true;
-                        $condition = 1;
-                        if ($time === false) {
-                            $res = false;
-                            $condition = 0;
-                        }
-                        $delta = $time - time();
-                        if ($delta <= -600) {
-                            $res = false;
-                            $condition = 0;
-                        }
-                        ?>
-                        <td>Newsletter delivery engine job</td>
-                        <td>
-                            <?php tnp_status_print_flag($condition) ?>
-                        </td>
-                        <td>
-                            <?php if ($time === false) { ?>
-                                No next execution is planned.
-                                <?php $controls->button('reschedule', 'Reset') ?>
-                            <?php } else if ($delta <= -600) { ?>
-                                The scheduler is very late: <?php echo $delta ?> seconds (<a href="https://www.thenewsletterplugin.com/plugins/newsletter/newsletter-delivery-engine" target="_blank">read more</a>)
-                                <?php $controls->button('trigger', 'Trigger') ?>
-                            <?php } else { ?>
-                                Next execution is planned in <?php echo $delta ?> seconds (negative values are ok).
-                            <?php } ?>
-                        </td>
-                    </tr>
+
 
                     <?php
                     $schedules = wp_get_schedules();
@@ -584,81 +638,9 @@ function tnp_status_print_flag($condition) {
                     </tr>
 
 
-                    <?php
-                    // Send calls stats
-                    $send_calls = get_option('newsletter_diagnostic_send_calls', array());
-                    if (count($send_calls)) {
-                        $send_max = 0;
-                        $send_min = PHP_INT_MAX;
-                        $send_total_time = 0;
-                        $send_total_emails = 0;
-                        $send_completed = 0;
-                        for ($i = 0; $i < count($send_calls); $i++) {
-                            if (empty($send_calls[$i][2]))
-                                continue;
-
-                            $delta = $send_calls[$i][1] - $send_calls[$i][0];
-                            $send_total_time += $delta;
-                            $send_total_emails += $send_calls[$i][2];
-                            $send_mean = $delta / $send_calls[$i][2];
-                            if ($send_min > $send_mean) {
-                                $send_min = $send_mean;
-                            }
-                            if ($send_max < $send_mean) {
-                                $send_max = $send_mean;
-                            }
-                            if (isset($send_calls[$i][3]) && $send_calls[$i][3]) {
-                                $send_completed++;
-                            }
-                        }
-                        $send_mean = $send_total_time / $send_total_emails;
-                        ?>
-                        <tr>
-                            <td>
-                                Send details
-                            </td>
-                            <td>
-                                <?php if ($send_mean > 1) { ?>
-                                    <span class="tnp-ko">KO</span>
-                                <?php } else { ?>
-                                    <span class="tnp-ok">OK</span>
-                                <?php } ?>
-                            </td>
-                            <td>
-                                <?php if ($send_mean > 1) { ?>
-                                    <strong>Sending an email is taking more than 1 second, rather slow.</strong>
-                                    <a href="https://www.thenewsletterplugin.com/documentation/status-panel#status-performance" target="_blank">Read more</a>.
-                                <?php } ?>
-                                Average time to send an email: <?php echo sprintf("%.2f", $send_mean) ?> seconds<br>
-                                <?php if ($send_mean > 0) { ?>
-                                    Max speed: <?php echo sprintf("%.2f", 1.0 / $send_mean * 3600) ?> emails per hour<br>
-                                <?php } ?>
-
-                                Max mean time measured: <?php echo sprintf("%.2f", $send_max) ?> seconds<br>
-                                Min mean time measured: <?php echo sprintf("%.2f", $send_min) ?> seconds<br>
-                                Total email in the sample: <?php echo $send_total_emails ?><br>
-                                Runs in the sample: <?php echo count($send_calls); ?><br>
-                                Runs prematurely interrupted: <?php echo sprintf("%.2f", (count($send_calls) - $send_completed) * 100.0 / count($send_calls)) ?>%<br>
-                                <br>
-                                <?php $controls->button_reset('reset_send_stats')?>
-                            </td>
-                        </tr>
-                        <?php } else { ?>
-                        <tr>
-                            <td>
-                                Send details
-                            </td>
-                            <td>
-                                <span class="tnp-maybe">MAYBE</span>
-                            </td>
-                            <td>
-                                No data avaiable. Send a newsletter to collect some sending statistics.
-                            </td>
-                        </tr>
-                        <?php } ?>
 
 
-                   
+
 
 
 
@@ -770,7 +752,7 @@ function tnp_status_print_flag($condition) {
                 </tbody>
             </table>
 
-            
+
             <h3>WordPress Scheduler/Cron</h3>
 
             <table class="widefat" id="tnp-status-table">
@@ -782,7 +764,7 @@ function tnp_status_print_flag($condition) {
                     </tr>
                 </thead>
                 <tbody>
-                     <tr>
+                    <tr>
                         <?php
                         $condition = (defined('NEWSLETTER_CRON_WARNINGS') && !NEWSLETTER_CRON_WARNINGS) ? 2 : 1;
                         ?>
@@ -1147,6 +1129,18 @@ function tnp_status_print_flag($condition) {
                             <?php } ?>
                         </td>
                     </tr>
+                    
+                    <tr>
+                        <td>get_table_charset()</td>
+                        <td>
+                          
+                        </td>
+                        <td>
+                            <?php echo esc_html(NEWSLETTER_USERS_TABLE), ': ', esc_html($tnp_wpdb->get_table_charset(NEWSLETTER_USERS_TABLE))?>
+                        </td>
+                    </tr>
+                    
+                    
 
 
                     <?php
@@ -1210,26 +1204,26 @@ function tnp_status_print_flag($condition) {
                     $res = $wpdb->query("drop table if exists {$wpdb->prefix}newsletter_test");
                     ?>
 
-                    <?php if ( ! get_option( 'newsletter_stats_email_column_upgraded', false ) ) { ?>
-	                    <?php
-	                    $data_type  = $wpdb->get_var(
-		                    $wpdb->prepare( 'SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
-			                    DB_NAME, NEWSLETTER_STATS_TABLE, 'email_id' ) );
-	                    $to_upgrade = strtoupper( $data_type ) == 'INT' ? false : true;
-	                    ?>
-	                    <?php if ( $to_upgrade ) { ?>
+                    <?php if (!get_option('newsletter_stats_email_column_upgraded', false)) { ?>
+                        <?php
+                        $data_type = $wpdb->get_var(
+                                $wpdb->prepare('SELECT DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = %s AND TABLE_NAME = %s AND COLUMN_NAME = %s',
+                                        DB_NAME, NEWSLETTER_STATS_TABLE, 'email_id'));
+                        $to_upgrade = strtoupper($data_type) == 'INT' ? false : true;
+                        ?>
+                        <?php if ($to_upgrade) { ?>
                             <tr>
                                 <td>Database stats table upgrade</td>
-                                <td><?php tnp_status_print_flag( 0 ) ?></td>
-                                <td><?php $controls->button( 'stats_email_column_upgrade', 'Stats table upgrade' ) ?></td>
+                                <td><?php tnp_status_print_flag(0) ?></td>
+                                <td><?php $controls->button('stats_email_column_upgrade', 'Stats table upgrade') ?></td>
                             </tr>
-	                    <?php } ?>
+                        <?php } ?>
                     <?php } ?>
 
                 </tbody>
             </table>
-            
-             <h3>3rd party plugins</h3>
+
+            <h3>3rd party plugins</h3>
             <table class="widefat" id="tnp-status-table">
                 <thead>
                     <tr>
@@ -1240,19 +1234,19 @@ function tnp_status_print_flag($condition) {
                 </thead>
                 <tbody>
                     <?php if (is_plugin_active('plugin-load-filter/plugin-load-filter.php')) { ?>
-                    <tr>
-                        <td><a href="https://wordpress.org/plugins/plugin-load-filter/" target="_blank">Plugin load filter</a></td>
-                        <td>
-                            <span class="tnp-maybe">MAY BE</span>
-                        </td>
-                        <td>
-                            Be sure Newsletter is set as active in EVERY context.
-                        </td>
-                    </tr>
+                        <tr>
+                            <td><a href="https://wordpress.org/plugins/plugin-load-filter/" target="_blank">Plugin load filter</a></td>
+                            <td>
+                                <span class="tnp-maybe">MAY BE</span>
+                            </td>
+                            <td>
+                                Be sure Newsletter is set as active in EVERY context.
+                            </td>
+                        </tr>
                     <?php } ?>
                 </tbody>
             </table>
-             
+
             <h3>General parameters</h3>
             <table class="widefat" id="tnp-parameters-table">
                 <thead>

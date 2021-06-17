@@ -119,6 +119,10 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.2.8 =
+* fixed XSS bug
+* fixed issue with allowed formatting tags for answers not showing when displaying results
+
 = 6.2.7 =
 * fixed issue with answers set as default not showing selected
 * added an option to choose the location for the notification section. When set to "Bottom" scrolling to the top of the poll is disabled

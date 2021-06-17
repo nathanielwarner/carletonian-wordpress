@@ -19,7 +19,7 @@ $options = array_merge($defaults, $options);
 
 $social_icon_url = plugins_url('newsletter') . '/emails/themes/default/images';
 
-$socials = ['facebook', 'twitter', 'pinterest', 'linkedin', 'tumblr', 'youtube', 'soundcloud', 'instagram', 'vimeo', 'telegram', 'vk'];
+$socials = ['facebook', 'twitter', 'pinterest', 'linkedin', 'tumblr', 'youtube', 'soundcloud', 'instagram', 'vimeo', 'telegram', 'vk', 'discord', 'tiktok', 'twitch'];
 
 $valid_socials = [];
 foreach ($socials as &$social) {

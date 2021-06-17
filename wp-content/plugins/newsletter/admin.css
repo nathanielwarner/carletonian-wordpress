@@ -195,6 +195,7 @@
 #tnp-body h4,
 #tnp-body p {
     color: #fff;
+    font-weight: normal;
 }
 
 #tnp-body h3 {
@@ -953,7 +954,7 @@ span.wp-media-buttons-icon:before {
     color: #fff;
 }
 
-#tnp-status-table .tnp-ok {
+.tnp-ok {
     font-weight: bold;
     color: white;
     font-size: 14px;
@@ -965,7 +966,7 @@ span.wp-media-buttons-icon:before {
     text-align: center;
 }
 
-#tnp-status-table .tnp-ko {
+.tnp-ko {
     font-weight: bold;
     color: white;
     font-size: 14px;
@@ -977,7 +978,7 @@ span.wp-media-buttons-icon:before {
     text-align: center;
 }
 
-#tnp-status-table .tnp-maybe {
+.tnp-maybe {
     font-weight: bold;
     color: white;
     font-size: 14px;

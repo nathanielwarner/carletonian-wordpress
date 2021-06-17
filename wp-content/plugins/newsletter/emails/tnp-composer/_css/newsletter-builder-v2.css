@@ -681,7 +681,7 @@ iframe#tnpc-mobile-preview {
     margin-top: 0;
 }
 
-#tnpc-block-options-form, #tnpc-block-options-form p {
+#tnpc-block-options-form {
     color: #444;
     background-color: #ECF0F1 !important;
 }

@@ -9,7 +9,7 @@ class YOP_Poll_Other_Answers {
                     'poll_id' => $poll_id,
                     'element_id' => $element_id,
                     'vote_id' => $vote_id,
-                    'answer' => trim( $answer ),
+                    'answer' => sanitize_text_field( $answer ),
                     'status' => 'active',
                     'added_date' => current_time( 'mysql' ),
                 );

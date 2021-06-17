@@ -20,7 +20,7 @@ class NewsletterLogger {
     function __construct($module) {
         $this->module = $module;
         if (defined('NEWSLETTER_LOG_LEVEL')) $this->level = NEWSLETTER_LOG_LEVEL;
-        else $this->level = get_option('newsletter_log_level', self::ERROR);
+        else $this->level = (int)get_option('newsletter_log_level', self::ERROR);
 
         $secret = get_option('newsletter_logger_secret');
         if (strlen($secret) < 8) {

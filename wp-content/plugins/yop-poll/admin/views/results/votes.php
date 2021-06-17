@@ -124,7 +124,7 @@ $search_value = isset($_GET['q']) ? $_GET['q'] : '';
                 <form method="get" action="" id="searchForm">
                     <p class="search-box">
                         <label class="screen-reader-text" for="post-search-input">
-                            <?php _e( 'Search Logs', 'yop-poll' ); ?>:
+                            <?php _e( 'Search Votes', 'yop-poll' ); ?>:
                         </label>
                         <input type="hidden" name="page" value="yop-polls">
                         <input type="hidden" name="action" value="view-votes">
@@ -163,7 +163,7 @@ $search_value = isset($_GET['q']) ? $_GET['q'] : '';
 														<div class="col-md-12">
 															<h5>
 																<?php
-																	echo $answer->stext;
+																	echo esc_html( $answer->stext );
 																?>
 															</h5>
 														</div>

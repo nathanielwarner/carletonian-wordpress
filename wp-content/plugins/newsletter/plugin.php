@@ -4,7 +4,7 @@
   Plugin Name: Newsletter
   Plugin URI: https://www.thenewsletterplugin.com/plugins/newsletter
   Description: Newsletter is a cool plugin to create your own subscriber list, to send newsletters, to build your business. <strong>Before update give a look to <a href="https://www.thenewsletterplugin.com/category/release">this page</a> to know what's changed.</strong>
-  Version: 7.1.8
+  Version: 7.2.0
   Author: Stefano Lissa & The Newsletter Team
   Author URI: https://www.thenewsletterplugin.com
   Disclaimer: Use at your own risk. No warranty expressed or implied is provided.
@@ -35,7 +35,7 @@ if (version_compare(phpversion(), '5.6', '<')) {
     return;
 }
 
-define('NEWSLETTER_VERSION', '7.1.8');
+define('NEWSLETTER_VERSION', '7.2.0');
 
 global $newsletter, $wpdb;
 
@@ -275,7 +275,8 @@ class Newsletter extends NewsletterModule {
 
     function update_cron_stats() {
         if (defined('DOING_CRON') && DOING_CRON) {
-            $calls = get_option('newsletter_diagnostic_cron_calls', array());
+            $calls = get_option('newsletter_diagnostic_cron_calls', []);
+            if (!is_array($calls)) $calls = []; // Protection agains scrambled options or bad written caching DB caching plugin
             $calls[] = time();
             if (count($calls) > self::MAX_CRON_SAMPLES) {
                 array_shift($calls);
@@ -473,6 +474,7 @@ class Newsletter extends NewsletterModule {
             $this->add_menu_page('main', __('Settings and More', 'newsletter'));
             $this->add_admin_page('smtp', 'SMTP');
             $this->add_admin_page('status', __('Status', 'newsletter'));
+            $this->add_admin_page('delivery', __('Delivery Diagnostic', 'newsletter'));
             $this->add_admin_page('logs', __('Logs', 'newsletter'));
             $this->add_admin_page('diagnostic', __('Diagnostic', 'newsletter'));
             $this->add_admin_page('test', __('Test', 'newsletter'));

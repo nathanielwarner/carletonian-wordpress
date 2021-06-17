@@ -157,7 +157,7 @@
                                                                 if( 0 == $answer['author'] ) {
                                                                     echo '<span class="glyphicon glyphicon-user"></span>&nbsp;&nbsp;';
                                                                 }
-                                                                echo "<label>" . $answer['stext'];
+                                                                echo "<label>" . esc_html( $answer['stext'] );
                                                                 break;
                                                             }
                                                             case 'image': {

@@ -14,76 +14,83 @@ if (class_exists('NewsletterExtensions')) {
 
 <?php if ($context['type'] == 'automated') { ?>
 
-    <?php $fields->select('automated_disabled', '', ['' => 'Check for new posts since last newsletter', '1' => 'Do not check for new posts']) ?>
+<div class="tnp-field-box">
+    <p>
+        <strong>AUTOMATED</strong><br>
+        While composing all posts are shown while on sending posts are extrated following the rules below.
+    </p>
+    <?php $fields->select('automated_disabled', '', ['' => 'Use the last newsletter date and...', '1' => 'Do not consider the last newsletter']) ?>
 
     <div class="tnp-field-row">
         <div class="tnp-field-col-2">
-        <?php
-        $fields->select('automated_include', __('If there are new posts', 'newsletter'),
-                [
-                    'new' => __('Include only new posts', 'newsletter'),
-                    'max' => __('Include specified max posts', 'newsletter')
-                ],
-                ['description' => ''])
-        ?>
+            <?php
+            $fields->select('automated_include', __('If there are new posts', 'newsletter'),
+                    [
+                        'new' => __('Include only new posts', 'newsletter'),
+                        'max' => __('Include specified max posts', 'newsletter')
+                    ],
+                    ['description' => '', 'class' => 'tnp-small'])
+            ?>
         </div>
         <div class="tnp-field-col-2">
-        <?php
-        $fields->select('automated', __('If there are not new posts', 'newsletter'),
-                [
-                    '' => 'Show the message below',
-                    '1' => 'Do not send the newsletter',
-                    '2' => 'Remove this block'
-                ],
-                ['description' => ''])
-        ?>
-        <?php $fields->text('automated_no_contents', null, ['placeholder'=>'No new posts message']) ?>
+            <?php
+            $fields->select('automated', __('If there are not new posts', 'newsletter'),
+                    [
+                        '' => 'Show the message below',
+                        '1' => 'Do not send the newsletter',
+                        '2' => 'Remove this block'
+                    ],
+                    ['description' => '', 'class' => 'tnp-small'])
+            ?>
+            <?php $fields->text('automated_no_contents', null, ['placeholder' => 'No new posts message']) ?>
         </div>
     </div>
-
+    <div style="clear: both"></div>
+</div>
 <?php } ?>
 
 
-	    <?php $fields->select( 'layout', __( 'Layout', 'newsletter' ),
-		    array(
-			    'one'       => __( 'One column', 'newsletter' ),
-			    'one-2'     => __( 'One column variant', 'newsletter' ),
-			    'two'       => __( 'Two columns', 'newsletter' ),
-			    'big-image' => __( 'One column, big image', 'newsletter' ),
-			    'full-post' => __( 'Full post', 'newsletter' )
-		    ) )
-	    ?>
-    
+<?php
+$fields->select('layout', __('Layout', 'newsletter'),
+        [
+            'one' => __('One column', 'newsletter'),
+            'one-2' => __('One column variant', 'newsletter'),
+            'two' => __('Two columns', 'newsletter'),
+            'big-image' => __('One column, big image', 'newsletter'),
+            'full-post' => __('Full post', 'newsletter')
+])
+?>
+
 
 <div class="tnp-field-row">
     <label class="tnp-row-label"><?php _e('Post info', 'newsletter') ?></label>
     <div class="tnp-field-col-3">
-		<?php $fields->checkbox('show_date', __('Show date', 'newsletter')) ?>
+        <?php $fields->checkbox('show_date', __('Show date', 'newsletter')) ?>
     </div>
     <div class="tnp-field-col-3">
-		<?php $fields->checkbox('show_author', __('Show author', 'newsletter')) ?>
+        <?php $fields->checkbox('show_author', __('Show author', 'newsletter')) ?>
     </div>
     <div class="tnp-field-col-3">
-    <?php $fields->checkbox( 'show_image', __( 'Show image', 'newsletter' ) ) ?>
+        <?php $fields->checkbox('show_image', __('Show image', 'newsletter')) ?>
     </div>
     <div style="clear: both"></div>
 </div>
 
 <div class="tnp-field-row">
     <div class="tnp-field-col-2">
-		<?php $fields->select_number('max', __('Max posts', 'newsletter'), 1, 40); ?>
+        <?php $fields->select_number('max', __('Max posts', 'newsletter'), 1, 40); ?>
     </div>
     <div class="tnp-field-col-2">
-		<?php $fields->select_number('post_offset', __('Posts offset', 'newsletter'), 0, 20); ?>
+        <?php $fields->select_number('post_offset', __('Posts offset', 'newsletter'), 0, 20); ?>
     </div>
 </div>
 
 <div class="tnp-field-row">
     <div class="tnp-field-col-2">
-		<?php $fields->number( 'excerpt_length', __( 'Excerpt words', 'newsletter' ), array( 'min' => 0 ) ); ?>
+        <?php $fields->number('excerpt_length', __('Excerpt words', 'newsletter'), array('min' => 0)); ?>
     </div>
     <div class="tnp-field-col-2">
-		<?php $fields->yesno( 'show_read_more_button', 'Show read more button' ) ?>
+        <?php $fields->yesno('show_read_more_button', 'Show read more button') ?>
     </div>
     <div style="clear: both"></div>
 </div>
@@ -95,14 +102,16 @@ if (class_exists('NewsletterExtensions')) {
 <?php $fields->text('tags', __('Tags', 'newsletter'), ['description' => __('Comma separated')]); ?>
 
 <?php $fields->section(__('Styles', 'newsletter')) ?>
-<?php $fields->font( 'title_font', __( 'Title font', 'newsletter' ), ['family_default'=>true, 'size_default'=>true, 'weight_default'=>true] ) ?>
-<?php $fields->font( 'font', __( 'Excerpt font', 'newsletter' ), ['family_default'=>true, 'size_default'=>true, 'weight_default'=>true] ) ?>
-<?php $fields->button( 'button', __( 'Read more button', 'newsletter' ), [
-	'url'            => false,
-	'family_default' => true,
-	'size_default'   => true,
-	'weight_default' => true
-] ) ?>
+<?php $fields->font('title_font', __('Title font', 'newsletter'), ['family_default' => true, 'size_default' => true, 'weight_default' => true]) ?>
+<?php $fields->font('font', __('Excerpt font', 'newsletter'), ['family_default' => true, 'size_default' => true, 'weight_default' => true]) ?>
+<?php
+$fields->button('button', __('Read more button', 'newsletter'), [
+    'url' => false,
+    'family_default' => true,
+    'size_default' => true,
+    'weight_default' => true
+])
+?>
 
 <?php $fields->block_commons() ?>
 

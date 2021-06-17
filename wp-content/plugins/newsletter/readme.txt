@@ -1,8 +1,8 @@
 === Newsletter ===
-Tags: email, email marketing, newsletter, newsletter subscribers, welcome email, signup forms, contact, lead generation, popup, marketing automation
+Tags: newsletter, email marketing, welcome email, signup forms, contact, lead generation, marketing automation
 Requires at least: 3.4.0
 Tested up to: 5.7.2
-Stable tag: 7.1.8
+Stable tag: 7.2.0
 Requires PHP: 5.6
 Contributors: satollo,webagile,michael-travan
 License: GPLv2 or later
@@ -106,8 +106,7 @@ Premium Users with an active license have access to one-to-one support via our [
 
 == Frequently Asked Questions ==
 
-See the [Newsletter FAQ](https://www.thenewsletterplugin.com/plugins/newsletter/newsletter-faq) or the
-[Newsletter Forum](https://www.thenewsletterplugin.com/forums) to ask for help.
+See the [Newsletter Forum](https://www.thenewsletterplugin.com/forums) to ask for help.
 
 For documentation start from [Newsletter documentation](https://www.thenewsletterplugin.com/documentation).
 
@@ -120,6 +119,24 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 7.2.0 =
+
+* Fixed activation email on profile change
+* Extended year selection on newsletter scheduling
+* [DELIVERY] Breaking change: old enqueue() and flush() methods has been removed
+* Fixed alert message on some buttons
+* Fixed error message on multiple subscriptions (when not allowed)
+* Fixed erratic error log line on main log
+
+= 7.1.9 =
+
+* [GENERAL] Removed the encodign defatlt to Base 64 when not specified since it seems incompatible with some SMTP plugins
+* [GENERAL] Review some controls layout and behavior
+* [DEBUG] Improved logging on database errors
+* [GENERAL] Added TikTok, Discord and Twitch socials
+* [GENERAL] Fixed odd error reported related to the cron call statistics collection
+* [DEBUG] Added a delivery diagnostic panel
 
 = 7.1.8 =
 

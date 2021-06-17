@@ -69,11 +69,6 @@
     border-collapse: collapse;
 }
 
-#tnp-body .form-table table thead th {
-    text-align: left;
-    font-weight: bold;
-}
-
 #tnp-body .form-table td table th {
     background-color: transparent;
     text-align: right;
@@ -89,6 +84,20 @@
     background-color: transparent;
     border: 0;
     padding: 3px;
+    vertical-align: middle;
+}
+
+#tnp-body .form-table td table.widefat th {
+    background-color: transparent;
+    text-align: left;
+    width: auto;
+    padding: 5px;
+    font-weight: normal;
+}
+
+#tnp-body .form-table td table.widefat td {
+    background-color: transparent;
+    padding: 5px;
     vertical-align: middle;
 }
 
@@ -110,6 +119,22 @@
     white-space: nowrap;
     margin-right: 5px;
     overflow: hidden;
+}
+
+.tnpc-lists label {
+    display: block;
+    padding: 5px 0;
+}
+
+.tnpc-lists label span {
+    border-radius: 3px;
+    color: #fff;
+    background-color: #aaa;
+    display: inline-block;
+    padding: 1px 5px;
+    min-width: 2em;
+    font-size: .9em;
+    text-align: center;
 }
 
 
