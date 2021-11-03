@@ -25,6 +25,8 @@ class CFF_Tracking {
 		add_action( 'init', array( $this, 'schedule_send' ) );
 		add_filter( 'cron_schedules', array( $this, 'add_schedules' ) );
 		add_action( 'cff_usage_tracking_cron', array( $this, 'send_checkin' ) );
+		add_action( 'cff_admin_notices', array( $this, 'usage_opt_in' ) );
+		add_action( 'wp_ajax_cff_usage_opt_in_or_out', array( $this, 'usage_opt_in_or_out' ) );
 	}
 
 	private function normalize_and_format( $key, $value ) {
@@ -643,6 +645,88 @@ class CFF_Tracking {
 			'display'  => __( 'Once Weekly', 'custom-facebook-feed' )
 		);
 		return $schedules;
+	}
+
+	public function usage_opt_in() {
+		if ( isset( $_GET['trackingdismiss'] ) ) {
+			$usage_tracking = get_option( 'cff_usage_tracking', array( 'last_send' => 0, 'enabled' => false ) );
+
+			$usage_tracking['enabled'] = false;
+
+			update_option( 'cff_usage_tracking', $usage_tracking, false );
+
+			return;
+		}
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			return;
+		}
+		$usage_tracking = get_option( 'cff_usage_tracking', false );
+		if ( $usage_tracking || isset( $_GET['feed_id'] ) ) {
+			return;
+		}
+
+		if ( \CustomFacebookFeed\Builder\CFF_Db::feeds_count() < 1
+			&& $_GET['page'] === 'cff-feed-builder' ) {
+			return;
+		}
+		wp_enqueue_style(
+			'cff-admin-notifications',
+			CFF_PLUGIN_URL . "admin/assets/css/admin-notifications.css",
+			array(),
+			CFFVER
+		);
+		$img_src = CFF_PLUGIN_URL . 'admin/assets/img/cff-icon.png';
+		?>
+		<div id="cff-notifications" class="cff_discount_notice cff-usage-tracking-notice">
+			<a
+				class="dismiss cff-no-usage-opt-out"
+				title="<?php echo esc_attr__( 'Dismiss this message', 'custom-facebook-feed' ); ?>"
+				href="<?php echo admin_url('admin.php?page=cff-top&trackingdismiss=1'); ?>"
+			>
+				<svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M9.66683 1.27325L8.72683 0.333252L5.00016 4.05992L1.2735 0.333252L0.333496 1.27325L4.06016 4.99992L0.333496 8.72659L1.2735 9.66659L5.00016 5.93992L8.72683 9.66659L9.66683 8.72659L5.94016 4.99992L9.66683 1.27325Z" fill="white"/>
+				</svg>
+			</a>
+			<div class="bell"><img src="<?php echo esc_url( $img_src ); ?>" alt="notice"></div>
+			<div class="messages">
+				<div class="message" style="display: block;">
+
+					<h3 class="title">
+						<?php echo esc_html__( 'Help us improve the Custom Facebook Feed plugin', 'custom-facebook-feed') ; ?>
+					</h3>
+
+					<p class="content">
+						<?php echo __( 'Understanding how you are using the plugin allows us to further improve it. Opt-in below to agree to send a weekly report of plugin usage data.', 'custom-facebook-feed' ); ?>
+						<a target="_blank" rel="noopener noreferrer" href="https://smashballoon.com/custom-facebook-feed/docs/usage-tracking/"><?php echo __( 'More information', 'custom-facebook-feed' ); ?></a>
+					</p>
+
+					<div class="buttons">
+						<a href="<?php echo admin_url('admin.php?page=cff-top&trackingdismiss=1') ?>" type="submit" class="cff-opt-in cff-btn cff-btn-blue"><?php echo __( 'Yes, I\'d like to help', 'custom-facebook-feed' ); ?></a>
+						<a href="<?php echo admin_url('admin.php?page=cff-top&trackingdismiss=1') ?>" type="submit" class="cff-no-usage-opt-out cff-btn cff-btn-grey"><?php echo __( 'No, thanks', 'custom-facebook-feed' ); ?></a>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<?php
+	}
+
+	public function usage_opt_in_or_out() {
+		if ( ! isset( $_POST['opted_in'] ) ) {
+			die ( 'You did not do this the right way!' );
+		}
+
+		$usage_tracking = get_option( 'cff_usage_tracking', array( 'last_send' => 0, 'enabled' => false ) );
+
+		$usage_tracking['enabled'] = isset( $_POST['opted_in'] ) ? $_POST['opted_in'] === 'true' : false;
+
+		update_option( 'cff_usage_tracking', $usage_tracking, false );
+
+		die();
 	}
 }
 

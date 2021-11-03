@@ -56,21 +56,54 @@ if(!cff_js_exists){
 			return b},d.prototype._manageStamp=function(a){var c=b(a),d=this._getElementOffset(a),e=this.options.isOriginLeft?d.left:d.right,f=e+c.outerWidth,g=Math.floor(e/this.columnWidth);g=Math.max(0,g);var h=Math.floor(f/this.columnWidth);h-=f%this.columnWidth?0:1,h=Math.min(this.cols-1,h);for(var i=(this.options.isOriginTop?d.top:d.bottom)+c.outerHeight,j=g;h>=j;j++)this.colYs[j]=Math.max(i,this.colYs[j])},d.prototype._getContainerSize=function(){this.maxY=Math.max.apply(Math,this.colYs);var a={height:this.maxY};return this.options.isFitWidth&&(a.width=this._getContainerFitWidth()),a},d.prototype._getContainerFitWidth=function(){for(var a=0,b=this.cols;--b&&0===this.colYs[b];)a++;return(this.cols-a)*this.columnWidth-this.gutter},d.prototype.needsResizeLayout=function(){var a=this.containerWidth;return this.getContainerWidth(),a!==this.containerWidth},d})
 
 		function cffAddMasonry($self) {
-			if (jQuery(window).width() > 780 || $self.hasClass('masonry-2-mobile') ) {
-				//Add the class in case it was removed when resizing down
-				$self.addClass('cff-masonry cff-masonry-js').removeClass('cff-disable-masonry');
+			var evt = jQuery.Event('cffbeforemasonry');
+			evt.$self = $self;
+			jQuery(window).trigger(evt);
+
+			if (typeof $self.masonry !== 'function') {
+				return;
+			}
+			var windowWidth = jQuery(window).width(),
+				masonryEnabled = false;
+
+			if (windowWidth > 800) {
+				if ($self.hasClass('masonry-1-desktop')) {
+					$self.addClass('cff-disable-masonry');
+				} else {
+					masonryEnabled = true;
+					$self.addClass('cff-masonry cff-masonry-js').removeClass('cff-disable-masonry');
+				}
+			} else if (windowWidth > 480) {
+				if ($self.hasClass('masonry-2-tablet')
+					|| $self.hasClass('masonry-3-tablet')
+					|| $self.hasClass('masonry-4-tablet')
+					|| $self.hasClass('masonry-5-tablet')
+					|| $self.hasClass('masonry-6-tablet')) {
+					masonryEnabled = true;
+					$self.addClass('cff-masonry cff-masonry-js').removeClass('cff-disable-masonry');
+				} else {
+					$self.addClass('cff-disable-masonry');
+				}
+			} else {
+				if ($self.hasClass('masonry-2-mobile')
+					|| $self.hasClass('masonry-3-mobile')) {
+					masonryEnabled = true;
+					$self.addClass('cff-masonry cff-masonry-js').removeClass('cff-disable-masonry');
+				} else {
+					$self.addClass('cff-disable-masonry');
+				}
+			}
+
+			if (masonryEnabled) {
 				if($self.find('.cff-item').length) {
-					$self.masonry({itemSelector: '.cff-new, .cff-item, .cff-likebox'});
+
+					var itemSelector = {itemSelector:'.cff-new, .cff-item, .cff-likebox'};
+					$self.masonry(itemSelector);
 					// Add margin to the bottom of each post to give some space
 					$self.find('.cff-item').each( function() {
 						jQuery(this).css('margin-bottom', '15px');
 					});
-				} else if($self.find('.cff-album-item').length) {
-					$self.masonry({itemSelector: '.cff-album-item'});
 				}
-			} else {
-				//Disable masonry in 1 col mobile as isn't needed
-				$self.addClass('cff-disable-masonry');
 			}
 		}
 
@@ -116,7 +149,7 @@ if(!cff_js_exists){
 			if (typeof text_limit === 'undefined' || text_limit == '') text_limit = 99999;
 
 			//If the text is linked then use the text within the link
-			if ( $post_text.find('a.cff-post-text-link').length ) $post_text = $self.find('.cff-post-text .cff-text a');
+			//if ( $post_text.find('a.cff-post-text-link').length ) $post_text = $self.find('.cff-post-text .cff-text .cff-post-text-link');
 			var	full_text = $post_text.html();
 			if(full_text == undefined) full_text = '';
 
@@ -168,7 +201,7 @@ if(!cff_js_exists){
 
 
 			//Click function
-			$self.find('.cff-expand a').on('click', function(e){
+			$self.find('.cff-expand').on('click', function(e){
 				e.preventDefault();
 				var $expand = jQuery(this),
 					$more = $expand.find('.cff-more'),
@@ -229,7 +262,7 @@ if(!cff_js_exists){
 				if(cfflinkhashtags == 'true'){
 					//Replace hashtags in text
 					var $cffText = $self.find('.cff-text');
-					if($cffText.length > 0){
+					if($cffText.length > 0 && $cffText.find('.cff-post-text-link').length == 0){
 						//Add a space after all <br> tags so that #hashtags immediately after them are also converted to hashtag links. Without the space they aren't captured by the regex.
 						cffTextStr = cffTextStr.replace(/<br>/g, "<br> ");
 						$cffText.html( cffTextStr.replace( regex , replacer ) );
@@ -369,7 +402,15 @@ if(!cff_js_exists){
             }
             if (typeof CLI_Cookie !== "undefined") { // GDPR Cookie Consent by WebToffee
                 if (CLI_Cookie.read(CLI_ACCEPT_COOKIE_NAME) !== null)  {
-                    consentGiven = CLI_Cookie.read('cookielawinfo-checkbox-non-necessary') === 'yes';
+
+                    // WebToffee no longer uses this cookie but being left here to maintain backwards compatibility
+                    if (CLI_Cookie.read('cookielawinfo-checkbox-non-necessary') !== null) {
+                        consentGiven = CLI_Cookie.read('cookielawinfo-checkbox-non-necessary') === 'yes';
+                    }
+
+                    if (CLI_Cookie.read('cookielawinfo-checkbox-necessary') !== null) {
+                        consentGiven = CLI_Cookie.read('cookielawinfo-checkbox-necessary') === 'yes';
+                    }
                 }
 
             } else if (typeof window.cnArgs !== "undefined") { // Cookie Notice by dFactory

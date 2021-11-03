@@ -247,6 +247,7 @@ class CFF_FB_Settings {
 		        'agotext' 				=> isset( $options[ 'cff_translate_ago' ] ) ? stripslashes( esc_attr( $options[ 'cff_translate_ago' ] ) ) : 'ago'
 
 		    ), $atts);
+
 	}
 
 	/**
@@ -367,6 +368,109 @@ class CFF_FB_Settings {
 			'type' 	=> $types,
 			'name' 	=> $names,
 		];
+	}
+
+	/**
+	 * Check Active Extensions
+	 * @return array
+	 *
+	 * @since 3.18
+	 */
+	public static function check_active_extension($extension_name){
+    	return false;
+	}
+
+	/* 3.0 new methods */
+
+	/**
+	 * Returns the global settings with shortcode attributes applied for legacy feeds.
+	 *
+	 * @param $shortcode_atts
+	 *
+	 * @return array
+	 */
+	public static function get_legacy_settings( $shortcode_atts ) {
+		$options 		= get_option( 'cff_legacy_feed_settings', array() );
+		if ( ! empty( $options ) ) {
+			$options = json_decode( $options, true );
+			if ( empty( $options['id'] ) || empty( $options['sources'] ) ) {
+				$options['sources'] = isset( $options['id'] ) && ! isset( $options['sources'] ) ? $options['id'] : '';
+				$options['id'] = $options['sources'];
+			} else {
+				if ( ! empty( $options['sources'] ) && is_string( $options['sources'] ) ) {
+					$options['id'] = $options['sources'];
+				}
+			}
+
+			if ( ! is_numeric( $options['id'] ) ) {
+				$id_for_slug = \CustomFacebookFeed\Builder\CFF_Source::get_id_from_slug( $options['id'] );
+
+				if ( $id_for_slug ) {
+					$options['id'] = $id_for_slug;
+				}
+			}
+
+		} else {
+			$old_options 		= get_option( 'cff_style_settings', array() );
+
+			$legacy_feed_settings_obj = new \CustomFacebookFeed\CFF_FB_Settings( array(), $old_options );
+
+			$to_save = $legacy_feed_settings_obj->get_settings();
+
+			$settings_with_multiples = array(
+				'type',
+				'include',
+				'exclude'
+			);
+
+			foreach ( $settings_with_multiples as $multiple_key ) {
+				if ( isset( $to_save[ $multiple_key ] )
+				     && ! is_array( $to_save[ $multiple_key ] ) ) {
+					$to_save[ $multiple_key ] = explode( ',', $to_save[ $multiple_key ] );
+				}
+			}
+
+			if ( $to_save['cols'] > 1
+			     || $to_save['colsmobile'] > 1 ) {
+				$to_save['feedlayout'] = 'masonry';
+			} else {
+				$to_save['feedlayout'] = 'list';
+			}
+			$to_save['feedtype'] = 'timeline';
+
+			if ( ! in_array( 'likebox', $to_save['include'] ) ) {
+				$to_save['showlikebox'] = 'off';
+			}
+			if ( ! in_array( 'author', $to_save['include'] ) ) {
+				$to_save['showauthornew'] = false;
+			} else {
+				$to_save['showauthornew'] = true;
+			}
+			if ( ! in_array( 'link', $to_save['include'] ) ) {
+				$to_save['showfacebooklink'] = '';
+				$to_save['showsharelink'] = '';
+			} else {
+				$to_save['showfacebooklink'] = 'on';
+				$to_save['showsharelink'] = 'on';
+			}
+			$to_save['showfacebooklink'] = $to_save['showfacebooklink'] === 'on' || $to_save['showfacebooklink'] === 'true' ? 'on' : '';
+			$to_save['showsharelink'] = $to_save['showsharelink'] === 'on' || $to_save['showsharelink'] === 'true' ? 'on' : '';
+
+			$to_save['textlength'] = get_option( 'cff_title_length', '400' );
+			$to_save['desclength'] = get_option( 'cff_body_length', '200' );
+
+			$to_save_json = \CustomFacebookFeed\CFF_Utils::cff_json_encode( $to_save );
+
+			update_option( 'cff_legacy_feed_settings', $to_save_json );
+
+			$options = $to_save;
+		}
+
+		$legacy_settings_with_updated_defaults = wp_parse_args( $options, \CustomFacebookFeed\Builder\CFF_Feed_Saver::settings_defaults() );
+
+		$legacy_settings = wp_parse_args( $shortcode_atts, $legacy_settings_with_updated_defaults );
+
+		return $legacy_settings;
 	}
 
 }

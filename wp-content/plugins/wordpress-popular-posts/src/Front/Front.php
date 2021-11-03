@@ -146,6 +146,7 @@ class Front {
             'sampling_active' => (int) $this->config['tools']['sampling']['active'],
             'sampling_rate' => (int) $this->config['tools']['sampling']['rate'],
             'ajax_url' => esc_url_raw(rest_url('wordpress-popular-posts/v1/popular-posts')),
+            'api_url' => esc_url_raw(rest_url('wordpress-popular-posts')),
             'ID' => (int) $is_single,
             'token' => wp_create_nonce('wp_rest'),
             'lang' => function_exists('PLL') ? $this->translate->get_current_language() : 0,
@@ -373,6 +374,7 @@ class Front {
             'header_start' => '<h2>',
             'header_end' => '</h2>',
             'post_html' => '',
+            'theme' => '',
             'php' => false
         ], $atts, 'wpp'));
 
@@ -434,6 +436,9 @@ class Front {
                 'title-start' => empty($header_start) ? '' : $header_start,
                 'title-end' => empty($header_end) ? '' : $header_end,
                 'post-html' => empty($post_html) ? '<li>{thumb} {title} <span class="wpp-meta post-stats">{stats}</span></li>' : $post_html
+            ],
+            'theme' => [
+                'name' => trim($theme)
             ]
         ];
 
@@ -459,6 +464,7 @@ class Front {
         }
 
         $shortcode_content = '';
+        $cached = false;
 
         // is there a title defined by user?
         if (
@@ -468,8 +474,6 @@ class Front {
         ) {
             $shortcode_content .= htmlspecialchars_decode($header_start, ENT_QUOTES) . $header . htmlspecialchars_decode($header_end, ENT_QUOTES);
         }
-
-        $cached = false;
 
         // Return cached results
         if ( $this->config['tools']['cache']['active'] ) {
@@ -510,7 +514,21 @@ class Front {
 
         $shortcode_content .= $this->output->get_output();
 
-        return $shortcode_content;
+        // Sanitize and return shortcode HTML
+        $allowed_tags = wp_kses_allowed_html('post');
+
+        if ( isset($allowed_tags['form']) ) {
+            unset($allowed_tags['form']);
+        }
+
+        if ( ! empty($shortcode_ops['theme']['name']) ) {
+            $allowed_tags['style'] = [
+                'id' => 1,
+                'nonce' => 1,
+            ];
+        }
+
+        return wp_kses($shortcode_content, $allowed_tags);
     }
 
 }

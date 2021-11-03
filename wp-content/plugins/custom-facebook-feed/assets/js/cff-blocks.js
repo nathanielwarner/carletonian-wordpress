@@ -48,6 +48,8 @@ window.cffmetatrans = false;
                 _props$attributes$cli = _props$attributes.noNewChanges,
                 noNewChanges = _props$attributes$cli === void 0 ? true : _props$attributes$cli;
 
+            props.attributes.shortcodeSettings = shortcodeSettings;
+
             function setState(shortcodeSettingsContent) {
                 setAttributes({
                     noNewChanges: false,
@@ -109,7 +111,7 @@ window.cffmetatrans = false;
                 key: "cff-gutenberg-settings",
                 className: "cff-gutenberg-settings",
                 label: cff_block_editor.i18n.shortcodeSettings,
-                help: cff_block_editor.i18n.example + ": 'id=\"smashballoon\" showheader=\"true\"'",
+                help: cff_block_editor.i18n.example + ": 'feed=\"1\"'",
                 value: shortcodeSettings,
                 onChange: setState
             }), React.createElement(Button, {

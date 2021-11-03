@@ -87,7 +87,8 @@ class CFF_Shortcode_Display {
 		$cff_class = $this->atts['class'];
 	    //Masonry
 	    $cff_cols = $this->atts['cols'];
-	    $cff_cols_mobile = $this->atts['colsmobile'];
+		$colstablet = (int)$this->atts['colstablet'];
+		$cff_cols_mobile = $this->atts['colsmobile'];
 	    $cff_cols_js = $this->atts['colsjs'];
 
 	    $masonry = ( intval($cff_cols) > 1 ) ? true :  false;
@@ -103,9 +104,30 @@ class CFF_Shortcode_Display {
 	            $masonry_classes .= 'cff-masonry';
 	            $masonry_classes .= ( $cff_cols != 3 ) 			? sprintf( ' masonry-%s-desktop', $cff_cols ) : '';
 	            $masonry_classes .= ( $cff_cols_mobile == 2 ) 	? ' masonry-2-mobile' : '';
+		        if( $cff_cols != 3 ) {
+			        $masonry_classes .= sprintf( ' masonry-%s-desktop', $cff_cols );
+		        }
+		        if( $cff_cols_mobile > 1 ) {
+			        $masonry_classes .= sprintf( ' masonry-%s-mobile', $cff_cols_mobile );
+		        }
+		        if( $colstablet > 1 ) {
+			        $masonry_classes .= sprintf( ' masonry-%s-tablet', $colstablet );
+		        }
 	            $masonry_classes .= ( ! $js_only ) 				? ' cff-masonry-css' : ' cff-masonry-js';
 	        }
 	    }
+
+		$mobile_cols_class = '';
+		if (! empty( $this->atts['colsmobile'] ) && (int)$this->atts['colsmobile'] > 0) {
+			$mobile_cols_class = ' cff-mob-cols-' . (int)$this->atts['colsmobile'];
+		}
+
+		$tablet_cols_class = '';
+		if (! empty( $this->atts['colstablet'] )
+		    && (int)$this->atts['colstablet'] > 0
+		    && (int)$this->atts['colstablet'] !== 2) {
+			$tablet_cols_class = ' cff-tab-cols-' . (int)$this->atts['colstablet'];
+		}
 
 	    //If there's a class then add it here
 	    $css_classes_string = '';
@@ -116,6 +138,10 @@ class CFF_Shortcode_Display {
 	    	$css_classes_string .= ( !empty($cff_feed_height) ) 	? ' cff-fixed-height ' 		: '';
 	    	$css_classes_string .= ( $cff_feed_width_resp ) 		? ' cff-width-resp ' 		: '';
 	    	$css_classes_string .= ( !$cff_disable_styles ) 			? ' cff-default-styles ' 	: '';
+	    }
+		$css_classes_string .= $mobile_cols_class . $tablet_cols_class;
+	    if ( ! empty( $this->atts['paletteclass'] ) ) {
+		    $css_classes_string .= ' ' . $this->atts['paletteclass'];
 	    }
 
 	    $css_classes_string = ( !empty($css_classes_string) ) ? ' class="cff cff-list-container '.$css_classes_string.'" ' : 'class="cff cff-list-container"';
@@ -128,6 +154,7 @@ class CFF_Shortcode_Display {
 	    if ( CFF_GDPR_Integrations::doing_gdpr( $this->atts ) ) {
 			$attributes_string .= ' data-cff-flags="gdpr" ';
 		}
+
 
 		$result = [
 			'cff_custom_class' => $css_classes_string,
@@ -252,6 +279,12 @@ class CFF_Shortcode_Display {
 				];
 			break;
 
+            case 'header_bio':
+	            $style_array = [
+		            ['css_name' => 'color', 'value' => str_replace('#', '', $this->atts['headerbiocolor']), 'pref' => '#'],
+		            ['css_name' => 'font-size', 'value' => $this->atts['headerbiosize'], 'suff' => 'px']
+	            ];
+	            break;
 			case 'author':
 				$style_array = [
 					['css_name' => 'font-size', 'value' => $this->atts['authorsize'], 'suff' => 'px'],
@@ -273,6 +306,13 @@ class CFF_Shortcode_Display {
 					['css_name' => 'color', 'value' => str_replace('#', '', $this->atts['linkcolor']), 'pref' => '#']
 				];
 			break;
+			case 'event_title':
+				$style_array = [
+					['css_name' => 'font-size', 'value' => $this->atts['eventtitlesize'], 'suff' => 'px'],
+					['css_name' => 'font-weight', 'value' => $this->atts['eventtitleweight']],
+					['css_name' => 'color', 'value' => str_replace('#', '', $this->atts['eventtitlecolor']), 'pref' => '#']
+				];
+            break;
 			case 'post_text':
 				$style_array = [
 					['css_name' => 'font-size', 'value' => $this->atts['textsize'], 'suff' => 'px'],
@@ -370,8 +410,8 @@ class CFF_Shortcode_Display {
 	 * -----------------------------------------
 	 */
 	static function get_date( $options, $atts, $news ){
-		$cff_date_before = isset($options[ 'cff_date_before' ]) ? $options[ 'cff_date_before' ] : '';
-		$cff_date_after = isset($options[ 'cff_date_after' ]) ? $options[ 'cff_date_after' ] : '';
+		$cff_date_before = isset($atts[ 'beforedate' ]) && CFF_Utils::check_if_on($atts['beforedateenabled']) ? $atts[ 'beforedate' ] : '';
+		$cff_date_after = isset($atts[ 'afterdate' ]) && CFF_Utils::check_if_on($atts['afterdateenabled']) ? $atts[ 'afterdate' ] : '';
 		//Timezone. The post date is adjusted by the timezone offset in the cff_getdate function.
 		$cff_timezone = $atts['timezone'];
 
@@ -659,8 +699,8 @@ class CFF_Shortcode_Display {
 
 
 	static function get_likebox_width( $atts ){
-		$cff_likebox_width = $atts[ 'likeboxwidth' ];
-		if ( !isset($cff_likebox_width) || empty($cff_likebox_width) || $cff_likebox_width == '' ) $cff_likebox_width = 300;
+		$cff_likebox_custom_width =  isset( $atts[ 'likeboxcustomwidth' ] ) ? CFF_Utils::check_if_on($atts[ 'likeboxcustomwidth' ]) : false;
+		$cff_likebox_width = $cff_likebox_custom_width &&  isset($atts[ 'likeboxwidth' ]) && !empty($atts[ 'likeboxwidth' ]) ? $atts[ 'likeboxwidth' ] : 300;
 		return $cff_likebox_width;
 	}
 

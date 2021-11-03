@@ -32,14 +32,16 @@ if ($cff_header_type == "text") : //Start Text Header
 <?php 
 //End Text Header
 elseif ($cff_header_type == "visual" && $cff_show_header) : //Start Visual Header
-	$header_details = CFF_Utils::fetch_header_data( $page_id, $cff_is_group, $access_token, $cff_cache_time );
+	$header_details = CFF_Utils::fetch_header_data( $page_id, $cff_is_group, $access_token, $cff_cache_time, false, $data_att_html );
 	if( isset($header_details->error) ) return '';
 
 	$header_parts 				= CFF_Shortcode_Display::get_header_parts( $atts );
 	$cff_header_cover 			= $header_parts['cover'];
 	$cff_header_name 			= $header_parts['name'];
-	$cff_header_bio 			= $header_parts['bio'];	
+	$cff_header_bio 			= $header_parts['bio'];
 	$header_style_attribute 	= $this_class->get_style_attribute( 'header_visual' );
+	$header_bio_style_attribute 	= $this_class->get_style_attribute( 'header_bio' );
+
 	$header_data 				= $header_details;
 
 
@@ -103,7 +105,7 @@ elseif ($cff_header_type == "visual" && $cff_show_header) : //Start Visual Heade
 	            </div>
 	        <?php endif; ?>
 			<?php if ( $should_show_bio ) : ?>
-				<p class="cff-bio"><?php echo str_replace( '&lt;br /&gt;', '<br>', esc_html( nl2br( $bio ) ) ); ?></p>
+				<p class="cff-bio"<?php echo $header_bio_style_attribute; ?>><?php echo str_replace( '&lt;br /&gt;', '<br>', esc_html( nl2br( $bio ) ) ); ?></p>
 			<?php endif; ?>
 			</div>
 		</div>

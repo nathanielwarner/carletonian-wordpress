@@ -35,6 +35,7 @@ class CFF_New_User extends CFF_Notifications {
 		add_action( 'admin_notices', array( $this, 'output' ), 8 );
 
 		add_action( 'admin_init', array( $this, 'dismiss' ) );
+		add_action( 'wp_ajax_cff_review_notice_consent_update', array( $this, 'review_notice_consent' ) );
 	}
 
 	public function option_name() {
@@ -230,6 +231,28 @@ class CFF_New_User extends CFF_Notifications {
 	}
 
 	/**
+	 * Review Notice Consent from User
+	 * 
+	 * @since 4.0
+	 */
+	public function review_notice_consent() {
+		if ( ! DOING_AJAX ) {
+			return;
+		}
+		$consent = isset( $_POST[ 'consent' ] ) ? sanitize_text_field( $_POST[ 'consent' ] ) : '';
+
+		update_option( 'cff_review_consent', $consent );
+
+		if ( $consent == 'no' ) {
+			$cff_statuses_option = get_option( 'cff_statuses', array() );
+			update_option( 'cff_rating_notice', 'dismissed', false );
+			$cff_statuses_option['rating_notice_dismissed'] = cff_get_current_time();
+			update_option( 'cff_statuses', $cff_statuses_option, false );
+		}
+		wp_die();
+	}
+
+	/**
 	 * Output notifications on Form Overview admin area.
 	 *
 	 * @since 2.18
@@ -269,12 +292,45 @@ class CFF_New_User extends CFF_Notifications {
 		$image_overlay = '';
 
 		foreach ( $notifications as $notification ) {
-			$type = sanitize_text_field( $notification['id'] );
 			$img_src = CFF_PLUGIN_URL . 'admin/assets/img/' . sanitize_text_field( $notification['image'] );
-			$content = '';
-			if ( ! empty( $notification['content'] ) ) {
-				$content = wp_kses( $this->replace_merge_fields( $notification['content'], $notification ), $content_allowed_tags );
+			$type = sanitize_text_field( $notification['id'] );
+			// check if this is a review notice 
+			if( $type == 'review' ) {
+				$review_consent = get_option( 'cff_review_consent' );
+				$cff_open_feedback_url = 'https://smashballoon.com/feedback/?plugin=facebook-lite';
+				// step #1 for the review notice
+				if ( ! $review_consent ) {
+					?>
+						<div class="cff_notice cff_review_notice_step_1">
+							<div class="cff_thumb">
+                				<img src="<?php echo esc_url( $img_src ); ?>" alt="notice">
+							</div>
+							<div class="cff-notice-text">
+								<p class="cff-notice-text-p"><?php echo __( 'Are you enjoying the Custom Facebook Feed Plugin?', 'custom-facebook-feed' ); ?></p>
+							</div>
+							<div class="cff-notice-consent-btns">
+								<?php
+									printf(
+										'<button class="cff-btn-link" id="cff_review_consent_yes">%s</button>',
+										__( 'Yes', 'custom-facebook-feed' )
+									);
+
+									printf(
+										'<a href="%s" target="_blank" class="cff-btn-link"  id="cff_review_consent_no">%s</a>',
+										$cff_open_feedback_url,
+										__( 'No', 'custom-facebook-feed' )
+									);
+								?>
+							</div>
+						</div>
+					<?php
+				}
 			}
+			$close_href = add_query_arg( array( 'cff_dismiss' => $type ) );
+
+			$title = $this->get_notice_title( $notification );
+			$content = $this->get_notice_content( $notification, $content_allowed_tags );
+
 			$buttons = array();
 			if ( ! empty( $notification['btns'] ) && is_array( $notification['btns'] ) ) {
 				foreach ( $notification['btns'] as $btn_type => $btn ) {
@@ -300,28 +356,103 @@ class CFF_New_User extends CFF_Notifications {
 					}
 				}
 			}
-			if ( isset( $notification['image_overlay'] ) ) {
-				$image_overlay = '<div class="img-overlay">'. esc_html( $notification['image_overlay'] ).'</div>';
-			}
+		}
+
+		$review_consent = get_option( 'cff_review_consent' );
+		$review_step2_style = '';
+		if ( $type == 'review' && ! $review_consent ) {
+			$review_step2_style = 'style="display: none;"';
 		}
 		?>
 
-        <div class="cff_notice cff_<?php echo esc_attr( $type ); ?>_notice">
+        <div class="cff_notice_op cff_notice cff_<?php echo esc_attr( $type ); ?>_notice" <?php echo !empty( $review_step2_style ) ? $review_step2_style : ''; ?>>
             <div class="cff_thumb">
                 <img src="<?php echo esc_url( $img_src ); ?>" alt="notice">
 				<?php echo $image_overlay; ?>
             </div>
             <div class="cff-notice-text">
-                <p style="padding-top: 4px;"><?php echo $content; ?></p>
-                <p class="links">
-                <?php foreach ( $buttons as $button ) : ?>
-                    <a class="<?php echo esc_attr( $button['class'] ); ?>" href="<?php echo esc_attr( $button['url'] ); ?>"<?php echo $button['attr']; ?>><?php echo $button['text']; ?></a>
-                <?php endforeach; ?>
-                </p>
+				<div class="cff-notice-text-inner">
+					<h3 class="cff-notice-text-header"><?php echo $title; ?></h3>
+					<p class="cff-notice-text-p"><?php echo $content; ?></p>
+				</div>
+				<div class="cff-notice-btns-wrap">
+					<p class="cff-notice-links">
+						<?php 
+						foreach ( $buttons as $type => $button ) : 
+							$btn_classes = array('cff-btn');
+							$btn_classes[] = esc_attr( $button['class'] );
+							if ( $type == 'primary' ) {
+								$btn_classes[] = 'cff-btn-blue';
+							} else {
+								$btn_classes[] = 'cff-btn-grey';
+							}
+					?>
+						<a class="<?php echo implode(' ', $btn_classes); ?>" href="<?php echo esc_attr( $button['url'] ); ?>"<?php echo $button['attr']; ?>><?php echo $button['text']; ?></a>
+					<?php endforeach; ?>
+					</p>
+				</div>
             </div>
-            <a class="cff_notice_close" href="<?php echo add_query_arg( array( 'cff_dismiss' => $type ) ); ?>"><i class="fa fa-close"></i></a>
+			<div class="cff-notice-dismiss">
+				<a href="<?php echo esc_url( $close_href ); ?>">
+					<svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z" fill="#141B38"></path>
+					</svg>
+				</a>
+			</div>
         </div>
 		<?php
+	}
+
+	/**
+	 * CFF Get Notice Title depending on the notice type
+	 * 
+	 * @since 4.0
+	 * 
+	 * @param array $notification
+	 * 
+	 * @return string $title
+	 */
+	public function get_notice_title( $notification ) {
+		$type = $notification['id'];
+		$title = '';
+
+		// Notice title depending on notice type
+		if ( $type == 'review' ) {
+			$title = __( 'Glad to hear you are enjoying it. Would you consider leaving a positive review?', 'custom-facebook-feed' );
+		} else if ( $type == 'discount' ) {
+			$title =  __( 'Exclusive Offer! 60% OFF', 'custom-facebook-feed' );
+		} else {
+			$title = $this->replace_merge_fields( $notification['title'], $notification );
+		}
+
+		return $title;
+	}
+
+	/**
+	 * CFF Get Notice Content depending on the notice type
+	 * 
+	 * @since 4.0
+	 * 
+	 * @param array $notification
+	 * @param array $content_allowed_tags
+	 * 
+	 * @return string $content
+	 */
+	public function get_notice_content( $notification, $content_allowed_tags ) {
+		$type = $notification['id'];
+		$content = '';
+
+		// Notice content depending on notice type
+		if ( $type == 'review' ) {
+			$content = __( 'It really helps to support the plugin and help others to discover it too!', 'custom-facebook-feed' );
+		} else if ( $type == 'discount' ) {
+			$content =  __( 'We don’t run promotions very often, but for a limited time we’re offering 60% Off our Pro version to all users of our free Facebook Feed.', 'custom-facebook-feed' );
+		} else {
+			if ( ! empty( $notification['content'] ) ) {
+				$content = wp_kses( $this->replace_merge_fields( $notification['content'], $notification ), $content_allowed_tags );
+			}
+		}
+		return $content;
 	}
 
 	/**

@@ -3,7 +3,7 @@ Contributors: yourownprogrammer
 Donate Link: https://www.yop-poll.com
 Tags: booth, create poll, poll plugin, poll, polls, wordpress poll, vote, voting, survey, polling, yop poll, yop
 Requires at least: 3.3
-Tested up to: 5.7
+Tested up to: 5.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.htm
@@ -118,6 +118,19 @@ You can have only one question per poll.
 12. Poll With Vertical Display Showing Results Before Vote
 
 == Changelog ==
+
+= 6.3.1 =
+* fixed XSS bug - Props to Vishnupriya Ilango of Fortinet's FortiGuard Labs
+* fixed issue with custom styles not applying to custom fields
+
+= 6.3.0 =
+* fixed issue with bans affecting all polls when creating a ban specific to a poll
+* added support for %VOTER-EMAIL%, %VOTER-FIRST-NAME%, %VOTER-LAST-NAME%, %VOTER-USERNAME% in both subject and body. These tags can be used only when allowing votes from wordpress users
+
+= 6.2.9 =
+* fixed issue with "Ban by Username" not working as expected
+* fixed display issue on View Bans page
+* added support for %VOTER-EMAIL% in Recipients list when sending email notifications. The tag can be used only when allowing votes from wordpress users
 
 = 6.2.8 =
 * fixed XSS bug

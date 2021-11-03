@@ -4,8 +4,8 @@ Tags: updates manager, easy updates manager, disable updates manager, disable up
 Requires at least: 5.1
 Requires PHP: 5.6
 Donate link: https://easyupdatesmanager.com
-Tested up to: 5.7
-Stable tag: 9.0.9
+Tested up to: 5.8
+Stable tag: 9.0.10
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -125,6 +125,17 @@ Since third-party providers use custom update mechanisms, we cannot always guara
 For additional information and FAQs for Easy Updates Manager <a href="https://easyupdatesmanager.com">check out our website</a>.
 
 == Changelog ==
+
+= 9.0.10 - 2021-09-28 =
+
+* FIX: Inconsistent behaviour of the 'manually update' option of the plugin updates setting (it updated plugins to their major/minor version that shouldn't have happened)
+* FIX: Problematic plugins that cause a PHP fatal error after their automatic updates were downloaded and installed don't get deactivated properly
+* FIX: The email report that falsely reports successful plugin reactivations
+* FIX: Make sure auto update status in the updates screen UI page always reflect the change made from the EUM updates settings page
+* FIX: Unformatted string notice appears on the admin dashboard
+* TWEAK: Simplify 'WordPress core updates` setting by eliminating redundant or unnecessary options whilst preserving user preferences
+* TWEAK: Change the misleading checkbox text label of the WordPress core updates setting that has led to confusion
+* TWEAK: Override WordPress core auto-updates settings by not showing it in the updates screen UI (wp-admin/update-core.php)
 
 = 9.0.9 - 2021-06-12 =
 
@@ -344,4 +355,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 9.0.9 : * Add the ability to disable unwanted automatic plugin update notifications. Other tweaks and improvements; a recommended update for all.
+* 9.0.10 : Change the misleading checkbox text label of the WordPress core updates setting that has led to confusion. Simplify 'WordPress core updates` setting by eliminating redundant or unnecessary options whilst preserving user preferences. Override WordPress core auto-updates settings by not showing it in the updates screen UI (wp-admin/update-core.php); a recommended update for all.

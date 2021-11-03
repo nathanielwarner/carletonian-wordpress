@@ -62,7 +62,7 @@ class CFF_Error_Reporter
 		add_action( 'cff_feed_issue_email', [ $this, 'maybe_trigger_report_email_send']  );
 		add_action( 'wp_ajax_cff_dismiss_critical_notice', [ $this, 'dismiss_critical_notice']  );
 		add_action( 'wp_footer', [ $this, 'critical_error_notice'] , 300 );
-		add_action( 'admin_notices', [ $this, 'admin_error_notices']  );
+		add_action( 'cff_admin_notices', [ $this, 'admin_error_notices']  );
 	}
 
 	/**
@@ -193,6 +193,8 @@ class CFF_Error_Reporter
 			&& (int)$details['error']['code'] === 18 ) {
 			$this->errors['accounts'][ $account_id ][ $error_type ]['clear_time'] = time() + 60 * 15;
 		}
+
+		\CustomFacebookFeed\Builder\CFF_Source::add_error( $account_id, $details );
 	}
 
 	/**
@@ -242,8 +244,8 @@ class CFF_Error_Reporter
 				: '<p class="cff-error-directions"><a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a></p>';
 
 			$error_message_return['backend_directions'] = ( $ppca_error )
-				? '<a class="button button-primary" href="https://smashballoon.com/facebook-api-changes-september-4-2020/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>'
-				: '<a class="button button-primary" href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
+				? '<a class="cff-notice-btn cff-btn-blue" href="https://smashballoon.com/facebook-api-changes-september-4-2020/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>'
+				: '<a class="cff-notice-btn cff-btn-blue" href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>';
 
 			$error_message_return['errorno'] = $error_code;
 
@@ -343,7 +345,7 @@ class CFF_Error_Reporter
 
 			$directions = '<p class="cff-error-directions">';
 			$directions .= $error_message_array['backend_directions'];
-			$directions .= '<button data-url="'.get_the_permalink( $error_message_array['post_id'] ).'" class="cff-clear-errors-visit-page cff-space-left button button-secondary">' . __( 'View Feed and Retry', 'custom-facebook-feed' )  . '</button>';
+			$directions .= '<button data-url="'.get_the_permalink( $error_message_array['post_id'] ).'" class="cff-clear-errors-visit-page cff-space-left cff-btn cff-notice-btn cff-btn-grey">' . __( 'View Feed and Retry', 'custom-facebook-feed' )  . '</button>';
 			$directions .=	'</p>';
 		}else{
 
@@ -447,7 +449,7 @@ class CFF_Error_Reporter
 				<h3><?php esc_html_e( 'Facebook Feed Critical Issue', 'custom-facebook-feed' ); ?></h3>
 				<p>
 					<?php
-					$doc_url = admin_url() . 'admin.php?page=cff-top';
+					$doc_url = admin_url() . 'admin.php?page=cff-settings';
 					// Translators: %s is the link to the article where more details about critical are listed.
 					printf( esc_html__( 'An issue is preventing your Custom Facebook Feeds from updating. %1$sResolve this issue%2$s.', 'custom-facebook-feed' ), '<a href="' . esc_url( $doc_url ) . '" target="_blank">', '</a>' );
 					?>
@@ -612,7 +614,7 @@ class CFF_Error_Reporter
 
 		$header_image = CFF_PLUGIN_URL . 'admin/assets/img/balloon-120.png';
 		$title = __( 'Custom Facebook Feed Report for ' . home_url() );
-		$link = admin_url( 'admin.php?page=cff-top');
+		$link = admin_url( 'admin.php?page=cff-settings');
 		//&tab=customize-advanced
 		$footer_link = admin_url('admin.php?page=cff-style&tab=misc&flag=emails');
 		$bold = __( 'There\'s an Issue with a Facebook Feed on Your Website', 'custom-facebook-feed' );
@@ -646,25 +648,37 @@ class CFF_Error_Reporter
 	}
 
 	public function admin_error_notices() {
-		if ( isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'cff-top', 'cff-style' )) ) {
+
+		if ( isset( $_GET['page'] ) && in_array( $_GET['page'], array( 'cff-settings' )) ) {
 			$errors = $this->get_errors();
 			if ( ! empty( $errors ) && (! empty( $errors['database_create'] ) || ! empty( $errors['upload_dir'] )) ) : ?>
-            <div class="notice notice-warning is-dismissible sbi-admin-notice">
+			<div class="cff-admin-notices cff-critical-error-notice">
 	            <?php if ( ! empty( $errors['database_create'] ) ) echo '<p>' . $errors['database_create'] . '</p>'; ?>
 				<?php if ( ! empty( $errors['upload_dir'] ) ) echo '<p>' . $errors['upload_dir'] . '</p>'; ?>
-                <p><?php _e( sprintf( 'Visit our %s page for help', '<a href="https://smashballoon.com/custom-facebook-feed/faq/" target="_blank">FAQ</a>' ), 'custom-facebook-feed' ); ?></p>
+				<p><?php _e( sprintf( 'Visit our %s page for help', '<a href="https://smashballoon.com/custom-facebook-feed/faq/" class="cff-notice-btn cff-btn-grey" target="_blank">FAQ</a>' ), 'custom-facebook-feed' ); ?></p>
             </div>
 
 		<?php endif;
 			$errors = $this->get_critical_errors();
 			if ( $this->are_critical_errors() && is_array( $errors ) && $errors['error_message'] !== false && $errors['directions'] !== false  ) :
 				?>
-				<div class="notice notice-warning is-dismissible cff-admin-notice">
-					<p><strong><?php echo esc_html__( 'Custom Facebook Feed is encountering an error and your feeds may not be updating due to the following reasons:', 'custom-facebook-feed') ; ?></strong></p>
+				<div class="cff-admin-notices cff-critical-error-notice">
+					<span class="sb-notice-icon sb-error-icon">
+						<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z" fill="#D72C2C"/>
+						</svg>
+					</span>
+					<div class="cff-notice-body">
+						<h3 class="sb-notice-title">
+							<?php echo esc_html__( 'Custom Facebook Feed is encountering an error and your feeds may not be updating due to the following reasons:', 'custom-facebook-feed') ; ?>
+						</h3>
 
-					<?php echo $errors['error_message']; ?>
+						<p><?php echo $errors['error_message']; ?></p>
 
-					<?php echo $errors['directions']; ?>
+						<div class="license-action-btns">
+							<?php echo $errors['directions']; ?>
+						</div>
+					</div>
 				</div>
 			<?php
 			endif;

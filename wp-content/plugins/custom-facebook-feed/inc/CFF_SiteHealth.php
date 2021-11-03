@@ -72,7 +72,7 @@ class CFF_SiteHealth {
 
 
 		if ( \cff_main()->cff_error_reporter->are_critical_errors() ) {
-			$link = admin_url( 'admin.php?page=cff-top' );
+			$link = admin_url( 'admin.php?page=cff-settings' );
 			$result['status'] = 'critical';
 			$result['label'] = __( 'Your Custom Facebook Feed is experiencing an error.', 'custom-facebook-feed' );
 			$result['description'] = sprintf( __( 'A critical issue has been detected with your Custom Facebook Feed. Visit the %sCustom Facebook Feed settings page%s to fix the issue.', 'custom-facebook-feed' ), '<a href="' . esc_url( $link ) . '">', '</a>' );

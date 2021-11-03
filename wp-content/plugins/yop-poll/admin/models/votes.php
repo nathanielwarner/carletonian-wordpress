@@ -26,6 +26,11 @@ class YOP_Poll_Votes {
 			$vote->user->last_name = $current_user->user_lastname;
 			$vote->user->email = $current_user->user_email;
 			$vote->user->username = $current_user->user_login;
+		} else {
+			$vote->user->first_name = '';
+			$vote->user->last_name = '';
+			$vote->user->email = '';
+			$vote->user->username = '';
 		}
 		$vote->pollAuthor = $poll->author;
 		if ( false === self::$errors_present ) {
@@ -319,11 +324,12 @@ class YOP_Poll_Votes {
 		}
 	}
 	public static function validate_voter_against_bans( $vote, $poll ) {
-		$query = "SELECT * from {$GLOBALS['wpdb']->yop_poll_bans} WHERE `poll_id` IN ('0', %s) AND "
+		$query = "SELECT * from {$GLOBALS['wpdb']->yop_poll_bans} WHERE `poll_id` IN ('0', %s) AND ( "
 				. "(`b_by` = 'ip' AND `b_value` = %s) OR "
 				. "(`b_by` = 'email' AND `b_value` = %s) OR "
-				. "(`b_by` = 'username' AND `b_value` = %s)";
-		$bans = $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( $query, $vote->pollId, $vote->user->ipaddress, $vote->user->email, $vote->user->id ) );
+				. "(`b_by` = 'username' AND `b_value` = %s) )";
+		$query_ready = $GLOBALS['wpdb']->prepare( $query, $vote->pollId, $vote->user->ipaddress, $vote->user->email, $vote->user->username );
+		$bans = $GLOBALS['wpdb']->get_var( $query_ready );
 		if ( null !== $bans ) {
 			self::$errors_present = true;
 			array_push(
@@ -862,7 +868,11 @@ class YOP_Poll_Votes {
         $recipients_array = explode( ',', $email_to_string );
         if ( count ( $recipients_array ) > 0 ) {
             foreach ( $recipients_array as $ra ) {
-                $email_to[] = trim( $ra );
+				if ( ( '%VOTER-EMAIL%' === trim( $ra ) ) && ( '' !== $vote->user->email ) ) {
+					$email_to[] = str_replace( '%VOTER-EMAIL%', $vote->user->email, trim( $ra ) );
+				} else {
+                	$email_to[] = trim( $ra );
+				}
             }
         }
         $email_subject = isset( $poll->meta_data['options']['poll']['emailNotificationsSubject'] ) ?
@@ -882,22 +892,19 @@ class YOP_Poll_Votes {
 		$email_subject = str_replace( '%POLL-NAME%', $poll->name, $email_subject );
 		$email_subject = str_replace( '%VOTE_DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_subject );
 		$email_subject = str_replace( '%POLL_NAME%', $poll->name, $email_subject );
+		$email_subject = str_replace( '%VOTER-FIRST-NAME%', $vote->user->first_name, $email_subject );
+		$email_subject = str_replace( '%VOTER-LAST-NAME%', $vote->user->last_name, $email_subject );
+		$email_subject = str_replace( '%VOTER-EMAIL%', $vote->user->email, $email_subject );
+		$email_subject = str_replace( '%VOTER-USERNAME%', $vote->user->username, $email_subject );
 		/* END Email-Subject*/
 		$email_body = str_replace( '%VOTE-DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_body );
 		$email_body = str_replace( '%POLL-NAME%', $poll->name, $email_body );
 		$email_body = str_replace( '%VOTE_DATE%', date_i18n( get_option( 'date_format' ), strtotime( $vote->added_date ) ), $email_body );
 		$email_body = str_replace( '%POLL_NAME%', $poll->name, $email_body );
-		if ( 'wordpress' == $vote->user->type ) {
-			$email_body = str_replace( '%VOTER-FIRST-NAME%', $vote->user->first_name, $email_body );
-			$email_body = str_replace( '%VOTER-LAST-NAME%', $vote->user->last_name, $email_body );
-			$email_body = str_replace( '%VOTER-EMAIL%', $vote->user->email, $email_body );
-			$email_body = str_replace( '%VOTER-USERNAME%', $vote->user->username, $email_body );
-		} else {
-			$email_body = str_replace( '%VOTER-FIRST-NAME%', '', $email_body );
-			$email_body = str_replace( '%VOTER-LAST-NAME%', '', $email_body );
-			$email_body = str_replace( '%VOTER-EMAIL%', '', $email_body );
-			$email_body = str_replace( '%VOTER-USERNAME%', '', $email_body );
-		}
+		$email_body = str_replace( '%VOTER-FIRST-NAME%', $vote->user->first_name, $email_body );
+		$email_body = str_replace( '%VOTER-LAST-NAME%', $vote->user->last_name, $email_body );
+		$email_body = str_replace( '%VOTER-EMAIL%', $vote->user->email, $email_body );
+		$email_body = str_replace( '%VOTER-USERNAME%', $vote->user->username, $email_body );
 		$questions_tag = self::get_content_between_tags( $email_body, '[QUESTION]', '[/QUESTION]' );
 		$custom_fields_tag = self::get_content_between_tags( $email_body, '[CUSTOM_FIELDS]', '[/CUSTOM_FIELDS]' );
 		$questions_block = '';

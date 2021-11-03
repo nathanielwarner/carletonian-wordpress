@@ -3,9 +3,11 @@
  * Class CFF_Feed_Locator
  *
  *
- * @since 2.19
+ * @since X.X.X
  */
 namespace CustomFacebookFeed;
+use CustomFacebookFeed\Builder\CFF_Db;
+
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 class CFF_Feed_Locator{
@@ -17,6 +19,10 @@ class CFF_Feed_Locator{
 	private $matching_entries;
 
 	public function __construct( $feed_details ) {
+		// for non-legacy feeds. A simple ID based on the CFF_Feeds table will be more useful
+		if ( isset( $feed_details['atts'] ) && ! empty( $feed_details['atts']['feed'] ) ) {
+			$feed_details['feed_id'] = '*' . $feed_details['atts']['feed'];
+		}
 		$this->feed_details = $feed_details;
 
 		$this->matching_entries = array();
@@ -30,7 +36,7 @@ class CFF_Feed_Locator{
 	 *
 	 * @return array
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public function retrieve_matching_entries() {
 		global $wpdb;
@@ -48,7 +54,7 @@ class CFF_Feed_Locator{
 	/**
 	 * Add feed being located to the database
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public function insert_entry() {
 		global $wpdb;
@@ -81,7 +87,7 @@ class CFF_Feed_Locator{
 	 * @param $id
 	 * @param $location
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public function update_entry( $id, $location ) {
 		global $wpdb;
@@ -99,7 +105,7 @@ class CFF_Feed_Locator{
 	 * exists as well as whether or not an unknown location needs to be
 	 * updated.
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public function add_or_update_entry() {
 		if ( empty( $this->feed_details['feed_id'] ) ) {
@@ -118,9 +124,10 @@ class CFF_Feed_Locator{
 
 			foreach ( $this->matching_entries as $index => $matching_entry ) {
 				$shortcode_atts = json_decode( $matching_entry['shortcode_atts'], true );
-				$shortcode_atts = ( $shortcode_atts == null) ? [] : $shortcode_atts;
+				$shortcode_atts = ( $shortcode_atts == null ) ? [] : $shortcode_atts;
 				$atts = is_array( $this->feed_details['atts'] ) ? $this->feed_details['atts'] : array();
-				$atts_diff = array_diff($shortcode_atts , $atts ); // determines if the shortcode settings match the shortcode settings of an existing feed
+				$atts_diff = array_diff($shortcode_atts , $atts); // determines if the shortcode settings match the shortcode settings of an existing feed
+
 				if ( empty( $atts_diff ) ) {
 					$matching_indices[] = $matching_entry['id'];
 					if ( $matching_entry['html_location'] === $this->feed_details['location']['html'] ) {
@@ -135,21 +142,19 @@ class CFF_Feed_Locator{
 				}
 			}
 
-			if ( false === $matched_location ) {
+			if ( false === $matched_location  ) {
 				// if there is no matched location, there is only one feed on the page, and the feed being checked has an unknown location, update the known location
 				if ( count( $matching_indices ) === 1
-					&& $this->feed_details['location']['html'] === 'unknown'
-					&& false !== $non_unknown_match ) {
-
+				     && $this->feed_details['location']['html'] === 'unknown'
+				     && false !== $non_unknown_match ) {
 					$this->update_entry( $this->matching_entries[ $non_unknown_match ]['id'], $this->matching_entries[ $non_unknown_match ]['html_location'] );
 				} else {
 					if ( $this->feed_details['location']['html'] !== 'unknown'
-						&& false !== $unknown_match ) {
+					     && false !== $unknown_match ) {
 						$this->update_entry( $this->matching_entries[ $unknown_match ]['id'], $this->feed_details['location']['html'] );
 					} else {
 						$this->insert_entry();
 					}
-
 				}
 			}
 
@@ -157,11 +162,167 @@ class CFF_Feed_Locator{
 	}
 
 	/**
+	 * Queries the locator table for feeds by feed_id
+	 *
+	 * @param $args
+	 *
+	 * @return array|object|null
+	 *
+	 * @since 4.0
+	 */
+	public static function facebook_feed_locator_query( $args ) {
+		global $wpdb;
+		$feed_locator_table_name = esc_sql( $wpdb->prefix . CFF_FEED_LOCATOR );
+
+		$group_by = '';
+		if ( isset( $args['group_by'] ) ) {
+			$group_by = "GROUP BY " . esc_sql( $args['group_by'] );
+		}
+
+		$location_string = 'content';
+		if ( isset( $args['html_location'] ) ) {
+			$locations = array_map( 'esc_sql', $args['html_location'] );
+			$location_string = implode( "', '", $locations );
+		}
+
+		$page = 0;
+		if ( isset( $args['page'] ) ) {
+			$page = (int)$args['page'] - 1;
+			unset( $args['page'] );
+		}
+
+		$offset = max( 0, $page * CFF_Db::RESULTS_PER_PAGE );
+
+		if ( isset( $args['shortcode_atts'] ) ) {
+			$results = $wpdb->get_results( $wpdb->prepare("
+			SELECT *
+			FROM $feed_locator_table_name
+			WHERE shortcode_atts = %s
+		  	AND html_location IN ( '$location_string' )
+		  	$group_by
+		  	LIMIT %d
+			OFFSET %d;", $args['shortcode_atts'], CFF_Db::RESULTS_PER_PAGE, $offset ),ARRAY_A );
+		} else {
+			$results = $wpdb->get_results( $wpdb->prepare("
+			SELECT *
+			FROM $feed_locator_table_name
+			WHERE feed_id = %s
+		  	AND html_location IN ( '$location_string' )
+		  	$group_by
+		  	LIMIT %d
+			OFFSET %d;", $args['feed_id'], CFF_Db::RESULTS_PER_PAGE, $offset ),ARRAY_A );
+		}
+
+
+		return $results;
+	}
+
+	/**
+	 * Queries all legacy feeds that have been located
+	 *
+	 * @param $args
+	 *
+	 * @return array|object|null
+	 *
+	 * @since 4.0
+	 */
+	public static function legacy_facebook_feed_locator_query( $args ) {
+		global $wpdb;
+		$feed_locator_table_name = esc_sql( $wpdb->prefix . CFF_FEED_LOCATOR );
+
+		$group_by = '';
+		if ( isset( $args['group_by'] ) ) {
+			$group_by = "GROUP BY " . esc_sql( $args['group_by'] );
+		}
+
+		$location_string = 'content';
+		if ( isset( $args['html_location'] ) ) {
+			$locations = array_map( 'esc_sql', $args['html_location'] );
+			$location_string = implode( "', '", $locations );
+		}
+
+		$page = 0;
+		if ( isset( $args['page'] ) ) {
+			$page = (int)$args['page'] - 1;
+			unset( $args['page'] );
+		}
+
+		$offset = max( 0, $page * CFF_Db::RESULTS_PER_PAGE );
+		$limit = CFF_Db::RESULTS_PER_PAGE;
+
+		$results = $wpdb->get_results( "
+			SELECT *
+			FROM $feed_locator_table_name
+			WHERE feed_id NOT LIKE '*%'
+		  	AND html_location IN ( '$location_string' )
+		  	$group_by
+		  	LIMIT $limit
+			OFFSET $offset;", ARRAY_A );
+
+		return $results;
+	}
+
+	public static function update_legacy_to_builder( $args ) {
+		global $wpdb;
+		$feed_locator_table_name = esc_sql( $wpdb->prefix . CFF_FEED_LOCATOR );
+
+		$data = array(
+			'feed_id' => '*'.$args['new_feed_id'],
+			'shortcode_atts' => '{"feed":"'.$args['new_feed_id'].'"}'
+		);
+
+		$affected = $wpdb->query(
+			$wpdb->prepare(
+				"UPDATE $feed_locator_table_name
+         				SET feed_id = %s, shortcode_atts = %s",
+				$data['feed_id'], $data['shortcode_atts']
+			)
+		);
+
+		return $affected;
+	}
+
+	/**
+	 * Simple count of rows based on args
+	 *
+	 * @param array $args
+	 *
+	 * @return int
+	 *
+	 * @since 4.0
+	 */
+	public static function count( $args ) {
+		global $wpdb;
+		$feed_locator_table_name = esc_sql( $wpdb->prefix . CFF_FEED_LOCATOR );
+
+		if ( isset( $args['shortcode_atts'] ) ) {
+			$results = $wpdb->get_results( $wpdb->prepare("
+			SELECT COUNT(*) AS num_entries
+            FROM $feed_locator_table_name
+            WHERE shortcode_atts = %s
+            ", $args['shortcode_atts'] ), ARRAY_A );
+		} else {
+			$results = $wpdb->get_results( $wpdb->prepare("
+			SELECT COUNT(*) AS num_entries
+            FROM $feed_locator_table_name
+            WHERE feed_id = %s
+            ", $args['feed_id'] ), ARRAY_A );
+		}
+
+
+		if ( isset( $results[0]['num_entries'] ) ) {
+			return (int)$results[0]['num_entries'];
+		}
+
+		return 0;
+	}
+
+	/**
 	 * Old feeds are only detected once a day to keep load on the server low.
 	 *
 	 * @return bool
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function should_clear_old_locations() {
 		$cff_statuses_option = get_option( 'cff_statuses', array() );
@@ -173,7 +334,7 @@ class CFF_Feed_Locator{
 	/**
 	 * Old feeds are removed if they haven't been updated in two weeks.
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function delete_old_locations() {
 		global $wpdb;
@@ -202,12 +363,12 @@ class CFF_Feed_Locator{
 	 *
 	 * @return bool
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function should_do_locating() {
 		$cff_statuses_option = get_option( 'cff_statuses', array() );
 		if ( isset( $cff_statuses_option['feed_locator']['initialized'] )
-			&& $cff_statuses_option['feed_locator']['initialized'] < (time() - 300) ) {
+		     && $cff_statuses_option['feed_locator']['initialized'] < (time() - 300) ) {
 			$should_do_locating = rand( 1, 10 ) === 10;
 		} else {
 			$should_do_locating = rand( 1, 30 ) === 30;
@@ -228,7 +389,7 @@ class CFF_Feed_Locator{
 	 *
 	 * @return bool
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function should_do_ajax_locating( $feed_id, $post_id ) {
 		$cff_statuses_option = get_option( 'cff_statuses', array() );
@@ -259,7 +420,7 @@ class CFF_Feed_Locator{
 	 *
 	 * @return bool
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function entries_need_locating( $feed_id, $post_id ) {
 		global $wpdb;
@@ -284,7 +445,7 @@ class CFF_Feed_Locator{
 	/**
 	 * A custom table stores locations
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function create_table() {
 		global $wpdb;
@@ -293,12 +454,15 @@ class CFF_Feed_Locator{
 
 		if ( $wpdb->get_var( "show tables like '$feed_locator_table_name'" ) != $feed_locator_table_name ) {
 			$sql = "CREATE TABLE " . $feed_locator_table_name . " (
-				id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+				id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
                 feed_id VARCHAR(50) DEFAULT '' NOT NULL,
                 post_id BIGINT(20) UNSIGNED NOT NULL,
                 html_location VARCHAR(50) DEFAULT 'unknown' NOT NULL,
                 shortcode_atts LONGTEXT NOT NULL,
-                last_update DATETIME
+                last_update DATETIME,
+                PRIMARY KEY  (id),
+                KEY feed_id (feed_id),
+                KEY post_id (post_id)
             );";
 			$wpdb->query( $sql );
 		}
@@ -309,13 +473,6 @@ class CFF_Feed_Locator{
 			$had_error = true;
 			#\cff_main()->cff_error_reporter->add_error( 'database_create', '<strong>' . __( 'There was an error when trying to create the database tables used to locate feeds.', 'custom-facebook-feed' ) .'</strong><br>' . $error . '<br><code>' . $query . '</code>' );
 		}
-
-		if ( ! $had_error ) {
-			$wpdb->query( "ALTER TABLE $feed_locator_table_name ADD INDEX feed_id (feed_id)" );
-			$wpdb->query( "ALTER TABLE $feed_locator_table_name ADD INDEX post_id (post_id)" );
-
-			#\cff_main()->cff_error_reporter->remove_error( 'database_create' );
-		}
 	}
 
 	/**
@@ -323,7 +480,7 @@ class CFF_Feed_Locator{
 	 *
 	 * @return int
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function count_unique() {
 		global $wpdb;
@@ -360,7 +517,7 @@ class CFF_Feed_Locator{
 	 *
 	 * @return array
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function summary() {
 		global $wpdb;
@@ -419,7 +576,7 @@ class CFF_Feed_Locator{
 	 * Do Locator Ajax Process
 	 *
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 	public static function cff_do_locator(){
 		if ( ! isset( $_POST['feed_id'] )  ) {
@@ -453,7 +610,7 @@ class CFF_Feed_Locator{
 	 * Do Background tasks
 	 *
 	 *
-	 * @since 2.19
+	 * @since X.X.X
 	 */
 
 	public static function do_background_tasks( $feed_details ){

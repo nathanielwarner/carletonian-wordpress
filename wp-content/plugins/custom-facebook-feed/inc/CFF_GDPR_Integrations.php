@@ -29,14 +29,20 @@ class CFF_GDPR_Integrations {
 	 * Prevents changes made to how JavaScript file is added to
 	 * pages.
 	 *
+	 * @param array $blocking
+	 *
+	 * @return array
+	 *
 	 * @since 2.6/3.17
 	 */
-	public static function undo_script_blocking() {
+	public static function undo_script_blocking( $blocking ) {
 		$options = get_option( 'cff_style_settings', array() );
 		if ( ! CFF_GDPR_Integrations::doing_gdpr( $options ) ) {
-			return;
+			return $blocking;
 		}
 		remove_filter( 'wt_cli_third_party_scripts', 'wt_cli_facebook_feed_script' );
+
+		return $blocking;
 	}
 
 	/**

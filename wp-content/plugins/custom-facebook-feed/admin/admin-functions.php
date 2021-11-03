@@ -945,7 +945,7 @@ function cff_group_cache_function(){
 	    if ( ! $lite_notice_dismissed ) :
 	        ?>
 	        <div id="cff-notice-bar" style="display:none">
-	            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=notices&utm_medium=lite" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
+	            <span class="cff-notice-bar-message"><?php _e( 'You\'re using Custom Facebook Feed Lite. To unlock more features consider <a href="https://smashballoondemo.com/?utm_campaign=facebook-free&utm_source=notices&utm_medium=lite" target="_blank" rel="noopener noreferrer">upgrading to Pro</a>.', 'custom-facebook-feed'); ?></span>
 	            <button type="button" class="dismiss" title="<?php _e( 'Dismiss this message.', 'custom-facebook-feed'); ?>" data-page="overview">
 	            </button>
 	        </div>
@@ -3549,7 +3549,7 @@ function cff_settings_page() {
                                 $admin_url_state = "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
                             }
                             ?>
-                            <a href="https://api.smashballoon.com/v2/v2/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_page_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
+                            <a href="https://api.smashballoon.com/v2/facebook-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_page_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
 
                             <a href="https://api.smashballoon.com/v2/facebook-group-login.php?state=<?php echo $admin_url_state; ?>" class="cff_admin_btn" id="cff_group_app"><i class="fa fa-facebook-square"></i> <?php _e( 'Continue', 'custom-facebook-feed' ); ?></a>
 
@@ -4949,7 +4949,7 @@ function cff_oembeds_page() {
                     if ( $access_token_error ) { ?>
                         <p><?php _e("There was a problem with the access token that was retrieved.", "custom-facebook-feed"); ?></p>
 
-                    <?php } 
+                    <?php }
                     $token_href = 'https://api.smashballoon.com/v2/facebook-login.php?state=' . $admin_url_state;
                     if ( class_exists( 'SB_Instagram_Oembed' ) ) {
                         $sbi_oembed_token = SB_Instagram_Oembed::last_access_token();
@@ -5217,8 +5217,9 @@ add_filter( "plugin_action_links_{$cff_plugin_file}", 'cff_add_settings_link', 1
 
 //modify the link by unshifting the array
 function cff_add_settings_link( $links, $file ) {
-    $cff_settings_link = '<a href="' . admin_url( 'admin.php?page=cff-top' ) . '">' . __( 'Settings', 'cff-top', 'custom-facebook-feed' ) . '</a>';
-    array_unshift( $links, $cff_settings_link );
+	$pro_link = '<a href="https://smashballoondemo.com/?utm_campaign=facebook-free&utm_source=plugins-page&utm_medium=upgrade-link" target="_blank" style="font-weight: bold; color: #1da867;">' . __( 'Try the Pro Demo', 'custom-facebook-feed' ) . '</a>';
+    $cff_settings_link = '<a href="' . admin_url( 'admin.php?page=cff-feed-builder' ) . '">' . __( 'Settings', 'cff-feed-builder', 'custom-facebook-feed' ) . '</a>';
+    array_unshift( $links, $pro_link, $cff_settings_link );
 
     return $links;
 }
@@ -5382,63 +5383,6 @@ function cff_free_add_caps() {
 }
 add_action( 'admin_init', 'cff_free_add_caps', 90 );
 
-/* Usage */
-add_action( 'admin_notices', 'cff_usage_opt_in' );
-function cff_usage_opt_in() {
-
-    if ( isset( $_GET['trackingdismiss'] ) ) {
-        $usage_tracking = get_option( 'cff_usage_tracking', array( 'last_send' => 0, 'enabled' => false ) );
-
-        $usage_tracking['enabled'] = false;
-
-        update_option( 'cff_usage_tracking', $usage_tracking, false );
-
-        return;
-    }
-
-	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
-
-	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
-    if ( ! current_user_can( $cap ) ) {
-        return;
-    }
-	$usage_tracking = get_option( 'cff_usage_tracking', false );
-	if ( $usage_tracking ) {
-	    return;
-    }
-?>
-    <div class="notice notice-warning is-dismissible cff-admin-notice">
-
-        <p>
-            <strong><?php echo __( 'Help us improve the Custom Facebook Feed plugin', 'custom-facebook-feed' ); ?></strong><br>
-	        <?php echo __( 'Understanding how you are using the plugin allows us to further improve it. Opt-in below to agree to send a weekly report of plugin usage data.', 'custom-facebook-feed' ); ?>
-            <a target="_blank" rel="noopener noreferrer" href="https://smashballoon.com/custom-facebook-feed/docs/usage-tracking/"><?php echo __( 'More information', 'custom-facebook-feed' ); ?></a>
-        </p>
-        <p>
-            <a href="<?php echo admin_url('admin.php?page=cff-top&trackingdismiss=1') ?>" type="submit" class="button button-primary cff-opt-in"><?php echo __( 'Yes, I\'d like to help', 'custom-facebook-feed' ); ?></a>
-            <a href="<?php echo admin_url('admin.php?page=cff-top&trackingdismiss=1') ?>" type="submit" class="cff-no-usage-opt-out cff-space-left button button-secondary"><?php echo __( 'No, thanks', 'custom-facebook-feed' ); ?></a>
-        </p>
-
-    </div>
-
-<?php
-}
-
-function cff_usage_opt_in_or_out() {
-	if ( ! isset( $_POST['opted_in'] ) ) {
-		die ( 'You did not do this the right way!' );
-	}
-
-	$usage_tracking = get_option( 'cff_usage_tracking', array( 'last_send' => 0, 'enabled' => false ) );
-
-	$usage_tracking['enabled'] = isset( $_POST['opted_in'] ) ? $_POST['opted_in'] === 'true' : false;
-
-	update_option( 'cff_usage_tracking', $usage_tracking, false );
-
-	die();
-}
-add_action( 'wp_ajax_cff_usage_opt_in_or_out', 'cff_usage_opt_in_or_out' );
-
 //PPCA token checks
 function cff_ppca_token_check_flag() {
     if( get_transient('cff_ppca_access_token_invalid') ){
@@ -5482,7 +5426,7 @@ add_action( 'wp_ajax_cff_oembed_disable', 'cff_oembed_disable' );
 
 function cff_clear_error_log() {
 
-	\cff_main()->cff_error_reporter->remove_all_errors();        
+	\cff_main()->cff_error_reporter->remove_all_errors();
 
     cff_delete_cache();
 

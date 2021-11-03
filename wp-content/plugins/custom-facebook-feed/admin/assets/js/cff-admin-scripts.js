@@ -11,6 +11,25 @@ jQuery(document).ready(function($) {
 	});
 
 
+	$(document).on('click', '#cff-dismiss-header-notice', function() {
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : 'cff_dismiss_upgrade_notice'
+			},
+			success : function(data) {
+				if ( data.success == true ) {
+					$('#cff-header-upgrade-notice').slideUp();
+					$("#cff-builder-app").removeClass('cff-builder-app-lite-dismiss');
+				}
+			},
+			error : function(e)  {
+				console.log(e);
+			}
+		});
+	});
+
 	//The "cff_ppca_access_token_invalid" transient is set if the access token doesn't match the ID specified. Use an Ajax call to check whether that transient is set, and if so, then displays a notice under the access token field. This used so we don't need to make an API call every time the page loads. It stores the value in this transient and checks it via ajax.
 	$.ajax({
 		url : cffA.ajax_url,
@@ -941,7 +960,7 @@ jQuery(document).ready(function($) {
 				opted_in: choice,
 			},
 			success : function(data) {
-				$('.cff-no-usage-opt-out').closest('.cff-admin-notice').fadeOut();
+				$('.cff-no-usage-opt-out').closest('.cff-usage-tracking-notice').fadeOut();
 			}
 		}); // ajax call
 	}
@@ -950,31 +969,134 @@ jQuery(document).ready(function($) {
     $('.cff_get_sbi, .cff_get_cff, .cff_get_ctf, .cff_get_yt').parent().on('click', function(e){
         e.preventDefault();
 
-        jQuery('.sb_cross_install_modal').remove();
+		// remove the already opened modal
+        jQuery('#cff-op-modals').remove();
 
-        $('#wpbody-content').prepend('<div class="sb_cross_install_modal"><div class="sb_cross_install_inner" id="cff-admin-about"><div id="cff-admin-addons"><div class="addons-container"><i class="fa fa-spinner fa-spin cff-loader" aria-hidden="true"></i></div></div></div></div>');
+		// prepend the modal wrapper
+        $('#wpbody-content').prepend('<div class="cff-fb-source-ctn sb-fs-boss cff-fb-center-boss" id="cff-op-modals"><i class="fa fa-spinner fa-spin cff-loader" aria-hidden="true"></i></div>');
 
+		// determine the plugin name
         var $self = $(this).find('span'),
-            sb_get_plugin = 'custom_twitter_feeds';
+            sb_get_plugin = 'twitter';
 
         if( $self.hasClass('cff_get_cff') ){
-            sb_get_plugin = 'custom_facebook_feed';
+            sb_get_plugin = 'facebook';
         } else if( $self.hasClass('cff_get_sbi') ){
-            sb_get_plugin = 'instagram_feed';
+            sb_get_plugin = 'instagram';
         } else if( $self.hasClass('cff_get_yt') ){
-            sb_get_plugin = 'feeds_for_youtube';
+            sb_get_plugin = 'youtube';
         }
 
-        $get_plugins_url = cffA.ajax_url.replace('admin-ajax.php', '');
+		// send the ajax request to load plugin name and others data
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : 'sb_other_plugins_modal',
+				plugin : sb_get_plugin,
+			},
+			success : function(data) {
+				if ( data.success == true ) {
+					$('#cff-op-modals').html(data.data.output);
+				}
+			},
+			error : function(e)  {
+				console.log(e);
+			}
+		});
+    });
 
-        // Get the quick install box from the about page
-        $('.sb_cross_install_modal .addons-container').load($get_plugins_url+'admin.php?page=cff-top&tab=more #install_'+sb_get_plugin);
-    });
+	/**
+	 * Install other plugin on modal
+	 *
+	 * @since 4.0
+	 */
+	$(document).on('click', '#cff_install_op_btn', function() {
+		let self = $(this);
+		let pluginAtts = self.data('plugin-atts');
+		if ( pluginAtts.step == 'install' ) {
+			pluginAtts.plugin = pluginAtts.download_plugin
+		}
+		let loader = '<span class="cff-btn-spinner"><svg version="1.1" id="loader-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="20px" height="20px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;" xml:space="preserve"><path fill="#fff" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z"><animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform></path></svg></span>';
+		self.prepend(loader);
+
+		// send the ajax request to install or activate the plugin
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : pluginAtts.action,
+				nonce : pluginAtts.nonce,
+				plugin : pluginAtts.plugin,
+				download_plugin : pluginAtts.download_plugin,
+				type : 'plugin',
+			},
+			success : function(data) {
+				if ( data.success == true ) {
+					self.find('.cff-btn-spinner').remove();
+					self.attr('disabled', 'disabled');
+
+					if ( pluginAtts.step == 'install' ) {
+						self.html( data.data.msg );
+					} else {
+						self.html( data.data );
+					}
+				}
+			},
+			error : function(e)  {
+				console.log(e);
+			}
+		});
+	});
+
+	jQuery('body').on('click', '#cff_review_consent_yes', function(e) {
+		let reviewStep1 = jQuery('.cff_review_notice_step_1, .cff_review_step1_notice');
+		let reviewStep2 = jQuery('.cff_notice.cff_review_notice, .rn_step_2');
+
+		reviewStep1.hide();
+		reviewStep2.show();
+
+        $.ajax({
+            url : cffA.ajax_url,
+            type : 'post',
+            data : {
+                action : 'cff_review_notice_consent_update',
+				consent : 'yes'
+            },
+            success : function(data) {
+            }
+        }); // ajax call
+
+	});
+
+	jQuery('body').on('click', '#cff_review_consent_no', function(e) {
+		let reviewStep1 = jQuery('.cff_review_notice_step_1, #cff-notifications');
+		reviewStep1.hide();
+
+        $.ajax({
+            url : cffA.ajax_url,
+            type : 'post',
+            data : {
+                action : 'cff_review_notice_consent_update',
+				consent : 'no'
+            },
+            success : function(data) {
+            }
+        }); // ajax call
+
+	});
+
     //Close the modal if clicking anywhere outside it
-    jQuery('body').on('click', '.sb_cross_install_modal', function(e){
+    jQuery('body').on('click', '#cff-op-modals', function(e){
         if (e.target !== this) return;
-        jQuery('.sb_cross_install_modal').remove();
+        jQuery('#cff-op-modals').remove();
     });
+    jQuery('body').on('click', '.cff-fb-popup-cls', function(e){
+        jQuery('#cff-op-modals').remove();
+    });
+
+    //Add class to Pro menu item
+    $('.cff_get_pro').parent().attr({'class':'cff_get_pro_highlight', 'target':'_blank'});
 
     // Locator
     jQuery('.cff-locator-more').click(function(e) {

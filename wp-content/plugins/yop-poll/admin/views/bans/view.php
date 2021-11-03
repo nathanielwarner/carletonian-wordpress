@@ -168,7 +168,7 @@ switch( $params['order_by'] ) {
 			<label for="bulk-action-selector-top" class="screen-reader-text">
 				<?php _e( 'Select bulk action', 'yop-poll' );?>
 			</label>
-			<select name="action" class="bans-bulk-action-top">
+			<select name="action" class="bans-bulk-action-top admin-select">
 				<option value="-1" class="hide-if-no-js">
 					<?php _e( 'Bulk Actions', 'yop-poll' );?>
 				</option>
@@ -563,7 +563,7 @@ switch( $params['order_by'] ) {
 			<label for="bulk-action-selector-bottom" class="screen-reader-text">
 				<?php _e( 'Select bulk action', 'yop-poll' );?>
 			</label>
-			<select name="action" class="bans-bulk-action-bottom">
+			<select name="action" class="bans-bulk-action-bottom admin-select">
                 <option value="-1" class="hide-if-no-js">
 					<?php _e( 'Bulk Actions', 'yop-poll' );?>
 				</option>

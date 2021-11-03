@@ -365,13 +365,13 @@ class YOP_Poll_Polls {
 			if ( false === self::$errors_present ) {
 				$poll_meta_data = self::create_meta_data( $poll );
 				$data = array(
-					'name' => $poll->name,
-					'template' => $poll->design->template,
-					'template_base' => $poll->design->templateBase,
-					'skin_base' => $poll->design->skinBase,
+					'name' => sanitize_text_field( $poll->name ),
+					'template' => sanitize_text_field( $poll->design->template ),
+					'template_base' => sanitize_text_field( $poll->design->templateBase ),
+					'skin_base' => sanitize_text_field( $poll->design->skinBase ),
 					'author' => $current_user->ID,
 					'stype' => 'poll',
-					'status' => $poll->status,
+					'status' => sanitize_text_field( $poll->status ),
 					'meta_data' => serialize( $poll_meta_data ),
 					'total_submits' => 0,
 					'total_submited_answers' => 0,
@@ -400,7 +400,7 @@ class YOP_Poll_Polls {
 					if ( false === $elements_result['errors_present'] ) {
 						if ( 'yes' === $poll->options->poll->autoGeneratePollPage ) {
 							$page_id = wp_insert_post( array(
-								'post_title' => $poll->name,
+								'post_title' => sanitize_text_field( $poll->name ),
 								'post_content' => "[yop_poll id='{$poll_id}']",
 								'post_status' => 'publish',
 								'post_type' => 'page',
@@ -469,7 +469,7 @@ class YOP_Poll_Polls {
                     }
                     if ( false === $has_page ) {
                         $page_id = wp_insert_post( array(
-                            'post_title' => $poll->name,
+                            'post_title' => sanitize_text_field( $poll->name ),
                             'post_content' => "[yop_poll id='{$poll_id}']",
                             'post_status' => 'publish',
                             'post_type' => 'page',
@@ -498,12 +498,12 @@ class YOP_Poll_Polls {
 					}
 				}
 				$data = array(
-					'name' => $poll->name,
-					'template' => $poll->design->template,
-					'template_base' => $poll->design->templateBase,
-					'skin_base' => $poll->design->skinBase,
+					'name' => sanitize_text_field( $poll->name ),
+					'template' => sanitize_text_field( $poll->design->template ),
+					'template_base' => sanitize_text_field( $poll->design->templateBase ),
+					'skin_base' => sanitize_text_field( $poll->design->skinBase ),
 					'stype' => 'poll',
-					'status' => $poll->status,
+					'status' => sanitize_text_field( $poll->status ),
 					'meta_data' => serialize( $poll_meta_data ),
 					'modified_date' => current_time( 'mysql' )
 				);
@@ -532,8 +532,8 @@ class YOP_Poll_Polls {
 		return array(
 			'success' => !self::$errors_present,
 			'error' => self::$error_text,
-			'new-elements' => $elements_result['new_elements'],
-			'new-subelements' => $elements_result['new_subelements'],
+			'new-elements' => isset( $elements_result['new_elements'] ) ? $elements_result['new_elements'] : [],
+			'new-subelements' => isset( $elements_result['new_subelements'] ) ? $elements_result['new_subelements'] : [],
 		);
 	}
 	public static function delete( $poll_id ) {
@@ -655,112 +655,113 @@ class YOP_Poll_Polls {
 		);
 	}
 	public static function create_meta_data( stdClass $poll ) {
-		return array(
+		$meta_data = array(
 			'style' => array(
 				'poll' => array(
-					'backgroundColor' => $poll->design->style->poll->backgroundColor,
-					'borderSize' => $poll->design->style->poll->borderSize,
-					'borderColor' => $poll->design->style->poll->borderColor,
-					'borderRadius' => $poll->design->style->poll->borderRadius,
-					'paddingLeftRight' => $poll->design->style->poll->paddingLeftRight,
-					'paddingTopBottom' => $poll->design->style->poll->paddingTopBottom
+					'backgroundColor' => sanitize_text_field( $poll->design->style->poll->backgroundColor ),
+					'borderSize' => sanitize_text_field( $poll->design->style->poll->borderSize ),
+					'borderColor' => sanitize_text_field( $poll->design->style->poll->borderColor ),
+					'borderRadius' => sanitize_text_field( $poll->design->style->poll->borderRadius ),
+					'paddingLeftRight' => sanitize_text_field( $poll->design->style->poll->paddingLeftRight ),
+					'paddingTopBottom' => sanitize_text_field( $poll->design->style->poll->paddingTopBottom )
 				),
 				'questions' => array(
-					'textColor' => $poll->design->style->questions->textColor,
-					'textSize' => $poll->design->style->questions->textSize,
-					'textWeight' => $poll->design->style->questions->textWeight,
-					'textAlign' => $poll->design->style->questions->textAlign
+					'textColor' => sanitize_text_field( $poll->design->style->questions->textColor ),
+					'textSize' => sanitize_text_field( $poll->design->style->questions->textSize ),
+					'textWeight' => sanitize_text_field( $poll->design->style->questions->textWeight ),
+					'textAlign' => sanitize_text_field( $poll->design->style->questions->textAlign )
 				),
 				'answers' => array(
-					'paddingLeftRight' => $poll->design->style->answers->paddingLeftRight,
-					'paddingTopBottom' => $poll->design->style->answers->paddingTopBottom,
-					'textColor' => $poll->design->style->answers->textColor,
-					'textSize' => $poll->design->style->answers->textSize,
-					'textWeight' => $poll->design->style->answers->textWeight,
-					'skin' => $poll->design->style->answers->skin,
-					'colorScheme' => $poll->design->style->answers->colorScheme
+					'paddingLeftRight' => sanitize_text_field( $poll->design->style->answers->paddingLeftRight ),
+					'paddingTopBottom' => sanitize_text_field(  $poll->design->style->answers->paddingTopBottom ),
+					'textColor' => sanitize_text_field( $poll->design->style->answers->textColor ),
+					'textSize' => sanitize_text_field( $poll->design->style->answers->textSize ),
+					'textWeight' => sanitize_text_field( $poll->design->style->answers->textWeight ),
+					'skin' => sanitize_text_field( $poll->design->style->answers->skin ),
+					'colorScheme' => sanitize_text_field( $poll->design->style->answers->colorScheme )
 				),
 				'buttons' => array(
-					'backgroundColor' => $poll->design->style->buttons->backgroundColor,
-					'borderSize' => $poll->design->style->buttons->borderSize,
-					'borderColor' => $poll->design->style->buttons->borderColor,
-					'borderRadius' => $poll->design->style->buttons->borderRadius,
-					'paddingLeftRight' => $poll->design->style->buttons->paddingLeftRight,
-					'paddingTopBottom' => $poll->design->style->buttons->paddingTopBottom,
-					'textColor' => $poll->design->style->buttons->textColor,
-					'textSize' => $poll->design->style->buttons->textSize,
-					'textWeight' => $poll->design->style->buttons->textWeight
+					'backgroundColor' => sanitize_text_field( $poll->design->style->buttons->backgroundColor ),
+					'borderSize' => sanitize_text_field( $poll->design->style->buttons->borderSize ),
+					'borderColor' => sanitize_text_field( $poll->design->style->buttons->borderColor ),
+					'borderRadius' => sanitize_text_field( $poll->design->style->buttons->borderRadius ),
+					'paddingLeftRight' => sanitize_text_field( $poll->design->style->buttons->paddingLeftRight ),
+					'paddingTopBottom' => sanitize_text_field( $poll->design->style->buttons->paddingTopBottom ),
+					'textColor' => sanitize_text_field( $poll->design->style->buttons->textColor ),
+					'textSize' => sanitize_text_field( $poll->design->style->buttons->textSize ),
+					'textWeight' => sanitize_text_field( $poll->design->style->buttons->textWeight )
 				),
 				'captcha' => array(),
 				'errors' => array(
-					'borderLeftColorForSuccess' => $poll->design->style->errors->borderLeftColorForSuccess,
-					'borderLeftColorForError' => $poll->design->style->errors->borderLeftColorForError,
-					'borderLeftSize' => $poll->design->style->errors->borderLeftSize,
-					'paddingTopBottom' => $poll->design->style->errors->paddingTopBottom,
-					'textColor' => $poll->design->style->errors->textColor,
-					'textSize' => $poll->design->style->errors->textSize,
-					'textWeight' => $poll->design->style->errors->textWeight
+					'borderLeftColorForSuccess' => sanitize_text_field( $poll->design->style->errors->borderLeftColorForSuccess ),
+					'borderLeftColorForError' => sanitize_text_field( $poll->design->style->errors->borderLeftColorForError ),
+					'borderLeftSize' => sanitize_text_field( $poll->design->style->errors->borderLeftSize ),
+					'paddingTopBottom' => sanitize_text_field( $poll->design->style->errors->paddingTopBottom ),
+					'textColor' => sanitize_text_field( $poll->design->style->errors->textColor ),
+					'textSize' => sanitize_text_field( $poll->design->style->errors->textSize ),
+					'textWeight' => sanitize_text_field( $poll->design->style->errors->textWeight )
 				),
 				'custom' => array(
-					'css' => $poll->design->style->custom->css
+					'css' => sanitize_text_field( $poll->design->style->custom->css )
 				)
 			),
 			'options' => array(
 				'poll' => array(
-					'voteButtonLabel' => $poll->options->poll->voteButtonLabel,
-					'showResultsLink' => $poll->options->poll->showResultsLink,
-					'resultsLabelText' => $poll->options->poll->resultsLabelText,
-					'showTotalVotes' => $poll->options->poll->showTotalVotes,
-					'showTotalAnswers' => $poll->options->poll->showTotalAnswers,
-					'startDateOption' => $poll->options->poll->startDateOption,
-					'startDateCustom' => $poll->options->poll->startDateCustom,
-					'endDateOption' => $poll->options->poll->endDateOption,
-					'endDateCustom' => $poll->options->poll->endDateCustom,
-					'redirectAfterVote' => $poll->options->poll->redirectAfterVote,
-					'redirectUrl' => $poll->options->poll->redirectUrl,
-					'resetPollStatsAutomatically' => $poll->options->poll->resetPollStatsAutomatically,
-					'resetPollStatsOn' => $poll->options->poll->resetPollStatsOn,
-					'resetPollStatsEvery' => $poll->options->poll->resetPollStatsEvery,
-					'resetPollStatsEveryPeriod' => $poll->options->poll->resetPollStatsEveryPeriod,
-					'autoGeneratePollPage' => $poll->options->poll->autoGeneratePollPage,
+					'voteButtonLabel' => sanitize_text_field( $poll->options->poll->voteButtonLabel ),
+					'showResultsLink' => sanitize_text_field( $poll->options->poll->showResultsLink ),
+					'resultsLabelText' => sanitize_text_field( $poll->options->poll->resultsLabelText ),
+					'showTotalVotes' => sanitize_text_field( $poll->options->poll->showTotalVotes ),
+					'showTotalAnswers' => sanitize_text_field( $poll->options->poll->showTotalAnswers ),
+					'startDateOption' => sanitize_text_field( $poll->options->poll->startDateOption ),
+					'startDateCustom' => sanitize_text_field( $poll->options->poll->startDateCustom ),
+					'endDateOption' => sanitize_text_field( $poll->options->poll->endDateOption ),
+					'endDateCustom' => sanitize_text_field( $poll->options->poll->endDateCustom ),
+					'redirectAfterVote' => sanitize_text_field( $poll->options->poll->redirectAfterVote ),
+					'redirectUrl' => sanitize_text_field( $poll->options->poll->redirectUrl ),
+					'resetPollStatsAutomatically' => sanitize_text_field( $poll->options->poll->resetPollStatsAutomatically ),
+					'resetPollStatsOn' => sanitize_text_field( $poll->options->poll->resetPollStatsOn ),
+					'resetPollStatsEvery' => sanitize_text_field( $poll->options->poll->resetPollStatsEvery ),
+					'resetPollStatsEveryPeriod' => sanitize_text_field( $poll->options->poll->resetPollStatsEveryPeriod ),
+					'autoGeneratePollPage' => sanitize_text_field( $poll->options->poll->autoGeneratePollPage ),
 					'pageId' => ( 'yes' === $poll->options->poll->autoGeneratePollPage ) ? $poll->options->poll->pageId : '',
 					'pageLink' => ( 'yes' === $poll->options->poll->autoGeneratePollPage ) ? $poll->options->poll->pageLink : '',
-					'useCaptcha' => $poll->options->poll->useCaptcha,
-					'sendEmailNotifications' => $poll->options->poll->sendEmailNotifications,
-					'emailNotificationsFromName' => $poll->options->poll->emailNotificationsFromName,
-					'emailNotificationsFromEmail' => $poll->options->poll->emailNotificationsFromEmail,
-                    'emailNotificationsRecipients' => $poll->options->poll->emailNotificationsRecipients,
-					'emailNotificationsSubject' => $poll->options->poll->emailNotificationsSubject,
-					'emailNotificationsMessage' => $poll->options->poll->emailNotificationsMessage,
-					'enableGdpr' => $poll->options->poll->enableGdpr,
-					'gdprSolution' => $poll->options->poll->gdprSolution,
-					'gdprConsentText' => $poll->options->poll->gdprConsentText,
-					'loadWithAjax' => $poll->options->poll->loadWithAjax,
-					'notificationMessageLocation' => $poll->options->poll->notificationMessageLocation
+					'useCaptcha' => sanitize_text_field( $poll->options->poll->useCaptcha ),
+					'sendEmailNotifications' => sanitize_text_field( $poll->options->poll->sendEmailNotifications ),
+					'emailNotificationsFromName' => sanitize_text_field( $poll->options->poll->emailNotificationsFromName ),
+					'emailNotificationsFromEmail' => sanitize_text_field( $poll->options->poll->emailNotificationsFromEmail ),
+                    'emailNotificationsRecipients' => sanitize_text_field( $poll->options->poll->emailNotificationsRecipients ),
+					'emailNotificationsSubject' => sanitize_text_field( $poll->options->poll->emailNotificationsSubject ),
+					'emailNotificationsMessage' => sanitize_text_field( $poll->options->poll->emailNotificationsMessage ),
+					'enableGdpr' => sanitize_text_field( $poll->options->poll->enableGdpr ),
+					'gdprSolution' => sanitize_text_field( $poll->options->poll->gdprSolution ),
+					'gdprConsentText' => sanitize_text_field( $poll->options->poll->gdprConsentText ),
+					'loadWithAjax' => sanitize_text_field( $poll->options->poll->loadWithAjax ),
+					'notificationMessageLocation' => sanitize_text_field( $poll->options->poll->notificationMessageLocation )
 				),
 				'results' => array(
 					'showResultsMoment' => $poll->options->results->showResultsMoment,
-					'customDateResults' => $poll->options->results->customDateResults,
+					'customDateResults' => sanitize_text_field( $poll->options->results->customDateResults ),
 					'showResultsTo' => $poll->options->results->showResultsTo,
 					'resultsDetails' => $poll->options->results->resultsDetails,
-					'backToVoteOption' => $poll->options->results->backToVoteOption,
-					'backToVoteCaption' => $poll->options->results->backToVoteCaption,
-					'sortResults' => $poll->options->results->sortResults,
-					'sortResultsRule' => $poll->options->results->sortResultsRule,
-					'displayResultsAs' => $poll->options->results->displayResultsAs
+					'backToVoteOption' => sanitize_text_field( $poll->options->results->backToVoteOption ),
+					'backToVoteCaption' => sanitize_text_field( $poll->options->results->backToVoteCaption ),
+					'sortResults' => sanitize_text_field( $poll->options->results->sortResults ),
+					'sortResultsRule' => sanitize_text_field( $poll->options->results->sortResultsRule ),
+					'displayResultsAs' => sanitize_text_field( $poll->options->results->displayResultsAs )
 				),
 				'access' => array(
 					'votePermissions' => $poll->options->access->votePermissions,
 					/*'allowWordpressVotes' => $poll->options->access->allowWordpressVotes,*/
 					'blockVoters' => $poll->options->access->blockVoters,
-					'blockLengthType' => $poll->options->access->blockLengthType,
-					'blockForValue' => $poll->options->access->blockForValue,
-					'blockForPeriod' => $poll->options->access->blockForPeriod,
-					'limitVotesPerUser' => $poll->options->access->limitVotesPerUser,
-					'votesPerUserAllowed' => $poll->options->access->votesPerUserAllowed
+					'blockLengthType' => sanitize_text_field( $poll->options->access->blockLengthType ),
+					'blockForValue' => sanitize_text_field( $poll->options->access->blockForValue ),
+					'blockForPeriod' => sanitize_text_field( $poll->options->access->blockForPeriod ),
+					'limitVotesPerUser' => sanitize_text_field( $poll->options->access->limitVotesPerUser ),
+					'votesPerUserAllowed' => sanitize_text_field( $poll->options->access->votesPerUserAllowed )
 				)
 			)
 		);
+		return $meta_data;
 	}
 	public static function validate_data( stdClass $poll ) {
 		if ( false === is_object( $poll ) ) {
@@ -1078,7 +1079,9 @@ class YOP_Poll_Polls {
 							if (
 								( false === self::$errors_present ) &&
 								( !isset( $element->text ) ||
-								( '' === trim( $element->text ) ) )
+								( '' === trim( $element->text ) ) ||
+								( '' === sanitize_text_field( $element->text ) ) 
+								)
 							) {
 								self::$errors_present = true;
 								self::$error_text = __( 'Data for "Question" is invalid', 'yop-poll' );
@@ -1097,7 +1100,9 @@ class YOP_Poll_Polls {
 									if (
 										( false === self::$errors_present ) &&
 										( !isset( $answer->text ) ||
-										( '' === trim( $answer->text ) ) )
+										( '' === trim( $answer->text ) ) ||
+										( '' === sanitize_text_field( $answer->text ) )
+										)
 									){
 										self::$errors_present = true;
 										self::$error_text = __( 'Answer text is invalid', 'yop-poll' );
@@ -1138,7 +1143,9 @@ class YOP_Poll_Polls {
 							if (
 								( false === self::$errors_present ) &&
 								( !isset( $element->options->otherAnswersLabel ) ||
-								( '' === trim( $element->options->otherAnswersLabel ) ) )
+								( '' === trim( $element->options->otherAnswersLabel ) ) ||
+								( '' === sanitize_text_field( $element->options->otherAnswersLabel ) )
+								)
 							){
 								self::$errors_present = true;
 								self::$error_text = __( 'Data for "Label for Other Answers" is invalid', 'yop-poll' );
@@ -1217,7 +1224,9 @@ class YOP_Poll_Polls {
 							if (
 								( false === self::$errors_present ) &&
 								( !isset( $element->text ) ||
-								( '' === trim( $element->text ) ) )
+								( '' === trim( $element->text ) ) ||
+								( '' === sanitize_text_field( $element->text ) )
+								)
 							) {
 								self::$errors_present = true;
 								self::$error_text = __( 'Data for "Custom Field" is invalid', 'yop-poll' );
@@ -1241,7 +1250,9 @@ class YOP_Poll_Polls {
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->options->poll->voteButtonLabel ) ||
-				( '' === trim( $poll->options->poll->voteButtonLabel ) ) )
+				( '' === trim( $poll->options->poll->voteButtonLabel ) ) ||
+				( '' === sanitize_text_field( $poll->options->poll->voteButtonLabel ) )
+				)
 			 ) {
 				 self::$errors_present = true;
 				 self::$error_text = __( 'Data for "Vote Button Label" is invalid', 'yop-poll' );
@@ -1257,7 +1268,9 @@ class YOP_Poll_Polls {
 				( false === self::$errors_present ) &&
 				( 'yes' === $poll->options->poll->showResultsLink ) &&
 				( !isset( $poll->options->poll->resultsLabelText ) ||
-				( '' === trim( $poll->options->poll->resultsLabelText ) ) )
+				( '' === trim( $poll->options->poll->resultsLabelText ) ) ||
+				( '' === sanitize_text_field( $poll->options->poll->resultsLabelText ) )
+				)
 			 ) {
 				 self::$errors_present = true;
 				 self::$error_text = __( 'Data for "[Results] Link Label" is invalid', 'yop-poll' );
@@ -1319,7 +1332,9 @@ class YOP_Poll_Polls {
 				( false === self::$errors_present ) &&
 				( 'yes' === $poll->options->poll->redirectAfterVote ) &&
 				( !isset( $poll->options->poll->redirectUrl ) ||
-				( '' === trim( $poll->options->poll->redirectUrl ) ) )
+				( '' === trim( $poll->options->poll->redirectUrl ) ) ||
+				( '' === sanitize_text_field( $poll->options->poll->redirectUrl ) )
+				)
 			 ) {
 				 self::$errors_present = true;
 				 self::$error_text = __( 'Data for "Redirect Url" is invalid', 'yop-poll' );
@@ -1442,7 +1457,9 @@ class YOP_Poll_Polls {
 				( false === self::$errors_present ) &&
 				( 'yes' === $poll->options->results->backToVoteOption ) &&
 				( !isset( $poll->options->results->backToVoteCaption ) ||
-				( '' === trim( $poll->options->results->backToVoteCaption ) ) )
+				( '' === trim( $poll->options->results->backToVoteCaption ) ) ||
+				( '' === sanitize_text_field( $poll->options->results->backToVoteCaption ) )
+				)
 			){
 				self::$errors_present = true;
 				self::$error_text = __( 'Data for "[Back to vote] caption" is invalid', 'yop-poll' );

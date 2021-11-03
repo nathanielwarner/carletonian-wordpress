@@ -33,7 +33,21 @@ $database_settings = sbi_get_database_settings();
                         </thead>
                         <tbody>
 
-						<?php foreach ( $locator_section['results'] as $result ) :
+						<?php
+
+                        $atts_for_page = array();
+                        foreach ($locator_section['results'] as $result) :
+                            $should_add = true;
+                            if (!empty($atts_for_page[$result['post_id']])) {
+                                foreach ($atts_for_page[$result['post_id']] as $existing_atts) {
+                                    if ($existing_atts === $result['shortcode_atts']) {
+                                        $should_add = false;
+                                    }
+                                }
+                            }
+                            if ($should_add) {
+                                $atts_for_page[$result['post_id']][] = $result['shortcode_atts'];
+
 							$shortcode_atts = json_decode( $result['shortcode_atts'], true );
 							$shortcode_atts = is_array( $shortcode_atts ) ? $shortcode_atts : array();
 
@@ -48,7 +62,7 @@ $database_settings = sbi_get_database_settings();
 							$comma_separated = implode(', ', $display_terms );
 							$display = $comma_separated;
 							if ( strlen( $comma_separated ) > 31 ) {
-								$display = '<span class="sbi-condensed-wrap">' . substr( $comma_separated, 0, 30 ) . '<a class="sbi-locator-more" href="JavaScript:void(0);">...</a></span>';
+								$display = '<span class="sbi-condensed-wrap">' . esc_html( substr( $comma_separated, 0, 30 ) ) . '<a class="sbi-locator-more" href="JavaScript:void(0);">...</a></span>';
 								$comma_separated = '<span class="sbi-full-wrap">' . esc_html( $comma_separated ) . '</span>';
 							} else {
 								$comma_separated = '';
@@ -69,7 +83,9 @@ $database_settings = sbi_get_database_settings();
                                 </td>
                                 <td><a href="<?php echo esc_url( get_the_permalink( $result['post_id'] ) ); ?>" target="_blank" rel="noopener"><?php echo esc_html( get_the_title( $result['post_id'] ) ); ?></a></td>
                             </tr>
-						<?php endforeach; ?>
+						<?php 
+                            }
+                        endforeach; ?>
 
 
                         </tbody>

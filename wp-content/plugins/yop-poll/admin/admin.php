@@ -310,6 +310,18 @@ class YOP_Poll_Admin {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_2_8();
 			}
+			if ( true === version_compare( $installed_version, '6.2.9', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_2_9();
+			}
+			if ( true === version_compare( $installed_version, '6.3.0', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_0();
+			}
+			if ( true === version_compare( $installed_version, '6.3.1', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_1();
+			}
         }
 	}
     public function load_translations() {

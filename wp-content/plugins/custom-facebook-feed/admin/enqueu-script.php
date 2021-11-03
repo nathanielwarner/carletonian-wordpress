@@ -20,26 +20,26 @@ add_action( 'wp_ajax_cff_ppca_token_check_flag', 'cff_ppca_token_check_flag' );
 add_action( 'admin_enqueue_scripts' , 'enqueue_admin_scripts_assets' );
 function enqueue_admin_scripts_assets(){
 	wp_register_style(
-		'custom_wp_admin_css', 
-		CFF_PLUGIN_URL . 'admin/assets/css/cff-admin-style.css', 
-		false, 
-		CFFVER 
+		'custom_wp_admin_css',
+		CFF_PLUGIN_URL . 'admin/assets/css/cff-admin-style.css',
+		false,
+		CFFVER
 	);
 	wp_enqueue_style( 'custom_wp_admin_css' );
-	wp_enqueue_style( 
-		'cff-font-awesome', 
-		'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css', 
-		array(), 
-		'4.5.0' 
+	wp_enqueue_style(
+		'cff-font-awesome',
+		'https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css',
+		array(),
+		'4.5.0'
 	);
-	
-	wp_enqueue_script( 
-		'cff_admin_script', 
-		CFF_PLUGIN_URL . 'admin/assets/js/cff-admin-scripts.js', 
+
+	wp_enqueue_script(
+		'cff_admin_script',
+		CFF_PLUGIN_URL . 'admin/assets/js/cff-admin-scripts.js',
 		false,
-		CFFVER 
+		CFFVER
 	);
-	
+
 	wp_localize_script( 'cff_admin_script', 'cffA', array(
 		'ajax_url' => admin_url( 'admin-ajax.php' ),
 		'cff_nonce' => wp_create_nonce( 'cff_nonce' )
@@ -71,5 +71,5 @@ function enqueue_admin_scripts_assets(){
 		'cff_admin_script',
 		'cff_admin',
 		$strings
-	);        
-} 
+	);
+}

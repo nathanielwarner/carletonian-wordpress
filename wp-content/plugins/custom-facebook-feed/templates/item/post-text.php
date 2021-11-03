@@ -14,7 +14,7 @@ use CustomFacebookFeed\CFF_Utils;
 use CustomFacebookFeed\CFF_Autolink;
 use CustomFacebookFeed\CFF_Shortcode_Display;
 
-$cff_title_styles = $this_class->get_style_attribute( 'post_text' );
+$cff_title_styles = \CustomFacebookFeed\CFF_Parse::get_status_type( $news ) !== 'created_event' ? $this_class->get_style_attribute( 'post_text' ) : $this_class->get_style_attribute( 'event_title' );
 $cff_title_format = CFF_Shortcode_Display::get_post_text_title_format( $atts );
 
 if( !empty($post_text) ):

@@ -19,20 +19,21 @@
  */
 
 require_once('vendor/autoload.php');
-Dotenv\Dotenv::create(__DIR__)->load();
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
-define('DB_NAME', getenv('DB_NAME'));
+define('DB_NAME', $_ENV['DB_NAME']);
 
 /** MySQL database username */
-define('DB_USER', getenv('DB_USER'));
+define('DB_USER', $_ENV['DB_USER']);
 
 /** MySQL database password */
-define('DB_PASSWORD', getenv('DB_PASSWORD'));
+define('DB_PASSWORD', $_ENV['DB_PASSWORD']);
 
 /** MySQL hostname */
-define('DB_HOST', getenv('DB_HOST'));
+define('DB_HOST', $_ENV['DB_HOST']);
 
 /** Database Charset to use in creating database tables. */
 define('DB_CHARSET', 'utf8');
@@ -49,23 +50,23 @@ define('DB_COLLATE', '');
  *
  * @since 2.6.0
  */
-define('AUTH_KEY', getenv('AUTH_KEY'));
-define('SECURE_AUTH_KEY', getenv('SECURE_AUTH_KEY'));
-define('LOGGED_IN_KEY', getenv('LOGGED_IN_KEY'));
-define('NONCE_KEY', getenv('NONCE_KEY'));
-define('AUTH_SALT', getenv('AUTH_SALT'));
-define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT'));
-define('LOGGED_IN_SALT', getenv('LOGGED_IN_SALT'));
-define('NONCE_SALT', getenv('NONCE_SALT'));
+define('AUTH_KEY', $_ENV['AUTH_KEY']);
+define('SECURE_AUTH_KEY', $_ENV['SECURE_AUTH_KEY']);
+define('LOGGED_IN_KEY', $_ENV['LOGGED_IN_KEY']);
+define('NONCE_KEY', $_ENV['NONCE_KEY']);
+define('AUTH_SALT', $_ENV['AUTH_SALT']);
+define('SECURE_AUTH_SALT', $_ENV['SECURE_AUTH_SALT']);
+define('LOGGED_IN_SALT', $_ENV['LOGGED_IN_SALT']);
+define('NONCE_SALT', $_ENV['NONCE_SALT']);
 
 /**
  * S3 Stuff
  */
-define( 'S3_UPLOADS_BUCKET', getenv('S3_UPLOADS_BUCKET') );
-define( 'S3_UPLOADS_BUCKET_URL', getenv('S3_UPLOADS_BUCKET_URL') );
-define( 'S3_UPLOADS_KEY', getenv('S3_UPLOADS_KEY') );
-define( 'S3_UPLOADS_SECRET', getenv('S3_UPLOADS_SECRET') );
-define( 'S3_UPLOADS_REGION', getenv('S3_UPLOADS_REGION') ); // the s3 bucket region (excluding the rest of the URL)
+define( 'S3_UPLOADS_BUCKET', $_ENV['S3_UPLOADS_BUCKET'] );
+define( 'S3_UPLOADS_BUCKET_URL', $_ENV['S3_UPLOADS_BUCKET_URL'] );
+define( 'S3_UPLOADS_KEY', $_ENV['S3_UPLOADS_KEY'] );
+define( 'S3_UPLOADS_SECRET', $_ENV['S3_UPLOADS_SECRET'] );
+define( 'S3_UPLOADS_REGION', $_ENV['S3_UPLOADS_REGION'] ); // the s3 bucket region (excluding the rest of the URL)
 
 /**#@-*/
 
@@ -75,7 +76,7 @@ define( 'S3_UPLOADS_REGION', getenv('S3_UPLOADS_REGION') ); // the s3 bucket reg
  * You can have multiple installations in one database if you give each
  * a unique prefix. Only numbers, letters, and underscores please!
  */
-$table_prefix  = getenv('DB_PREFIX');
+$table_prefix  = $_ENV['DB_PREFIX'];
 
 /**
  * For developers: WordPress debugging mode.
@@ -89,7 +90,7 @@ $table_prefix  = getenv('DB_PREFIX');
  *
  * @link https://codex.wordpress.org/Debugging_in_WordPress
  */
-if (getenv('WP_DEBUG') === 'true') {
+if ($_ENV['WP_DEBUG'] === 'true') {
     define('WP_DEBUG', true);
     define('WP_DEBUG_DISPLAY', true);
 } else {

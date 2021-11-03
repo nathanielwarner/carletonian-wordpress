@@ -54,7 +54,7 @@ if ( ! empty( $locator_summary ) ) : ?>
 
 					$display = $comma_separated;
 	                if ( strlen( $comma_separated ) > 31 ) {
-		                $display = '<span class="cff-condensed-wrap">' . substr( $comma_separated, 0, 30 ) . '<a class="cff-locator-more" href="JavaScript:void(0);">...</a></span>';
+		                $display = '<span class="cff-condensed-wrap">' . esc_html( substr( $comma_separated, 0, 30 ) ) . '<a class="cff-locator-more" href="JavaScript:void(0);">...</a></span>';
 	                    $comma_separated = '<span class="cff-full-wrap">' . esc_html( $comma_separated ) . '</span>';
 	                } else {
 		                $comma_separated = '';

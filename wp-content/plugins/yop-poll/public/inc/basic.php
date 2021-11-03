@@ -164,22 +164,22 @@ class YOP_Poll_Basic {
 		$total_submits_text = '';
 		$total_submited_answers_text = '';
 		if ( 0 === (int)$poll->total_submits ) {
-			$total_submits_text = $messages['results']['multiple-votes'];
+			$total_submits_text = esc_html( $messages['results']['multiple-votes'] );
 		}
 		if (  ( '' === $total_submits_text ) && ( 1 == (int)$poll->total_submits ) ) {
-			$total_submits_text = $messages['results']['single-vote'];
+			$total_submits_text = esc_html( $messages['results']['single-vote'] );
 		}
 		if (  ( '' === $total_submits_text ) && ( (int)$poll->total_submits > 1 ) ) {
-			$total_submits_text = $messages['results']['multiple-votes'];
+			$total_submits_text = esc_html( $messages['results']['multiple-votes'] );
 		}
 		if ( 0 === (int)$poll->total_submited_answers ) {
-			$total_submited_answers_text = $messages['results']['multiple-answers'];
+			$total_submited_answers_text = esc_html( $messages['results']['multiple-answers'] );
 		}
 		if ( ( '' === $total_submited_answers_text ) && ( 1 == (int)$poll->total_submited_answers ) ) {
-			$total_submited_answers_text = $messages['results']['single-answer'];
+			$total_submited_answers_text = esc_html( $messages['results']['single-answer'] );
 		}
 		if ( ( '' === $total_submited_answers_text ) && ( (int)$poll->total_submited_answers > 1 ) ) {
-			$total_submited_answers_text = $messages['results']['multiple-answers'];
+			$total_submited_answers_text = esc_html( $messages['results']['multiple-answers'] );
 		}
 		if (
 			( 'yes' === $poll->meta_data['options']['poll']['showTotalVotes'] ) &&
@@ -633,8 +633,12 @@ class YOP_Poll_Basic {
 								. ' data-type="custom-field"'
 								. ' data-required="' .$element->meta_data['makeRequired'] . '"'
 								. '>'
-								. '<div class="basic-custom-field-title">'
-									. '<label>'
+								. '<div class="basic-custom-field-title" style="text-align: ' . esc_html( $poll_meta_data['style']['questions']['textAlign'] ) . '">'
+									. '<label style="'
+										. 'color:' . esc_html( $poll_meta_data['style']['questions']['textColor'] ) . ';'
+										. ' font-size:' . esc_html( $poll_meta_data['style']['questions']['textSize'] ) . 'px;'
+										. ' font-weight:' . esc_html( $poll_meta_data['style']['questions']['textWeight'] ) . ';'
+										. '">'
 										. esc_html( $element->etext )
 									. '</label>'
 								. '</div>'

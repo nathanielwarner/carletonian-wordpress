@@ -3,9 +3,9 @@ Contributors: hcabrera
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=hcabrerab%40gmail%2ecom&lc=GB&item_name=WordPress%20Popular%20Posts%20Plugin&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG_global%2egif%3aNonHosted
 Tags: popular, posts, widget, popularity, top
 Requires at least: 4.9
-Tested up to: 5.7.2
+Tested up to: 5.8
 Requires PHP: 5.4
-Stable tag: 5.3.3
+Stable tag: 5.4.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -97,45 +97,37 @@ The FAQ section has been moved [here](https://github.com/cabrerahector/wordpress
 
 == Changelog ==
 
-= 5.3.3 =
+= 5.4.2 =
 
-- Fixes a potential XSS vulnerability (props to Yu Iwama of Secure Sky Technology Inc. and the JPCERT/CC Vulnerability Coordination Group).
-- Fixes a potential code injection vulnerability (props to Jerome & NinTechNet).
-- Fixes a srcset bug that affects specific PHP locales (props to @fredel).
-- Fixes a srcset not loading images due to improper SSL/HTTPS configuration (props to @aj4h).
-- Updates ChartJS to version 2.9.4.
+- Fixes a rare issue that prevented some users from seeing the Statistics chart (thanks Zsolt!)
 
-If you're using a caching plugin flushing its cache after upgrading to this version is highly recommended.
+[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-4-widget-block-improvements-plus-prep-work-for-csp-support/#5.4.2)
 
-[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-3-improved-php-8-support-retina-display-support-and-more/#minor-updates-and-hotfixes)
+= 5.4.1 =
 
-= 5.3.2 =
+**If you're using a caching plugin flushing its cache after upgrading to this version is highly recommended.**
 
-- `wpp_get_views()`: fixed an issue where the function would return 0 views under certain conditions (thanks to everyone who helped with this!)
+- Widget block: fixes WPP block loading block editor JS files on the front end.
+- Adds filter hook to disable Block editor support.
+- Improves logic of filter hooks `wpp_excerpt_more` and `wpp_title_more`.
+- The Parameters section has been moved to the Wiki (see https://git.io/JEOrX).
 
-[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-3-improved-php-8-support-retina-display-support-and-more/#minor-updates-and-hotfixes)
+[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-4-widget-block-improvements-plus-prep-work-for-csp-support/#5.4.1)
 
-= 5.3.1 =
+= 5.4.0 =
 
-- `wpp_get_views()`: restores previous behavior where when no time range was set the function would return total views count (thanks @narolles!)
-- The WPP widget will now be loaded via AJAX by default (this affects new installs only.)
+**If you're using a caching plugin flushing its cache after upgrading to this version is highly recommended.**
 
-[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-3-improved-php-8-support-retina-display-support-and-more/#minor-updates-and-hotfixes)
+- The widget block is no longer an experimental feature and is now available to everyone (but it's still a WIP).
+- Widget block: adds AJAX support to prevent caching plugins from caching your popular posts block.
+- Widget block: adds WPML/Polylang support.
+- Widget block: fixes widget heading not displaying.
+- Widget themes: allow themes to detect the current post so it can be styled differently.
+- Fixes `wpp_excerpt_more` filter hook not working (props to SchweizerSchoggi!)
+- Adds filter hook `wpp_title_more` to allow customization of the prefix added to shortened post titles.
+- Removes inline JavaScript code from WPP's dashboard in preparation for [WordPress' CSP adoption](https://core.trac.wordpress.org/ticket/51407).
 
-= 5.3.0 =
-
-- Improves compatibility with PHP 8.
-- Allows to override widget theme stylesheets.
-- Each post can have its own thumbnail now when using WPP with WPML/Polylang.
-- Improved Polylang support.
-- Adds a loading animation when using the widget with the Ajaxify widget option enabled.
-- Fixes an issue where the plugin wouldn't generate thumbnails when filenames contains Unicode characters.
-- The /popular-posts REST API endpoint now correctly translate posts when using WPML/Polylang.
-- `wpp_get_views()` can now return views count from custom time ranges.
-- Post thumbnails will now look sharper on retina displays!
-- Other minor improvements / fixes.
-
-[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-3-improved-php-8-support-retina-display-support-and-more/)
+[Release notes](https://cabrerahector.com/wordpress/wordpress-popular-posts-5-4-widget-block-improvements-plus-prep-work-for-csp-support/)
 
 [Full Changelog](https://github.com/cabrerahector/wordpress-popular-posts/blob/master/changelog.md)
 
@@ -144,5 +136,5 @@ If you're using a caching plugin flushing its cache after upgrading to this vers
 * Flame graphic by freevector/Vecteezy.com.
 
 == Upgrade Notice ==
-= 5.3.3 =
+= 5.4.0 =
 If you're using a caching plugin flushing its cache after upgrading to this version is highly recommended.

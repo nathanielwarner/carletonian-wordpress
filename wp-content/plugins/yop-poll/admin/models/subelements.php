@@ -14,10 +14,10 @@ class YOP_POLL_SubElements {
 			$data = array(
 				'poll_id' => $sub_element->poll_id,
 				'element_id' => $sub_element->element_id,
-				'stext' => $sub_element->stext,
-				'author' => $sub_element->author,
-				'stype' => $sub_element->type,
-				'status' => $sub_element->status,
+				'stext' => sanitize_text_field( $sub_element->stext ),
+				'author' => sanitize_text_field( $sub_element->author ),
+				'stype' => sanitize_text_field( $sub_element->type ),
+				'status' => sanitize_text_field( $sub_element->status ),
 				'sorder' => $display_order,
 				'meta_data' => serialize( self::create_meta_data( $sub_element ) ),
 				'total_submits' => $sub_element->total_submits,
@@ -35,9 +35,9 @@ class YOP_POLL_SubElements {
 				$data = array(
 					'poll_id' => $poll_id,
 					'element_id' => $element_id,
-					'stext' => $sub_element->text,
-					'author' => $current_user->ID,
-					'stype' => $sub_element->type,
+					'stext' => sanitize_text_field( $sub_element->text ),
+					'author' => sanitize_text_field( $current_user->ID ),
+					'stype' => sanitize_text_field( $sub_element->type ),
 					'status' => 'active',
 					'sorder' => $display_order,
 					'meta_data' => serialize( self::create_meta_data( $sub_element ) ),
@@ -74,9 +74,9 @@ class YOP_POLL_SubElements {
 				$data = array(
 					'poll_id' => $poll_id,
 					'element_id' => $element_id,
-					'stext' => $sub_element->text,
-					'author' => $current_user->ID,
-					'stype' => $sub_element->type,
+					'stext' => sanitize_text_field( $sub_element->text ),
+					'author' => sanitize_text_field( $current_user->ID ),
+					'stype' => sanitize_text_field( $sub_element->type ),
 					'status' => 'active',
 					'sorder' => $display_order,
 					'meta_data' => serialize( self::create_meta_data( $sub_element ) ),
@@ -188,30 +188,30 @@ class YOP_POLL_SubElements {
 		switch ( $sub_element->type ) {
 			case 'text': {
 				$meta_data = array(
-					'makeDefault' => $sub_element->options->makeDefault,
-					'makeLink' => $sub_element->options->makeLink,
-					'link' => $sub_element->options->link,
-					'resultsColor' => $sub_element->options->resultsColor
+					'makeDefault' => sanitize_text_field( $sub_element->options->makeDefault ),
+					'makeLink' => sanitize_text_field( $sub_element->options->makeLink ),
+					'link' => sanitize_text_field( $sub_element->options->link ),
+					'resultsColor' => sanitize_text_field( $sub_element->options->resultsColor )
 				);
 				break;
 			}
 			case 'image': {
 				$meta_data = array(
-					'makeDefault' => $sub_element->options->makeDefault,
-					'makeLink' => $sub_element->options->makeLink,
-					'addText' => $sub_element->options->addText,
-					'text' => $sub_element->options->text,
-					'resultsColor' => $sub_element->options->resultsColor
+					'makeDefault' => sanitize_text_field( $sub_element->options->makeDefault ),
+					'makeLink' => sanitize_text_field( $sub_element->options->makeLink ),
+					'addText' => sanitize_text_field( $sub_element->options->addText ),
+					'text' => sanitize_text_field( $sub_element->options->text ),
+					'resultsColor' => sanitize_text_field( $sub_element->options->resultsColor )
 				);
 				break;
 			}
 			case 'video': {
 				$meta_data = array(
-					'makeDefault' => $sub_element->options->makeDefault,
-					'makeLink' => $sub_element->options->makeLink,
-					'addText' => $sub_element->options->addText,
-					'text' => $sub_element->options->text,
-					'resultsColor' => $sub_element->options->resultsColor
+					'makeDefault' => sanitize_text_field( $sub_element->options->makeDefault ),
+					'makeLink' => sanitize_text_field( $sub_element->options->makeLink ),
+					'addText' => sanitize_text_field( $sub_element->options->addText ),
+					'text' => sanitize_text_field( $sub_element->options->text ),
+					'resultsColor' => sanitize_text_field( $sub_element->options->resultsColor )
 				);
 				break;
 			}

@@ -3,7 +3,7 @@
 Plugin Name: Smash Balloon Custom Facebook Feed
 Plugin URI: https://smashballoon.com/custom-facebook-feed
 Description: Add completely customizable Facebook feeds to your WordPress site
-Version: 2.19.1
+Version: 4.0
 Author: Smash Balloon
 Author URI: http://smashballoon.com/
 License: GPLv2 or later
@@ -25,11 +25,13 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-define('CFFVER', '2.19.1');
+define('CFFVER', '4.0');
+define( 'WPW_SL_STORE_URL', 'https://smashballoon.com/' );
+define( 'WPW_SL_ITEM_NAME', 'Custom Facebook Feed WordPress Plugin Personal' ); //*!*Update Plugin Name at top of file*!*
 
 // Db version.
 if ( ! defined( 'CFF_DBVERSION' ) ) {
-    define( 'CFF_DBVERSION', '1.3' );
+    define( 'CFF_DBVERSION', '2.1' );
 }
 
 // Plugin Folder Path.
@@ -42,16 +44,38 @@ if ( ! defined( 'CFF_PLUGIN_URL' ) ) {
     define( 'CFF_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 }
 
+if ( ! defined( 'CFF_UPLOADS_NAME' ) ) {
+	define( 'CFF_UPLOADS_NAME', 'sb-facebook-feed-images' );
+}
+
+// Name of the database table that contains instagram posts
+if ( ! defined( 'CFF_POSTS_TABLE' ) ) {
+	define( 'CFF_POSTS_TABLE', 'cff_posts' );
+}
+
+// Name of the database table that contains feed ids and the ids of posts
+if ( ! defined( 'CFF_FEEDS_POSTS_TABLE' ) ) {
+	define( 'CFF_FEEDS_POSTS_TABLE', 'cff_feeds_posts' );
+}
+
 // Plugin File.
 if ( ! defined( 'CFF_FILE' ) ) {
     define( 'CFF_FILE',  __FILE__ );
 }
 
-if ( ! defined( 'CFF_FILE' ) ) {
+if ( ! defined( 'CFF_PLUGIN_BASE' ) ) {
     define( 'CFF_PLUGIN_BASE', plugin_basename( CFF_FILE ) );
 }
 if ( ! defined( 'CFF_FEED_LOCATOR' ) ) {
     define( 'CFF_FEED_LOCATOR', 'cff_facebook_feed_locator' );
+}
+
+if ( ! defined( 'CFF_BUILDER_DIR' ) ) {
+    define( 'CFF_BUILDER_DIR', CFF_PLUGIN_DIR . 'admin/builder/' );
+}
+
+if ( ! defined( 'CFF_BUILDER_URL' ) ) {
+    define( 'CFF_BUILDER_URL', CFF_PLUGIN_URL . 'admin/builder/' );
 }
 
 /**

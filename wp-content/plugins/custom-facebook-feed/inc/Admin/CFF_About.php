@@ -143,7 +143,7 @@ class CFF_About {
 
 		// If the user tries to load an invalid view - fallback to About Us.
 		if (
-			! in_array( $this->view, call_user_func_array( 'array_merge', $this->views ), true ) &&
+			! in_array( $this->view, call_user_func_array( 'array_merge', array_values( $this->views ) ), true ) &&
 			! has_action( 'cff_admin_about_display_tab_' . sanitize_key( $this->view ) )
 		) {
 			$this->view = self::DEFAULT_TAB;
@@ -578,7 +578,7 @@ class CFF_About {
 						if ( 'lite' === $license ) {
 							echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 						} else {
-							echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-pro&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
+							echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 						}
 						esc_html_e( 'Get Custom Facebook Feed Pro Today and Unlock all the Powerful Features', 'custom-facebook-feed' );
 						?>
@@ -758,7 +758,7 @@ class CFF_About {
 					if ( 'lite' === $license ) {
 						echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 					} else {
-						echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-pro&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
+						echo '<a href="https://smashballoon.com/custom-facebook-feed/pricing/?utm_campaign=facebook-free&utm_source=gettingstarted&utm_medium=profeaturescompare" target="_blank" rel="noopener noreferrer">';
 					}
 					printf( /* translators: %s - next license level. */
 						esc_html__( 'Get Custom Facebook Feed Pro Today and Unlock all the Powerful Features', 'custom-facebook-feed' ),

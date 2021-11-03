@@ -1,10 +1,10 @@
 === Smash Balloon Social Post Feed ===
 Contributors: smashballoon
 Tags: Facebook, Facebook feed, Facebook posts, Facebook group, Facebook page
-Requires at least: 3.0
+Requires at least: 4.1
 Requires PHP: 5.6
-Tested up to: 5.6
-Stable tag: 2.19.1
+Tested up to: 5.8
+Stable tag: 4.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -31,7 +31,7 @@ One of our main priorities has always been to make our Facebook plugin as easy a
 Use the plugin to display Facebook feeds from a Facebook page or Facebook group that you are an admin of.
 
 **Completely Customizable**
-By default the Facebook feed will adopt the styles of your WordPress theme, but your feeds can be completely customized to look however you like - with tons of options to customize every part of your Facebook posts and feed.
+By default the Facebook feed will adopt the styles of your WordPress theme, but your feeds can be completely customized to look however you like using our visual feed customizer - with tons of options to customize every part of your Facebook posts and feed.
 
 **SEO Friendly**
 The Facebook feed content is crawlable by search engines adding SEO value to your site, while other Facebook plugins embed the feed using iframes which are not crawlable.
@@ -58,8 +58,8 @@ Show and hide certain parts of each Facebook post, choose whose posts to show in
 
 In order to maintain the free version of the Custom Facebook Feed plugin on an ongoing basis, and to provide quick and effective support for free, we offer a Pro version of the plugin. Custom Facebook Feed Pro allows you to display photos, videos, the number of likes, shares, reactions and comments for each Facebook post, choose from multiple layout options, filter Facebook posts by type or #hashtag/string, load more Facebook posts into your feed, and more. [Click here](https://smashballoon.com/differences-between-the-free-version-and-pro-version-of-the-custom-facebook-feed-plugin/ "Differences between free and Pro version of Custom Facebook Feed plugin") for a full list of all differences between the Custom Facebook Feed free and Pro versions.
 
-* [Find out more about Custom Facebook Feed Pro](https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=findout "Custom Facebook Feed Pro")
-* [Try out the Custom Facebook Feed Pro demo](https://smashballoon.com/custom-facebook-feed/demo/?utm_campaign=facebook-free-readme&utm_source=proversion&utm_medium=demo "Custom Facebook Feed Pro Demo").
+* [Find out more about Custom Facebook Feed Pro](https://smashballoon.com/custom-facebook-feed/?utm_campaign=facebook-free&utm_source=readme&utm_medium=findout "Custom Facebook Feed Pro")
+* [Try out the Custom Facebook Feed Pro demo](https://smashballoondemo.com/?utm_campaign=facebook-free&utm_source=readme&utm_medium=demo "Custom Facebook Feed Pro Demo").
 
 ### Benefits of Displaying a Facebook Feed on Your Website
 
@@ -118,7 +118,7 @@ An easy way to determine whether your Facebook page is set to public is to sign 
 
 = Can I display feeds from multiple Facebook pages? =
 
-You can set your default Facebook Page ID on the Custom Facebook Feed settings page within the WordPress admin, you can then define different page IDs in the shortcodes you use to show multiple feeds from different Facebook pages. Just use the id option in your shortcode like so: [custom-facebook-feed id=another_page_id]. You can use as many shortcodes as you like with as many different IDs as you like.
+Yep! Create as many feeds as you like from different Facebook pages. Just click "Add New" to create a new feed and then embed it anywhere on your site.
 
 = Can I display feeds from a Facebook Group? =
 
@@ -253,15 +253,35 @@ The most common reason for this is that an add-on or extension you have installe
 
 1. By default the Facebook feed inherits your theme's default styles and the Facebook feed is completely responsive
 2. Completely customize the way your Facebook feed looks to perfectly match your site
-3. Use custom CSS to customize every part of the Facebook feed
-4. Display Facebook events in your Facebook feed
-5. Configuring the Custom Facebook Feed plugin
-6. General Facebook Feed options - Custom Facebook Feed Layout and Style page
-7. Facebook Feed Typography options - Custom Facebook Feed Layout and Style page
-8. Misc Facebook Feed options - Custom Facebook Feed Layout and Style page
-9. It's super easy to display your Facebook feed in any page or post
+3. Your Facebook feed is completely mobile optimized
+4. Ridiculously quick and easy to get started
+5. Customizing the Custom Facebook Feed plugin
+6. Easily manage and edit all your Facebook Feeds in one place on the All Feeds page
+7. Full translaction support so you can display your Facebook Feed in any language
+8. It's super easy to display your Facebook feed in a page, post, or widget 
 
 == Changelog ==
+= 4.0 =
+* Important: Minimum supported WordPress version has been raised from 3.0 to 4.1.
+* New: Our biggest update ever! We've completely redesigned the plugin settings from head to toe to make it easier to create, manage, and customize your Facebook feeds.
+* New: All your feeds are now displayed in one place on the "All Feeds" page. This shows a list of any existing (legacy) feeds and any new ones that you create. Note: If you updated from a version prior to v2.19 then you may need to view your feeds on your webpage so that the plugin can locate them and list them here.
+* New: Easily edit individual feed settings for new feeds instead of cumbersome shortcode options.
+* New: It's now much easier to create feeds. Just click "Add New", select your feed type, connect your account, and you're done!
+* New: Brand new feed customizer. We've completely redesigned feed customization from the ground up, reorganizing the settings to make them easier to find.
+* New: Live Feed Preview. You can now see changes you make to your feeds in real time, right in the settings page. Easily preview them on desktop, tablet, and mobile sizes.
+* New: Elementor and WordPress widgets. We've added new Elementor and WordPress widgets to make it easier to embed your feeds.
+* New: Color Scheme option. It's now easier than ever to change colors across your feed without needing to adjust individual color settings. Just set a color scheme to effortlessly change colors across your entire feed.
+* New: You can now change the number of columns in your feed across desktop, tablet, and mobile.
+* New: Easily import and export feed settings to make it simple to move feeds across sites.
+
+= 2.19.3 =
+* Fix: Fixed an issue with a blank screen sometimes appearing when trying to connect a Facebook account
+
+= 2.19.2 =
+* Tested with WordPress 5.8 update.
+* Fix: PHP error "Uncaught Error: array_merge() does not accept unknown named parameters" when visiting the "About" page using PHP 8+.
+* Fix: Fixed an issue with GDPR Cookie Consent by Web Toffee integration.
+
 = 2.19.1 =
 * New: In this update, the plugin will now use a persistent cache to store your Facebook group posts. This will help minimize any affects of a Facebook API change on May 25th which will only allow Facebook Groups to retrieve content from the past 90 days. The plugin will store your group posts in the persistent cache so that those posts can continue to be displayed beyond 90 days. This update will also make a one-time request to get the last 100 posts from your group and store those too, so that the affect of this change will be minimal for our users. Please [see here](https://smashballoon.com/doc/facebook-api-change-limits-groups-to-90-days/) for more information.
 * Tweak: Updated jQuery methods in preparation for jQuery migrate removal in an upcoming WordPress core update.

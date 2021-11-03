@@ -12,9 +12,9 @@ class YOP_POLL_Elements {
 			if ( false === self::$errors_present ) {
 				$data = array(
 					'poll_id' => $poll_id,
-					'etext' => ( isset( $element->text ) && ( '' !== $element->text ) ) ? $element->text : '',
+					'etext' => ( isset( $element->text ) && ( '' !== $element->text ) ) ? sanitize_text_field( $element->text ) : '',
 					'author' => $current_user->ID,
-					'etype' => $element->type,
+					'etype' => sanitize_text_field( $element->type ),
 					'status' => 'active',
 					'sorder' => $display_order,
 					'meta_data' => serialize( self::create_meta_data( $element ) ),
@@ -58,9 +58,9 @@ class YOP_POLL_Elements {
 			if ( false === self::$errors_present ) {
 				$data = array(
 					'poll_id' => $poll_id,
-					'etext' => ( isset( $element->text ) && ( '' !== $element->text ) ) ? $element->text : '',
+					'etext' => ( isset( $element->text ) && ( '' !== $element->text ) ) ? sanitize_text_field( $element->text ) : '',
 					'author' => $current_user->ID,
-					'etype' => $element->type,
+					'etype' => sanitize_text_field( $element->type ),
 					'status' => 'active',
 					'sorder' => $display_order,
 					'meta_data' => serialize( self::create_meta_data( $element ) ),
@@ -165,31 +165,31 @@ class YOP_POLL_Elements {
 		switch ( $element->type ) {
 			case 'text-question': {
 				$return_data = array(
-					'allowOtherAnswers' => $element->options->allowOtherAnswers,
-					'otherAnswersLabel' => $element->options->otherAnswersLabel,
-					'addOtherAnswers' => $element->options->addOtherAnswers,
-					'displayOtherAnswersInResults' => $element->options->displayOtherAnswersInResults,
-					'resultsColorForOtherAnswers' => $element->options->resultsColorForOtherAnswers,
-					'allowMultipleAnswers' => $element->options->allowMultipleAnswers,
-					'multipleAnswersMinim' => $element->options->multipleAnswersMinim,
-					'multipleAnswersMaxim' => $element->options->multipleAnswersMaxim,
-					'answersDisplay' => $element->options->answersDisplay,
-					'answersColumns' => $element->options->answersColumns,
-					'answersSort' => $element->options->answersSort
+					'allowOtherAnswers' => sanitize_text_field( $element->options->allowOtherAnswers ),
+					'otherAnswersLabel' => sanitize_text_field( $element->options->otherAnswersLabel ),
+					'addOtherAnswers' => sanitize_text_field( $element->options->addOtherAnswers ),
+					'displayOtherAnswersInResults' => sanitize_text_field( $element->options->displayOtherAnswersInResults ),
+					'resultsColorForOtherAnswers' => sanitize_text_field( $element->options->resultsColorForOtherAnswers ),
+					'allowMultipleAnswers' => sanitize_text_field( $element->options->allowMultipleAnswers ),
+					'multipleAnswersMinim' => sanitize_text_field( $element->options->multipleAnswersMinim ),
+					'multipleAnswersMaxim' => sanitize_text_field( $element->options->multipleAnswersMaxim ),
+					'answersDisplay' => sanitize_text_field( $element->options->answersDisplay ),
+					'answersColumns' => sanitize_text_field( $element->options->answersColumns ),
+					'answersSort' => sanitize_text_field( $element->options->answersSort )
 				);
 				break;
 			}
 			case 'custom-field': {
 			    if( property_exists( $element->options, 'old_id' ) ) {
                     $return_data = array(
-                        'makeRequired' => $element->options->makeRequired,
-						'old_id'       => $element->options->old_id,
-						'cType' => $element->options->cType
+                        'makeRequired' => sanitize_text_field( $element->options->makeRequired ),
+						'old_id'       => sanitize_text_field( $element->options->old_id ),
+						'cType' => sanitize_text_field( $element->options->cType )
                     );
                 } else {
                     $return_data = array(
-						'makeRequired' => $element->options->makeRequired,
-						'cType' => $element->options->cType
+						'makeRequired' => sanitize_text_field( $element->options->makeRequired ),
+						'cType' => sanitize_text_field( $element->options->cType )
                     );
                 }
 				break;

@@ -106,13 +106,17 @@ class CFF_Blocks {
 
 		);
 
+		if ( ! empty( $_GET['cff_wizard'] ) ) {
+			$shortcodeSettings = 'feed="' . (int)$_GET['cff_wizard'] . '"';
+		}
+
 		wp_localize_script(
 			'cff-feed-block',
 			'cff_block_editor',
 			array(
 				'wpnonce'  => wp_create_nonce( 'facebook-blocks' ),
 				'canShowFeed' => ! empty( $access_token ),
-				'configureLink' => get_admin_url() . '?page=cff-top',
+				'configureLink' => get_admin_url() . '?page=cff-settings',
 				'shortcodeSettings'    => $shortcodeSettings,
 				'i18n'     => $i18n,
 			)
@@ -133,6 +137,14 @@ class CFF_Blocks {
 		$return = '';
 
 		$shortcode_settings = isset( $attr['shortcodeSettings'] ) ? $attr['shortcodeSettings'] : '';
+
+		if ( empty( $cff_statuses['support_legacy_shortcode'] ) ) {
+			if ( empty( $shortcode_settings ) || strpos( $shortcode_settings, 'feed=' ) === false ){
+				$feeds = \CustomFacebookFeed\Builder\CFF_Feed_Builder::get_feed_list();
+				$feed_id = $feeds[0]['id'];
+				$shortcode_settings .= ' feed="' . (int)$feed_id . '"';
+			}
+		}
 
 		$shortcode_settings = str_replace(array( '[custom-facebook-feed', ']' ), '', $shortcode_settings);
 
