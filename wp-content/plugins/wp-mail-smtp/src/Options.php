@@ -72,6 +72,10 @@ class Options {
 			'api_key',
 			'domain',
 		],
+		'sparkpost'   => [
+			'api_key',
+			'region',
+		],
 		'postmark'    => [
 			'server_api_token',
 			'message_stream',
@@ -101,6 +105,29 @@ class Options {
 	];
 
 	/**
+	 * List of all mailers (except PHP default mailer 'mail').
+	 *
+	 * @since 3.3.0
+	 *
+	 * @var string[]
+	 */
+	public static $mailers = [
+		'smtpcom',
+		'sendinblue',
+		'amazonses',
+		'gmail',
+		'mailgun',
+		'outlook',
+		'postmark',
+		'sendgrid',
+		'sparkpost',
+		'zoho',
+		'smtp',
+		'pepipost',
+		'pepipostapi',
+	];
+
+	/**
 	 * That's where plugin options are saved in wp_options table.
 	 *
 	 * @since 1.0.0
@@ -116,28 +143,22 @@ class Options {
 	 *
 	 * @var array
 	 */
-	private $_options = array();
+	private $_options = [];
 
 	/**
 	 * Init the Options class.
 	 * TODO: add a flag to process without retrieving const values.
 	 *
 	 * @since 1.0.0
+	 * @since 3.3.0 Deprecated instantiation via new keyword. `Options::init()` must be used.
 	 */
 	public function __construct() {
+
 		$this->populate_options();
 	}
 
 	/**
-	 * Initialize all the options, used for chaining.
-	 *
-	 * One-liner:
-	 *      Options::init()->get('smtp', 'host');
-	 *      Options::init()->is_mailer_active( 'pepipost' );
-	 *
-	 * Or multiple-usage:
-	 *      $options = new Options();
-	 *      $options->get('smtp', 'host');
+	 * Initialize all the options.
 	 *
 	 * @since 1.0.0
 	 *
@@ -361,7 +382,7 @@ class Options {
 				break;
 
 			case 'region':
-				$value = $group === 'mailgun' ? 'US' : $value;
+				$value = $group === 'mailgun' || $group === 'sparkpost' ? 'US' : $value;
 				break;
 
 			case 'auth':
@@ -564,6 +585,20 @@ class Options {
 					case 'domain':
 						/** @noinspection PhpUndefinedConstantInspection */
 						$return = $this->is_const_defined( $group, $key ) ? WPMS_SENDGRID_DOMAIN : $value;
+						break;
+				}
+
+				break;
+
+			case 'sparkpost':
+				switch ( $key ) {
+					case 'api_key':
+						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
+						$return = $this->is_const_defined( $group, $key ) ? WPMS_SPARKPOST_API_KEY : $value;
+						break;
+					case 'region':
+						/** No inspection comment @noinspection PhpUndefinedConstantInspection */
+						$return = $this->is_const_defined( $group, $key ) ? WPMS_SPARKPOST_REGION : $value;
 						break;
 				}
 
@@ -830,6 +865,18 @@ class Options {
 
 				break;
 
+			case 'sparkpost':
+				switch ( $key ) {
+					case 'api_key':
+						$return = defined( 'WPMS_SPARKPOST_API_KEY' ) && WPMS_SPARKPOST_API_KEY;
+						break;
+					case 'region':
+						$return = defined( 'WPMS_SPARKPOST_REGION' ) && WPMS_SPARKPOST_REGION;
+						break;
+				}
+
+				break;
+
 			case 'postmark':
 				switch ( $key ) {
 					case 'server_api_token':
@@ -951,7 +998,7 @@ class Options {
 	 *
 	 * @return array
 	 */
-	private function process_generic_options( $options ) { // phpcs:ignore
+	private function process_generic_options( $options ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.NestingLevel.MaxExceeded
 
 		foreach ( (array) $options as $group => $keys ) {
 			foreach ( $keys as $option_name => $option_value ) {
@@ -959,8 +1006,14 @@ class Options {
 					case 'mail':
 						switch ( $option_name ) {
 							case 'from_name':
-							case 'mailer':
 								$options[ $group ][ $option_name ] = sanitize_text_field( $option_value );
+								break;
+							case 'mailer':
+								$mailer = sanitize_text_field( $option_value );
+
+								$mailer = in_array( $mailer, self::$mailers, true ) ? $mailer : 'mail';
+
+								$options[ $group ][ $option_name ] = $mailer;
 								break;
 							case 'from_email':
 								if ( filter_var( $option_value, FILTER_VALIDATE_EMAIL ) ) {
@@ -1014,12 +1067,12 @@ class Options {
 	 *
 	 * @return array
 	 */
-	private function process_mailer_specific_options( $options ) { // phpcs:ignore
+	private function process_mailer_specific_options( $options ) { // phpcs:ignore Generic.Metrics.CyclomaticComplexity.MaxExceeded, Generic.Metrics.NestingLevel.MaxExceeded
 
 		if (
 			! empty( $options['mail']['mailer'] ) &&
 			isset( $options[ $options['mail']['mailer'] ] ) &&
-			in_array( $options['mail']['mailer'], [ 'pepipost', 'pepipostapi', 'smtp', 'sendgrid', 'postmark', 'smtpcom', 'sendinblue', 'mailgun', 'gmail', 'outlook', 'zoho' ], true )
+			in_array( $options['mail']['mailer'], self::$mailers, true )
 		) {
 
 			$mailer = $options['mail']['mailer'];
@@ -1029,7 +1082,7 @@ class Options {
 					case 'host': // smtp.
 					case 'user': // smtp.
 					case 'encryption': // smtp.
-					case 'region': // mailgun/amazonses.
+					case 'region': // mailgun/amazonses/sparkpost.
 						$options[ $mailer ][ $option_name ] = $this->is_const_defined( $mailer, $option_name ) ? '' : sanitize_text_field( $option_value );
 						break; // smtp.
 					case 'port':
@@ -1050,11 +1103,11 @@ class Options {
 						if ( $mailer === 'smtp' && ! $this->is_const_defined( 'smtp', 'pass' ) ) {
 							try {
 								$options[ $mailer ][ $option_name ] = Crypto::encrypt( $option_value );
-							} catch ( \Exception $e ) {} // phpcs:ignore
+							} catch ( \Exception $e ) {} // phpcs:ignore Generic.CodeAnalysis.EmptyStatement.DetectedCatch, Squiz.Commenting.EmptyCatchComment.Missing, Squiz.ControlStructures.ControlSignature.NewlineAfterOpenBrace
 						}
 						break;
 
-					case 'api_key': // mailgun/sendgrid/sendinblue/pepipostapi/smtpcom.
+					case 'api_key': // mailgun/sendgrid/sendinblue/pepipostapi/smtpcom/sparkpost.
 					case 'domain': // mailgun/zoho/sendgrid/sendinblue.
 					case 'client_id': // gmail/outlook/amazonses/zoho.
 					case 'client_secret': // gmail/outlook/amazonses/zoho.

@@ -8,7 +8,7 @@ class YOP_POLL_Elements {
 		$display_order = 1;
 		$element_id = 0;
 		$current_user = wp_get_current_user();
-		foreach( $elements as $element ) {
+		foreach ( $elements as $element ) {
 			if ( false === self::$errors_present ) {
 				$data = array(
 					'poll_id' => $poll_id,
@@ -27,17 +27,18 @@ class YOP_POLL_Elements {
 				}
 				if ( false !== $GLOBALS['wpdb']->insert( $GLOBALS['wpdb']->yop_poll_elements, $data ) ) {
 					$element_id = $GLOBALS['wpdb']->insert_id;
-					if (  ( 'text-question' == $element->type ) || ( 'media-question' === $element->type ) ) {
-						if( $is_imported )
+					if ( ( 'text-question' == $element->type ) || ( 'media-question' === $element->type ) ) {
+						if ( $is_imported ) {
 							$sub_elements_result = YOP_Poll_SubElements::add( $poll_id, $element_id, $element->answers, true );
-						else
+						} else {
 							$sub_elements_result = YOP_Poll_SubElements::add( $poll_id, $element_id, $element->answers );
+						}
 						self::$errors_present = $sub_elements_result['errors_present'];
 						self::$error_text = $sub_elements_result['error_text'];
 					}
 				} else {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error adding element', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error adding element', 'yop-poll' );
 				}
 				$display_order++;
 			}
@@ -54,7 +55,7 @@ class YOP_POLL_Elements {
 		$current_user = wp_get_current_user();
 		$new_elements = [];
 		$i = 0;
-		foreach( $elements as $element ) {
+		foreach ( $elements as $element ) {
 			if ( false === self::$errors_present ) {
 				$data = array(
 					'poll_id' => $poll_id,
@@ -92,7 +93,7 @@ class YOP_POLL_Elements {
 					}
 				} else {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error updating element', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error updating element', 'yop-poll' );
 				}
 				if ( isset( $element->answersRemoved ) && ( '' !== $element->answersRemoved ) ) {
 					$sub_elements_removed = explode( ',', $element->answersRemoved );
@@ -106,12 +107,12 @@ class YOP_POLL_Elements {
 		return array(
 			'errors_present' => self::$errors_present,
 			'error_text' => self::$error_text,
-			'new_elements'=> $new_elements,
+			'new_elements' => $new_elements,
 			'new_subelements' => $sub_elements_result['new_subelements']
 		);
 	}
 	public static function delete( $poll_id, $element_id ) {
-		if ( 0 < intval( $element_id) ) {
+		if ( 0 < intval( $element_id ) ) {
 			$data = array(
 				'status' => 'deleted',
 				'sorder' => '0'
@@ -120,17 +121,17 @@ class YOP_POLL_Elements {
 				$GLOBALS['wpdb']->yop_poll_elements,
 				$data,
 				array(
-					'id' => $element_id,
-					'poll_id' => $poll_id
+					'id' => sanitize_text_field( $element_id ),
+					'poll_id' => sanitize_text_field( $poll_id )
 				)
 			);
 			if ( false === $delete_result ) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Error deleting element', 'yop-poll' );
+				self::$error_text = esc_html__( 'Error deleting element', 'yop-poll' );
 			}
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Invalid element id', 'yop-poll' );
+			self::$error_text = esc_html__( 'Invalid element id', 'yop-poll' );
 		}
 		return array(
 			'errors_present' => self::$errors_present,
@@ -146,14 +147,14 @@ class YOP_POLL_Elements {
 			$GLOBALS['wpdb']->yop_poll_elements,
 			$data,
 			array(
-				'poll_id' => $poll_id
+				'poll_id' => sanitize_text_field( $poll_id )
 			)
 		);
 		if ( false !== $delete_result ) {
 			self::$errors_present = false;
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error deleting element', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error deleting element', 'yop-poll' );
 		}
 		return array(
 			'errors_present' => self::$errors_present,
@@ -180,7 +181,7 @@ class YOP_POLL_Elements {
 				break;
 			}
 			case 'custom-field': {
-			    if( property_exists( $element->options, 'old_id' ) ) {
+			    if ( property_exists( $element->options, 'old_id' ) ) {
                     $return_data = array(
                         'makeRequired' => sanitize_text_field( $element->options->makeRequired ),
 						'old_id'       => sanitize_text_field( $element->options->old_id ),
@@ -238,7 +239,8 @@ class YOP_POLL_Elements {
 	public static function clone_all( $old_poll_id, $new_poll_id ) {
 		$current_user = wp_get_current_user();
 		$query = $GLOBALS['wpdb']->prepare(
-			"SELECT * from {$GLOBALS['wpdb']->yop_poll_elements} WHERE `poll_id`=%s", $old_poll_id
+			"SELECT * from {$GLOBALS['wpdb']->yop_poll_elements} WHERE `poll_id`=%s",
+			$old_poll_id
 		);
 		$elements = $GLOBALS['wpdb']->get_results( $query, OBJECT );
 		if ( null !== $elements ) {
@@ -263,7 +265,7 @@ class YOP_POLL_Elements {
 					}
 				} else {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error adding element', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error adding element', 'yop-poll' );
 				}
 			}
 		}
@@ -309,7 +311,7 @@ class YOP_POLL_Elements {
 				}
 			}
 		}
-		$sub_elements = json_decode( json_encode( $subelements), true );
+		$sub_elements = json_decode( json_encode( $subelements ), true );
 		$order_by = array();
 		foreach ( $sub_elements as $key => $row ) {
 			$order_by['sorder'][$key] = $row['sorder'];
@@ -317,11 +319,11 @@ class YOP_POLL_Elements {
 			$order_by['total_submits'][$key] = $row['total_submits'];
 		}
 		if ( count( $sub_elements ) > 0 ) {
-			array_multisort( $order_by[$sort_params['order_by']], $sort_params['sort_order'], SORT_NATURAL|SORT_FLAG_CASE, $sub_elements );
+			array_multisort( $order_by[$sort_params['order_by']], $sort_params['sort_order'], SORT_NATURAL | SORT_FLAG_CASE, $sub_elements );
 		}
 		$subelements_sorted = array();
 		$i = 0;
-		foreach( $sub_elements as $sub_element ) {
+		foreach ( $sub_elements as $sub_element ) {
 			$subelements_sorted[] = (object) [
 				'id' => $sub_element['id'],
             	'poll_id' => $sub_element['poll_id'],

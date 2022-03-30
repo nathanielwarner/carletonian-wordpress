@@ -35,8 +35,11 @@
                                     <span class="sb-small sb-lighter" v-html="source.account_type"></span>
                                 </div>
                                 <div v-if="source.error !== ''" class="sb-source-error-wrap">
-                                    <span v-html="genericText.invalid"></span><a href="#" @click.prevent.default="$parent.activateView('sourcePopupType', 'creation')" v-html="genericText.reconnect"></a>
+                                    <span v-html="genericText.invalid"></span><a href="#" @click.prevent.default="$parent.activateView('sourcePopupType', 'creationRedirect')" v-html="genericText.reconnect"></a>
                                 </div>
+								<div v-if="source.error === '' && typeof( source.needs_update ) !== 'undefined' && source.needs_update" class="sb-source-error-wrap">
+									<span v-html="genericText.updateRequired"></span><a href="#" @click.prevent.default="$parent.activateView('sourcePopupType','creationRedirect')" v-html="genericText.reconnect"></a>
+								</div>
                             </div>
                         </div>
                     </div>
@@ -318,6 +321,7 @@
                                 <p class="sb-step-text sb-small-p"><span v-html="addAppStep"></span><span v-if="index === 0"><a id="cff-group-admin-link" :href="'https://www.facebook.com/groups/'+selectedSourcesToConnect[0]+'/apps/store'" target="_blank" rel="noopener noreferrer" v-html="$parent.genericText.clickingHere"></a></span></p>
                             </div>
                         </div>
+                        <p style="margin-top: 25px;"><span style="color: red; font-weight: bold;">Important:</span> {{selectSourceScreen.modal.reconnectingAppDir}}</p>
                     </div>
 
                     <div v-if="typeof window.cffSelected !== 'undefined' && window.cffSelected.indexOf(false) > -1 " class="sb-directions-wrap">

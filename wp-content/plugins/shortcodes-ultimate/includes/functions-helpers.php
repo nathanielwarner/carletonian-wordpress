@@ -9,6 +9,15 @@
  */
 
 /**
+ * Retrieves instance of the main plugin class.
+ *
+ * @since  5.0.4
+ */
+function shortcodes_ultimate() {
+	return Shortcodes_Ultimate::get_instance();
+}
+
+/**
  * Retrieve the URL of the plugin directory (with trailing slash).
  *
  * @since  5.0.5
@@ -80,7 +89,7 @@ function su_get_config( $key = null, $default = false ) {
  * @param string  $message Error message.
  * @return string          Error message markup.
  */
-function su_error_message( $title = '', $message = '' ) {
+function su_error_message( $title = '', $message = '', $echo = false ) {
 
 	if ( ! su_current_user_can_insert() ) {
 		return;
@@ -90,11 +99,19 @@ function su_error_message( $title = '', $message = '' ) {
 		$title = "<strong>${title}:</strong> ";
 	}
 
-	return sprintf(
+	$output = sprintf(
 		'<p class="su-error" style="padding:5px 10px;color:#8f3a35;border-left:3px solid #8f3a35;background:#fff7f6;line-height:1.35">%1$s%2$s</p>',
 		$title,
 		$message
 	);
+
+	if ( $echo ) {
+		// phpcs:disable
+		echo $output;
+		// phpcs:enable
+	}
+
+	return $output;
 
 }
 
@@ -377,4 +394,45 @@ function su_get_current_url() {
 
 function su_is_unsafe_features_enabled() {
 	return 'on' === get_option( 'su_option_unsafe_features' );
+}
+
+/**
+ * Helper function to get contents of a template file and pass data to it
+ *
+ * Examples of use
+ *
+ * su_get_partial( 'includes/partials/partial.php' );
+ * su_get_partial( 'includes/partials/partial.php', [ 'foo' => 'bar' ] );
+ */
+function su_get_partial( $file, $data = array() ) {
+
+	$plugin_dir = plugin_dir_path( SU_PLUGIN_FILE );
+	$file       = realpath( $plugin_dir . $file );
+
+	if ( strpos( $file, $plugin_dir ) !== 0 ) {
+		return '';
+	}
+
+	if ( ! file_exists( $file ) ) {
+		return '';
+	}
+
+	ob_start();
+	include $file;
+	return ob_get_clean();
+
+}
+
+/**
+ * Helper function to display contents of a template file and pass data to it
+ *
+ * Examples of use
+ *
+ * su_partial( 'includes/partials/partial.php' );
+ * su_partial( 'includes/partials/partial.php', [ 'foo' => 'bar' ] );
+ */
+function su_partial( $file, $data = array() ) {
+	// phpcs:disable
+	echo su_get_partial( $file, $data );
+	// phpcs:enable
 }

@@ -10,7 +10,7 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-poll-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-poll-container-content" aria-expanded="true" aria-controls="style-poll-container-content">
-							<?php _e( 'Poll Container', 'yop-poll' );?>
+							<?php esc_html_e( 'Poll Container', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
@@ -19,70 +19,70 @@
 						<div class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Background color', 'yop-poll' );?>
+									<?php esc_html_e( 'Background color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" name="poll[background-color]" value="<?php echo esc_html( $poll->meta_data['style']['poll']['backgroundColor'] );?>" class="form-control poll-background-color" style="width:100%"/>
+									<input type="text" name="poll[background-color]" value="<?php echo esc_attr( $poll->meta_data['style']['poll']['backgroundColor'] ); ?>" class="form-control poll-background-color" style="width:100%"/>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Thickness', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Thickness', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="poll[border-size]" value="<?php echo esc_html( $poll->meta_data['style']['poll']['borderSize'] );?>" class="form-control poll-border-size" />
+										<input type="text" name="poll[border-size]" value="<?php echo esc_attr( $poll->meta_data['style']['poll']['borderSize'] ); ?>" class="form-control poll-border-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" name="poll[border-color]" value="<?php echo esc_html( $poll->meta_data['style']['poll']['borderColor'] );?>" class="form-control poll-border-color" />
+									<input type="text" name="poll[border-color]" value="<?php echo esc_attr( $poll->meta_data['style']['poll']['borderColor'] ); ?>" class="form-control poll-border-color" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Radius', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Radius', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-						                <input type="text" name="poll[border-radius]" value="<?php echo esc_html( $poll->meta_data['style']['poll']['borderRadius'] );?>" class="form-control poll-border-radius" />
+						                <input type="text" name="poll[border-radius]" value="<?php echo esc_attr( $poll->meta_data['style']['poll']['borderRadius'] ); ?>" class="form-control poll-border-radius" />
 						                <span class="input-group-addon">px</span>
 						            </div>
 								</div>
 							</div>
 							<?php
-							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) || ( '' == $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) {
+							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) || ( '' === $poll->meta_data['style']['poll']['paddingLeftRight'] ) ) {
 								$poll->meta_data['style']['poll']['paddingLeftRight'] = '0';
 							}
 							?>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Left/Right', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Left/Right', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="poll[padding-left-right]" value="<?php echo esc_html( $poll->meta_data['style']['poll']['paddingLeftRight'] );?>" class="form-control poll-padding-left-right" />
+										<input type="text" name="poll[padding-left-right]" value="<?php echo esc_attr( $poll->meta_data['style']['poll']['paddingLeftRight'] ); ?>" class="form-control poll-padding-left-right" />
 										<span class="input-group-addon">px</span>
 									</div>
 								</div>
 							</div>
 							<?php
-							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) || ( '' == $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) {
+							if ( ( false === isset( $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) || ( '' === $poll->meta_data['style']['poll']['paddingTopBottom'] ) ) {
 								$poll->meta_data['style']['poll']['paddingTopBottom'] = '0';
 							}
 							?>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="poll[padding-top-bottom]" value="<?php echo esc_html( $poll->meta_data['style']['poll']['paddingTopBottom'] );?>" class="form-control poll-padding-top-bottom" />
+										<input type="text" name="poll[padding-top-bottom]" value="<?php echo esc_attr( $poll->meta_data['style']['poll']['paddingTopBottom'] ); ?>" class="form-control poll-padding-top-bottom" />
 										<span class="input-group-addon">px</span>
 									</div>
 								</div>
@@ -95,7 +95,7 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-questions-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-questions-container-content" aria-expanded="true" aria-controls="style-questions-container-content">
-							<?php _e( 'Questions', 'yop-poll' );?>
+							<?php esc_html_e( 'Questions', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
@@ -104,15 +104,15 @@
 						<div class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" name="questions[text-color]" value="<?php echo esc_html( $poll->meta_data['style']['questions']['textColor'] );?>" class="form-control questions-text-color" />
+									<input type="text" name="questions[text-color]" value="<?php echo esc_attr( $poll->meta_data['style']['questions']['textColor'] ); ?>" class="form-control questions-text-color" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( true === in_array( $poll->meta_data['style']['questions']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
@@ -134,14 +134,14 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="questions[text-size]" value="<?php echo esc_html( $poll->meta_data['style']['questions']['textSize'] );?>" class="form-control questions-text-size" />
+										<input type="text" name="questions[text-size]" value="<?php echo esc_attr( $poll->meta_data['style']['questions']['textSize'] ); ?>" class="form-control questions-text-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( true === isset( $poll->meta_data['style']['questions']['textWeight'] ) ) && ( '' !== $poll->meta_data['style']['questions']['textWeight'] ) ) {
@@ -159,14 +159,14 @@
 								?>
 								<div class="col-md-10">
 									<select class="questions-text-weight admin-select" style="width:100%">
-						                <option value="normal" <?php echo $questions_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold" <?php echo $questions_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" <?php echo esc_attr( $questions_text_weight_normal ); ?>><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold" <?php echo esc_attr( $questions_text_weight_bold ); ?>><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Align', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Align', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( true === isset( $poll->meta_data['style']['questions']['textAlign'] ) ) && ( '' !== $poll->meta_data['style']['questions']['textAlign'] ) ) {
@@ -204,9 +204,9 @@
 								?>
 								<div class="col-md-10">
 									<select class="questions-text-align admin-select" style="width:100%">
-						                <option value="left" <?php echo $questions_text_align_left;?>><?php _e( 'Left', 'yop-poll' );?></option>
-						                <option value="center" <?php echo $questions_text_align_center;?>><?php _e( 'Center', 'yop-poll' );?></option>
-										<option value="right" <?php echo $questions_text_align_right;?>><?php _e( 'Right', 'yop-poll' );?></option>
+						                <option value="left" <?php echo esc_attr( $questions_text_align_left ); ?>><?php esc_html_e( 'Left', 'yop-poll' ); ?></option>
+						                <option value="center" <?php echo esc_attr( $questions_text_align_center ); ?>><?php esc_html_e( 'Center', 'yop-poll' ); ?></option>
+										<option value="right" <?php echo esc_attr( $questions_text_align_right ); ?>><?php esc_html_e( 'Right', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -218,7 +218,7 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-answers-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-answers-container-content" aria-expanded="true" aria-controls="style-answers-container-content">
-							<?php _e( 'Answers', 'yop-poll' );?>
+							<?php esc_html_e( 'Answers', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
@@ -227,7 +227,7 @@
 						<div class="form-horizontal">
 							<div class="form-group hide">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Skin', 'yop-poll' );?>
+									<?php esc_html_e( 'Skin', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<?php
@@ -250,15 +250,15 @@
 									}
 									?>
 									<select class="answers-skin admin-select" style="width:100%">
-						                <option value="minimal" <?php echo $answers_skin_minimal;?>><?php _e( 'Minimal', 'yop-poll' );?></option>
-						                <option value="square"<?php echo $answers_skin_square;?>><?php _e( 'Square', 'yop-poll' );?></option>
-						                <option value="flat"<?php echo $answers_skin_flat;?>><?php _e( 'Flat', 'yop-poll' );?></option>
+						                <option value="minimal" <?php echo esc_attr( $answers_skin_minimal ); ?>><?php esc_html_e( 'Minimal', 'yop-poll' ); ?></option>
+						                <option value="square"<?php echo esc_attr( $answers_skin_square ); ?>><?php esc_html_e( 'Square', 'yop-poll' ); ?></option>
+						                <option value="flat"<?php echo esc_attr( $answers_skin_flat ); ?>><?php esc_html_e( 'Flat', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
 							<div class="form-group hide">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Color Scheme', 'yop-poll' );?>
+									<?php esc_html_e( 'Color Scheme', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<?php
@@ -320,22 +320,22 @@
 									}
 									?>
 									<ul class="color-scheme">
-						                <li class="<?php echo $color_scheme_black;?>" title="Black" data-id="black"></li>
-						                <li class="red <?php echo $color_scheme_red;?>" title="Red" data-id="red"></li>
-						                <li class="green <?php echo $color_scheme_green;?>" title="Green" data-id="green"></li>
-						                <li class="blue <?php echo $color_scheme_blue;?>" title="Blue" data-id="blue"></li>
-						                <li class="aero <?php echo $color_scheme_aero;?>" title="Aero" data-id="aero"></li>
-						                <li class="grey <?php echo $color_scheme_grey;?>" title="Grey" data-id="grey"></li>
-						                <li class="orange <?php echo $color_scheme_orange;?>" title="Orange" data-id="orange"></li>
-						                <li class="yellow <?php echo $color_scheme_yellow;?>" title="Yellow" data-id="yellow"></li>
-						                <li class="pink <?php echo $color_scheme_pink;?>" title="Pink" data-id="pink"></li>
-						                <li class="purple <?php echo $color_scheme_purple;?>" title="Purple" data-id="purple"></li>
+						                <li class="<?php echo esc_attr( $color_scheme_black ); ?>" title="Black" data-id="black"></li>
+						                <li class="red <?php echo esc_attr( $color_scheme_red ); ?>" title="Red" data-id="red"></li>
+						                <li class="green <?php echo esc_attr( $color_scheme_green ); ?>" title="Green" data-id="green"></li>
+						                <li class="blue <?php echo esc_attr( $color_scheme_blue ); ?>" title="Blue" data-id="blue"></li>
+						                <li class="aero <?php echo esc_attr( $color_scheme_aero ); ?>" title="Aero" data-id="aero"></li>
+						                <li class="grey <?php echo esc_attr( $color_scheme_grey ); ?>" title="Grey" data-id="grey"></li>
+						                <li class="orange <?php echo esc_attr( $color_scheme_orange ); ?>" title="Orange" data-id="orange"></li>
+						                <li class="yellow <?php echo esc_attr( $color_scheme_yellow ); ?>" title="Yellow" data-id="yellow"></li>
+						                <li class="pink <?php echo esc_attr( $color_scheme_pink ); ?>" title="Pink" data-id="pink"></li>
+						                <li class="purple <?php echo esc_attr( $color_scheme_purple ); ?>" title="Purple" data-id="purple"></li>
 					                </ul>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Left/Right', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Left/Right', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( false === isset( $poll->meta_data['style']['answers']['paddingLeftRight'] ) ) || ( '' === $poll->meta_data['style']['answers']['paddingLeftRight'] ) ) {
@@ -344,14 +344,14 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="answers[padding-left-right]" value="<?php echo esc_html( $poll->meta_data['style']['answers']['paddingLeftRight'] );?>" class="form-control answers-padding-left-right" />
+										<input type="text" name="answers[padding-left-right]" value="<?php echo esc_attr( $poll->meta_data['style']['answers']['paddingLeftRight'] ); ?>" class="form-control answers-padding-left-right" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( false === isset( $poll->meta_data['style']['answers']['paddingTopBottom'] ) ) || ( '' === $poll->meta_data['style']['answers']['paddingTopBottom'] ) ) {
@@ -360,22 +360,22 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="answers[padding-top-bottom]" value="<?php echo esc_html( $poll->meta_data['style']['answers']['paddingTopBottom'] );?>" class="form-control answers-padding-top-bottom" />
+										<input type="text" name="answers[padding-top-bottom]" value="<?php echo esc_attr( $poll->meta_data['style']['answers']['paddingTopBottom'] ); ?>" class="form-control answers-padding-top-bottom" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" name="answers[text-color]" value="<?php echo esc_html( $poll->meta_data['style']['answers']['textColor'] );?>" class="form-control answers-text-color" />
+									<input type="text" name="answers[text-color]" value="<?php echo esc_attr( $poll->meta_data['style']['answers']['textColor'] ); ?>" class="form-control answers-text-color" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( true === in_array( $poll->meta_data['style']['answers']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
@@ -397,14 +397,14 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="answers[text-size]" value="<?php echo esc_html( $poll->meta_data['style']['answers']['textSize'] );?>" class="form-control answers-text-size" />
+										<input type="text" name="answers[text-size]" value="<?php echo esc_attr( $poll->meta_data['style']['answers']['textSize'] ); ?>" class="form-control answers-text-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( true === isset( $poll->meta_data['style']['answers']['textWeight'] ) ) && ( '' !== $poll->meta_data['style']['answers']['textWeight'] ) ) {
@@ -422,8 +422,8 @@
 								?>
 								<div class="col-md-10">
 									<select class="answers-text-weight admin-select" style="width:100%">
-						                <option value="normal" <?php echo $answers_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold" <?php echo $answers_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" <?php echo esc_attr( $answers_text_weight_normal ); ?>><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold" <?php echo esc_attr( $answers_text_weight_bold ); ?>><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -435,7 +435,7 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-buttons-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-buttons-container-content" aria-expanded="true" aria-controls="style-buttons-container-content">
-							<?php _e( 'Buttons', 'yop-poll' );?>
+							<?php esc_html_e( 'Buttons', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
@@ -444,85 +444,85 @@
 						<div class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Background color', 'yop-poll' );?>
+									<?php esc_html_e( 'Background color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" name="buttons[background-color]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['backgroundColor'] );?>" class="form-control buttons-background-color" />
+									<input type="text" name="buttons[background-color]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['backgroundColor'] ); ?>" class="form-control buttons-background-color" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Thickness', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Thickness', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="buttons[border-size]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderSize'] );?>" class="form-control buttons-border-size" />
+										<input type="text" name="buttons[border-size]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['borderSize'] ); ?>" class="form-control buttons-border-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" name="buttons[border-color]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderColor'] );?>" class="form-control buttons-border-color" />
+									<input type="text" name="buttons[border-color]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['borderColor'] ); ?>" class="form-control buttons-border-color" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Radius', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Radius', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="buttons[border-radius]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['borderRadius'] );?>" class="form-control buttons-border-radius" />
+										<input type="text" name="buttons[border-radius]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['borderRadius'] ); ?>" class="form-control buttons-border-radius" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Left/Right', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Left/Right', 'yop-poll' ); ?>
 								</div>
 								<?php
-								if ( ( false === isset( $poll->meta_data['style']['buttons']['paddingLeftRight']  ) ) || ( '' === $poll->meta_data['style']['buttons']['paddingLeftRight']  ) ) {
+								if ( ( false === isset( $poll->meta_data['style']['buttons']['paddingLeftRight'] ) ) || ( '' === $poll->meta_data['style']['buttons']['paddingLeftRight'] ) ) {
 									$poll->meta_data['style']['buttons']['paddingLeftRight'] = '20';
 								}
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="buttons[padding-left-right]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['paddingLeftRight'] );?>" class="form-control buttons-padding-left-right" />
+										<input type="text" name="buttons[padding-left-right]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['paddingLeftRight'] ); ?>" class="form-control buttons-padding-left-right" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<?php
-								if ( ( false === isset( $poll->meta_data['style']['buttons']['paddingTopBottom']  ) ) || ( '' === $poll->meta_data['style']['buttons']['paddingTopBottom']  ) ) {
+								if ( ( false === isset( $poll->meta_data['style']['buttons']['paddingTopBottom'] ) ) || ( '' === $poll->meta_data['style']['buttons']['paddingTopBottom'] ) ) {
 									$poll->meta_data['style']['buttons']['paddingTopBottom'] = '10';
 								}
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="buttons[padding-top-bottom]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['paddingTopBottom'] );?>" class="form-control buttons-padding-top-bottom" />
+										<input type="text" name="buttons[padding-top-bottom]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['paddingTopBottom'] ); ?>" class="form-control buttons-padding-top-bottom" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" name="buttons[text-color]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['textColor'] );?>" class="form-control buttons-text-color" />
+									<input type="text" name="buttons[text-color]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['textColor'] ); ?>" class="form-control buttons-text-color" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( true === in_array( $poll->meta_data['style']['buttons']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
@@ -544,14 +544,14 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="buttons[text-size]" value="<?php echo esc_html( $poll->meta_data['style']['buttons']['textSize'] );?>" class="form-control buttons-text-size" />
+										<input type="text" name="buttons[text-size]" value="<?php echo esc_attr( $poll->meta_data['style']['buttons']['textSize'] ); ?>" class="form-control buttons-text-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( true === isset( $poll->meta_data['style']['buttons']['textWeight'] ) ) && ( '' !== $poll->meta_data['style']['buttons']['textWeight'] ) ) {
@@ -569,8 +569,8 @@
 								?>
 								<div class="col-md-10">
 									<select class="buttons-text-weight admin-select" style="width:100%">
-						                <option value="normal" <?php echo $buttons_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold" <?php echo $buttons_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" <?php echo esc_attr( $buttons_text_weight_normal ); ?>><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold" <?php echo esc_attr( $buttons_text_weight_bold ); ?>><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -582,7 +582,7 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-errors-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-errors-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
-							<?php _e( 'Messages', 'yop-poll' );?>
+							<?php esc_html_e( 'Messages', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
@@ -591,7 +591,7 @@
 						<div class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color for success', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color for success', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( false === isset( $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] ) ) || ( '' === $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] ) ) {
@@ -599,12 +599,12 @@
 								}
 								?>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] );?>" class="form-control errors-border-left-color-for-success" />
+									<input type="text" value="<?php echo esc_attr( $poll->meta_data['style']['errors']['borderLeftColorForSuccess'] ); ?>" class="form-control errors-border-left-color-for-success" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color for error', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color for error', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( false === isset( $poll->meta_data['style']['errors']['borderLeftColorForError'] ) ) || ( '' === $poll->meta_data['style']['errors']['borderLeftColorForError'] ) ) {
@@ -612,12 +612,12 @@
 								}
 								?>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['errors']['borderLeftColorForError'] );?>" class="form-control errors-border-left-color-for-error" />
+									<input type="text" value="<?php echo esc_attr( $poll->meta_data['style']['errors']['borderLeftColorForError'] ); ?>" class="form-control errors-border-left-color-for-error" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Left Thickness', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Left Thickness', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( false === isset( $poll->meta_data['style']['errors']['borderLeftSize'] ) ) || ( '' === $poll->meta_data['style']['errors']['borderLeftSize'] ) ) {
@@ -626,14 +626,14 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['errors']['borderLeftSize'] );?>" class="form-control errors-border-left-size" />
+										<input type="text" value="<?php echo esc_attr( $poll->meta_data['style']['errors']['borderLeftSize'] ); ?>" class="form-control errors-border-left-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( false === isset( $poll->meta_data['style']['errors']['paddingTopBottom'] ) ) || ( '' === $poll->meta_data['style']['errors']['paddingTopBottom'] ) ) {
@@ -642,22 +642,22 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['errors']['paddingTopBottom'] );?>" class="form-control errors-padding-top-bottom" />
+										<input type="text" value="<?php echo esc_attr( $poll->meta_data['style']['errors']['paddingTopBottom'] ); ?>" class="form-control errors-padding-top-bottom" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
-									<input type="text" value="<?php echo esc_html( $poll->meta_data['style']['errors']['textColor'] );?>" class="form-control errors-text-color" />
+									<input type="text" value="<?php echo esc_attr( $poll->meta_data['style']['errors']['textColor'] ); ?>" class="form-control errors-text-color" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( true === in_array( $poll->meta_data['style']['errors']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
@@ -679,14 +679,14 @@
 								?>
 								<div class="col-md-10">
 									<div class="input-group">
-										<input type="text" name="errors[text-size]" value="<?php echo esc_html( $poll->meta_data['style']['errors']['textSize'] );?>" class="form-control errors-text-size" />
+										<input type="text" name="errors[text-size]" value="<?php echo esc_attr( $poll->meta_data['style']['errors']['textSize'] ); ?>" class="form-control errors-text-size" />
 										<div class="input-group-addon">px</div>
 									</div>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<?php
 								if ( ( true === isset( $poll->meta_data['style']['errors']['textWeight'] ) ) && ( '' !== $poll->meta_data['style']['errors']['textWeight'] ) ) {
@@ -704,8 +704,8 @@
 								?>
 								<div class="col-md-10">
 									<select class="errors-text-weight admin-select" style="width:100%">
-						                <option value="normal" <?php echo $errors_text_weight_normal;?>><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold" <?php echo $errors_text_weight_bold;?>><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" <?php echo esc_attr( $errors_text_weight_normal ); ?>><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold" <?php echo esc_attr( $errors_text_weight_bold ); ?>><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -717,20 +717,20 @@
 				<div class="panel-heading poll-style-header" role="tab" id="custom-styles-custom-code-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#custom-styles-custom-code-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
-							<?php _e( 'Advanced', 'yop-poll' );?>
+							<?php esc_html_e( 'Advanced', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
 				<div id="custom-styles-custom-code-container-content" class="panel-collapse collapse" role="tabpanel" aria-labelledby="custom-styles-custom-code-container-header">
 					<div class="panel-body">
 						<?php
-						if(  ( false === isset( $poll->meta_data['style']['custom']['css'] ) ) || ( '' === $poll->meta_data['style']['custom']['css'] ) ) {
+						if ( ( false === isset( $poll->meta_data['style']['custom']['css'] ) ) || ( '' === $poll->meta_data['style']['custom']['css'] ) ) {
 							$poll->meta_data['style']['custom']['css'] = '';
 						}
 						?>
 						<div class="form-group">
 							<label for="">Custom CSS</label>
-							<textarea id="custom-css" class="form-control custom-styles-custom-css" rows="15"><?php echo $poll->meta_data['style']['custom']['css'];?></textarea>
+							<textarea id="custom-css" class="form-control custom-styles-custom-css" rows="15"><?php echo esc_textarea( $poll->meta_data['style']['custom']['css'] ); ?></textarea>
 						</div>
 					</div>
 				</div>

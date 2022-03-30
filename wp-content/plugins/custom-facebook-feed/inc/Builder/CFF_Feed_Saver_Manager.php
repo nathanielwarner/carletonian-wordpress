@@ -35,6 +35,15 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function builder_update() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
+
 		$settings_data = $_POST;
 
 		$feed_id = false;
@@ -70,7 +79,7 @@ class CFF_Feed_Saver_Manager {
 		$feed_name = '';
 		if ( isset( $settings_data['update_feed'] ) && $settings_data['update_feed'] == 'true') {
 			$settings_data['settings']['sources'] = $_POST['sources'];
-			$feed_name = $settings_data['feed_name'];
+			$feed_name = sanitize_text_field( wp_unslash( $settings_data['feed_name'] ) );
 			$settings_data = $settings_data['settings'];
 		}
 		if ( isset( $settings_data['album'] ) ) {
@@ -80,6 +89,7 @@ class CFF_Feed_Saver_Manager {
 			$settings_data['playlist'] = CFF_Source::extract_id( $settings_data['playlist'], 'playlist' );
 		}
 
+		unset($settings_data['accesstoken']);
 		$feed_saver = new CFF_Feed_Saver( $feed_id );
 		$feed_saver->set_feed_name( $feed_name );
 		$feed_saver->set_data( $settings_data );
@@ -145,6 +155,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function retrieve_comments() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		if ( empty( $_POST['feed_id'] )) {
 			echo '{}';
 			wp_die();
@@ -175,6 +193,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function delete_feed() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		if ( ! empty( $_POST['feeds_ids'] ) && is_array( $_POST['feeds_ids'] )) {
 			CFF_Db::delete_feeds_query( $_POST['feeds_ids'] );
 		}
@@ -188,6 +214,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function delete_source() {
+		check_ajax_referer( 'cff_admin_nonce' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		if ( ! empty( $_POST['source_id'] ) ) {
 			CFF_Db::delete_source_query( $_POST['source_id'] );
 		}
@@ -200,6 +234,13 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function clear_single_feed_cache() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
 
 		$feed_id = sanitize_text_field( $_POST['feedID'] );
 
@@ -230,6 +271,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function duplicate_feed() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		if ( ! empty( $_POST['feed_id'] ) ) {
 			CFF_Db::duplicate_feed_query( $_POST['feed_id'] );
 		}
@@ -242,6 +291,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function importer() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		if ( ! empty( $_POST['feed_json'] ) && strpos( $_POST['feed_json'], '{' ) === 0 ) {
 			echo json_encode( CFF_Feed_Saver_Manager::import_feed( stripslashes( $_POST['feed_json'] ) ) );
 		} else {
@@ -262,6 +319,8 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function maybe_feed_customizer_data( $include_comments = false ) {
+
+
 		if ( isset( $_GET['feed_id'] ) ){
 			$feed_id  = $_GET['feed_id'];
 			$feed_saver = new CFF_Feed_Saver( $feed_id );
@@ -316,6 +375,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function feed_customizer_fly_preview() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		if( isset( $_POST['feedID'] ) &&  isset( $_POST['previewSettings'] ) ){
 			$return = array(
 				'posts' => array()
@@ -351,6 +418,13 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function get_feed_settings() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
 
 		$feed_id = ! empty( $_POST['feed_id'] ) ? $_POST['feed_id'] : false;
 
@@ -412,6 +486,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function get_feed_list_page() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		$args = array( 'page' => (int)$_POST['page'] );
 		$feeds_data = CFF_Feed_Builder::get_feed_list($args);
 
@@ -426,6 +508,14 @@ class CFF_Feed_Saver_Manager {
 	 * @since 4.0
 	 */
 	public static function get_locations_page() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
+
 		$args = array( 'page' => (int)$_POST['page'] );
 
 		if ( ! empty( $_POST['is_legacy'] ) ) {
@@ -630,11 +720,11 @@ class CFF_Feed_Saver_Manager {
 	 */
 	public static function sanitize( $type, $value ) {
 		switch ( $type ) {
-			case 'int' :
+			case 'int':
 				$return = intval( $value );
 				break;
 			default:
-				$return = sanitize_text_field( $value );
+				$return = sanitize_text_field( wp_unslash( $value ) );
 				break;
 		}
 

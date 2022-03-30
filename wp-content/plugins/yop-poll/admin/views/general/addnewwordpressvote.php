@@ -2,7 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<style src="<?php echo YOP_POLL_URL?>/public/assets/css/yop-poll-public.css"></style>
+		<style src="<?php echo esc_url( YOP_POLL_URL ); ?>/public/assets/css/yop-poll-public.css"></style>
 		<script type="text/javascript">
 			function YOPPollBasicIsFacebookBrowser() {
 				var ua = navigator.userAgent || navigator.vendor || window.opera;
@@ -12,8 +12,8 @@
 				var userProfile = [],
 					puid,
 					pollObject,
-					postLink = '<?php echo admin_url( 'admin-ajax.php' )?>',
-					_token = '<?php echo wp_create_nonce( 'yop-poll-vote-' . $_GET['poll_id'] );?>',
+					postLink = '<?php echo esc_attr( admin_url( 'admin-ajax.php' ) ); ?>',
+					_token = '<?php echo esc_attr( wp_create_nonce( 'yop-poll-vote-' . isset( $_GET['poll_id'] ) ? sanitize_text_field( wp_unslash( $_GET['poll_id'] ) ) : '' ) ); ?>',
 					xhr,
 					response,
 					redirectLink,
@@ -56,12 +56,12 @@
 						xhr.send( 'action=yop_poll_record_vote&_token=' + _token + '&data='+ localStorage.getItem( 'ypVData' ) );
 					}
 				} else {
-					window.opener.YOPPollBasicUpdateToken( <?php echo $poll_id;?>, '<?php echo wp_create_nonce( 'yop-poll-vote-' . $_GET['poll_id'] );?>');
+					window.opener.YOPPollBasicUpdateToken( <?php echo esc_html( $poll_id ); ?>, '<?php echo esc_html( wp_create_nonce( 'yop-poll-vote-' . isset( $_GET['poll_id'] ) ? sanitize_text_field( wp_unslash( $_GET['poll_id'] ) ) : '' ) ); ?>');
 					userProfile.id = '';
 					userProfile.firstName = '';
 					userProfile.lastName = '';
 					userProfile.email = '';
-					puid = '<?php echo esc_html( $_REQUEST['puid'] ); ?>';
+					puid = '<?php echo isset( $_REQUEST['puid'] ) ? esc_html( sanitize_text_field( wp_unslash( $_REQUEST['puid'] ) ) ) : ''; ?>';
 					pollObject = window.opener.document.querySelectorAll( "[data-uid='" + puid + "']" );
 					var result = window.opener.YOPPollSendBasicVote( pollObject, 'wordpress', userProfile );
 					if( 1 === result ) {

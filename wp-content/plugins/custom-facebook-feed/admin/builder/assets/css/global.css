@@ -23,7 +23,6 @@
     opacity: 1;
 }
 
-
 #cff-builder-app {
 	-webkit-font-smoothing: antialiased;
 }
@@ -791,7 +790,11 @@
     font-weight: 500;
     color: #777;
 }
-
+.cff-fb-source-list .cff-fb-srcs-item-name .sb-bold {
+    line-height: 1.1;
+    display: block;
+    padding-bottom: 5px;
+}
 .cff-fb-srcs-item-type{
 	color: #434960;
 	font-weight: 600;
@@ -2069,7 +2072,7 @@
 .cff-group-app-screenshot{
 	display: none;
 	position: absolute;
-	bottom: 92px;
+	bottom: 75px;
 	left: 50%;
 	margin-left: -325px;
 	z-index: 10;
@@ -2377,6 +2380,7 @@
 	}
 	.cff-fb-extensions-pp-ctn.cff-fb-center-boss .cff-fb-popup-inside{
 		top: 50px;
+		left: 0;
 	}
 	.cff-extension-bullet-list {
 		grid-template-columns: 100%;

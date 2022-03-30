@@ -10,7 +10,7 @@ class NewsletterFields {
     }
 
     public function _open($subclass = '') {
-        echo '<div class="tnp-field ', $subclass, '">';
+        echo '<div class="tnpf-field ', $subclass, '">';
     }
 
     public function _close() {
@@ -22,7 +22,7 @@ class NewsletterFields {
             return;
         }
         // Do not escape, HTML allowed
-        echo '<label class="tnp-label">', $text, '</label>';
+        echo '<label class="tnpf-label">', $text, '</label>';
     }
 
     public function _description($attrs) {
@@ -30,7 +30,7 @@ class NewsletterFields {
             return;
         }
         // Do not escape, HTML allowed
-        echo '<div class="tnp-description">', $attrs['description'], '</div>';
+        echo '<div class="tnpf-description">', $attrs['description'], '</div>';
     }
 
     public function _id($name) {
@@ -68,16 +68,16 @@ class NewsletterFields {
      */
     public function section($title = '') {
         // Do not escape, HTML allowed
-        echo '<h3 class="tnp-section">', $title, '</h3>';
+        echo '<div class="tnpf-section">', $title, '</div>';
     }
 
     public function separator() {
-        echo '<div class="tnp-field tnp-separator"></div>';
+        echo '<div class="tnpf-separator"></div>';
     }
 
     public function checkbox($name, $label = '', $attrs = []) {
         $attrs = $this->_merge_base_attrs($attrs);
-        $this->_open('tnp-checkbox');
+        $this->_open('tnpf-checkbox');
         $this->controls->checkbox($name, $label);
         $this->_description($attrs);
         $this->_close();
@@ -294,7 +294,22 @@ class NewsletterFields {
         $attrs = $this->_merge_attrs($attrs);
         $this->_open();
         $this->_label($label);
-        $this->controls->yesno($name);
+        
+        $value = isset($this->controls->data[$name]) ? (int) $this->controls->data[$name] : 0;
+
+        echo '<select style="width: 60px" name="options[', esc_attr($name), ']">';
+        echo '<option value="0"';
+        if ($value == 0) {
+            echo ' selected';
+        }
+        echo '>', __('No', 'newsletter'), '</option>';
+        echo '<option value="1"';
+        if ($value == 1) {
+            echo ' selected';
+        }
+        echo '>', __('Yes', 'newsletter'), '</option>';
+        echo '</select>';
+        
         $this->_description($attrs);
         $this->_close();
     }
@@ -316,7 +331,7 @@ class NewsletterFields {
      */
     public function size($name, $label = '', $attrs = []) {
         $attrs = $this->_merge_attrs($attrs, ['description' => '', 'placeholder' => '', 'size' => 0, 'label_after' => 'px']);
-        $this->_open('tnp-size');
+        $this->_open('tnpf-size');
         $this->_label($label);
         $value = $this->controls->get_value($name);
         echo '<input id="', $this->_id($name), '" placeholder="', esc_attr($attrs['placeholder']), '" name="', $this->_name($name), '" type="text"';

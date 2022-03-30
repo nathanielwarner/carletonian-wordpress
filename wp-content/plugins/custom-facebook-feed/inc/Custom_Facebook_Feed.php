@@ -8,6 +8,7 @@
  */
 
 namespace CustomFacebookFeed;
+use CustomFacebookFeed\SB_Facebook_Data_Manager;
 use CustomFacebookFeed\Admin\CFF_Admin;
 use CustomFacebookFeed\Admin\CFF_About;
 use CustomFacebookFeed\Admin\CFF_New_User;
@@ -229,7 +230,7 @@ final class Custom_Facebook_Feed{
 	 * @var CFF_Tooltip_Wizard
 	 */
 	public $cff_tooltip_wizard;
-  
+
 	/**
 	 * CFF_Elementor_Base.
 	 *
@@ -267,7 +268,6 @@ final class Custom_Facebook_Feed{
 
 			add_action( 'wp_loaded', [ self::$instance, 'cff_check_for_db_updates' ] );
 
-			add_action( 'wp_head', [ self::$instance, 'cff_custom_css' ] );
 			add_action( 'wp_footer', [ self::$instance, 'cff_js' ] );
 
             add_filter( 'cron_schedules', [ self::$instance, 'cff_cron_custom_interval' ] );
@@ -326,6 +326,8 @@ final class Custom_Facebook_Feed{
 		$this->cff_ppca_check_notice_dismiss();
 		$this->register_assets();
 		$this->group_posts_process();
+
+		$this->detect_custom_code();
 
 		if ( $this->cff_blocks->allow_load() ) {
 			$this->cff_blocks->load();
@@ -523,6 +525,7 @@ final class Custom_Facebook_Feed{
 		}
 
 		//\CustomFacebookFeed\Builder\CFF_Db::reset_tables();\CustomFacebookFeed\Builder\CFF_Db::reset_db_update();die();
+
 		/**
 		 * for 4.0 update
 		 */
@@ -621,6 +624,36 @@ final class Custom_Facebook_Feed{
 
 			update_option( 'cff_statuses', $cff_statuses_option );
 		}
+
+		if ( (float) $db_ver < 2.2 ) {
+			$manager = new SB_Facebook_Data_Manager();
+			$manager->update_db_for_dpa();
+			update_option( 'cff_db_version', CFF_DBVERSION );
+		}
+
+		if ( version_compare( $db_ver, '2.4', '<' ) ) {
+			update_option( 'cff_db_version', CFF_DBVERSION );
+
+			$groups = \CustomFacebookFeed\Builder\CFF_Db::source_query( array( 'type' => 'group' ) );
+
+			$cff_statuses_option                       = get_option( 'cff_statuses', array() );
+			$cff_statuses_option['groups_need_update'] = false;
+
+			if ( empty( $groups ) ) {
+				update_option( 'cff_statuses', $cff_statuses_option, false );
+			} else {
+				$encryption         = new \CustomFacebookFeed\SB_Facebook_Data_Encryption();
+				$groups_need_update = false;
+				foreach ( $groups as $source ) {
+					$info   = ! empty( $source['info'] ) ? json_decode( $encryption->decrypt( $source['info'] ) ) : array();
+					if ( \CustomFacebookFeed\Builder\CFF_Source::needs_update( $source, $info ) ) {
+						$groups_need_update = true;
+					}
+				}
+				$cff_statuses_option['groups_need_update'] = $groups_need_update;
+				update_option( 'cff_statuses', $cff_statuses_option, false );
+			}
+		}
 	}
 
 
@@ -633,7 +666,36 @@ final class Custom_Facebook_Feed{
 	 * @access public
 	 */
 	function cff_activate() {
-	    $options = get_option('cff_style_settings');
+	    $options = get_option( 'cff_style_settings' );
+
+		//Run cron twice daily when plugin is first activated for new users
+		if ( ! wp_next_scheduled( 'cff_cron_job' ) ) {
+			wp_schedule_event( time(), 'twicedaily', 'cff_cron_job' );
+		}
+		if ( ! wp_next_scheduled( 'cff_feed_issue_email' ) ) {
+			CFF_Utils::cff_schedule_report_email();
+		}
+		// set usage tracking to false if fresh install.
+		$usage_tracking = get_option( 'cff_usage_tracking', false );
+
+		if ( ! is_array( $usage_tracking ) ) {
+			$usage_tracking = array(
+				'enabled' => false,
+				'last_send' => 0
+			);
+			update_option( 'cff_usage_tracking', $usage_tracking, false );
+		}
+
+		if ( ! wp_next_scheduled( 'cff_notification_update' ) ) {
+			$timestamp = strtotime( 'next monday' );
+			$timestamp = $timestamp + (3600 * 24 * 7);
+			$six_am_local = $timestamp + CFF_Utils::cff_get_utc_offset() + (6*60*60);
+			wp_schedule_event( $six_am_local, 'cffweekly', 'cff_notification_update' );
+		}
+
+	    if ( ! empty( $options ) ) {
+	    	return;
+	    }
 
 	    //Show all post types
 	    $options[ 'cff_show_links_type' ] = true;
@@ -663,30 +725,6 @@ final class Custom_Facebook_Feed{
 	    get_option('cff_show_access_token');
 	    update_option( 'cff_show_access_token', true );
 
-	    //Run cron twice daily when plugin is first activated for new users
-		if ( ! wp_next_scheduled( 'cff_cron_job' ) ) {
-			wp_schedule_event( time(), 'twicedaily', 'cff_cron_job' );
-		}
-		if ( ! wp_next_scheduled( 'cff_feed_issue_email' ) ) {
-			CFF_Utils::cff_schedule_report_email();
-		}
-		// set usage tracking to false if fresh install.
-		$usage_tracking = get_option( 'cff_usage_tracking', false );
-
-		if ( ! is_array( $usage_tracking ) ) {
-			$usage_tracking = array(
-				'enabled' => false,
-				'last_send' => 0
-			);
-			update_option( 'cff_usage_tracking', $usage_tracking, false );
-		}
-
-		if ( ! wp_next_scheduled( 'cff_notification_update' ) ) {
-			$timestamp = strtotime( 'next monday' );
-			$timestamp = $timestamp + (3600 * 24 * 7);
-			$six_am_local = $timestamp + CFF_Utils::cff_get_utc_offset() + (6*60*60);
-			wp_schedule_event( $six_am_local, 'cffweekly', 'cff_notification_update' );
-		}
 	}
 
 
@@ -699,8 +737,10 @@ final class Custom_Facebook_Feed{
 	 * @access public
 	 */
 	function cff_deactivate() {
-	    wp_clear_scheduled_hook('cff_cron_job');
-		wp_clear_scheduled_hook('cff_notification_update');
+	    wp_clear_scheduled_hook( 'cff_cron_job');
+		wp_clear_scheduled_hook( 'cff_notification_update');
+		wp_clear_scheduled_hook( 'cff_feed_issue_email' );
+		wp_clear_scheduled_hook( 'cff_usage_tracking_cron' );
 	}
 
 
@@ -717,8 +757,10 @@ final class Custom_Facebook_Feed{
 	        return;
 	    }
 	    //If the user is preserving the settings then don't delete them
-	    $cff_preserve_settings = get_option('cff_preserve_settings');
-	    if($cff_preserve_settings) return;
+	    $cff_preserve_settings = get_option( 'cff_preserve_settings' );
+	    if ( ! empty( $cff_preserve_settings ) ){
+		    return;
+	    }
 
 	    //Settings
 	    delete_option( 'cff_show_access_token' );
@@ -737,8 +779,6 @@ final class Custom_Facebook_Feed{
 	    delete_option( 'cff_body_length' );
 	    delete_option('cff_style_settings');
 
-		wp_clear_scheduled_hook( 'cff_feed_issue_email' );
-
 		delete_option( 'cff_usage_tracking_config' );
 		delete_option( 'cff_usage_tracking' );
 
@@ -749,9 +789,39 @@ final class Custom_Facebook_Feed{
 		delete_option( 'cff_newuser_notifications' );
 		delete_option( 'cff_notifications' );
 
+		delete_option( 'cff_legacy_feed_settings' );
+		delete_option( 'cff_theme_styles' );
+		delete_option( 'cff_caching_type' );
+		delete_option( 'cff_oembed_token' );
+
 		global $wp_roles;
 		$wp_roles->remove_cap( 'administrator', 'manage_custom_facebook_feed_options' );
-		wp_clear_scheduled_hook( 'cff_usage_tracking_cron' );
+
+		global $wpdb;
+		$locator_table_name = $wpdb->prefix . CFF_FEED_LOCATOR;
+		$wpdb->query( "DROP TABLE IF EXISTS $locator_table_name" );
+
+		$feeds_table_name = $wpdb->prefix . 'cff_feeds';
+		$wpdb->query( "DROP TABLE IF EXISTS $feeds_table_name" );
+
+		$feed_caches_table_name = $wpdb->prefix . 'cff_feed_caches';
+		$wpdb->query( "DROP TABLE IF EXISTS $feed_caches_table_name" );
+
+		$sources_table_name = $wpdb->prefix . 'cff_sources';
+		$wpdb->query( "DROP TABLE IF EXISTS $sources_table_name" );
+
+		$table_name = esc_sql( $wpdb->prefix . "postmeta" );
+		$result = $wpdb->query("
+		    DELETE
+		    FROM $table_name
+		    WHERE meta_key = '_cff_oembed_done_checking';");
+
+		$usermeta_table_name = $wpdb->prefix . "usermeta";
+		$result = $wpdb->query( "
+	        DELETE
+	        FROM $usermeta_table_name
+	        WHERE meta_key LIKE ('cff\_%')
+	        " );
 	}
 
 
@@ -763,20 +833,10 @@ final class Custom_Facebook_Feed{
 	 *
 	 * @since 2.19
 	 * @access public
+	 * @deprecated
 	 */
 	function cff_custom_css() {
-	    $options = get_option('cff_style_settings');
-	    isset($options[ 'cff_custom_css' ]) ? $cff_custom_css = $options[ 'cff_custom_css' ] : $cff_custom_css = '';
 
-	    if( !empty($cff_custom_css) ) echo "\r\n";
-	    if( !empty($cff_custom_css) ) echo '<!-- Custom Facebook Feed Custom CSS -->';
-	    if( !empty($cff_custom_css) ) echo "\r\n";
-	    if( !empty($cff_custom_css) ) echo '<style type="text/css">';
-	    if( !empty($cff_custom_css) ) echo "\r\n";
-	    if( !empty($cff_custom_css) ) echo stripslashes($cff_custom_css);
-	    if( !empty($cff_custom_css) ) echo "\r\n";
-	    if( !empty($cff_custom_css) ) echo '</style>';
-	    if( !empty($cff_custom_css) ) echo "\r\n";
 	}
 
 
@@ -790,7 +850,6 @@ final class Custom_Facebook_Feed{
 	 */
 	function cff_js() {
 	    $options = get_option('cff_style_settings');
-	    $cff_custom_js = isset($options[ 'cff_custom_js' ]) ? $options[ 'cff_custom_js' ] : '';
 
 	    //Link hashtags?
 	    isset($options[ 'cff_link_hashtags' ]) ? $cff_link_hashtags = $options[ 'cff_link_hashtags' ] : $cff_link_hashtags = 'true';
@@ -808,12 +867,6 @@ final class Custom_Facebook_Feed{
 	    echo "\r\n";
 	    echo 'var cfflinkhashtags = "' . $cff_link_hashtags . '";';
 	    echo "\r\n";
-	    if( !empty($cff_custom_js) ) echo "jQuery( document ).ready(function($) {";
-	    if( !empty($cff_custom_js) ) echo "\r\n";
-	    if( !empty($cff_custom_js) ) echo stripslashes($cff_custom_js);
-	    if( !empty($cff_custom_js) ) echo "\r\n";
-	    if( !empty($cff_custom_js) ) echo "});";
-	    if( !empty($cff_custom_js) ) echo "\r\n";
 	    echo '</script>';
 	    echo "\r\n";
 	}
@@ -860,22 +913,55 @@ final class Custom_Facebook_Feed{
 	 * @access public
 	 */
 	function cff_feed_locator(){
-		$feed_locator_data_array = isset($_POST['feedLocatorData']) && !empty($_POST['feedLocatorData']) && is_array($_POST['feedLocatorData']) ? $_POST['feedLocatorData'] : false;
-	  	if($feed_locator_data_array != false):
-	  		foreach ($feed_locator_data_array as $single_feed_locator) {
-	  			$feed_details = array(
-					'feed_id' => $single_feed_locator['feedID'],
-					'atts' =>  $single_feed_locator['shortCodeAtts'],
-					'location' => array(
-						'post_id' => $single_feed_locator['postID'],
-						'html' => $single_feed_locator['location']
-					)
-				);
-				$locator = new CFF_Feed_Locator( $feed_details );
-				$locator->add_or_update_entry();
-	  		}
-	  	endif;
+
+			$feed_locator_data_array = isset($_POST['feedLocatorData']) && !empty($_POST['feedLocatorData']) && is_array($_POST['feedLocatorData']) ? $_POST['feedLocatorData'] : false;
+		  	if($feed_locator_data_array != false):
+		  		foreach ($feed_locator_data_array as $single_feed_locator) {
+				    $can_do_background_tasks = false;
+
+				    $cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+				    $cap = apply_filters( 'cff_settings_pages_capability', $cap );
+				    if ( current_user_can( $cap ) ) {
+					    $can_do_background_tasks = true;
+				    } else {
+					    $nonce = isset( $_POST['locator_nonce'] ) ? sanitize_text_field( wp_unslash( $_POST['locator_nonce'] ) ) : '';
+					    if ( isset( $single_feed_locator['postID'] ) && wp_verify_nonce( $nonce, esc_attr( 'cff-locator-nonce-' . $single_feed_locator['postID'] ) ) ) {
+						    $can_do_background_tasks = true;
+					    }
+				    }
+
+					if( $can_do_background_tasks ){
+			  			$feed_details = array(
+							'feed_id' => $single_feed_locator['feedID'],
+							'atts' =>  $single_feed_locator['shortCodeAtts'],
+							'location' => array(
+								'post_id' => $single_feed_locator['postID'],
+								'html' => $single_feed_locator['location']
+							)
+						);
+						$locator = new CFF_Feed_Locator( $feed_details );
+						$locator->add_or_update_entry();
+					}
+		  		}
+		  	endif;
 	    die();
+	}
+
+	/**
+	 * Detect Custom CSS Code
+	 *
+	 *
+	 * @since ??
+	 * @access public
+	 */
+	public function detect_custom_code(){
+		//$cff_options = get_option( 'cff_style_settings' );
+		//if( !empty( $cff_options[ 'cff_custom_css' ]) ){
+		//	$core_custom_css = wp_get_custom_css();
+		//	\WP_Customize_Custom_CSS_Setting
+		//}
+
+
 	}
 }
 

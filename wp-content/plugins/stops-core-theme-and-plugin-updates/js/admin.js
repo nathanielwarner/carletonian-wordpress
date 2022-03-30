@@ -19819,6 +19819,23 @@ var PluginUpdates = function (_Component) {
 							_react2.default.createElement('span', { className: 'dashicons dashicons-editor-help' })
 						)
 					),
+					'true' === mpsum.is_premium && _react2.default.createElement(
+						'button',
+						{
+							'data-id': 'plugin-updates',
+							className: 'eum-toggle-button ' + ('automatic_patch_releases' == options.plugin_updates ? 'eum-active' : ''),
+							'aria-label': mpsum.I18N.plugin_updates_label_automatic_patch_releases,
+							onClick: this.onButtonClick,
+							value: 'automatic_patch_releases',
+							'data-title': mpsum.I18N.plugin_updates_label_automatic_patch_releases
+						},
+						mpsum.I18N.plugin_updates_label_automatic_patch_releases,
+						_react2.default.createElement(
+							'span',
+							{ 'data-tooltip': mpsum.I18N.plugin_updates_label_automatic_patch_releases_tooltip },
+							_react2.default.createElement('span', { className: 'dashicons dashicons-editor-help' })
+						)
+					),
 					_react2.default.createElement(
 						'button',
 						{
@@ -20018,6 +20035,23 @@ var ThemeUpdates = function (_Component) {
 						_react2.default.createElement(
 							'span',
 							{ 'data-tooltip': mpsum.I18N.theme_updates_label_automatic_tooltip },
+							_react2.default.createElement('span', { className: 'dashicons dashicons-editor-help' })
+						)
+					),
+					'true' === mpsum.is_premium && _react2.default.createElement(
+						'button',
+						{
+							'data-id': 'theme-updates',
+							className: 'eum-toggle-button ' + ('automatic_patch_releases' == options.theme_updates ? 'eum-active' : ''),
+							'aria-label': mpsum.I18N.theme_updates_label_automatic_patch_releases,
+							onClick: this.onButtonClick,
+							value: 'automatic_patch_releases',
+							'data-title': mpsum.I18N.theme_updates_label_automatic_patch_releases
+						},
+						mpsum.I18N.theme_updates_label_automatic_patch_releases,
+						_react2.default.createElement(
+							'span',
+							{ 'data-tooltip': mpsum.I18N.theme_updates_label_automatic_patch_releases_tooltip },
 							_react2.default.createElement('span', { className: 'dashicons dashicons-editor-help' })
 						)
 					),

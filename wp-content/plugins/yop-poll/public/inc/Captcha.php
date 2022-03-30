@@ -100,7 +100,6 @@ class Captcha {
             } else {
                 $fileType = 'mp3'; // This isn't doing anything, really, but I feel better with it
             }
-            print( 'here' );
             return $this->utilStreamFile( $headers, $audioFilePath );
         }
         return false;

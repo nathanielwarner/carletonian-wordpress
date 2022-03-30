@@ -16,7 +16,7 @@
     overflow: hidden;
     box-sizing: border-box;
     max-width: 1380px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
 }
 
 /* Contains the newsletter editing area */

@@ -70,12 +70,14 @@ class CFF_oEmbeds {
 
 	/**
 	 * Disable Facebook oEmbed
-	 * 
+	 *
 	 * @since 4.0
-	 * 
+	 *
 	 * @return CFF_Response
 	 */
 	public function disable_facebook_oembed () {
+		\CustomFacebookFeed\Builder\CFF_Feed_Builder::check_privilege( 'nonce' );
+
 		$oembed_settings = get_option( 'cff_oembed_token', array() );
 		$oembed_settings['access_token'] = '';
 		$oembed_settings['disabled'] = true;
@@ -88,12 +90,14 @@ class CFF_oEmbeds {
 
 	/**
 	 * Disable Instagram oEmbed
-	 * 
+	 *
 	 * @since 4.0
-	 * 
+	 *
 	 * @return CFF_Response
 	 */
 	public function disable_instagram_oembed () {
+		\CustomFacebookFeed\Builder\CFF_Feed_Builder::check_privilege( 'nonce' );
+
 		$oembed_settings = get_option( 'sbi_oembed_token', array() );
 		$oembed_settings['access_token'] = '';
 		$oembed_settings['disabled'] = true;
@@ -216,11 +220,17 @@ class CFF_oEmbeds {
 			$oembed_token_settings = $newly_retrieved_oembed_connection_data;
 			$return['newOembedData'] = $newly_retrieved_oembed_connection_data;
 
+			$encryption = new \CustomFacebookFeed\SB_Facebook_Data_Encryption();
+			if ( isset( $newly_retrieved_oembed_connection_data['access_token'] ) && ! $encryption->decrypt( $newly_retrieved_oembed_connection_data['access_token'] ) ) {
+				$newly_retrieved_oembed_connection_data['access_token'] = $encryption->encrypt( $newly_retrieved_oembed_connection_data['access_token'] );
+			}
+
 			update_option( 'cff_oembed_token', $newly_retrieved_oembed_connection_data );
 			update_option( 'sbi_oembed_token', $newly_retrieved_oembed_connection_data );
 		} elseif ( ! empty( $newly_retrieved_oembed_connection_data ) ) {
 			$return['newOembedData'] = $newly_retrieved_oembed_connection_data;
 		}
+
 		$return['connectionURL'] = $this->get_connection_url();
 		$return['tokenData'] = $oembed_token_settings;
 
@@ -292,6 +302,7 @@ class CFF_oEmbeds {
 				$return = get_option( 'sbi_oembed_token', array() );
 
 				$return['access_token'] = $sbi_oembed_token;
+				$return['disabled'] = false;
 				return $return;
 			}
 		} if ( isset( $_GET['cff_access_token'] ) ) {

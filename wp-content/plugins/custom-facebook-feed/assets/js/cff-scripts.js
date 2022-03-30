@@ -421,7 +421,7 @@ if(!cff_js_exists){
                     consentGiven = (val === 'true');
                 }
             } else if (typeof window.cookieconsent !== 'undefined') { // Complianz by Really Simple Plugins
-                consentGiven = cffCmplzGetCookie('complianz_consent_status') === 'allow';
+                consentGiven = cffCmplzGetCookie('cmplz_consent_status') === 'allow';
             } else if (typeof window.Cookiebot !== "undefined") { // Cookiebot by Cybot A/S
                 consentGiven = Cookiebot.consented;
             } else if (typeof window.BorlabsCookie !== 'undefined') { // Borlabs Cookie by Borlabs
@@ -487,11 +487,17 @@ if(!cff_js_exists){
 			var feedLocatorData = [];
 			jQuery('.cff-list-container').each(function(){
 				$cffPagUrl = jQuery(this).find('.cff-pag-url');
+				var locatorNonce = '';
+				if ( typeof $cffPagUrl.attr( 'data-locatornonce' ) !== 'undefined' ) {
+					locatorNonce = $cffPagUrl.attr( 'data-locatornonce' );
+				}
+
 				var singleFeedLocatorData = {
 					feedID : $cffPagUrl.attr('data-feed-id'),
 					postID : $cffPagUrl.attr('data-post-id'),
 					shortCodeAtts : jQuery.trim($cffPagUrl.attr('data-cff-shortcode')) == '' ? null : JSON.parse($cffPagUrl.attr('data-cff-shortcode')),
-					location : locationGuess(jQuery(this))
+					location : locationGuess(jQuery(this)),
+					locator_nonce : locatorNonce
 				};
 				feedLocatorData.push(singleFeedLocatorData);
 			});
@@ -553,17 +559,21 @@ if(!cff_js_exists){
             });
 
             // Complianz by Really Simple Plugins
-            $(document).on('cmplzAcceptAll', function (event) {
-                jQuery('.cff-wrapper').each(function(index){
-                	afterConsentToggled( true, jQuery(this) );
-                });
+			$(document).on('cmplzEnableScripts', function (event) {
+				if ( event.detail === 'marketing' ) {
+					jQuery('.cff-wrapper').each(function (index) {
+						afterConsentToggled(true, jQuery(this));
+					});
+				}
             });
 
             // Complianz by Really Simple Plugins
-            $(document).on('cmplzRevoke', function (event) {
-                jQuery('.cff-wrapper').each(function(index){
-                	afterConsentToggled( false, jQuery(this) );
-                });
+			$(document).on('cmplzFireCategories', function (event) {
+				if ( event.detail.category === 'marketing' ) {
+					jQuery('.cff-wrapper').each(function (index) {
+						afterConsentToggled(false, jQuery(this));
+					});
+				}
             });
 
             // Borlabs Cookie by Borlabs

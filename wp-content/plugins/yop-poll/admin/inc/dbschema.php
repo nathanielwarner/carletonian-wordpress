@@ -94,7 +94,7 @@ class Yop_Poll_DbSchema {
 			modified_date datetime NOT NULL,
 			PRIMARY KEY (id)
 		) {$this->charset};";
-		dbDelta( $create_table_sql);
+		dbDelta( $create_table_sql );
 	}
 	public function create_table_votes() {
 		$create_table_sql = "CREATE TABLE `{$GLOBALS['wpdb']->yop_poll_votes}` (
@@ -310,13 +310,13 @@ class Yop_Poll_DbSchema {
 	public function install_skins() {
 		$table = $GLOBALS['wpdb']->yop_poll_skins;
 		$available_skins = YOP_Poll_Skins::get_skins();
-		$skins=array(
+		$skins = array(
 			0 => array(
 				'template_base' => 'basic',
 				'name' => 'Orange Def',
 				'base' => 'orange-def',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container orange-def" style="padding-top: 14px;padding-bottom: 14px;">
+				'html_preview' => '<div class="basic-yop-poll-container orange-def" style="padding-top: 14px;padding-bottom: 14px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -429,7 +429,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Dark V1',
 				'base' => 'dark-v1',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container dark-v1" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container dark-v1" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -484,7 +484,7 @@ class Yop_Poll_DbSchema {
 							</div><!-- end basic-yop-poll-container -->',
 				'skin_type' => 'predefined',
 				'author' => 0,
-				'meta_data' => serialize( 
+				'meta_data' => serialize(
 					array(
 						'poll' => array(
 							'backgroundColor' => '#555555',
@@ -544,7 +544,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Gray V1',
 				'base' => 'gray-v1',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container grey" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container grey" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -659,7 +659,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'White V1',
 				'base' => 'white-v1',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v1" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container white-v1" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -774,7 +774,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Dark V2',
 				'base' => 'dark-v2',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container dark-v2" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container dark-v2" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -889,7 +889,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'White V2',
 				'base' => 'white-v2',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px;padding-bottom: 14px;">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px;padding-bottom: 14px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1004,7 +1004,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Orange V1',
 				'base' => 'orange-v1',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container orange-v1" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container orange-v1" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1119,7 +1119,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Orange V2',
 				'base' => 'orange-v2',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container orange-v2">
+				'html_preview' => '<div class="basic-yop-poll-container orange-v2">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1238,7 +1238,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Orange V3',
 				'base' => 'orange-v3',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container orange-v3" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container orange-v3" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1353,7 +1353,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Orange V4',
 				'base' => 'orange-v4',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container orange-v4" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container orange-v4" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1468,7 +1468,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Orange V5',
 				'base' => 'orange-v5',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container orange-v5" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container orange-v5" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1583,7 +1583,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Green V1',
 				'base' => 'green-v1',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container green-v1" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container green-v1" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1698,7 +1698,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Green V2',
 				'base' => 'green-v2',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container green-v2">
+				'html_preview' => '<div class="basic-yop-poll-container green-v2">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1813,7 +1813,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Green V3',
 				'base' => 'green-v3',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container green-v3" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container green-v3" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -1928,7 +1928,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Green V4',
 				'base' => 'green-v4',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container green-v4" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container green-v4" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2043,7 +2043,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Green V5',
 				'base' => 'green-v5',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container green-v5" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container green-v5" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2158,7 +2158,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Red V1',
 				'base' => 'red-v1',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container red-v1" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container red-v1" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2273,7 +2273,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Red V2',
 				'base' => 'red-v2',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container red-v2">
+				'html_preview' => '<div class="basic-yop-poll-container red-v2">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2392,7 +2392,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Red V3',
 				'base' => 'red-v3',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container red-v3" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container red-v3" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2507,7 +2507,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Red V4',
 				'base' => 'red-v4',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container red-v4" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container red-v4" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2622,7 +2622,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Red V5',
 				'base' => 'red-v5',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container red-v5" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container red-v5" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2737,7 +2737,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Blue V1',
 				'base' => 'blue-v1',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container blue-v1" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container blue-v1" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2852,7 +2852,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Blue V2',
 				'base' => 'blue-v2',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container blue-v2">
+				'html_preview' => '<div class="basic-yop-poll-container blue-v2">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -2971,7 +2971,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Blue V3',
 				'base' => 'blue-v3',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container blue-v3" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container blue-v3" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3086,7 +3086,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Blue V4',
 				'base' => 'blue-v4',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container blue-v4" style="padding-top: 12px;padding-bottom: 12px;">
+				'html_preview' => '<div class="basic-yop-poll-container blue-v4" style="padding-top: 12px;padding-bottom: 12px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3201,7 +3201,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Blue V5',
 				'base' => 'blue-v5',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container blue-v5" style="padding-top: 15px;padding-bottom: 15px;">
+				'html_preview' => '<div class="basic-yop-poll-container blue-v5" style="padding-top: 15px;padding-bottom: 15px;">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3316,7 +3316,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Black',
 				'base' => 'square-black',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="black">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="black">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3431,7 +3431,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Red',
 				'base' => 'square-red',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="red">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="red">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3546,7 +3546,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Green',
 				'base' => 'square-green',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="green">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="green">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3661,7 +3661,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Blue',
 				'base' => 'square-blue',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="blue">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="blue">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3776,7 +3776,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Aero',
 				'base' => 'square-aero',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="aero">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="aero">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -3891,7 +3891,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Grey',
 				'base' => 'square-grey',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="grey">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="grey">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4006,7 +4006,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Orange',
 				'base' => 'square-orange',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="orange">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="orange">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4121,7 +4121,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Yellow',
 				'base' => 'square-yellow',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="yellow">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="yellow">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4236,7 +4236,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Pink',
 				'base' => 'square-pink',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="pink">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="pink">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4351,7 +4351,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Square Purple',
 				'base' => 'square-purple',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="purple">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="square" data-cscheme="purple">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4466,7 +4466,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Black',
 				'base' => 'flat-black',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="black">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="black">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4581,7 +4581,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Red',
 				'base' => 'flat-red',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="red">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="red">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4696,7 +4696,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Green',
 				'base' => 'flat-green',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="green">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="green">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4811,7 +4811,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Blue',
 				'base' => 'flat-blue',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="blue">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="blue">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -4926,7 +4926,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Aero',
 				'base' => 'flat-aero',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="aero">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="aero">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5041,7 +5041,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Grey',
 				'base' => 'flat-grey',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="grey">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="grey">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5156,7 +5156,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Orange',
 				'base' => 'flat-orange',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="orange">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="orange">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5271,7 +5271,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Yellow',
 				'base' => 'flat-yellow',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="yellow">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="yellow">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5386,7 +5386,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Pink',
 				'base' => 'flat-pink',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="pink">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="pink">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5501,7 +5501,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Flat Purple',
 				'base' => 'flat-purple',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="purple">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="flat" data-cscheme="purple">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5616,7 +5616,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Black',
 				'base' => 'minimal-black',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="black">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="black">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5731,7 +5731,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Red',
 				'base' => 'minimal-red',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="red">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="red">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5846,7 +5846,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Green',
 				'base' => 'minimal-green',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="green">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="green">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -5961,7 +5961,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Blue',
 				'base' => 'minimal-blue',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="blue">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="blue">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -6076,7 +6076,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Aero',
 				'base' => 'minimal-aero',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="aero">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="aero">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -6191,7 +6191,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Grey',
 				'base' => 'minimal-grey',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="grey">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="grey">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -6306,7 +6306,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Orange',
 				'base' => 'minimal-orange',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="orange">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="orange">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -6421,7 +6421,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Yellow',
 				'base' => 'minimal-yellow',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="yellow">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="yellow">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -6536,7 +6536,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Pink',
 				'base' => 'minimal-pink',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="pink">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="pink">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -6651,7 +6651,7 @@ class Yop_Poll_DbSchema {
 				'name' => 'Minimal Purple',
 				'base' => 'minimal-purple',
 				'description' => '',
-				'html_preview'=> '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="purple">
+				'html_preview' => '<div class="basic-yop-poll-container white-v2" style="padding-top: 14px; padding-bottom: 14px;" data-temp="basic-pretty" data-skin="minimal" data-cscheme="purple">
 								<div class="row">
 									<div class="col-md-12">
 										<div class="basic-inner">
@@ -6877,7 +6877,7 @@ class Yop_Poll_DbSchema {
 					</div><!-- end row -->
 				</div><!-- end basic-yop-poll-container -->'
 		);
-		if (  ( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'image_preview' ) ) &&
+		if ( ( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'image_preview' ) ) &&
 			( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'html_vertical' ) ) &&
 			( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'html_horizontal' ) ) &&
 			( true === $this->check_if_column_exists( $GLOBALS['wpdb']->yop_poll_templates, 'html_columns' ) )
@@ -6899,10 +6899,14 @@ class Yop_Poll_DbSchema {
 		$GLOBALS['wpdb']->query( $update_query );
 	}
 	private function check_if_column_exists( $table_name, $column_name ) {
-		if ( 0 == $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare(
-				"SELECT count(1) FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = %s AND `TABLE_NAME` = %s AND `COLUMN_NAME` = %s ",
-				DB_NAME, $table_name, $column_name
-			) ) ) {
+		if ( 0 == $GLOBALS['wpdb']->get_var(
+			$GLOBALS['wpdb']->prepare(
+				'SELECT count(1) FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = %s AND `TABLE_NAME` = %s AND `COLUMN_NAME` = %s',
+				DB_NAME,
+				$table_name,
+				$column_name
+			)
+		) ) {
 			return false;
 		}
 		return true;

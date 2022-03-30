@@ -8,14 +8,14 @@
 		<p>
 			<h4>
 				<?php
-				_e( 'You need to select a template first to be able to customize it', 'yop-poll' );
+				esc_html_e( 'You need to select a template first to be able to customize it', 'yop-poll' );
 				?>
 			</h4>
 		</p>
 		<p style="margin-top: 30px;">
 			<h4>
 				<?php
-				_e( 'You can select a template <a href="#" class="custom-style-select-template">here</a>', 'yop-poll' );
+				esc_html_e( 'You can select a template <a href="#" class="custom-style-select-template">here</a>', 'yop-poll' );
 				?>
 			</h4>
 		</p>
@@ -26,14 +26,14 @@
 		<p>
 			<h4>
 				<?php
-				_e( 'You need to select a skin to be able to customize it', 'yop-poll' );
+				esc_html_e( 'You need to select a skin to be able to customize it', 'yop-poll' );
 				?>
 			</h4>
 		</p>
 		<p style="margin-top: 30px;">
 			<h4>
 				<?php
-				_e( 'You can select a skin <a href="#" class="custom-style-select-skin">here</a>', 'yop-poll' );
+				esc_html_e( 'You can select a skin <a href="#" class="custom-style-select-skin">here</a>', 'yop-poll' );
 				?>
 			</h4>
 		</p>
@@ -46,7 +46,9 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-poll-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-poll-container-content" aria-expanded="true" aria-controls="style-poll-container-content">
-							Poll Container
+							<?php
+							esc_html_e( 'Poll Container', 'yop-poll' );
+							?>
 						</a>
 					</h4>
 				</div>
@@ -55,7 +57,7 @@
 						<div class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Background color', 'yop-poll' );?>
+									<?php esc_html_e( 'Background color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" name="poll[background-color]" value="#ffffff" class="form-control poll-background-color" style="width:100%"/>
@@ -63,7 +65,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Thickness', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Thickness', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -74,7 +76,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" name="poll[border-color]" value="#000000" class="form-control poll-border-color" />
@@ -82,7 +84,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Radius', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Radius', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -93,7 +95,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Left/Right', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Left/Right', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -104,7 +106,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -121,7 +123,9 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-questions-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-questions-container-content" aria-expanded="true" aria-controls="style-questions-container-content">
-							Questions
+							<?php
+							esc_html_e( 'Questions', 'yop-poll' );
+							?>
 						</a>
 					</h4>
 				</div>
@@ -130,7 +134,7 @@
 						<div class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" name="questions[text-color]" value="#000" class="form-control questions-text-color" />
@@ -138,7 +142,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -149,24 +153,24 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<select class="questions-text-weight admin-select" style="width:100%">
-						                <option value="normal" selected ><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" selected ><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold"><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Align', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Align', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<select class="questions-text-align admin-select" style="width:100%">
-						                <option value="left"><?php _e( 'Left', 'yop-poll' );?></option>
-						                <option value="center" selected><?php _e( 'Center', 'yop-poll' );?></option>
-										<option value="right"><?php _e( 'Right', 'yop-poll' );?></option>
+						                <option value="left"><?php esc_html_e( 'Left', 'yop-poll' ); ?></option>
+						                <option value="center" selected><?php esc_html_e( 'Center', 'yop-poll' ); ?></option>
+										<option value="right"><?php esc_html_e( 'Right', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -178,7 +182,9 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-answers-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-answers-container-content" aria-expanded="true" aria-controls="style-answers-container-content">
-							Answers
+							<?php
+							esc_html_e( 'Answers', 'yop-poll' );
+							?>
 						</a>
 					</h4>
 				</div>
@@ -187,19 +193,19 @@
 						<div class="form-horizontal">
 							<div class="form-group hide">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Skin', 'yop-poll' );?>
+									<?php esc_html_e( 'Skin', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<select class="answers-skin admin-select" style="width:100%">
-						                <option value="minimal"><?php _e( 'Minimal', 'yop-poll' );?></option>
-						                <option value="square"><?php _e( 'Square', 'yop-poll' );?></option>
-						                <option value="flat"><?php _e( 'Flat', 'yop-poll' );?></option>
+						                <option value="minimal"><?php esc_html_e( 'Minimal', 'yop-poll' ); ?></option>
+						                <option value="square"><?php esc_html_e( 'Square', 'yop-poll' ); ?></option>
+						                <option value="flat"><?php esc_html_e( 'Flat', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
 							<div class="form-group hide">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Color Scheme', 'yop-poll' );?>
+									<?php esc_html_e( 'Color Scheme', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<ul class="color-scheme">
@@ -218,7 +224,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Left/Right', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Left/Right', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -229,7 +235,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -240,7 +246,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" value="#000" class="form-control answers-text-color" name="answers[text-color]" />
@@ -248,7 +254,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -259,12 +265,12 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<select class="answers-text-weight admin-select" style="width:100%">
-						                <option value="normal" selected><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" selected><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold"><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -276,7 +282,9 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-buttons-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-buttons-container-content" aria-expanded="true" aria-controls="style-buttons-container-content">
-							Buttons
+							<?php
+							esc_html_e( 'Buttons', 'yop-poll' );
+							?>
 						</a>
 					</h4>
 				</div>
@@ -285,7 +293,7 @@
 						<div class="form-horizontal">
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Background color', 'yop-poll' );?>
+									<?php esc_html_e( 'Background color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" value="#ffffff" class="form-control buttons-background-color" name="buttons[background-color]" />
@@ -293,7 +301,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Thickness', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Thickness', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -304,7 +312,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" value="#000" class="form-control buttons-border-color" name="buttons[border-color]" />
@@ -312,7 +320,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Radius', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Radius', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -323,7 +331,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Left/Right', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Left/Right', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -334,7 +342,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -345,7 +353,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" value="#000" class="form-control buttons-text-color" name="buttons[text-color]" />
@@ -353,7 +361,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -364,12 +372,12 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<select class="buttons-text-weight admin-select" style="width:100%">
-						                <option value="normal" selected><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" selected><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold"><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -381,7 +389,7 @@
 				<div class="panel-heading poll-style-header" role="tab" id="style-errors-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#style-errors-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
-							<?php _e( 'Messages', 'yop-poll' );?>
+							<?php esc_html_e( 'Messages', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
@@ -390,7 +398,7 @@
 						<div class="form-horizontal">
 						<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color for success', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color for success', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" value="#008000" class="form-control errors-border-left-color-for-success" />
@@ -398,7 +406,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border color for error', 'yop-poll' );?>
+									<?php esc_html_e( 'Border color for error', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" value="#ff0000" class="form-control errors-border-left-color-for-error" />
@@ -406,7 +414,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Border Left Thickness', 'yop-poll' );?>
+									<?php esc_html_e( 'Border Left Thickness', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -417,7 +425,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Padding Top/Bottom', 'yop-poll' );?>
+									<?php esc_html_e( 'Padding Top/Bottom', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -428,7 +436,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text color', 'yop-poll' );?>
+									<?php esc_html_e( 'Text color', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10 colorpicker-component">
 									<input type="text" value="#000" class="form-control errors-text-color" />
@@ -436,7 +444,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text size', 'yop-poll' );?>
+									<?php esc_html_e( 'Text size', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<div class="input-group">
@@ -447,12 +455,12 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-2 field-caption">
-									<?php _e( 'Text Weight', 'yop-poll' );?>
+									<?php esc_html_e( 'Text Weight', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-10">
 									<select class="errors-text-weight admin-select" style="width:100%">
-						                <option value="normal" selected><?php _e( 'Normal', 'yop-poll' );?></option>
-						                <option value="bold"><?php _e( 'Bold', 'yop-poll' );?></option>
+						                <option value="normal" selected><?php esc_html_e( 'Normal', 'yop-poll' ); ?></option>
+						                <option value="bold"><?php esc_html_e( 'Bold', 'yop-poll' ); ?></option>
 						            </select>
 								</div>
 							</div>
@@ -464,14 +472,18 @@
 				<div class="panel-heading poll-style-header" role="tab" id="custom-styles-custom-code-container-header">
 					<h4 class="panel-title">
 						<a role="button" data-toggle="collapse" data-parent="#poll-style-accordion" href="#custom-styles-custom-code-container-content" aria-expanded="true" aria-controls="style-errors-container-content">
-							<?php _e( 'Advanced', 'yop-poll' );?>
+							<?php esc_html_e( 'Advanced', 'yop-poll' ); ?>
 						</a>
 					</h4>
 				</div>
 				<div id="custom-styles-custom-code-container-content" class="panel-collapse collapse" role="tabpanel" aria-labelledby="custom-styles-custom-code-container-header">
 					<div class="panel-body">
 						<div class="form-group">
-							<label for="">Custom CSS</label>
+							<label for="">
+								<?php
+								esc_html_e ( 'Custom CSS', 'yop-poll' );
+								?>
+							</label>
 							<textarea id="custom-css" class="form-control custom-styles-custom-css" rows="15" name="custom[css]"></textarea>
 						</div>
 					</div>

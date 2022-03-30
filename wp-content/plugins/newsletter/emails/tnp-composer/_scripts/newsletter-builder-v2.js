@@ -367,7 +367,7 @@ function tnpc_mobile_preview() {
 function tnpc_save(form) {
 
     form.elements["options[message]"].value = tnpc_get_email_content_from_builder_area();
-    
+
     // When the composer is not showing the subject field (for example in Automated)
     if (document.getElementById("options-preheader")) {
         form.elements["options[options_preheader]"].value = jQuery('#options-preheader').val();
@@ -542,7 +542,7 @@ function tnpc_load_preset(id, subject, isEditMode) {
             }
 
             if (subject && subject.length > 0) {
-                jQuery('#options-subject').val(tnpc_remove_double_quotes_escape_from(subject));
+                jQuery('#options-subject-subject').val(tnpc_remove_double_quotes_escape_from(subject));
             }
         },
     });
@@ -562,8 +562,7 @@ function tnpc_load_preset(id, subject, isEditMode) {
 }
 
 function tnpc_save_preset(form) {
-
-    const presetName = tnpc_remove_double_quotes_from(document.querySelector('#options-subject').value);
+    const presetName = document.getElementById('options-subject-subject').value.replace('"', '');
 
     const presetNameModal = new TNPModal({
         title: 'Choose a preset name',
@@ -572,7 +571,7 @@ function tnpc_save_preset(form) {
         clickConfirmOnPressEnter: true,
         onConfirm: function () {
             const inputEl = document.querySelector('#preset_name');
-            document.querySelector('#options-subject').value = inputEl.value;
+            document.querySelector('#options-subject-subject').value = inputEl.value;
             tnpc_save(form);
             form.submit();
         }
@@ -622,21 +621,11 @@ function tnpc_edit_preset(presetId, name, event) {
     event.stopPropagation();
     tnpc_load_preset(presetId, name, true);
 
-    //DISABLE BUTTON AND SHOW UPDATE BUTTON
     const composerForm = document.querySelector('#tnpc-form');
-    const buttons = composerForm.querySelectorAll('input[type=button]');
-    const updatePresetButton = composerForm.querySelector('#update-preset-button');
-
-    for (btn of buttons) {
-        if (btn.id && btn.id === 'save-preset-button') {
-            btn.style.display = 'none';
-            updatePresetButton.style.display = 'inline';
-            updatePresetButton.disabled = false;
-        } else {
-            btn.disabled = true;
-        }
-    }
-
+    
+    jQuery('#save-preset-button').hide();
+    jQuery('#update-preset-button').show();
+    
     //Add preset id hidden field
     const presetIdfield = document.createElement("input");
     presetIdfield.type = "hidden";
@@ -655,24 +644,8 @@ function tnpc_remove_double_quotes_from(str) {
 }
 
 function tnpc_update_preset(form) {
-
-    const presetName = tnpc_remove_double_quotes_from(document.querySelector('#options-subject').value);
-
-    const presetNameModal = new TNPModal({
-        title: 'Choose a preset name',
-        content: '<input type="text" id="preset_name" style="width: 100%" placeholder="Preset name" value="' + presetName + '"/>',
-        showConfirm: true,
-        clickConfirmOnPressEnter: true,
-        onConfirm: function () {
-            const inputEl = document.querySelector('#preset_name');
-            document.querySelector('#options-subject').value = inputEl.value;
-            tnpc_save(form);
-            form.submit();
-        }
-    });
-
-    presetNameModal.open();
-
+    tnpc_save(form);
+    form.submit();
 }
 
 // ========================================================= //

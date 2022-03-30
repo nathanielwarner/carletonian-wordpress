@@ -8,6 +8,7 @@
 namespace CustomFacebookFeed;
 
 use CustomFacebookFeed\Builder\CFF_Source;
+use CustomFacebookFeed\SB_Facebook_Data_Encryption;
 
 if ( ! defined( 'ABSPATH' ) ) {
 	die( '-1' );
@@ -290,6 +291,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	 * @since 2.19
 	 */
 	public function display_cff($atts) {
+  		do_action( 'cff_before_display_facebook' );
 		$this->options 			= get_option('cff_style_settings');
 		$data_att_html 			= $this->cff_get_shortcode_data_attribute_html( $atts );
 		$feed_id = empty( $atts['feed'] ) ? 'default' : intval( $atts['feed'] );
@@ -300,7 +302,10 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 			$this->atts 			= $this->fb_feed_settings->get_settings();
 			$id_and_token 			= $this->fb_feed_settings->get_id_and_token();
 			$this->page_id 			= $id_and_token['id'];
-			$this->access_token 	= $id_and_token['token'];
+
+			$encryption = new SB_Facebook_Data_Encryption();
+			$this->access_token = $encryption->decrypt($id_and_token['token']) ? $encryption->decrypt($id_and_token['token']) : $id_and_token['token'];
+
 			$this->atts 			= $this->cff_get_processed_options( $this->atts  );
 
 		} else {
@@ -507,6 +512,8 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$cff_header_outside 	= CFF_Utils::check_if_on( $this->atts['headeroutside'] );
 		$cff_header_type 		= strtolower( $this->atts['headertype'] );
 		$cff_header 			= CFF_Utils::print_template_part( 'header', get_defined_vars(), $this);
+
+
 
 	    //Add the page header to the outside of the top of feed
 		if ($cff_show_header && $cff_header_outside) $cff_content .= $cff_header;
@@ -1100,7 +1107,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	        $cff_content .= CFF_Utils::print_template_part( 'credit', get_defined_vars());
 
 	    //End the feed
-	         $cff_content .= '<input class="cff-pag-url" type="hidden" data-cff-shortcode="'.$data_att_html.'" data-post-id="' . get_the_ID() . '" data-feed-id="'.$atts['id'].'">';
+	         $cff_content .= '<input class="cff-pag-url" type="hidden" data-locatornonce="'.esc_attr( wp_create_nonce( 'cff-locator-nonce-' . get_the_ID() ) ) .'" data-cff-shortcode="'.$data_att_html.'" data-post-id="' . get_the_ID() . '" data-feed-id="'.$atts['id'].'">';
 	        $cff_content .= '</div></div><div class="cff-clear"></div>';
 
 	   	 	//Add the Like Box outside
@@ -1756,7 +1763,7 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		} else {
 			$settings['ajax'] = get_option( 'cff_ajax', '' );
 		}
-		$settings['locale'] = get_option( 'cff_locale', 'en_US' );
+		$settings['locale'] = ( isset( $feed_options['locale'] ) ) ? $feed_options['locale'] : get_option( 'cff_locale', 'en_US' );
 
 		// Default Timezone
 		$defaults = array(
@@ -1835,7 +1842,8 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 
 		if ( ! CFF_Utils::cff_is_pro_version() ) {
 			$this->page_id = $settings['id'];
-			$this->access_token = $settings['accesstoken'];
+			$encryption = new SB_Facebook_Data_Encryption();
+			$this->access_token = $encryption->decrypt($settings['accesstoken']) ? $encryption->decrypt($settings['accesstoken']) : $settings['accesstoken'];
 			$this->feed_id = ! empty( $feed_id ) ? $feed_id : 'default';
 		}
 
@@ -1951,7 +1959,10 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		if($cff_cache_time_unit == 'minutes') $cff_cache_time_unit = 60;
 		if($cff_cache_time_unit == 'hour' || $cff_cache_time_unit == 'hours') $cff_cache_time_unit = 60*60;
 		if($cff_cache_time_unit == 'days') $cff_cache_time_unit = 60*60*24;
-		$cache_seconds = $cff_cache_time * $cff_cache_time_unit;
+		if ( intval( $cff_cache_time ) < 1 ) {
+			$cff_cache_time = 1;
+		}
+		$cache_seconds = intval( $cff_cache_time ) * intval( $cff_cache_time_unit );
 
 
 		//********************************************//
@@ -2165,6 +2176,8 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 	}
 
 	public static function get_single_event_data( $eventID, $access_token ) {
+		$encryption = new SB_Facebook_Data_Encryption();
+
 		//Is it SSL?
 		$cff_ssl = '';
 		if (is_ssl()) $cff_ssl = '&return_ssl_resources=true';
@@ -2176,13 +2189,13 @@ class CFF_Shortcode extends CFF_Shortcode_Display{
 		$transient_name = 'cff_tle_' . $eventID;
 		$transient_name = substr($transient_name, 0, 45);
 
-		if ( false === ( $event_json = get_transient( $transient_name ) ) || $event_json === null ) {
+		if ( false === ( $event_json = $encryption->maybe_decrypt( get_transient( $transient_name ) ) ) || $event_json === null ) {
 			//Get the contents of the Facebook page
 			$event_json = CFF_Utils::cff_fetchUrl($event_json_url);
 			//Cache the JSON for 180 days as the timeline event info probably isn't going to change
-			set_transient( $transient_name, $event_json, 60 * 60 * 24 * 180 );
+			set_transient( $transient_name, $encryption->maybe_encrypt( $event_json ) , 60 * 60 * 24 * 180 );
 		} else {
-			$event_json = get_transient( $transient_name );
+			$event_json = $encryption->maybe_decrypt( get_transient( $transient_name ) );
 			//If we can't find the transient then fall back to just getting the json from the api
 			if ($event_json == false) $event_json = CFF_Utils::cff_fetchUrl($event_json_url);
 		}

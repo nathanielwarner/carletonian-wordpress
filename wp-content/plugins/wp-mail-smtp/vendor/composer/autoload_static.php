@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
+class ComposerStaticInit7bbbe687672847d62a4c362ec84c756f
 {
     public static $files = array (
         '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
@@ -168,6 +168,7 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
         'Firebase\\JWT\\JWK' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWK.php',
         'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
+        'Firebase\\JWT\\Key' => __DIR__ . '/..' . '/firebase/php-jwt/src/Key.php',
         'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'InstituteWeb\\ComposerScripts\\ImprovedScriptExecution' => __DIR__ . '/..' . '/instituteweb/composer-scripts/src/ImprovedScriptExecution.php',
         'WPMailSMTP\\Admin\\AdminBarMenu' => __DIR__ . '/../..' . '/src/Admin/AdminBarMenu.php',
@@ -268,6 +269,36 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Pro\\Emails\\Logs\\Tracking\\Events\\Injectable\\OpenEmailEvent' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Tracking/Events/Injectable/OpenEmailEvent.php',
         'WPMailSMTP\\Pro\\Emails\\Logs\\Tracking\\Migration' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Tracking/Migration.php',
         'WPMailSMTP\\Pro\\Emails\\Logs\\Tracking\\Tracking' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Tracking/Tracking.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\AbstractProcessor' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/AbstractProcessor.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\AbstractProvider' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/AbstractProvider.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\AbstractSubscriber' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/AbstractSubscriber.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Events\\Delivered' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Events/Delivered.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Events\\EventInterface' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Events/EventInterface.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Events\\Failed' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Events/Failed.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\ProcessorInterface' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/ProcessorInterface.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\ProviderInterface' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/ProviderInterface.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Mailgun\\Events\\Failed' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Mailgun/Events/Failed.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Mailgun\\Processor' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Mailgun/Processor.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Mailgun\\Provider' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Mailgun/Provider.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Mailgun\\Subscriber' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Mailgun/Subscriber.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Postmark\\Events\\Failed' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Postmark/Events/Failed.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Postmark\\Processor' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Postmark/Processor.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Postmark\\Provider' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Postmark/Provider.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Postmark\\Subscriber' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Postmark/Subscriber.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SMTPcom\\Events\\Failed' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SMTPcom/Events/Failed.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SMTPcom\\Processor' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SMTPcom/Processor.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SMTPcom\\Provider' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SMTPcom/Provider.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SMTPcom\\Subscriber' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SMTPcom/Subscriber.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Sendinblue\\Events\\Failed' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Sendinblue/Events/Failed.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Sendinblue\\Processor' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Sendinblue/Processor.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Sendinblue\\Provider' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Sendinblue/Provider.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\Sendinblue\\Subscriber' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/Sendinblue/Subscriber.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SparkPost\\Events\\Failed' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SparkPost/Events/Failed.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SparkPost\\Processor' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SparkPost/Processor.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SparkPost\\Provider' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SparkPost/Provider.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Providers\\SparkPost\\Subscriber' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Providers/SparkPost/Subscriber.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\SubscriberInterface' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/SubscriberInterface.php',
+        'WPMailSMTP\\Pro\\Emails\\Logs\\Webhooks\\Webhooks' => __DIR__ . '/../..' . '/src/Pro/Emails/Logs/Webhooks/Webhooks.php',
         'WPMailSMTP\\Pro\\License\\License' => __DIR__ . '/../..' . '/src/Pro/License/License.php',
         'WPMailSMTP\\Pro\\License\\Updater' => __DIR__ . '/../..' . '/src/Pro/License/Updater.php',
         'WPMailSMTP\\Pro\\Multisite' => __DIR__ . '/../..' . '/src/Pro/Multisite.php',
@@ -290,9 +321,11 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Pro\\Tasks\\EmailLogCleanupTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/EmailLogCleanupTask.php',
         'WPMailSMTP\\Pro\\Tasks\\Logs\\ExportCleanupTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/ExportCleanupTask.php',
         'WPMailSMTP\\Pro\\Tasks\\Logs\\Mailgun\\VerifySentStatusTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/Mailgun/VerifySentStatusTask.php',
+        'WPMailSMTP\\Pro\\Tasks\\Logs\\Postmark\\VerifySentStatusTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/Postmark/VerifySentStatusTask.php',
         'WPMailSMTP\\Pro\\Tasks\\Logs\\ResendTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/ResendTask.php',
         'WPMailSMTP\\Pro\\Tasks\\Logs\\SMTPcom\\VerifySentStatusTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/SMTPcom/VerifySentStatusTask.php',
         'WPMailSMTP\\Pro\\Tasks\\Logs\\Sendinblue\\VerifySentStatusTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/Sendinblue/VerifySentStatusTask.php',
+        'WPMailSMTP\\Pro\\Tasks\\Logs\\SparkPost\\VerifySentStatusTask' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/SparkPost/VerifySentStatusTask.php',
         'WPMailSMTP\\Pro\\Tasks\\Logs\\VerifySentStatusTaskAbstract' => __DIR__ . '/../..' . '/src/Pro/Tasks/Logs/VerifySentStatusTaskAbstract.php',
         'WPMailSMTP\\Pro\\Tasks\\Migrations\\EmailLogMigration4' => __DIR__ . '/../..' . '/src/Pro/Tasks/Migrations/EmailLogMigration4.php',
         'WPMailSMTP\\Pro\\Tasks\\Migrations\\EmailLogMigration5' => __DIR__ . '/../..' . '/src/Pro/Tasks/Migrations/EmailLogMigration5.php',
@@ -328,6 +361,8 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Providers\\Sendinblue\\Api' => __DIR__ . '/../..' . '/src/Providers/Sendinblue/Api.php',
         'WPMailSMTP\\Providers\\Sendinblue\\Mailer' => __DIR__ . '/../..' . '/src/Providers/Sendinblue/Mailer.php',
         'WPMailSMTP\\Providers\\Sendinblue\\Options' => __DIR__ . '/../..' . '/src/Providers/Sendinblue/Options.php',
+        'WPMailSMTP\\Providers\\SparkPost\\Mailer' => __DIR__ . '/../..' . '/src/Providers/SparkPost/Mailer.php',
+        'WPMailSMTP\\Providers\\SparkPost\\Options' => __DIR__ . '/../..' . '/src/Providers/SparkPost/Options.php',
         'WPMailSMTP\\Providers\\Zoho\\Options' => __DIR__ . '/../..' . '/src/Providers/Zoho/Options.php',
         'WPMailSMTP\\Reports\\Emails\\Summary' => __DIR__ . '/../..' . '/src/Reports/Emails/Summary.php',
         'WPMailSMTP\\Reports\\Reports' => __DIR__ . '/../..' . '/src/Reports/Reports.php',
@@ -705,7 +740,6 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\AbTestCampaignResult' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/AbTestCampaignResult.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\AbTestCampaignResultClickedLinks' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/AbTestCampaignResultClickedLinks.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\AbTestCampaignResultStatistics' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/AbTestCampaignResultStatistics.php',
-        'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\AbTestVersionClicks' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/AbTestVersionClicks.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\AbTestVersionClicksInner' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/AbTestVersionClicksInner.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\AbTestVersionStats' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/AbTestVersionStats.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\AddChildDomain' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/AddChildDomain.php',
@@ -753,7 +787,6 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetCampaignStats' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetCampaignStats.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetChildAccountCreationStatus' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetChildAccountCreationStatus.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetChildDomain' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetChildDomain.php',
-        'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetChildDomains' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetChildDomains.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetChildInfo' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetChildInfo.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetChildInfoApiKeys' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetChildInfoApiKeys.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetChildInfoApiKeysV2' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetChildInfoApiKeysV2.php',
@@ -817,9 +850,7 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetSmtpTemplateOverviewSender' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetSmtpTemplateOverviewSender.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetSmtpTemplates' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetSmtpTemplates.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetSsoToken' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetSsoToken.php',
-        'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetStatsByBrowser' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetStatsByBrowser.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetStatsByDevice' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetStatsByDevice.php',
-        'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetStatsByDomain' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetStatsByDomain.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetTransacAggregatedSmsReport' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetTransacAggregatedSmsReport.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetTransacBlockedContacts' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetTransacBlockedContacts.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\GetTransacBlockedContactsContacts' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/GetTransacBlockedContactsContacts.php',
@@ -848,8 +879,6 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\RequestContactImport' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/RequestContactImport.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\RequestContactImportNewList' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/RequestContactImportNewList.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\RequestSmsRecipientExport' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/RequestSmsRecipientExport.php',
-        'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendEmail' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendEmail.php',
-        'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendEmailAttachment' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendEmailAttachment.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendReport' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendReport.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendReportEmail' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendReportEmail.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendSms' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendSms.php',
@@ -863,7 +892,6 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendSmtpEmailSender' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendSmtpEmailSender.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendSmtpEmailTo' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendSmtpEmailTo.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendSmtpEmailTo1' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendSmtpEmailTo1.php',
-        'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendTemplateEmail' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendTemplateEmail.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendTestEmail' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendTestEmail.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendTestSms' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendTestSms.php',
         'WPMailSMTP\\Vendor\\SendinBlue\\Client\\Model\\SendTransacSms' => __DIR__ . '/../..' . '/vendor_prefixed/sendinblue/api-v3-sdk/lib/Model/SendTransacSms.php',
@@ -1010,7 +1038,6 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'WPMailSMTP\\Vendor\\phpseclib3\\Crypt\\EC\\Formats\\Keys\\PKCS1' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Keys/PKCS1.php',
         'WPMailSMTP\\Vendor\\phpseclib3\\Crypt\\EC\\Formats\\Keys\\PKCS8' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Keys/PKCS8.php',
         'WPMailSMTP\\Vendor\\phpseclib3\\Crypt\\EC\\Formats\\Keys\\PuTTY' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Keys/PuTTY.php',
-        'WPMailSMTP\\Vendor\\phpseclib3\\Crypt\\EC\\Formats\\Keys\\XML' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Keys/XML.php',
         'WPMailSMTP\\Vendor\\phpseclib3\\Crypt\\EC\\Formats\\Keys\\libsodium' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Keys/libsodium.php',
         'WPMailSMTP\\Vendor\\phpseclib3\\Crypt\\EC\\Formats\\Signature\\ASN1' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Signature/ASN1.php',
         'WPMailSMTP\\Vendor\\phpseclib3\\Crypt\\EC\\Formats\\Signature\\Raw' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Signature/Raw.php',
@@ -1225,14 +1252,15 @@ class ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f
         'Wikimedia\\Composer\\Merge\\NestedArray' => __DIR__ . '/..' . '/wikimedia/composer-merge-plugin/src/Merge/NestedArray.php',
         'Wikimedia\\Composer\\Merge\\PluginState' => __DIR__ . '/..' . '/wikimedia/composer-merge-plugin/src/Merge/PluginState.php',
         'Wikimedia\\Composer\\Merge\\StabilityFlags' => __DIR__ . '/..' . '/wikimedia/composer-merge-plugin/src/Merge/StabilityFlags.php',
+        'phpseclib3\\Crypt\\EC\\Formats\\Keys\\XML' => __DIR__ . '/../..' . '/vendor_prefixed/phpseclib/phpseclib/phpseclib/Crypt/EC/Formats/Keys/XML.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitf81beb65482daf5d0d5d871c94ad6a3f::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7bbbe687672847d62a4c362ec84c756f::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7bbbe687672847d62a4c362ec84c756f::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit7bbbe687672847d62a4c362ec84c756f::$classMap;
 
         }, null, ClassLoader::class);
     }

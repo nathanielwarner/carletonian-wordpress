@@ -115,9 +115,9 @@ class CFF_About_Us {
 
     /**
      * Page Data to use in front end
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return array
      */
     public function page_data() {
@@ -134,42 +134,9 @@ class CFF_About_Us {
 
         $images_url = CFF_PLUGIN_URL . 'admin/assets/img/about/';
 
-        // check whether the pro or free plugins are installed
-        $is_facebook_installed = false;
-        $facebook_plugin = 'custom-facebook-feed/custom-facebook-feed.php';
-        if ( isset( $installed_plugins['custom-facebook-feed-pro/custom-facebook-feed.php'] ) ) {
-            $is_facebook_installed = true;
-            $facebook_plugin = 'custom-facebook-feed-pro/custom-facebook-feed.php';
-        } else if ( isset( $installed_plugins['custom-facebook-feed/custom-facebook-feed.php'] ) ) {
-            $is_facebook_installed = true;
-        }
 
-        $is_instagram_installed = false;
-        $instagram_plugin = 'instagram-feed/instagram-feed.php';
-        if ( isset( $installed_plugins['instagram-feed-pro/instagram-feed.php'] ) ) {
-            $is_instagram_installed = true;
-            $instagram_plugin = 'instagram-feed-pro/instagram-feed.php';
-        } else if ( isset( $installed_plugins['instagram-feed/instagram-feed.php'] ) ) {
-            $is_instagram_installed = true;
-        }
 
-        $is_twitter_installed = false;
-        $twitter_plugin = 'custom-twitter-feeds/custom-twitter-feed.php';
-        if ( isset( $installed_plugins['custom-twitter-feeds-pro/custom-twitter-feed.php'] ) ) {
-            $is_twitter_installed = true;
-            $twitter_plugin = 'custom-twitter-feeds-pro/custom-twitter-feed.php';
-        } else if ( isset( $installed_plugins['custom-twitter-feeds/custom-twitter-feed.php'] ) ) {
-            $is_twitter_installed = true;
-        }
-
-        $is_youtube_installed = false;
-        $youtube_plugin = 'feeds-for-youtube/youtube-feed.php';
-        if ( isset( $installed_plugins['youtube-feed-pro/youtube-feed.php'] ) ) {
-            $is_youtube_installed = true;
-            $youtube_plugin = 'youtube-feed-pro/youtube-feed.php';
-        } else if ( isset( $installed_plugins['feeds-for-youtube/youtube-feed.php'] ) ) {
-            $is_youtube_installed = true;
-        }
+        $plugins_info = $this->get_plugins_info( $installed_plugins );
 
         $return = array(
 			'admin_url' 		=> admin_url(),
@@ -193,43 +160,7 @@ class CFF_About_Us {
                 'teamAvatar' => CFF_PLUGIN_URL . 'admin/assets/img/team-avatar.png',
                 'teamImgAlt' => __( 'Smash Balloon Team', 'custom-facebook-feed' ),
             ),
-            'pluginsInfo'      => array(
-                'facebook'  => array(
-                    'plugin' => $facebook_plugin,
-                    'title' => __( 'Custom Facebook Feed', 'custom-facebook-feed' ),
-                    'description' => __( 'Add Facebook posts from your timeline, albums and much more.', 'custom-facebook-feed' ),
-                    'icon' => CFF_PLUGIN_URL . 'admin/assets/img/fb-icon.svg',
-                    'installed' => $is_facebook_installed,
-                    'activated' => is_plugin_active( $facebook_plugin ),
-                ),
-                'instagram'  => array(
-                    'plugin' => $instagram_plugin,
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/instagram-feed.zip',
-                    'title' => __( 'Instagram Feed', 'custom-facebook-feed' ),
-                    'description' => __( 'A quick and elegant way to add your Instagram posts to your website. ', 'custom-facebook-feed' ),
-                    'icon' => CFF_PLUGIN_URL . 'admin/assets/img/insta-icon.svg',
-                    'installed' => $is_instagram_installed,
-                    'activated' => is_plugin_active( $instagram_plugin ),
-                ),
-                'twitter'  => array(
-                    'plugin' => $twitter_plugin,
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/custom-twitter-feeds.zip',
-                    'title' => __( 'Custom Twitter Feeds', 'custom-facebook-feed' ),
-                    'description' => __( 'A customizable way to display tweets from your Twitter account. ', 'custom-facebook-feed' ),
-                    'icon' => CFF_PLUGIN_URL . 'admin/assets/img/twitter-icon.svg',
-                    'installed' => $is_twitter_installed,
-                    'activated' => is_plugin_active( $twitter_plugin ),
-                ),
-                'youtube'  => array(
-                    'plugin' => $youtube_plugin,
-                    'download_plugin' => 'https://downloads.wordpress.org/plugin/feeds-for-youtube.zip',
-                    'title' => __( 'Feeds for YouTube', 'custom-facebook-feed' ),
-                    'description' => __( 'A simple yet powerful way to display videos from YouTube. ', 'custom-facebook-feed' ),
-                    'icon' => CFF_PLUGIN_URL . 'admin/assets/img/youtube-icon.svg',
-                    'installed' => $is_youtube_installed,
-                    'activated' => is_plugin_active( $youtube_plugin ),
-                )
-            ),
+            'pluginsInfo'      => $plugins_info,
             'social_wall'  => array(
                 'plugin' => 'social-wall/social-wall.php',
                 'title' => __( 'Social Wall', 'custom-facebook-feed' ),
@@ -303,6 +234,7 @@ class CFF_About_Us {
                 'activate' => __( 'Activate', 'custom-facebook-feed' ),
                 'deactivate' => __( 'Deactivate', 'custom-facebook-feed' ),
                 'open' => __( 'Open', 'custom-facebook-feed' ),
+                'upgradeToPro' => __( 'Upgrade to Pro', 'custom-facebook-feed' ),
             ),
             'icons' => array(
                 'plusIcon' => '<svg width="13" height="12" viewBox="0 0 13 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.0832 6.83317H7.08317V11.8332H5.4165V6.83317H0.416504V5.1665H5.4165V0.166504H7.08317V5.1665H12.0832V6.83317Z" fill="white"/></svg>',
@@ -323,4 +255,95 @@ class CFF_About_Us {
 	public function about_us(){
 		return CFF_View::render( 'about.index' );
 	}
+
+    /**
+     * Get Plugins Info
+     *
+     * @since 4.1.2
+     *
+     * @return array
+     */
+    public function get_plugins_info( $installed_plugins ){
+        $plugins_info = [];
+        $plugins_list = [
+            'facebook' => [
+                'free' => 'custom-facebook-feed/custom-facebook-feed.php',
+                'pro' => 'custom-facebook-feed-pro/custom-facebook-feed.php',
+                'link' => 'https://smashballoon.com/custom-facebook-feed/'
+            ],
+            'instagram' => [
+                'free' => 'instagram-feed/instagram-feed.php',
+                'pro' => 'instagram-feed-pro/instagram-feed.php',
+                'link' => 'https://smashballoon.com/instagram-feed/'
+            ],
+            'twitter' => [
+                'free' => 'custom-twitter-feeds/custom-twitter-feed.php',
+                'pro' => 'custom-twitter-feeds-pro/custom-twitter-feed.php',
+                'link' => 'https://smashballoon.com/custom-twitter-feeds/'
+            ],
+            'youtube' => [
+                'free' => 'feeds-for-youtube/youtube-feed.php',
+                'pro' => 'youtube-feed-pro/youtube-feed.php',
+                'link' => 'https://smashballoon.com/youtube-feed/'
+            ]
+        ];
+
+        foreach ($plugins_list as $name => $plugin) {
+            $type = 'none';
+            $activated = 'none';
+            if( isset( $installed_plugins[$plugins_list[$name]['free']] ) ){
+                $type = 'free';
+                $activated = is_plugin_active( $plugins_list[$name]['free'] );
+            }
+            if( isset( $installed_plugins[$plugins_list[$name]['pro']] ) ){
+                $type = 'pro';
+                $activated = is_plugin_active( $plugins_list[$name]['pro'] );
+            }
+            $plugins_list[ $name ]['activated']     = $activated;
+            $plugins_list[ $name ]['type']          = $type;
+        }
+
+        $plugins_info = [
+            'facebook'  => array(
+                'plugin' => $plugins_list['facebook']['pro'],
+                'link' => $plugins_list['facebook']['link'],
+                'title' => __( 'Custom Facebook Feed', 'custom-facebook-feed' ),
+                'description' => __( 'Add Facebook posts from your timeline, albums and much more.', 'custom-facebook-feed' ),
+                'icon' => CFF_PLUGIN_URL . 'admin/assets/img/fb-icon.svg',
+                'activated' => $plugins_list['facebook']['activated'] ,
+                'type' => $plugins_list['facebook']['type'] ,
+            ),
+            'instagram'  => array(
+                'plugin' => $plugins_list['instagram']['pro'],
+                'link' => $plugins_list['instagram']['link'],
+                'download_plugin' => 'https://downloads.wordpress.org/plugin/instagram-feed.zip',
+                'title' => __( 'Instagram Feed', 'custom-facebook-feed' ),
+                'description' => __( 'A quick and elegant way to add your Instagram posts to your website. ', 'custom-facebook-feed' ),
+                'icon' => CFF_PLUGIN_URL . 'admin/assets/img/insta-icon.svg',
+                'activated' => $plugins_list['instagram']['activated'] ,
+                'type' => $plugins_list['instagram']['type'] ,
+            ),
+            'twitter'  => array(
+                'plugin' => $plugins_list['twitter']['pro'],
+                'link' => $plugins_list['twitter']['link'],
+                'download_plugin' => 'https://downloads.wordpress.org/plugin/custom-twitter-feeds.zip',
+                'title' => __( 'Custom Twitter Feeds', 'custom-facebook-feed' ),
+                'description' => __( 'A customizable way to display tweets from your Twitter account. ', 'custom-facebook-feed' ),
+                'icon' => CFF_PLUGIN_URL . 'admin/assets/img/twitter-icon.svg',
+                'activated' => $plugins_list['twitter']['activated'] ,
+                'type' => $plugins_list['twitter']['type'] ,
+            ),
+            'youtube'  => array(
+                'plugin' => $plugins_list['youtube']['pro'],
+                'link' => $plugins_list['youtube']['link'],
+                'download_plugin' => 'https://downloads.wordpress.org/plugin/feeds-for-youtube.zip',
+                'title' => __( 'Feeds for YouTube', 'custom-facebook-feed' ),
+                'description' => __( 'A simple yet powerful way to display videos from YouTube. ', 'custom-facebook-feed' ),
+                'icon' => CFF_PLUGIN_URL . 'admin/assets/img/youtube-icon.svg',
+                'activated' => $plugins_list['youtube']['activated'] ,
+                'type' => $plugins_list['youtube']['type'] ,
+            )
+        ];
+        return $plugins_info;
+    }
 }

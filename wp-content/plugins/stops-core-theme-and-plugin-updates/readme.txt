@@ -4,8 +4,8 @@ Tags: updates manager, easy updates manager, disable updates manager, disable up
 Requires at least: 5.1
 Requires PHP: 5.6
 Donate link: https://easyupdatesmanager.com
-Tested up to: 5.8
-Stable tag: 9.0.10
+Tested up to: 5.9
+Stable tag: 9.0.12
 License: GPLv2 or later
 
 Manage all your WordPress updates, including individual updates, automatic updates, logs, and loads more. This also works very well with WordPress Multisite.
@@ -125,6 +125,17 @@ Since third-party providers use custom update mechanisms, we cannot always guara
 For additional information and FAQs for Easy Updates Manager <a href="https://easyupdatesmanager.com">check out our website</a>.
 
 == Changelog ==
+
+= 9.0.12 - 2021-12-17 =
+
+* FEATURE: Semantic versioning feature that when enabled it will allow only patch/security release updates for plugins and/or themes
+* FIX: The log table didn't get updated when upgrading from the very old table versions (1.0.0 and 1.1.3) to the current latest (1.1.5)
+
+= 9.0.11 - 2021-12-08 =
+
+* FIX: Change the order (priority) of auto_update_plugin/theme filters to make the 'Safe Mode' feature (Premium) work properly
+* TWEAK: Improve the way errors are handled before and after a plugin activation takes place (deactivated plugins must be reactivated immediately regardless of whether or not the plugins contain a fatal error)
+* TWEAK: Change use of '$' to local/function scope, to prevent conflicts
 
 = 9.0.10 - 2021-09-28 =
 
@@ -355,4 +366,4 @@ For past changelogs, <a href="https://easyupdatesmanager.com/blog/">please visit
 
 == Upgrade Notice ==
 
-* 9.0.10 : Change the misleading checkbox text label of the WordPress core updates setting that has led to confusion. Simplify 'WordPress core updates` setting by eliminating redundant or unnecessary options whilst preserving user preferences. Override WordPress core auto-updates settings by not showing it in the updates screen UI (wp-admin/update-core.php); a recommended update for all.
+* 9.0.12 : Semantic versioning feature that when enabled it will allow only patch/security release updates for plugins and/or themes. The log table didn't get updated when upgrading from the very old table versions (1.0.0 and 1.1.3) to the current latest (1.1.5); a recommended update for all.

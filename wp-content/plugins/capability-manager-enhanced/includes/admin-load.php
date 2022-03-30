@@ -35,10 +35,10 @@ class PP_Capabilities_Admin_UI {
             add_action('user_register', [$this, 'action_profile_update'], 9);
         }
 
-        if (is_admin() && (isset($_REQUEST['page']) && (in_array($_REQUEST['page'], ['pp-capabilities', 'pp-capabilities-backup', 'pp-capabilities-roles', 'pp-capabilities-admin-menus', 'pp-capabilities-editor-features', 'pp-capabilities-nav-menus', 'pp-capabilities-settings']))
+        if (is_admin() && (isset($_REQUEST['page']) && (in_array($_REQUEST['page'], ['pp-capabilities', 'pp-capabilities-backup', 'pp-capabilities-roles', 'pp-capabilities-admin-menus', 'pp-capabilities-editor-features', 'pp-capabilities-nav-menus', 'pp-capabilities-settings', 'pp-capabilities-admin-features']))
 
         || (!empty($_REQUEST['action']) && in_array($_REQUEST['action'], ['pp-roles-add-role', 'pp-roles-delete-role', 'pp-roles-hide-role', 'pp-roles-unhide-role']))
-        || ( ! empty($_SERVER['SCRIPT_NAME']) && strpos( $_SERVER['SCRIPT_NAME'], 'p-admin/plugins.php' ) && ! empty($_REQUEST['action'] ) ) 
+        || ( ! empty($_SERVER['SCRIPT_NAME']) && strpos(sanitize_text_field($_SERVER['SCRIPT_NAME']), 'p-admin/plugins.php' ) && ! empty($_REQUEST['action'] ) ) 
         || ( isset($_GET['action']) && 'reset-defaults' == $_GET['action'] )
         || in_array( $pagenow, array( 'users.php', 'user-edit.php', 'profile.php', 'user-new.php' ) )
         ) ) {
@@ -53,6 +53,53 @@ class PP_Capabilities_Admin_UI {
         } else {
             add_action( 'admin_menu', [$this, 'cmeSubmenus'], 20 );
         }
+
+        add_action('init', function() { // late execution avoids clash with autoloaders in other plugins
+            global $pagenow;
+
+            if ((($pagenow == 'admin.php') && isset($_GET['page']) && in_array($_GET['page'], ['pp-capabilities', 'pp-capabilities-roles', 'pp-capabilities-backup'])) // @todo: CSS for button alignment in Editor Features, Admin Features
+            || (defined('DOING_AJAX') && DOING_AJAX && !empty($_REQUEST['action']) && (false !== strpos(sanitize_key($_REQUEST['action']), 'capability-manager-enhanced')))
+            ) {
+                if (!class_exists('\PublishPress\WordPressReviews\ReviewsController')) {
+                    include_once PUBLISHPRESS_CAPS_ABSPATH . '/vendor/publishpress/wordpress-reviews/ReviewsController.php';
+                }
+    
+                if (class_exists('\PublishPress\WordPressReviews\ReviewsController')) {
+                    $reviews = new \PublishPress\WordPressReviews\ReviewsController(
+                        'capability-manager-enhanced',
+                        'PublishPress Capabilities',
+                        plugin_dir_url(CME_FILE) . 'common/img/capabilities-wp-logo.png'
+                    );
+        
+                    add_filter('publishpress_wp_reviews_display_banner_capability-manager-enhanced', [$this, 'shouldDisplayBanner']);
+        
+                    $reviews->init();
+                }
+            }
+        });
+
+
+        add_filter('pp_capabilities_feature_post_types', [$this, 'fltEditorFeaturesPostTypes'], 5);
+    }
+
+    public function fltEditorFeaturesPostTypes($def_post_types) {
+        $type_args = defined('PP_CAPABILITIES_PRIVATE_TYPES') ? [] : ['public' => true];
+        $def_post_types = array_merge($def_post_types, get_post_types($type_args));
+
+        unset($def_post_types['attachment']);
+
+        if ((count($def_post_types) > 14) && !defined('PP_CAPABILITIES_UNLIMITED_FEATURE_TYPES')) {
+            $custom_types = array_diff($def_post_types, ['post', 'page']);
+            $def_post_types = array_merge(['post', 'page'], array_slice($custom_types, 0, 12));
+        }
+
+        return $def_post_types;
+    }
+
+    public function shouldDisplayBanner() {
+        global $pagenow;
+
+        return ($pagenow == 'admin.php') && isset($_GET['page']) && in_array($_GET['page'], ['pp-capabilities', 'pp-capabilities-roles', 'pp-capabilities-backup']);
     }
 
     private function applyFeatureRestrictions($editor = 'gutenberg') {
@@ -66,14 +113,13 @@ class PP_Capabilities_Admin_UI {
         static $def_post_types; // avoid redundant filter application
 
         if (!isset($def_post_types)) {
-            //$def_post_types = apply_filters('pp_capabilities_feature_post_types', get_post_types(['public' => true]));
-            $def_post_types = apply_filters('pp_capabilities_feature_post_types', ['post', 'page']);
+            $def_post_types = array_unique(apply_filters('pp_capabilities_feature_post_types', ['post', 'page']));
         }
 
         $post_type = pp_capabilities_get_post_type();
 
         // Return if not a supported post type
-        if (!in_array($post_type, $def_post_types)) {
+        if (in_array($post_type, apply_filters('pp_capabilities_unsupported_post_types', ['attachment']))) {
             return;
         }
 
@@ -112,7 +158,7 @@ class PP_Capabilities_Admin_UI {
                 // Check if we are on the user's profile page
                 wp_enqueue_script(
                     'pp-capabilities-chosen-js',
-                    plugin_dir_url(CME_FILE) . 'common/libs/chosen-v1.8.3/chosen.jquery.js',
+                    plugin_dir_url(CME_FILE) . 'common/libs/chosen-v1.8.7/chosen.jquery.js',
                     ['jquery'],
                     CAPSMAN_VERSION
                 );
@@ -126,7 +172,7 @@ class PP_Capabilities_Admin_UI {
 
                 wp_enqueue_style(
                     'pp-capabilities-chosen-css',
-                    plugin_dir_url(CME_FILE) . 'common/libs/chosen-v1.8.3/chosen.css',
+                    plugin_dir_url(CME_FILE) . 'common/libs/chosen-v1.8.7/chosen.css',
                     false,
                     CAPSMAN_VERSION
                 );
@@ -137,7 +183,7 @@ class PP_Capabilities_Admin_UI {
                     CAPSMAN_VERSION
                 );
 
-                $roles = !empty($_GET['user_id']) ?$this->getUsersRoles($_GET['user_id']) : [];
+                $roles = !empty($_GET['user_id']) ? $this->getUsersRoles((int) $_GET['user_id']) : [];
 
                 if (empty($roles)) {
                     $roles = (array) get_option('default_role');
@@ -191,11 +237,11 @@ class PP_Capabilities_Admin_UI {
     public function action_profile_update($userId, $oldUserData = [])
     {
         // Check if we need to update the user's roles, allowing to set multiple roles.
-        if (isset($_POST['pp_roles']) && current_user_can('promote_users')) {
+        if (!empty($_REQUEST['_wpnonce']) && wp_verify_nonce(sanitize_key($_REQUEST['_wpnonce']), 'update-user_' . $userId) && isset($_POST['pp_roles']) && current_user_can('promote_users')) {
             // Remove the user's roles
             $user = get_user_by('ID', $userId);
 
-            $newRoles     = $_POST['pp_roles'];
+            $newRoles     = array_map('sanitize_key', $_POST['pp_roles']);
             $currentRoles = $user->roles;
 
             if (empty($newRoles) || !is_array($newRoles)) {
@@ -257,6 +303,7 @@ class PP_Capabilities_Admin_UI {
 
         add_submenu_page('pp-capabilities',  __('Roles', 'capsman-enhanced'), __('Roles', 'capsman-enhanced'), $cap_name, 'pp-capabilities-roles', 'cme_fakefunc');
         add_submenu_page('pp-capabilities',  __('Editor Features', 'capsman-enhanced'), __('Editor Features', 'capsman-enhanced'), $cap_name, 'pp-capabilities-editor-features', 'cme_fakefunc');
+        add_submenu_page('pp-capabilities',  __('Admin Features', 'capsman-enhanced'), __('Admin Features', 'capsman-enhanced'), $cap_name, 'pp-capabilities-admin-features', 'cme_fakefunc');
         add_submenu_page('pp-capabilities',  __('Admin Menus', 'capsman-enhanced'), __('Admin Menus', 'capsman-enhanced'), $cap_name, 'pp-capabilities-admin-menus', 'cme_fakefunc');
         add_submenu_page('pp-capabilities',  __('Nav Menus', 'capsman-enhanced'), __('Nav Menus', 'capsman-enhanced'), $cap_name, 'pp-capabilities-nav-menus', 'cme_fakefunc');
         add_submenu_page('pp-capabilities',  __('Backup', 'capsman-enhanced'), __('Backup', 'capsman-enhanced'), $cap_name, 'pp-capabilities-backup', 'cme_fakefunc');

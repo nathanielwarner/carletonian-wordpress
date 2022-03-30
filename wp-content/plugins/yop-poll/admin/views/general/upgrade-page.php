@@ -53,7 +53,7 @@
                     <div class="col-md-10">
                         <div class="row">
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-templates.png"; ?>" alt="Choose from 30 Gorgeous Poll Templates or Build Your Own">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-templates.png'; ?>" alt="Choose from 30 Gorgeous Poll Templates or Build Your Own">
                             </div>
                             <div class="col-md-6">
                                 <div class="title">
@@ -99,7 +99,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-multiple-questions.png"; ?>" alt="Multiple Questions Per Poll">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-multiple-questions.png'; ?>" alt="Multiple Questions Per Poll">
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
                     <div class="col-md-10">
                         <div class="row">
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-media-questions.png"; ?>" alt="Invite Exciting Media Responses">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-media-questions.png'; ?>" alt="Invite Exciting Media Responses">
                             </div>
                             <div class="col-md-6">
                                 <div class="title">
@@ -163,7 +163,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-text-block.png"; ?>" alt="Insert Text Blocks">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-text-block.png'; ?>" alt="Insert Text Blocks">
                             </div>
                         </div>
                     </div>
@@ -205,7 +205,7 @@
                     <div class="col-md-10">
                         <div class="row">
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-facebook-integration.png"; ?>" alt="Integrate Facebook & Google Logins">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-facebook-integration.png'; ?>" alt="Integrate Facebook & Google Logins">
                             </div>
                             <div class="col-md-6">
                                 <div class="title">
@@ -247,7 +247,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-countdown-timer.png"; ?>" alt="Introduce a Countdown Timer">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-countdown-timer.png'; ?>" alt="Introduce a Countdown Timer">
                             </div>
                         </div>
                     </div>
@@ -269,7 +269,7 @@
                     <div class="col-md-10">
                         <div class="row">
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-browser-fingerprint.png"; ?>" alt="Fingerprint Enabled Voting Limit">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-browser-fingerprint.png'; ?>" alt="Fingerprint Enabled Voting Limit">
                             </div>
                             <div class="col-md-6">
                                 <div class="title">
@@ -311,7 +311,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <img class="img-responsive img-rounded" src="<?php echo YOP_POLL_URL . "admin/assets/images/pro/yop-poll-pie-results.png"; ?>" alt="A Pie Chart to Show off Your Poll Results">
+                                <img class="img-responsive img-rounded" src="<?php echo esc_url( YOP_POLL_URL ) . 'admin/assets/images/pro/yop-poll-pie-results.png'; ?>" alt="A Pie Chart to Show off Your Poll Results">
                             </div>
                         </div>
                     </div>

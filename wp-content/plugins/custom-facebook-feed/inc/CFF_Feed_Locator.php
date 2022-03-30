@@ -60,6 +60,26 @@ class CFF_Feed_Locator{
 		global $wpdb;
 
 		$feed_locator_table_name = esc_sql( $wpdb->prefix . CFF_FEED_LOCATOR );
+		$two_minutes_ago = date( 'Y-m-d H:i:s', time() - 120 );
+
+		$results_recent_entries = $wpdb->get_results( $wpdb->prepare("
+			SELECT COUNT(*) AS num_entries
+            FROM $feed_locator_table_name
+            WHERE last_update > %s;
+            ", $two_minutes_ago ), ARRAY_A );
+
+		// Only allow 5 new entries within 5 minutes
+		if ( isset( $results_recent_entries[0]['num_entries'] ) && (int)$results_recent_entries[0]['num_entries'] > 5 ) {
+			return;
+		}
+
+		// Only allow 1000 total entries
+		$results_total_entries = $wpdb->get_results( "
+			SELECT COUNT(*) AS num_entries
+            FROM $feed_locator_table_name", ARRAY_A );
+		if ( isset( $results_total_entries[0]['num_entries'] ) && (int)$results_total_entries[0]['num_entries'] > 1000 ) {
+			$this->delete_oldest_entry();
+		}
 
 		$affected = $wpdb->query( $wpdb->prepare( "INSERT INTO $feed_locator_table_name
       	(feed_id,
@@ -78,6 +98,17 @@ class CFF_Feed_Locator{
 			$this->feed_details['location']['html'],
 			CFF_Utils::cff_json_encode( $this->feed_details['atts'] ),
 			date( 'Y-m-d H:i:s' ) ) );
+	}
+	public function delete_oldest_entry() {
+		global $wpdb;
+
+		$feed_locator_table_name = esc_sql( $wpdb->prefix . SBI_INSTAGRAM_FEED_LOCATOR );
+
+		$affected = $wpdb->query(
+			"DELETE FROM $feed_locator_table_name
+					ORDER BY last_update ASC
+					LIMIT 1;" );
+
 	}
 
 	/**
@@ -601,8 +632,21 @@ class CFF_Feed_Locator{
 				'html' => $location
 			)
 		);
-		CFF_Feed_Locator::do_background_tasks( $feed_details );
-		wp_die( 'locating success' );
+		$can_do_background_tasks = false;
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( current_user_can( $cap ) ) {
+			$can_do_background_tasks = true;
+		}
+
+
+		if ( $can_do_background_tasks ) {
+			CFF_Feed_Locator::do_background_tasks( $feed_details );
+			wp_die( 'locating success' );
+		}
+
+		wp_die( 'skipped locating' );
 	}
 
 

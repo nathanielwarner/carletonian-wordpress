@@ -12,7 +12,7 @@ class YOP_Poll_Bans {
 			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_bans} WHERE `id` = %s", $ban_id
 		);
 		$ban = $GLOBALS['wpdb']->get_row( $query, OBJECT );
-		if( null !== $ban ){
+		if ( null !== $ban ) {
 			return $ban->author;
 		} else {
 			return false;
@@ -24,16 +24,30 @@ class YOP_Poll_Bans {
 		$total_polls = 0;
 		$current_user = wp_get_current_user();
 		if ( current_user_can( 'yop_poll_results_others' ) ) {
-			$query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_bans}";
+			$query = 'SELECT COUNT(*) FROM ' . $GLOBALS['wpdb']->yop_poll_bans;
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " WHERE `b_value` LIKE {$params['q']}";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' WHERE `b_value` LIKE %s';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					array(
+						$params['q'],
+					)
+				);
 			}
 		} else if ( current_user_can( 'yop_poll_results_own' ) ) {
-			$query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_bans} WHERE `author` = '" . $current_user->ID . "'";
+			$query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_bans} WHERE `author` = %s";
+			$qquery = $GLOBALS['wpdb']->prepare(
+				$query,
+				$current_user->ID
+			);
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " AND `b_value` LIKE {$params['q']}";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' AND `b_value` LIKE %s';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q']
+				);
 			}
 		}
 		if ( '' !== $query ) {
@@ -50,17 +64,17 @@ class YOP_Poll_Bans {
 		} else {
 			$data['pagination'] = '';
 		}
-		if ( 1 < $total_pages ){
+		if ( 1 < $total_pages ) {
 			$pagination['first_page'] = '<span class="tablenav-pages-navspan" aria-hidden="true">
 							«
 						  </span>';
 			$pagination['previous_page'] = '<span class="screen-reader-text">
-								' . __( 'Previous page', 'yop-poll' ) . '
+								' . esc_html__( 'Previous page', 'yop-poll' ) . '
 							</span>
 							<span class="tablenav-pages-navspan" aria-hidden="true">
 								‹
 							</span>';
-			$pagination['next_page'] = '<span class="screen-reader-text">' . __( 'Next page', 'yop-poll' ) . '
+			$pagination['next_page'] = '<span class="screen-reader-text">' . esc_html__( 'Next page', 'yop-poll' ) . '
 							</span>
 							<span aria-hidden="true">›</span>';
 			$pagination['last_page'] = '<span class="tablenav-pages-navspan" aria-hidden="true">
@@ -77,7 +91,7 @@ class YOP_Poll_Bans {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']+1
+								'page_no' => $params['page_no'] + 1
 							)
 						)
 					);
@@ -113,7 +127,7 @@ class YOP_Poll_Bans {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']-1
+								'page_no' => $params['page_no'] - 1
 							)
 						)
 					);
@@ -149,7 +163,7 @@ class YOP_Poll_Bans {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']-1
+								'page_no' => $params['page_no'] - 1
 							)
 						)
 					);
@@ -162,7 +176,7 @@ class YOP_Poll_Bans {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']+1
+								'page_no' => $params['page_no'] + 1
 							)
 						)
 					);
@@ -233,37 +247,54 @@ class YOP_Poll_Bans {
 			$params['sort_order'] = SORT_ASC;
 		} elseif ( 'desc' === $params['sort_order'] ) {
 			$params['sort_order'] = SORT_DESC;
-		} else{
+		} else {
 			$params['sort_order'] = SORT_ASC;
 		}
 		if ( !in_array( $params['order_by'], self::$order_by_allowed ) ) {
 			$params['order_by'] = 'id';
 		}
-		if ( $params['page_no'] > $pagination['total_pages']) {
+		if ( $params['page_no'] > $pagination['total_pages'] ) {
 			$params['page_no'] = 1;
 		}
 		$limit = self::$bans_per_page * ( $params['page_no'] - 1 );
-		$limit_query = " LIMIT {$limit}, ". self::$bans_per_page;
+		$limit_query = " LIMIT {$limit}, " . self::$bans_per_page;
 		if ( current_user_can( 'yop_poll_results_others' ) ) {
-			$query = "SELECT bans.id, bans.poll_id, bans.author, bans.b_by, bans.b_value, bans.added_date,"
-						. " polls.name"
+			$query = 'SELECT bans.id, bans.poll_id, bans.author, bans.b_by, bans.b_value, bans.added_date,'
+						. ' polls.name'
 			 			. " FROM {$GLOBALS['wpdb']->yop_poll_bans} as bans LEFT JOIN {$GLOBALS['wpdb']->yop_poll_polls} as polls"
-						. " ON bans.`poll_id` = polls.`id`";
+						. ' ON bans.`poll_id` = polls.`id`';
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " WHERE `b_value` LIKE {$params['q']}";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' WHERE `b_value` LIKE %s';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q']
+				);
 			}
 		} else if ( current_user_can( 'yop_poll_results_own' ) ) {
 			$query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_bans} LEFT JOIN {$GLOBALS['wpdb']->yop_poll_polls}"
 						. " ON {$GLOBALS['wpdb']->yop_poll_bans}.`poll_id` = {$GLOBALS['wpdb']->yop_poll_polls}.`id`"
-						. " WHERE {$GLOBALS['wpdb']->yop_poll_bans}.`author`=" . $current_user->ID;
+						. " WHERE {$GLOBALS['wpdb']->yop_poll_bans}.`author` = %s";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$current_user->ID
+			);
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " AND `b_value` LIKE {$params['q']}";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' AND `b_value` LIKE %s';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q']
+				);
 			}
 		}
 		if ( '' !== $query ) {
-			$query .= $limit_query;
+			$query .= ' LIMIT %d, %d';
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$limit,
+				self::$bans_per_page
+			);
 			$bans = $GLOBALS['wpdb']->get_results( $query, ARRAY_A );
 		}
 		foreach ( $bans as &$ban ) {
@@ -293,10 +324,10 @@ class YOP_Poll_Bans {
 		$current_user = wp_get_current_user();
 		if ( false === self::$errors_present ) {
 			$data = array(
-				'author' => $current_user->ID,
-				'poll_id' => $ban->ban->poll_id,
-				'b_by' => $ban->ban->b_by,
-				'b_value' => $ban->ban->b_value,
+				'author' => sanitize_text_field( $current_user->ID ),
+				'poll_id' => sanitize_text_field( $ban->ban->poll_id ),
+				'b_by' => sanitize_text_field( $ban->ban->b_by ),
+				'b_value' => sanitize_text_field( $ban->ban->b_value ),
 				'added_date' => current_time( 'mysql' ),
 				'modified_date' => current_time( 'mysql' )
 			);
@@ -304,7 +335,7 @@ class YOP_Poll_Bans {
 				self::$errors_present = false;
 			} else {
 				self::$errors_present = true;
-				self::$error_text = __( 'Error adding ban', 'yop-poll' );
+				self::$error_text = esc_html__( 'Error adding ban', 'yop-poll' );
 			}
 		}
 		return array(
@@ -320,22 +351,22 @@ class YOP_Poll_Bans {
 			self::validate_data( $ban->ban );
 			if ( false === self::$errors_present ) {
 				$data = array(
-					'author' => $current_user->ID,
-					'poll_id' => $ban->ban->poll_id,
-					'b_by' => $ban->ban->b_by,
-					'b_value' => $ban->ban->b_value,
+					'author' => sanitize_text_field( $current_user->ID ),
+					'poll_id' => sanitize_text_field( $ban->ban->poll_id ),
+					'b_by' => sanitize_text_field( $ban->ban->b_by ),
+					'b_value' => sanitize_text_field( $ban->ban->b_value ),
 					'modified_date' => current_time( 'mysql' )
 				);
 				if ( false !== $GLOBALS['wpdb']->update( $GLOBALS['wpdb']->yop_poll_bans, $data, array( 'id' => $ban_id ) ) ) {
 					self::$errors_present = false;
 				} else {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error updating ban', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error updating ban', 'yop-poll' );
 				}
 			}
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error updating poll', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error updating poll', 'yop-poll' );
 		}
 		return array(
 			'success' => !self::$errors_present,
@@ -346,14 +377,14 @@ class YOP_Poll_Bans {
 		$delete_ban_result = $GLOBALS['wpdb']->delete(
 			$GLOBALS['wpdb']->yop_poll_bans,
 			array(
-				'id' => $ban_id
+				'id' => sanitize_text_field( $ban_id )
 			)
 		);
 		if ( false !== $delete_ban_result ) {
 			self::$errors_present = false;
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error deleting ban', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error deleting ban', 'yop-poll' );
 		}
 		return array(
 			'success' => !self::$errors_present,
@@ -365,18 +396,18 @@ class YOP_Poll_Bans {
 			$delete_bans_result = $GLOBALS['wpdb']->delete(
 				$GLOBALS['wpdb']->yop_poll_bans,
 				array(
-					'poll_id' => $poll_id
+					'poll_id' => sanitize_text_field( $poll_id )
 				)
 			);
 			if ( false !== $delete_bans_result ) {
 				self::$errors_present = false;
 			} else {
 				self::$errors_present = true;
-				self::$error_text = __( 'Error deleting bans', 'yop-poll' );
+				self::$error_text = esc_html__( 'Error deleting bans', 'yop-poll' );
 			}
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Invalid poll', 'yop-poll' );
+			self::$error_text = esc_html__( 'Invalid poll', 'yop-poll' );
 		}
 		return array(
 			'success' => !self::$errors_present,
@@ -388,7 +419,7 @@ class YOP_Poll_Bans {
 			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_bans} WHERE `id` = %s", $ban_id
 		);
 		$ban = $GLOBALS['wpdb']->get_row( $query, OBJECT );
-		if( null !== $ban ){
+		if ( null !== $ban ) {
 			return array(
 				'ban' => $ban
 			);
@@ -399,33 +430,33 @@ class YOP_Poll_Bans {
 	public static function validate_data( $ban ) {
 		if ( false === is_object( $ban ) ) {
 			self::$errors_present = true;
-			self::$error_text = __( 'Invalid data', 'yop-poll' );
+			self::$error_text = esc_html__( 'Invalid data', 'yop-poll' );
 		} else {
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $ban->poll_id ) ||
-				( '' === trim( $ban->poll_id ) ) )
+				( '' === sanitize_text_field( $ban->poll_id ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $ban->b_by ) ||
-				( '' === trim( $ban->b_by ) ) ||
+				( '' === sanitize_text_field( $ban->b_by ) ) ||
 				( false === in_array( $ban->b_by, self::$by_allowed ) )
 				)
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Ban by" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Ban by" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $ban->b_value ) ||
-				( '' === trim( $ban->b_value ) ) )
+				( '' === sanitize_text_field( $ban->b_value ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Ban Value" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Ban Value" is invalid', 'yop-poll' );
 			}
 		}
 	}

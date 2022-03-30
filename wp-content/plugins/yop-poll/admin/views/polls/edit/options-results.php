@@ -8,14 +8,14 @@
 		<div class="row">
 			<div class="col-md-12">
 				<h4>
-					<?php _e( 'Display', 'yop-poll' );?>
+					<?php esc_html_e( 'Display', 'yop-poll' ); ?>
 				</h4>
 			</div>
 		</div>
 		<div class="form-horizontal">
 			<div class="form-group">
 				<div class="col-md-3">
-					<?php _e( 'Show results', 'yop-poll' );?>
+					<?php esc_html_e( 'Show results', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
 					<?php
@@ -50,52 +50,52 @@
 			        ?>
 					<div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="before-vote" <?php echo $show_results_moment_before_vote;?>>
-							<?php _e( 'Before vote', 'yop-poll' );?>
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="before-vote" <?php echo esc_attr( $show_results_moment_before_vote ); ?>>
+							<?php esc_html_e( 'Before vote', 'yop-poll' ); ?>
 						</label>
 					</div>
 					<div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-vote" <?php echo $show_results_moment_after_vote;?>>
-							<?php _e( 'After vote', 'yop-poll' );?>
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-vote" <?php echo esc_attr( $show_results_moment_after_vote ); ?>>
+							<?php esc_html_e( 'After vote', 'yop-poll' ); ?>
 						</label>
 					</div>
 					<div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-end-date" <?php echo $show_results_moment_after_end_date;?>>
-							<?php _e( 'After poll end date', 'yop-poll' );?>
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="after-end-date" <?php echo esc_attr( $show_results_moment_after_end_date ); ?>>
+							<?php esc_html_e( 'After poll end date', 'yop-poll' ); ?>
 						</label>
 					</div>
 					<div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="custom-date" <?php echo $show_results_moment_custom_date;?>>
-							<?php _e( 'Custom Date', 'yop-poll' );?>
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="custom-date" <?php echo esc_attr( $show_results_moment_custom_date ); ?>>
+							<?php esc_html_e( 'Custom Date', 'yop-poll' ); ?>
 						</label>
 					</div>
 					<div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="never" <?php echo $show_results_moment_never;?>>
-							<?php _e( 'Never', 'yop-poll' );?>
+							<input type="checkbox" name="show-results-moment" class="show-results-moment" value="never" <?php echo esc_attr( $show_results_moment_never ); ?>>
+							<?php esc_html_e( 'Never', 'yop-poll' ); ?>
 						</label>
 					</div>
 				</div>
 			</div>
-			<div class="form-group custom-date-results-section <?php echo $show_results_moment_custom_date_class;?>">
+			<div class="form-group custom-date-results-section <?php echo esc_attr( $show_results_moment_custom_date_class ); ?>">
 				<div class="col-md-3">
 				</div>
 				<div class="col-md-9">
 					<div class="input-group">
-						<input type="text" class="form-control custom-date-results" value="<?php echo $poll->meta_data['options']['results']['customDateResults'];?>" readonly />
-						<input type="hidden" class="form-control custom-date-results-hidden" value="<?php echo $poll->meta_data['options']['results']['customDateResults'];?>" />
+						<input type="text" class="form-control custom-date-results" value="<?php echo esc_attr( $poll->meta_data['options']['results']['customDateResults'] ); ?>" readonly />
+						<input type="hidden" class="form-control custom-date-results-hidden" value="<?php echo esc_attr( $poll->meta_data['options']['results']['customDateResults'] ); ?>" />
 		                <div class="input-group-addon">
 							<span class="dashicons dashicons-calendar-alt show-custom-date-results"></span>
 		                </div>
 					</div>
 				</div>
 			</div>
-			<div class="form-group show-results-to-section <?php echo $show_results_to_class;?>">
+			<div class="form-group show-results-to-section <?php echo esc_attr( $show_results_to_class ); ?>">
 				<div class="col-md-3">
-					<?php _e( 'Show results to', 'yop-poll' );?>
+					<?php esc_html_e( 'Show results to', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
 					<?php
@@ -112,21 +112,21 @@
 			        ?>
 			        <div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="show-results-to" class="show-results-to" value="guest" <?php echo $show_results_to_guest;?>>
-							<?php _e( 'Guest', 'yop-poll' );?>
+							<input type="checkbox" name="show-results-to" class="show-results-to" value="guest" <?php echo esc_attr( $show_results_to_guest ); ?>>
+							<?php esc_html_e( 'Guest', 'yop-poll' ); ?>
 						</label>
 					</div>
 					<div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="show-results-to" class="show-results-to" value="registered" <?php echo $show_results_to_registered;?>>
-							<?php _e( 'Registered', 'yop-poll' );?>
+							<input type="checkbox" name="show-results-to" class="show-results-to" value="registered" <?php echo esc_attr( $show_results_to_registered ); ?>>
+							<?php esc_html_e( 'Registered', 'yop-poll' ); ?>
 						</label>
 					</div>
 				</div>
 			</div>
             <div class="form-group">
                 <div class="col-md-3">
-					<?php _e( 'Show Details as', 'yop-poll' );?>
+					<?php esc_html_e( 'Show Details as', 'yop-poll' ); ?>
                 </div>
                 <div class="col-md-9">
 	                <?php
@@ -141,21 +141,21 @@
 	                ?>
                     <div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="results-details-option" class="results-details-option"  value="votes-number" <?php echo $results_details_votes_number?>>
-							<?php _e( 'Votes Number', 'yop-poll' );?>
+							<input type="checkbox" name="results-details-option" class="results-details-option"  value="votes-number" <?php echo esc_attr( $results_details_votes_number ); ?>>
+							<?php esc_html_e( 'Votes Number', 'yop-poll' ); ?>
 						</label>
 					</div>
 					<div class="checkbox-inline">
 						<label class="admin-label">
-							<input type="checkbox" name="results-details-option" class="results-details-option"  value="percentages"  <?php echo $results_details_percentages?>>
-							<?php _e( 'Percentages', 'yop-poll' );?>
+							<input type="checkbox" name="results-details-option" class="results-details-option"  value="percentages"  <?php echo esc_attr( $results_details_percentages ); ?>>
+							<?php esc_html_e( 'Percentages', 'yop-poll' ); ?>
 						</label>
 					</div>
                 </div>
             </div>
 			<div class="form-group">
 				<div class="col-md-3">
-					<?php _e( 'Display [Back to vote] link', 'yop-poll' );?>
+					<?php esc_html_e( 'Display [Back to vote] link', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
 					<?php
@@ -170,22 +170,22 @@
 			        }
 			        ?>
 			        <select class="back-to-vote-option admin-select" style="width:100%">
-			            <option value="no" <?php echo $back_to_vote_option_no;?>><?php _e( 'No', 'yop-poll' );?></option>
-			            <option value="yes" <?php echo $back_to_vote_option_yes;?>><?php _e( 'Yes', 'yop-poll' );?></option>
+			            <option value="no" <?php echo esc_attr( $back_to_vote_option_no ); ?>><?php esc_html_e( 'No', 'yop-poll' ); ?></option>
+			            <option value="yes" <?php echo esc_attr( $back_to_vote_option_yes ); ?>><?php esc_html_e( 'Yes', 'yop-poll' ); ?></option>
 			        </select>
 				</div>
 			</div>
-			<div class="form-group back-to-vote-caption-section <?php echo $back_to_vote_caption_class;?>">
+			<div class="form-group back-to-vote-caption-section <?php echo esc_attr( $back_to_vote_caption_class ); ?>">
 				<div class="col-md-3 field-caption">
-					<?php _e( '[Back to vote] caption', 'yop-poll' );?>
+					<?php esc_html_e( '[Back to vote] caption', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
-					<input type="text" class="form-control back-to-vote-caption" value="<?php echo $poll->meta_data['options']['results']['backToVoteCaption'];?>"/>
+					<input type="text" class="form-control back-to-vote-caption" value="<?php echo esc_attr( $poll->meta_data['options']['results']['backToVoteCaption'] ); ?>"/>
 				</div>
 			</div>
 			<div class="form-group">
 				<div class="col-md-3">
-					<?php _e( 'Sort results', 'yop-poll' );?>
+					<?php esc_html_e( 'Sort results', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
 					<?php
@@ -221,21 +221,21 @@
 			        }
 			        ?>
 			        <select class="sort-results admin-select" style="width:100%">
-			            <option value="as-defined" <?php echo $sort_results_as_defined;?>>
-			                <?php _e( 'As Defined', 'yop-poll' );?>
+			            <option value="as-defined" <?php echo esc_attr( $sort_results_as_defined ); ?>>
+			                <?php esc_html_e( 'As Defined', 'yop-poll' ); ?>
 			            </option>
-			            <option value="alphabetical" <?php echo $sort_results_as_alphabetical;?>>
-			                <?php _e( 'Alphabetical Order', 'yop-poll' );?>
+			            <option value="alphabetical" <?php echo esc_attr( $sort_results_as_alphabetical ); ?>>
+			                <?php esc_html_e( 'Alphabetical Order', 'yop-poll' ); ?>
 			            </option>
-			            <option value="number-of-votes" <?php echo $sort_results_as_number_of_votes;?>>
-			                <?php _e( 'Number of votes', 'yop-poll' );?>
+			            <option value="number-of-votes" <?php echo esc_attr( $sort_results_as_number_of_votes ); ?>>
+			                <?php esc_html_e( 'Number of votes', 'yop-poll' ); ?>
 			            </option>
 			        </select>
 				</div>
 			</div>
-			<div class="form-group sort-results-rule-section <?php echo $sort_results_rule_class;?>">
+			<div class="form-group sort-results-rule-section <?php echo esc_attr( $sort_results_rule_class ); ?>">
 				<div class="col-md-3">
-					<?php _e( 'Sort rule', 'yop-poll' );?>
+					<?php esc_html_e( 'Sort rule', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
 					<?php
@@ -248,17 +248,17 @@
 			        }
 			        ?>
 			        <select class="sort-results-rule admin-select" style="width:100%">
-			            <option value="asc" <?php echo $sort_results_rule_asc?>><?php _e( 'Ascending', 'yop-poll' );?></option>
-			            <option value="desc" <?php echo $sort_results_rule_desc?>><?php _e( 'Descending', 'yop-poll' );?></option>
+			            <option value="asc" <?php echo esc_attr( $sort_results_rule_asc ); ?>><?php esc_html_e( 'Ascending', 'yop-poll' ); ?></option>
+			            <option value="desc" <?php echo esc_attr( $sort_results_rule_desc ); ?>><?php esc_html_e( 'Descending', 'yop-poll' ); ?></option>
 			        </select>
 				</div>
 			</div>
 			<div class="form-group">
 				<div class="col-md-3">
 					<a href="#" class="upgrade-to-pro" data-screen="pie-results">
-						<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
+						<img src="<?php echo esc_url( YOP_POLL_URL ); ?>admin/assets/images/pro-horizontal.svg" class="responsive" />
 					</a>
-					<?php _e( 'Display Results As', 'yop-poll' );?>
+					<?php esc_html_e( 'Display Results As', 'yop-poll' ); ?>
 				</div>
 				<div class="col-md-9">
 					<?php
@@ -271,8 +271,8 @@
 			        }
 			        ?>
 			        <select class="display-results-as admin-select" style="width:100%">
-			            <option value="bar" <?php echo $display_results_as_bar;?>><?php _e( 'Bars', 'yop-poll' );?></option>
-			            <option value="pie" <?php echo $display_results_as_pie;?>><?php _e( 'Pie', 'yop-poll' );?></option>
+			            <option value="bar" <?php echo esc_attr( $display_results_as_bar ); ?>><?php esc_html_e( 'Bars', 'yop-poll' ); ?></option>
+			            <option value="pie" <?php echo esc_attr( $display_results_as_pie ); ?>><?php esc_html_e( 'Pie', 'yop-poll' ); ?></option>
 			        </select>
 				</div>
 			</div>

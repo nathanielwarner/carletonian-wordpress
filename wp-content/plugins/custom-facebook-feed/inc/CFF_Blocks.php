@@ -80,7 +80,7 @@ class CFF_Blocks {
 	 */
 	public function enqueue_block_editor_assets() {
 		$access_token = get_option('cff_access_token');
-		
+
 		\cff_main()->enqueue_styles_assets();
 		\cff_main()->enqueue_scripts_assets();
 
@@ -162,8 +162,6 @@ class CFF_Blocks {
 	 * @return bool True if is Gutenberg REST API call.
 	 */
 	public static function is_gb_editor() {
-
-		// TODO: Find a better way to check if is GB editor API call.
 		return defined( 'REST_REQUEST' ) && REST_REQUEST && ! empty( $_REQUEST['context'] ) && 'edit' === $_REQUEST['context']; // phpcs:ignore
 	}
 

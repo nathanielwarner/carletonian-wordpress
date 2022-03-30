@@ -80,7 +80,9 @@ var postPreviewComponents = [
 		'videosposts',
 		'reviewsposts',
 		'dummy-lightbox',
-		'free-icon'
+		'free-icon',
+		'likebox'
+
 	];
 
 postPreviewComponents.forEach( function( component ) {
@@ -109,6 +111,7 @@ cffBuilder = new Vue({
     },
 	mixins: [VueClickaway.mixin],
 	data: {
+		nonce : cff_builder.nonce,
 		plugins: cff_builder.installPluginsPopup,
 		dismissLite : cff_builder.facebook_feed_dismiss_lite,
 		supportPageUrl: cff_builder.supportPageUrl,
@@ -411,7 +414,7 @@ cffBuilder = new Vue({
 				}
 				if(self.customizerFeedData != undefined && sourcePopupType == 'updateCustomizer'){
 					self.viewsActive.sourcePopupType = 'customizer';
-					self.viewsActive.sourcePopup = true;
+					//self.viewsActive.sourcePopup = true;
 					self.customizerFeedData.settings.sources = self.customizerScreens.sourcesChoosed;
 				}
 
@@ -556,6 +559,7 @@ cffBuilder = new Vue({
 		 */
 		ajaxPost : function(data, callback){
 			var self = this;
+			data['nonce'] = this.nonce;
 			self.$http.post(self.ajaxHandler,data).then(callback);
 		},
 
@@ -844,7 +848,7 @@ cffBuilder = new Vue({
 			self.viewsActive.onboardingStep = 0;
             var postData = {
                 action : 'cff_dismiss_onboarding',
-				was_active : wasActive
+				was_active : wasActive,
 			};
             self.ajaxPost(postData, function(_ref){
                 var data = _ref.data;

@@ -3,10 +3,11 @@ Contributors: gn_themes
 License: GPLv3
 Donate link: https://paypal.me/anovladimir
 Tags: shortcode, toggle, columns, button, slider
-Requires PHP: 5.3
+Stable tag: 5.12.0
+Requires PHP: 5.4
 Requires at least: 4.6
-Tested up to: 5.8
-Stable tag: 5.10.2
+Tested up to: 5.9
+
 
 A comprehensive collection of visual components for your site
 
@@ -146,20 +147,12 @@ First, visit the [Help Center](https://getshortcodes.com/support/). If you get s
 ## Changelog
 
 
-### 5.10.2
+### 5.12.0
 
 **What's new**
 
-- Plugin security have been improved. You may see a new notification in the admin area. [Learn more](https://getshortcodes.com/docs/unsafe-features/)
-- Added new setting `Unsafe features` under `Shortcodes → Settings → Advanced settings`. [Learn more](https://getshortcodes.com/docs/unsafe-features/)
-- Improved accessibility of the plugin settings page
-
-**Fixed**
-
-- Fixed *This video is unavailable* in `su_youtube_advanced` shortcode
-- Fixed compatibility issue with SiteOrigin Page Builder. You can now turn on or off the old widget under `Shortcodes -> Settings Advanced settings`
-- Fixed issue in `[su_note]` when it was displaying empty id attribute
-- Fixed PHP warning at the new Widgets screen
+- New options `class` and `class_single` for the *Posts* shortcode. Use new options to specify custom CSS classes for the container and for a single post item respectively.
+- Tested compatibility with WordPress 5.9
 
 ---
 [Version history →](https://plugins.trac.wordpress.org/browser/shortcodes-ultimate/trunk/changelog.txt)

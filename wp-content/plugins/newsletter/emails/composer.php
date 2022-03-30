@@ -22,7 +22,7 @@ if ($controls->is_action()) {
         TNP_Composer::update_email($email, $controls);
         $email->type = NewsletterEmails::PRESET_EMAIL_TYPE;
         $email->editor = NewsletterEmails::EDITOR_COMPOSER;
-        $email->subject = $module->sanitize_preset_name($controls->data['subject']);
+        $email->subject = $controls->data['subject'];
         $email->message = $controls->data['message'];
 
         $email = Newsletter::instance()->save_email($email);
@@ -33,14 +33,12 @@ if ($controls->is_action()) {
         return;
     }
 
-    if ($controls->is_action('update_preset') && !empty($_POST['preset_id'])) {
+    if ($controls->is_action('update_preset')) {
         $this->admin_logger->info('Updating preset ' . $_POST['preset_id']);
-        $email = Newsletter::instance()->get_email((int) $_POST['preset_id']);
+        $email = Newsletter::instance()->get_email($_POST['preset_id']);
         TNP_Composer::update_email($email, $controls);
 
-        if ($email->subject != sanitize_text_field($controls->data['subject'])) {
-            $email->subject = $module->sanitize_preset_name($controls->data['subject']);
-        }
+        $email->subject = $controls->data['subject'];
 
         // We store only the blocks, after the TNP_Composer::update_email(...) call we have the full HTML
         $email->message = $controls->data['message'];
@@ -71,57 +69,77 @@ if ($controls->is_action()) {
         TNP_Composer::update_email($email, $controls);
 
         $email = Newsletter::instance()->save_email($email);
+        if ($controls->is_action('preview')) {
+            $redirect = $module->get_admin_page_url('edit');
+        } else {
+            $redirect = $module->get_admin_page_url('composer');
+        }
+
+        $controls->js_redirect($redirect . '&id=' . $email->id);
     } else {
         $this->admin_logger->info('Saving newsletter ' . $_GET['id'] . ' from composer');
         $email = Newsletter::instance()->get_email($_GET['id']);
-        TNP_Composer::update_email($email, $controls);
-        $email = Newsletter::instance()->save_email($email);
+        if ($email->updated != $controls->data['updated']) {
+            $controls->errors = 'This newsletter has been modified by someone else. Cannot save.';
+            if (!empty($email->options['sender_email'])) {
+                $controls->data['sender_email'] = $email->options['sender_email'];
+            } else {
+                $controls->data['sender_email'] = Newsletter::instance()->options['sender_email'];
+            }
+
+            if (!empty($email->options['sender_name'])) {
+                $controls->data['sender_name'] = $email->options['sender_name'];
+            } else {
+                $controls->data['sender_name'] = Newsletter::instance()->options['sender_name'];
+            }
+        } else {
+            TNP_Composer::update_email($email, $controls);
+            $email->updated = time();
+            $email = Newsletter::instance()->save_email($email);
+            TNP_Composer::prepare_controls($controls, $email);
+            if ($controls->is_action('save')) {
+                $controls->add_message_saved();
+            }
+        }
     }
 
-    $controls->add_message_saved();
+    if ($controls->is_action('preview')) {
+        $redirect = $module->get_admin_page_url('edit');
+        $controls->js_redirect($redirect . '&id=' . $email->id);
+    }
 
     if ($controls->is_action('test')) {
         $module->send_test_email($module->get_email($email->id), $controls);
     }
 
-	if ( $controls->is_action( 'send-test-to-email-address' ) ) {
-		$custom_email = sanitize_email( $_POST['test_address_email'] );
-		if ( ! empty( $custom_email ) ) {
-			try {
-				$message            = $module->send_test_newsletter_to_email_address( $module->get_email( $email->id ), $custom_email );
-				$controls->messages .= $message;
-			} catch ( Exception $e ) {
-				$controls->errors = __( 'Newsletter should be saved before send a test', 'newsletter' );
-			}
-		} else {
-			$controls->errors = __( 'Empty email address', 'newsletter' );
-		}
-	}
-
-    if ($controls->is_action('preview')) {
-        $redirect = $module->get_admin_page_url('edit');
-    } else {
-        $redirect = $module->get_admin_page_url('composer');
+    if ($controls->is_action('send-test-to-email-address')) {
+        $custom_email = sanitize_email($_POST['test_address_email']);
+        if (!empty($custom_email)) {
+            try {
+                $message = $module->send_test_newsletter_to_email_address($module->get_email($email->id), $custom_email);
+                $controls->messages .= $message;
+            } catch (Exception $e) {
+                $controls->errors = __('Newsletter should be saved before send a test', 'newsletter');
+            }
+        } else {
+            $controls->errors = __('Empty email address', 'newsletter');
+        }
     }
-
-    $controls->js_redirect($redirect . '&id=' . $email->id);
-
 } else {
 
     if (!empty($_GET['id'])) {
         $email = Newsletter::instance()->get_email((int) $_GET['id']);
     }
+    TNP_Composer::prepare_controls($controls, $email);
 }
-
-TNP_Composer::prepare_controls($controls, $email);
 ?>
 
 <div id="tnp-notification">
-    <?php
-    $controls->show();
-    $controls->messages = '';
-    $controls->errors = '';
-    ?>
+<?php
+$controls->show();
+$controls->messages = '';
+$controls->errors = '';
+?>
 </div>
 
 <div class="wrap tnp-emails-composer" id="tnp-wrap">
@@ -134,11 +152,11 @@ TNP_Composer::prepare_controls($controls, $email);
         </div>
         <div class="tnpc-controls">
             <form method="post" action="" id="tnpc-form">
-                <?php $controls->init(); ?>
+<?php $controls->init(); ?>
 
-                <?php $controls->composer_fields_v2(); ?>
+<?php $controls->composer_fields_v2(); ?>
 
-                <?php $controls->button('update_preset', __('Update preset', 'newsletter'), 'tnpc_update_preset(this.form)', 'update-preset-button'); ?>
+<?php $controls->button('update_preset', __('Update preset', 'newsletter'), 'tnpc_update_preset(this.form)', 'update-preset-button'); ?>
                 <?php $controls->button('save_preset', __('Save as preset', 'newsletter'), 'tnpc_save_preset(this.form)', 'save-preset-button'); ?>
                 <?php $controls->button_confirm('reset', __('Back to last save', 'newsletter'), 'Are you sure?'); ?>
                 <?php $controls->button('save', __('Save', 'newsletter'), 'tnpc_save(this.form); this.form.submit();'); ?>

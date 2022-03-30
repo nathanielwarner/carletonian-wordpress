@@ -16,7 +16,8 @@ jQuery(document).ready(function($) {
 			url : cffA.ajax_url,
 			type : 'post',
 			data : {
-				action : 'cff_dismiss_upgrade_notice'
+				action : 'cff_dismiss_upgrade_notice',
+				cff_nonce: cffA.cff_nonce
 			},
 			success : function(data) {
 				if ( data.success == true ) {
@@ -30,12 +31,30 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+	$('body').on('click','.cff-dismissible .notice-dismiss',function() {
+		$.ajax({
+			url : cffA.ajax_url,
+			type : 'post',
+			data : {
+				action : 'cff_dismiss_custom_cssjs_notice',
+				cff_nonce: cffA.cff_nonce
+			},
+			success : function(data) {
+			},
+			error : function(e)  {
+				console.log(e);
+			}
+		});
+	});
+
 	//The "cff_ppca_access_token_invalid" transient is set if the access token doesn't match the ID specified. Use an Ajax call to check whether that transient is set, and if so, then displays a notice under the access token field. This used so we don't need to make an API call every time the page loads. It stores the value in this transient and checks it via ajax.
 	$.ajax({
 		url : cffA.ajax_url,
 		type : 'get',
 		data : {
-			action : 'cff_ppca_token_check_flag'
+			action : 'cff_ppca_token_check_flag',
+			cff_nonce: cffA.cff_nonce
+
 		},
 		success : function(data) {
 			if( data ) $('.cff-ppca-check-notice.cff-error').show();
@@ -994,6 +1013,8 @@ jQuery(document).ready(function($) {
 			data : {
 				action : 'sb_other_plugins_modal',
 				plugin : sb_get_plugin,
+				cff_nonce : cffA.cff_nonce,
+
 			},
 			success : function(data) {
 				if ( data.success == true ) {

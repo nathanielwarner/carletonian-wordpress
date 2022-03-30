@@ -43,7 +43,7 @@ class ClassYopPollImporter4x {
 	private static function make_ip_gdpr_compliant( $ipaddress ) {
 		$compliant_ipaddress = '';
 		if ( 'yes' === self::$enableGdpr ) {
-			switch( self::$gdprSolution ) {
+			switch ( self::$gdprSolution ) {
 				case 'consent': {
 					$compliant_ipaddress = $ipaddress;
 					break;
@@ -70,7 +70,7 @@ class ClassYopPollImporter4x {
 	private static function make_cookie_gdpr_compliant( $cookie ) {
 		$compliant_cookie = '';
 		if ( 'yes' === self::$enableGdpr ) {
-			switch( self::$gdprSolution ) {
+			switch ( self::$gdprSolution ) {
 				case 'consent': {
 					$compliant_cookie = $cookie;
 					break;
@@ -115,7 +115,7 @@ class ClassYopPollImporter4x {
 			}
 		}
 		if ( self::$checked_existence_polls && self::$polls_table_exists ) {
-			self::$unprocessed_polls = $wpdb->get_var("select count(id) from `{$polls_table_name}` where processed = false");
+			self::$unprocessed_polls = $wpdb->get_var( "select count(id) from `{$polls_table_name}` where processed = false" );
 			$polls                   = $wpdb->get_results( "select `id`, `name`, `question`, `poll_author`, `start_date`, `end_date`, `status`, `last_modified`,
   `total_votes`, `total_answers`, `date_added`,  `meta_key`, `meta_value` from `{$polls_table_name}` left join
 `{$polls_meta_table_name}` on `{$polls_table_name}`.`id` = `{$polls_meta_table_name}`.`yop_poll_id` where `processed` = false limit {$query_limit}" );
@@ -131,7 +131,7 @@ class ClassYopPollImporter4x {
 						$unserialized_meta = [];
 					}
 
-					$poll_style        = self::create_css_from_template( (isset ($unserialized_meta['template']) && '' !== $unserialized_meta['template']) ? $unserialized_meta['template'] : 1 );
+					$poll_style        = self::create_css_from_template( ( isset( $unserialized_meta['template'] ) && '' !== $unserialized_meta['template'] ) ? $unserialized_meta['template'] : 1 );
 					$vote_perms        = [];
 					if ( isset( $unserialized_meta['vote_permisions_wordpress'] ) ) {
 						$vote_perms[] = 'wordpress';
@@ -221,8 +221,8 @@ class ClassYopPollImporter4x {
 						$blockForValue = $unserialized_meta['blocking_voters_interval_value'];
 					}
 
-                    if( isset( $unserialized_meta['view_results_type'] ) ) {
-                        switch( $unserialized_meta['view_results_type'] ) {
+                    if ( isset( $unserialized_meta['view_results_type'] ) ) {
+                        switch ( $unserialized_meta['view_results_type'] ) {
                             case 'votes-number': {
                                 $resultsDetails = ['votes-number'];
                                 break;
@@ -284,11 +284,11 @@ class ClassYopPollImporter4x {
 								'endDateCustom'               => $poll_end_date,
 								'redirectAfterVote'           => isset( $unserialized_meta['redirect_after_vote'] ) ? $unserialized_meta['redirect_after_vote'] : 'no',
 								'redirectUrl'                 => isset( $unserialized_meta['redirect_after_vote_url'] ) ? $unserialized_meta['redirect_after_vote_url'] : '',
-								'resetPollStatsAutomatically' => isset( $unserialized_meta['schedule_reset_poll_stats'] )? $unserialized_meta['schedule_reset_poll_stats'] : 'no',
+								'resetPollStatsAutomatically' => isset( $unserialized_meta['schedule_reset_poll_stats'] ) ? $unserialized_meta['schedule_reset_poll_stats'] : 'no',
 								'resetPollStatsOn'            => isset( $unserialized_meta['schedule_reset_poll_date'] ) ? date( 'Y-m-d H:i:s', $unserialized_meta['schedule_reset_poll_date'] ) : '9999-12-31 23:59:59',
 								'resetPollStatsEvery'         => isset( $unserialized_meta['schedule_reset_poll_recurring_value'] ) ? $unserialized_meta['schedule_reset_poll_recurring_value'] : 9999,
-								'resetPollStatsEveryPeriod'   => isset( $unserialized_meta['schedule_reset_poll_recurring_unit'] ) ? $unserialized_meta['schedule_reset_poll_recurring_unit']. 's' : 'days',
-								'autoGeneratePollPage'        => isset ( $unserialized_meta['auto_generate_poll_page'] ) ? $unserialized_meta['auto_generate_poll_page'] : 'no',
+								'resetPollStatsEveryPeriod'   => isset( $unserialized_meta['schedule_reset_poll_recurring_unit'] ) ? $unserialized_meta['schedule_reset_poll_recurring_unit'] . 's' : 'days',
+								'autoGeneratePollPage'        => isset( $unserialized_meta['auto_generate_poll_page'] ) ? $unserialized_meta['auto_generate_poll_page'] : 'no',
 								'pageId'                      => '',
 								'pageLink'                    => '',
 								'useCaptcha'                  => isset( $unserialized_meta['use_captcha'] ) ? $unserialized_meta['use_captcha'] : 'no',
@@ -304,7 +304,8 @@ class ClassYopPollImporter4x {
 									isset( $unserialized_meta['email_notifications_body'] ) ? $unserialized_meta['email_notifications_body'] : 'New Vote',
 								'enableGdpr' => 'no',
 								'gdprSolution' => 'consent',
-								'gdprConsentText' => ''
+								'gdprConsentText' => '',
+								'notificationMessageLocation' => 'top'
 							],
 							'access'  => [
 								'votePermissions'     => $vote_perms,
@@ -329,9 +330,19 @@ class ClassYopPollImporter4x {
 						]
 					];
 					$pollElementsArray = [];
-					$pollAnswers       = $wpdb->get_results( "select * from `{$polls_answers_table_name}` left join `{$polls_answers_meta_table_name}` on
-			`{$polls_answers_table_name}`.`id` = `{$polls_answers_meta_table_name}`.`yop_poll_answer_id` where `poll_id` = {$poll->id}" );
-					$pollCustoms       = $wpdb->get_results( "select * from `{$polls_customs_table}` where `{$polls_customs_table}`.`poll_id` = {$poll->id}" );
+					$pollAnswers       = $wpdb->get_results(
+						$wpdb->prepare(
+							"select * from `{$polls_answers_table_name}` left join `{$polls_answers_meta_table_name}` on
+							`{$polls_answers_table_name}`.`id` = `{$polls_answers_meta_table_name}`.`yop_poll_answer_id` where `poll_id` = %s",
+							$poll->id
+							)
+					);
+					$pollCustoms       = $wpdb->get_results(
+						$wpdb->prepare(
+							"select * from `{$polls_customs_table}` where `{$polls_customs_table}`.`poll_id` = %s",
+							$poll->id
+						)
+					);
 					$x                 = 1;
 					$pollAnswersArray  = [];
 					foreach ( $pollAnswers as $pA ) {
@@ -351,7 +362,7 @@ class ClassYopPollImporter4x {
 									'makeDefault'  => isset( $unserialized_a_meta['is_default_answer'] ) ? $unserialized_a_meta['is_default_answer'] : 'no',
 									'makeLink'     => 'no',
 									'link'         => '',
-									'resultsColor' => isset ( $unserialized_a_meta['bar_background'] ) ? $unserialized_a_meta['bar_background'] : '#000'
+									'resultsColor' => isset( $unserialized_a_meta['bar_background'] ) ? $unserialized_a_meta['bar_background'] : '#000'
 								]
 							];
 							$pollAnswersArray[] = $pQAA;
@@ -362,10 +373,9 @@ class ClassYopPollImporter4x {
 					if ( isset( $unserialized_meta['display_answers'] ) ) {
 						if ( 'tabulated' === $unserialized_meta['display_answers'] ) {
 							$answers_display = 'columns';
-						} elseif( 'orizontal' === $unserialized_meta['display_answers'] ) {
+						} elseif ( 'orizontal' === $unserialized_meta['display_answers'] ) {
 							$answers_display = 'horizontal';
-						}
-						else {
+						} else {
 							$answers_display = $unserialized_meta['display_answers'];
 						}
 					}
@@ -379,7 +389,7 @@ class ClassYopPollImporter4x {
 							'allowOtherAnswers'            => isset( $unserialized_meta['allow_other_answers'] ) ? $unserialized_meta['allow_other_answers'] : 'yes',
 							'otherAnswersLabel'            => isset( $unserialized_meta['other_answers_label'] ) ? $unserialized_meta['other_answers_label'] : 'Other',
 							'addOtherAnswers'              =>
-								isset( $unserialized_meta['add_other_answers_to_default_answers'] ) ? $unserialized_meta['add_other_answers_to_default_answers'] : 'no',
+								( isset( $unserialized_meta['add_other_answers_to_default_answers'] ) && ( '' !== strval( $unserialized_meta['add_other_answers_to_default_answers'] ) ) ) ? $unserialized_meta['add_other_answers_to_default_answers'] : 'no',
 							'displayOtherAnswersInResults' =>
 								isset( $unserialized_meta['display_other_answers_values'] ) ? $unserialized_meta['display_other_answers_values'] : 'no',
 							'allowMultipleAnswers'         =>
@@ -439,11 +449,11 @@ class ClassYopPollImporter4x {
 
 		if ( self::$checked_existence_bans && self::$bans_table_exists ) {
 			self::$unprocessed_bans = $wpdb->get_var( "select count(ID) from `{$polls_bans_table}` where `processed` = false" );
-			$bans                   = $wpdb->get_results( "select * from `{$polls_bans_table}` LIMIT ". self::$ajax_limit );
+			$bans                   = $wpdb->get_results( "select * from `{$polls_bans_table}` LIMIT " . self::$ajax_limit );
 			$bansIds                = [];
 			if ( count( $bans ) > 0 ) {
 				foreach ( $bans as $ban ) {
-					$values[]  = $wpdb->prepare( "(%d, %d, %s, %s, %s)", $current_user->ID, $ban->poll_id, $ban->type, $ban->value, current_time( 'mysql' ) );
+					$values[]  = $wpdb->prepare( '(%d, %d, %s, %s, %s)', $current_user->ID, $ban->poll_id, $ban->type, $ban->value, current_time( 'mysql' ) );
 					$bansIds[] = $ban->id;
 				}
 				$query = "INSERT INTO `{$GLOBALS['wpdb']->yop_poll_bans}` (`author`, `poll_id`, `b_by`, `b_value`, `added_date`) VALUES ";
@@ -452,22 +462,22 @@ class ClassYopPollImporter4x {
 					$result  = $wpdb->query( $query );
 					if ( ! $result ) {
 						$last_error = $wpdb->last_error;
-						return [ 'response_code' => 1, 'message' => __( $last_error, 'yop-poll' ) ];
+						return [ 'response_code' => 1, 'message' => esc_html__( $last_error, 'yop-poll' ) ];
 					} else {
-						$res = $wpdb->query("update {$polls_bans_table} set `processed` = true where `ID` in (".implode(',', $bansIds).")");
+						$res = $wpdb->query( "update {$polls_bans_table} set `processed` = true where `ID` in (" . implode( ',', $bansIds ) . ')' );
 						self::$processed_bans += $res;
 						if ( self::$processed_bans == self::$unprocessed_bans ) {
-							return [ 'response_code' => - 1, 'message' => __( 'Processed ' . self::$processed_bans . ' out of '. self::$unprocessed_bans. ' records on table bans.', 'yop-poll' ) ];
+							return [ 'response_code' => - 1, 'message' => esc_html__( 'Processed ' . self::$processed_bans . ' out of ' . self::$unprocessed_bans . ' records on table bans.', 'yop-poll' ) ];
 						} else {
-							return [ 'response_code' => 1, 'message' => __( 'Processed '. self::$processed_bans . ' out of '. self::$unprocessed_bans .' remaining records on table bans.', 'yop-poll' ) ];
+							return [ 'response_code' => 1, 'message' => esc_html__( 'Processed ' . self::$processed_bans . ' out of ' . self::$unprocessed_bans . ' remaining records on table bans.', 'yop-poll' ) ];
 						}
 					}
 				}
 			} else {
-				return [ 'response_code' => - 1, 'message' => __( 'No bans to process.', 'yop-poll' ) ];
+				return [ 'response_code' => - 1, 'message' => esc_html__( 'No bans to process.', 'yop-poll' ) ];
 			}
 		} else {
-			return [ 'response_code' => - 1, 'message' => __( 'No bans table, skipping.', 'yop-poll' ) ];
+			return [ 'response_code' => - 1, 'message' => esc_html__( 'No bans table, skipping.', 'yop-poll' ) ];
 		}
 	}
 
@@ -477,7 +487,7 @@ class ClassYopPollImporter4x {
 		$polls_results_customs_table_name = $GLOBALS['wpdb']->prefix . 'yop_poll_votes_custom_fields';
 		$polls_answers_table_name         = $GLOBALS['wpdb']->prefix . 'yop_poll_answers';
 		$current_user                     = wp_get_current_user();
-		if( $skip_table_check ) {
+		if ( $skip_table_check ) {
 			self::$checked_existence_logs = true;
 			self::$logs_table_exists      = true;
 		}
@@ -492,9 +502,9 @@ class ClassYopPollImporter4x {
 		}
 
 		if ( self::$checked_existence_logs && self::$logs_table_exists ) {
-			self::$unprocessed_logs = $wpdb->get_var("select count(distinct `vote_id`) from `{$polls_logs_table_name}` where `processed` = false");
-			$logs                   = $wpdb->get_results("select distinct `vote_id` from `{$polls_logs_table_name}` where `processed` = false limit " .self::$ajax_limit );
-			if ( count($logs) > 0 ) {
+			self::$unprocessed_logs = $wpdb->get_var( "select count(distinct `vote_id`) from `{$polls_logs_table_name}` where `processed` = false" );
+			$logs                   = $wpdb->get_results( "select distinct `vote_id` from `{$polls_logs_table_name}` where `processed` = false limit " . self::$ajax_limit );
+			if ( count( $logs ) > 0 ) {
 				$votesArray = [];
 				$logsArray = [];
 				$resultsIds = [];
@@ -508,7 +518,12 @@ class ClassYopPollImporter4x {
                         $voteData   = ['elements' => [], 'user' => [] ];
                         $logData    = ['elements' => [], 'user' => [] ];
 						$resultsIds[]   = $result->id;
-						$answerType = $wpdb->get_var( "SELECT `type` FROM `{$polls_answers_table_name}` where `id` = '$result->answer_id'" );
+						$answerType = $wpdb->get_var(
+							$wpdb->prepare(
+								"SELECT `type` FROM `{$polls_answers_table_name}` where `id` = %s",
+								$result->answer_id
+						 	)
+						);
 						$a_data         = [];
 						if ( 'other' === $answerType ) {
 							$a_data[]       = [
@@ -522,9 +537,14 @@ class ClassYopPollImporter4x {
 							];
 						}
 
-                        $wpdb->query( $wpdb->prepare("update `{$GLOBALS['wpdb']->yop_poll_subelements}` set `total_submits` = `total_submits` + 1 where `id` = %d", array( $result->answer_id ) ) );
+                        $wpdb->query( $wpdb->prepare( "update `{$GLOBALS['wpdb']->yop_poll_subelements}` set `total_submits` = `total_submits` + 1 where `id` = %d", array( $result->answer_id ) ) );
 						#get the question
-						$question_id    = $wpdb->get_var( "select `id` from `{$GLOBALS['wpdb']->yop_poll_elements}` where `poll_id` = '{$result->poll_id}' and `etype` = 'text-question' limit 1" );
+						$question_id    = $wpdb->get_var(
+							$wpdb->prepare(
+								"select `id` from `{$GLOBALS['wpdb']->yop_poll_elements}` where `poll_id` = %s and `etype` = 'text-question' limit 1",
+								$result->poll_id
+							)
+						);
 						$new_customs = $wpdb->get_results( "SELECT * FROM `{$GLOBALS['wpdb']->yop_poll_elements}` WHERE `meta_data` LIKE '%old_id%'" );
                         $voteData['elements'][] = [
 							'id'   => $question_id,
@@ -537,11 +557,11 @@ class ClassYopPollImporter4x {
                             'data' => $a_data
                         ];
 						if ( $countC > 0 ) {
-						    foreach( $customs as $cust ) {
+						    foreach ( $customs as $cust ) {
 						        $cID = null;
-                                foreach( $new_customs as $nc ) {
+                                foreach ( $new_customs as $nc ) {
                                     $udata = unserialize( $nc->meta_data );
-                                    if( ( int )$udata['old_id'] == ( int )$cust->custom_field_id ) {
+                                    if ( (int) $udata['old_id'] == (int) $cust->custom_field_id ) {
                                         $cID = $nc->id;
                                     }
                                 }
@@ -556,7 +576,6 @@ class ClassYopPollImporter4x {
                                     'data' => stripslashes( [$cust->custom_field_value] )
                                 ];
                             }
-
 						}
 						//array_push( $voteData['elements'], $q_data );
 						//array_push( $logData['elements'], $q_data );
@@ -579,7 +598,7 @@ class ClassYopPollImporter4x {
 							'status'            => 'active',
 							'added_date'        => $result->vote_date
 						);
-						$votesArray[]       = $wpdb->prepare( "(%d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+						$votesArray[]       = $wpdb->prepare( '(%d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
                             $data['poll_id'],
                             $data['user_id'],
                             $data['user_email'],
@@ -612,7 +631,7 @@ class ClassYopPollImporter4x {
 							'vote_message'      => serialize( $vote_message ),
 							'added_date'        => $result->vote_date
 						);
-						$logsArray[]       = $wpdb->prepare( "(%d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s)",
+						$logsArray[]       = $wpdb->prepare( '(%d, %d, %d, %s, %s, %s, %s, %s, %s, %s, %s, %s)',
                             $ldata['poll_id'],
                             $ldata['poll_author'],
                             $ldata['user_id'],
@@ -637,35 +656,33 @@ class ClassYopPollImporter4x {
 					$response    = $wpdb->query( $query );
 					$responseLog = $wpdb->query( $logs_query );
 					if ( $response && $responseLog ) {
-						$result = $wpdb->query( "update `{$polls_logs_table_name}` set `processed` = true where id in (" . implode( ',', $resultsIds ) . ")" );
+						$result = $wpdb->query( "update `{$polls_logs_table_name}` set `processed` = true where id in (" . implode( ',', $resultsIds ) . ')' );
 						self::$processed_votes += $result;
 						if ( self::$processed_votes == self::$unprocessed_logs ) {
-							return [ 'response_code' => -1, 'message' => __( 'Processed ' . self::$processed_votes . ' out of ' . self::$unprocessed_logs . ' records on table votes.', 'yop-poll' ) ];
+							return [ 'response_code' => -1, 'message' => esc_html__( 'Processed ' . self::$processed_votes . ' out of ' . self::$unprocessed_logs . ' records on table votes.', 'yop-poll' ) ];
 						} elseif ( self::$processed_votes > self::$unprocessed_logs ) {
-							return [ 'response_code' => -1, 'message' => __( 'Processed ' . self::$unprocessed_logs . ' out of ' . self::$unprocessed_logs . ' records on table votes.', 'yop-poll' ) ];
+							return [ 'response_code' => -1, 'message' => esc_html__( 'Processed ' . self::$unprocessed_logs . ' out of ' . self::$unprocessed_logs . ' records on table votes.', 'yop-poll' ) ];
 						} else {
-							return [ 'response_code' => 1, 'message' => __( 'Processed ' . self::$processed_votes . ' out of ' . self::$unprocessed_logs . ' remaining records on table votes.', 'yop-poll' ) ];
+							return [ 'response_code' => 1, 'message' => esc_html__( 'Processed ' . self::$processed_votes . ' out of ' . self::$unprocessed_logs . ' remaining records on table votes.', 'yop-poll' ) ];
 						}
 					} else {
-						return [ 'response_code' => 1, 'message' => __( $wpdb->last_error, 'yop-poll' ) ];
+						return [ 'response_code' => 1, 'message' => esc_html__( $wpdb->last_error, 'yop-poll' ) ];
 					}
 				} else {
-					return [ 'response_code' => - 1, 'message' => __( 'No votes to process.', 'yop-poll' ) ];
+					return [ 'response_code' => - 1, 'message' => esc_html__( 'No votes to process.', 'yop-poll' ) ];
 				}
-
 			} else {
-				return [ 'response_code' => - 1, 'message' => __( 'No votes to process.', 'yop-poll' ) ];
+				return [ 'response_code' => - 1, 'message' => esc_html__( 'No votes to process.', 'yop-poll' ) ];
 			}
-
 		} else {
-			return [ 'response_code' => - 1, 'message' => __( 'No votes table, skipping.', 'yop-poll' ) ];
+			return [ 'response_code' => - 1, 'message' => esc_html__( 'No votes table, skipping.', 'yop-poll' ) ];
 		}
 
 	}
 
 	private static function check_if_table_exists( $table_name ) {
 		global $wpdb;
-		if ( 0 == $wpdb->get_var( $wpdb->prepare( "SELECT COUNT(1) FROM `information_schema`.`tables` WHERE `table_schema` = %s AND `table_name` = %s",
+		if ( 0 == $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(1) FROM `information_schema`.`tables` WHERE `table_schema` = %s AND `table_name` = %s',
 				DB_NAME, $table_name ) ) ) {
 			return false;
 		}
@@ -675,7 +692,7 @@ class ClassYopPollImporter4x {
 	private static function check_if_column_exists( $table_name, $column_name ) {
 		global $wpdb;
 		if ( 0 == $wpdb->get_var( $wpdb->prepare(
-				"SELECT count(1) FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = %s AND `TABLE_NAME` = %s AND `COLUMN_NAME` = %s ",
+				'SELECT count(1) FROM `INFORMATION_SCHEMA`.`COLUMNS` WHERE `TABLE_SCHEMA` = %s AND `TABLE_NAME` = %s AND `COLUMN_NAME` = %s ',
 				DB_NAME, $table_name, $column_name
 			) ) ) {
 			return false;
@@ -737,62 +754,63 @@ class ClassYopPollImporter4x {
 		return $css_array;
 	}
 
-	public static function yop_ajax_import()
-	{
+	public static function yop_ajax_import() {
 		if ( false === is_user_logged_in() ) {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 			wp_die();
 		}
-		if( check_ajax_referer( 'yop-poll-ajax-importer', '_csrf_token' ) ) {
+		if ( check_ajax_referer( 'yop-poll-ajax-importer', '_csrf_token' ) ) {
             $skip_table_check = false;
 			if ( isset( $_REQUEST['enableGdpr'] ) && isset( $_REQUEST['gdprSolution'] ) ) {
-				self::set_gdpr( $_REQUEST['enableGdpr'], $_REQUEST['gdprSolution'] );
+				self::set_gdpr( sanitize_text_field( wp_unslash( $_REQUEST['enableGdpr'] ) ), sanitize_text_field( wp_unslash( $_REQUEST['gdprSolution'] ) ) );
 			}
-            switch ($_REQUEST['table']) {
-                case 'polls': {
-                    $response = self::import_polls( self::$ajax_limit, $skip_table_check );
-                    if ( -1 == $response['response_code'] ) {
-                        $table         = 'bans';
-                        $response_code = 1;
-                        wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => false ) );
-                    } else {
-                        $table         = 'polls';
-                        $response_code = $response['response_code'];
-                        wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => true ) );
-                    }
-                    break;
-                }
-                case 'bans': {
-                    $response = self::import_bans( $skip_table_check );
-                    if ( -1 == $response['response_code'] ) {
-                        $table         = 'votes';
-                        $response_code = 1;
-                        wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => false ) );
-                    } else {
-                        $table = 'bans';
-                        $response_code = $response['response_code'];
-                        wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => true ) );
-                    }
-                    break;
-                }
-                case 'votes': {
-                    $response = self::import_votes( $skip_table_check );
-                    if ( -1 == $response['response_code'] ) {
-                        $table = 'votes';
-                        $response_code = 'done';
-						delete_option( 'yop_poll_old_version' );
-                        wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => false ) );
-                    } else {
-                        $table = 'votes';
-                        $response_code = $response['response_code'];
-                        wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => true ) );
-                    }
-                    break;
-                }
-            }
+			if ( true === isset( $_REQUEST['table'] ) ) {
+				switch ( $_REQUEST['table'] ) {
+					case 'polls': {
+						$response = self::import_polls( self::$ajax_limit, $skip_table_check );
+						if ( -1 == $response['response_code'] ) {
+							$table         = 'bans';
+							$response_code = 1;
+							wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => false ) );
+						} else {
+							$table         = 'polls';
+							$response_code = $response['response_code'];
+							wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => true ) );
+						}
+						break;
+					}
+					case 'bans': {
+						$response = self::import_bans( $skip_table_check );
+						if ( -1 == $response['response_code'] ) {
+							$table         = 'votes';
+							$response_code = 1;
+							wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => false ) );
+						} else {
+							$table = 'bans';
+							$response_code = $response['response_code'];
+							wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => true ) );
+						}
+						break;
+					}
+					case 'votes': {
+						$response = self::import_votes( $skip_table_check );
+						if ( -1 == $response['response_code'] ) {
+							$table = 'votes';
+							$response_code = 'done';
+							delete_option( 'yop_poll_old_version' );
+							wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => false ) );
+						} else {
+							$table = 'votes';
+							$response_code = $response['response_code'];
+							wp_send_json_success( array( 'table' => $table, 'response_code' => $response_code, 'message' => $response['message'], 'skip_table_check' => true ) );
+						}
+						break;
+					}
+				}
+			}
             wp_die();
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
             wp_die();
         }
 	}

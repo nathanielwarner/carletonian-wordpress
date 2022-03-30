@@ -362,6 +362,7 @@ class MPSUM_Admin_Ajax {
 				MPSUM_Update_Notifications::get_instance()->maybe_send_update_notification_email();
 				break;
 		}
+		$options = apply_filters('eum_save_core_options', $options, $id, $value);
 		// Save options
 		MPSUM_Updates_Manager::update_options($options, 'core');
 
@@ -506,7 +507,7 @@ class MPSUM_Admin_Ajax {
 			}
 		}
 
-		$this->plugins_update_all_options($plugin_options, $plugin_automatic_options);
+		if (current_user_can('update_plugins')) $this->update_all_options(apply_filters('eum_plugins_update_options', array('plugins' => $plugin_options, 'plugins_automatic' => $plugin_automatic_options), $updated_options));
 	}
 
 	/**
@@ -573,29 +574,11 @@ class MPSUM_Admin_Ajax {
 				}
 				break;
 			default:
-				return;
+				if (!has_filter('eum_plugins_update_options')) return;
+				break;
 		}
 
-		$this->plugins_update_all_options($plugin_options, $plugin_automatic_options);
-	}
-
-	/**
-	 * Updates all plugin update options
-	 *
-	 * @param array $plugin_options           An array of plugin update options
-	 * @param array $plugin_automatic_options An array of plugin automatic update options
-	 *
-	 * @return array
-	 */
-	private function plugins_update_all_options($plugin_options, $plugin_automatic_options) {
-		if (!current_user_can('update_plugins')) return array();
-		$plugin_options = array_values(array_unique($plugin_options));
-		$plugin_automatic_options = array_values(array_unique($plugin_automatic_options));
-		$options = MPSUM_Updates_Manager::get_options();
-		$options['plugins'] = $plugin_options;
-		$options['plugins_automatic'] = $plugin_automatic_options;
-		MPSUM_Updates_Manager::update_options($options);
-		return $options;
+		$this->update_all_options(apply_filters('eum_plugins_update_options', array('plugins' => $plugin_options, 'plugins_automatic' => $plugin_automatic_options), $updated_options, $action));
 	}
 
 	/**
@@ -647,7 +630,7 @@ class MPSUM_Admin_Ajax {
 			}
 		}
 
-		$this->themes_update_all_options($theme_options, $theme_automatic_options);
+		$this->update_all_options(apply_filters('eum_themes_update_options', array('themes' => $theme_options, 'themes_automatic' => $theme_automatic_options), $updated_options));
 	}
 
 	/**
@@ -715,26 +698,25 @@ class MPSUM_Admin_Ajax {
 				}
 				break;
 			default:
-				return;
+				if (!has_filter('eum_themes_update_options')) return;
+				break;
 		}
-		$this->themes_update_all_options($theme_options, $theme_automatic_options);
+		
+		$this->update_all_options(apply_filters('eum_themes_update_options', array('themes' => $theme_options, 'themes_automatic' => $theme_automatic_options), $updated_options, $action));
 	}
 
 	/**
-	 * Updates all theme update options
+	 * Updates all plugin or theme update options
 	 *
-	 * @param array $theme_options           An array of theme update options
-	 * @param array $theme_automatic_options An array of theme automatic update options
+	 * @param array $all_options An array of associative arrays containing free/basic (e.g. allowed plugin options, automatic update options) and additional feature settings/options (e.g. semantic versioning options(patch releases))
 	 *
 	 * @return array
 	 */
-	private function themes_update_all_options($theme_options, $theme_automatic_options) {
-		if (!current_user_can('update_themes')) return array();
-		$theme_options = array_values(array_unique($theme_options));
-		$theme_automatic_options = array_values(array_unique($theme_automatic_options));
+	private function update_all_options($all_options) {
 		$options = MPSUM_Updates_Manager::get_options();
-		$options['themes'] = $theme_options;
-		$options['themes_automatic'] = $theme_automatic_options;
+		foreach ((array) $all_options as $key => $feature_options) {
+			$options[$key] = array_values(array_unique($feature_options));
+		}
 		MPSUM_Updates_Manager::update_options($options);
 		return $options;
 	}
@@ -970,10 +952,6 @@ class MPSUM_Admin_Ajax {
 			$safe_mode_sql = "delete from {$wpdb->options} where option_name like '%eum_plugin_safe_mode_%'";
 			$wpdb->query($safe_mode_sql);
 		}
-
-		// Remove active plugins option
-		delete_site_option('eum_active_pre_restore_plugins');
-		delete_site_option('eum_active_pre_restore_plugins_multisite');
 
 		// Remove transients when someone disables plugin, theme, or core updates
 		delete_site_transient('eum_core_checked');

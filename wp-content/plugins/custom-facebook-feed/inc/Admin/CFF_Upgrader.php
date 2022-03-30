@@ -87,11 +87,15 @@ class CFF_Upgrader {
 	 */
 	public static function maybe_upgrade_redirect() {
 		$home_url = home_url();
-		$nonce = $_POST['nonce'];
+		check_ajax_referer( 'cff_admin_nonce' , 'nonce');
 
-		if ( ! wp_verify_nonce( $nonce, 'cff_admin_nonce' ) ) {
-			die ( 'You did not do this the right way!' );
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
 		}
+
+
 		// Check for permissions.
 		if ( ! current_user_can( 'install_plugins' ) ) {
 			wp_send_json_error( array( 'message' => esc_html__( 'You are not allowed to install plugins.', 'custom-facebook-feed' ) ) );

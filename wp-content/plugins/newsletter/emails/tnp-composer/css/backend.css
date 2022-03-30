@@ -1,7 +1,7 @@
 /* Contains some rules to simulate device layout on backend preview */
 
 #newsletter-builder-area-center-frame-content.tnp-view-mobile table[class="responsive"],
-#newsletter-builder-area-center-frame-content.tnp-view-mobile table.responsive 
+#newsletter-builder-area-center-frame-content.tnp-view-mobile table.responsive
 {
     width:100%!important;
     float: none;
@@ -23,7 +23,7 @@
 #newsletter-builder-area-center-frame-content.tnp-view-mobile img.responsive
 {
     max-width: 100%!important;
-} 
+}
 
 #newsletter-builder-area-center-frame-content.tnp-view-mobile img[class="fluid"]{
     width: 100%;
@@ -40,4 +40,8 @@
 
 #newsletter-builder-area-center-frame-content.tnp-view-mobile .tnp-grid-column {
     max-width: 100%!important;
+}
+
+#newsletter-builder-area-center-frame-content.tnp-view-mobile td[data-responsive-image="true"] {
+    height: auto !important;
 }

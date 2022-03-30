@@ -2,10 +2,10 @@
     <?php
         /**
          * CFF Admin Notices
-         * 
+         *
          * @since 4.0
          */
-        do_action('cff_admin_notices'); 
+        do_action('cff_admin_notices');
     ?>
 
 	<div class="cff-fb-wlcm-header cff-fb-fs">

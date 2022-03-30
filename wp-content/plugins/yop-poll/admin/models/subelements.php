@@ -30,7 +30,7 @@ class YOP_POLL_SubElements {
 	public static function add( $poll_id, $element_id, $sub_elements, $is_imported = false ) {
 		$display_order = 1;
 		$current_user = wp_get_current_user();
-		foreach( $sub_elements as $sub_element ) {
+		foreach ( $sub_elements as $sub_element ) {
 			if ( false === self::$errors_present ) {
 				$data = array(
 					'poll_id' => $poll_id,
@@ -45,7 +45,7 @@ class YOP_POLL_SubElements {
 					'added_date' => current_time( 'mysql' ),
 					'modified_date' => current_time( 'mysql' )
 				);
-				if ( $is_imported) {
+				if ( $is_imported ) {
 					$data['id'] = $sub_element->ID;
 					if ( isset( $sub_element->is_other ) && true == $sub_element->is_other ) {
 						$data['author'] = 0;
@@ -53,7 +53,7 @@ class YOP_POLL_SubElements {
 				}
 				if ( false === $GLOBALS['wpdb']->insert( $GLOBALS['wpdb']->yop_poll_subelements, $data ) ) {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error adding answers', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error adding answers', 'yop-poll' );
 				}
 				$display_order++;
 			}
@@ -69,7 +69,7 @@ class YOP_POLL_SubElements {
 		$current_user = wp_get_current_user();
 		$new_subElements = [];
 		$i = 0;
-		foreach( $sub_elements as $sub_element ) {
+		foreach ( $sub_elements as $sub_element ) {
 			if ( false === self::$errors_present ) {
 				$data = array(
 					'poll_id' => $poll_id,
@@ -97,7 +97,7 @@ class YOP_POLL_SubElements {
 				}
 				if ( false === $query_result_error ) {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error adding answers', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error adding answers', 'yop-poll' );
 				}
 				$display_order++;
 			}
@@ -109,7 +109,7 @@ class YOP_POLL_SubElements {
 		);
 	}
 	public static function delete( $poll_id, $element_id, $sub_element_id ) {
-		if ( 0 < intval( $sub_element_id) ) {
+		if ( 0 < intval( $sub_element_id ) ) {
 			$data = array(
 				'status' => 'deleted',
 				'sorder' => '0'
@@ -125,11 +125,11 @@ class YOP_POLL_SubElements {
 			);
 			if ( false === $delete_result ) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Error deleting answer', 'yop-poll' );
+				self::$error_text = esc_html__( 'Error deleting answer', 'yop-poll' );
 			}
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Invalid answer id', 'yop-poll' );
+			self::$error_text = esc_html__( 'Invalid answer id', 'yop-poll' );
 		}
 		return array(
 			'errors_present' => self::$errors_present,
@@ -152,7 +152,7 @@ class YOP_POLL_SubElements {
 			self::$errors_present = false;
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error deleting answer', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error deleting answer', 'yop-poll' );
 		}
 		return array(
 			'errors_present' => self::$errors_present,
@@ -176,7 +176,7 @@ class YOP_POLL_SubElements {
 			self::$errors_present = false;
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error deleting answer', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error deleting answer', 'yop-poll' );
 		}
 		return array(
 			'errors_present' => self::$errors_present,
@@ -293,7 +293,7 @@ class YOP_POLL_SubElements {
 				);
 				if ( false === $GLOBALS['wpdb']->insert( $GLOBALS['wpdb']->yop_poll_subelements, $data ) ) {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error adding answers', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error adding answers', 'yop-poll' );
 				}
 			}
 		}
@@ -345,7 +345,7 @@ class YOP_POLL_SubElements {
 	public static function get_max_display( $poll_id, $element_id ) {
 		$query = $GLOBALS['wpdb']->prepare(
 			"SELECT MAX(`sorder`) FROM {$GLOBALS['wpdb']->yop_poll_subelements} "
-			. " WHERE `poll_id` = %s AND `element_id` = %s", $poll_id, $element_id
+			. ' WHERE `poll_id` = %s AND `element_id` = %s', $poll_id, $element_id
 		);
 		$max_display = $GLOBALS['wpdb']->get_var( $query );
 		return ( null === $max_display ) ? 0 : intval( $max_display );
@@ -354,7 +354,7 @@ class YOP_POLL_SubElements {
 		$sub_element_exists = array();
 		$query = $GLOBALS['wpdb']->prepare(
 			"SELECT * from {$GLOBALS['wpdb']->yop_poll_subelements} "
-			. "WHERE `poll_id` = %s AND `element_id` = %s "
+			. 'WHERE `poll_id` = %s AND `element_id` = %s '
 			. "AND LOWER( `stext` ) = %s AND `status` = 'active'", $poll_id, $element_id, strtolower( $stext )
 		);
 		$sub_element = $GLOBALS['wpdb']->get_row( $query );
@@ -369,7 +369,7 @@ class YOP_POLL_SubElements {
 	public static function add_vote( $sub_element_id ) {
 		$query = $GLOBALS['wpdb']->prepare(
 			"UPDATE {$GLOBALS['wpdb']->yop_poll_subelements} SET `total_submits` = `total_submits` + 1 "
-			. "WHERE `id` = %s", $sub_element_id
+			. 'WHERE `id` = %s', $sub_element_id
 		);
 		$GLOBALS['wpdb']->query( $query );
 	}
@@ -385,7 +385,7 @@ class YOP_POLL_SubElements {
 			$results[$i]['id'] = $element->id;
 			$results[$i]['votes'] = $element->total_submits;
 			if ( 0 < intval( $total_poll_submits ) ) {
-				if ( 0 ===  ( 100 * $element->total_submits % $total_poll_submits ) ) {
+				if ( 0 === ( 100 * $element->total_submits % $total_poll_submits ) ) {
 					$results[$i]['percentage'] = number_format( $element->total_submits / $total_poll_submits * 100, 0 );
 				} else {
 					$results[$i]['percentage'] = number_format( $element->total_submits / $total_poll_submits * 100, 2 );
@@ -420,7 +420,7 @@ class YOP_POLL_SubElements {
 			self::$errors_present = false;
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error deleting answer', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error deleting answer', 'yop-poll' );
 		}
 		return array(
 			'errors_present' => self::$errors_present,

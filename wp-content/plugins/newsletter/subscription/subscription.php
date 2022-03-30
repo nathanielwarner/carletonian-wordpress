@@ -77,7 +77,7 @@ class NewsletterSubscription extends NewsletterModule {
 
         if (function_exists('register_block_type')) {
             // Add custom blocks to Gutenberg
-            wp_register_script('tnp-blocks', plugins_url('newsletter') . '/includes/tnp-blocks.js', array('wp-blocks', 'wp-element', 'wp-editor'), NEWSLETTER_VERSION);
+            wp_register_script('tnp-blocks', plugins_url('newsletter') . '/includes/tnp-blocks.js', array('wp-block-editor', 'wp-blocks', 'wp-element', 'wp-components'), NEWSLETTER_VERSION);
             register_block_type('tnp/minimal', array('editor_script' => 'tnp-blocks'));
         }
     }
@@ -111,8 +111,11 @@ class NewsletterSubscription extends NewsletterModule {
                             $this->dienow('List change not allowed.', 'Please check if the list is marked as "private".', 400);
                         }
 
-                        $url = esc_url_raw($_REQUEST['redirect']);
-
+                        if (empty($_REQUEST['redirect'])) {
+                            $url = home_url();
+                        } else {
+                            $url = esc_url_raw($_REQUEST['redirect']);
+                        }
                         $this->set_user_list($user, $list_id, $_REQUEST['value']);
 
                         $user = $this->get_user($user->id);
@@ -262,7 +265,6 @@ class NewsletterSubscription extends NewsletterModule {
         $this->save_options($profile_options, 'profile');
         $this->save_options($lists_options, 'lists');
 
-
         $default_options = $this->get_default_options();
 
         if (empty($this->options['error_text'])) {
@@ -296,12 +298,12 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function admin_menu() {
-        $this->add_menu_page('options', 'List building');
-        $this->add_admin_page('lists', 'Lists');
-        $this->add_admin_page('profile', 'Subscription Form');
-        $this->add_menu_page('antibot', 'Security');
-        $this->add_admin_page('forms', 'Forms');
-        $this->add_admin_page('template', 'Template');
+        $this->add_menu_page('options', __('List building', 'newsletter'));
+        $this->add_admin_page('lists', __('Lists', 'newsletter'));
+        $this->add_admin_page('profile', __('Subscription Form', 'newsletter'));
+        $this->add_menu_page('antibot', __('Security', 'newsletter'));
+        $this->add_admin_page('forms', __('Forms', 'newsletter'));
+        $this->add_admin_page('template', __('Template', 'newsletter'));
     }
 
     /**
@@ -528,13 +530,15 @@ class NewsletterSubscription extends NewsletterModule {
 
         // Exists?
         $user = $this->get_user_by_email($subscription->data->email);
+        
+        $subscription = apply_filters('newsletter_subscription', $subscription, $user);
 
         // Do we accept repeated subscriptions?
         if ($user != null && $subscription->if_exists === TNP_Subscription::EXISTING_ERROR) {
-            $this->show_message('error', $user);
-            //return new WP_Error('exists', 'Email address already registered and Newsletter sets to block repeated registrations. You can change this behavior or the user message above on subscription configuration panel.');
+            //$this->show_message('error', $user);
+            return new WP_Error('exists', 'Email address already registered and Newsletter sets to block repeated registrations. You can change this behavior or the user message above on subscription configuration panel.');
         }
-
+       
 
         if ($user != null) {
 
@@ -542,21 +546,30 @@ class NewsletterSubscription extends NewsletterModule {
 
             // We cannot communicate with bounced addresses, there is no reason to proceed
             // TODO: Evaluate if the bounce status is very old, possible reset it
-            if ($user->status == TNP_User::STATUS_BOUNCED) {
+            if ($user->status == TNP_User::STATUS_BOUNCED || $user->status == TNP_User::STATUS_COMPLAINED) {
                 return new WP_Error('bounced', 'Subscriber present and blocked');
             }
+            
+            if ($user->status == TNP_User::STATUS_UNSUBSCRIBED) {
+                // Special behavior?
+            }
 
-            // If the existing subscriber esists and is already confirmed, park the data until the new subscription is confirmed itself
-            if ($user->status == TNP_User::STATUS_CONFIRMED && $subscription->optin == 'double') {
+            if ($subscription->optin == 'single') {
+                $user->status = TNP_User::STATUS_CONFIRMED;
+            } else {
+                if ($user->status == TNP_User::STATUS_CONFIRMED) {
 
-                set_transient('newsletter_subscription_' . $user->id, $subscription->data, 3600 * 48);
+                    set_transient('newsletter_subscription_' . $user->id, $subscription->data, 3600 * 48);
 
-                // This status is *not* stored it indicate a temporary status to show the correct messages
-                $user->status = TNP_User::STATUS_NOT_CONFIRMED;
+                    // This status is *not* stored it indicate a temporary status to show the correct messages
+                    $user->status = TNP_User::STATUS_NOT_CONFIRMED;
 
-                $this->send_message('confirmation', $user);
+                    $this->send_message('confirmation', $user);
 
-                return $user;
+                    return $user;
+                } else {
+                    $user->status = TNP_User::STATUS_NOT_CONFIRMED;
+                }
             }
 
             // Can be updated on the fly?
@@ -572,6 +585,8 @@ class NewsletterSubscription extends NewsletterModule {
             $user->status = $subscription->optin == 'single' ? TNP_User::STATUS_CONFIRMED : TNP_User::STATUS_NOT_CONFIRMED;
             $user->updated = time();
         }
+        
+        $user->ip = $this->process_ip($user->ip);
 
         $user = apply_filters('newsletter_user_subscribe', $user);
 
@@ -644,7 +659,6 @@ class NewsletterSubscription extends NewsletterModule {
 
         $user = $this->get_user($email);
 
-
         if ($user != null) {
             // Email already registered in our database
             $this->logger->info('Subscription of an address with status ' . $user->status);
@@ -691,7 +705,6 @@ class NewsletterSubscription extends NewsletterModule {
         }
 
         $user = $this->update_user_from_request($user);
-
 
         $user['token'] = $this->get_token();
         $ip = $this->process_ip($ip);
@@ -1285,7 +1298,7 @@ class NewsletterSubscription extends NewsletterModule {
         if (!$suffix) {
             $suffix = $name;
         }
-        $buffer = '<label for="tnp-' . $suffix . '">';
+        $buffer = '<label for="' . esc_attr($attrs['id']) . '">';
         if (isset($attrs['label'])) {
             if (empty($attrs['label'])) {
                 return;
@@ -1316,6 +1329,12 @@ class NewsletterSubscription extends NewsletterModule {
     }
 
     function shortcode_newsletter_field($attrs, $content = '') {
+        // Counter to create unique ID for checkbox and labels
+        static $idx = 0;
+
+        $idx++;
+        $attrs['id'] = 'tnp-' . $idx;
+
         $this->setup_form_options();
         $language = $this->get_current_language();
 
@@ -1325,9 +1344,10 @@ class NewsletterSubscription extends NewsletterModule {
 
         if ($name == 'email') {
             $buffer .= '<div class="tnp-field tnp-field-email">';
+
             $buffer .= $this->_shortcode_label('email', $attrs);
 
-            $buffer .= '<input class="tnp-email" type="email" name="ne" value=""';
+            $buffer .= '<input class="tnp-email" type="email" name="ne" id="' . esc_attr($attrs['id']) . '" value=""';
             if (isset($attrs['placeholder'])) {
                 $buffer .= ' placeholder="' . esc_attr($attrs['placeholder']) . '"';
             }
@@ -1348,7 +1368,7 @@ class NewsletterSubscription extends NewsletterModule {
             $buffer .= '<div class="tnp-field tnp-field-firstname">';
             $buffer .= $this->_shortcode_label('name', $attrs);
 
-            $buffer .= '<input class="tnp-name" type="text" name="nn" value=""';
+            $buffer .= '<input class="tnp-name" type="text" name="nn" id="' . esc_attr($attrs['id']) . '" value=""';
             if (isset($attrs['placeholder'])) {
                 $buffer .= ' placeholder="' . esc_attr($attrs['placeholder']) . '"';
             }
@@ -1364,7 +1384,7 @@ class NewsletterSubscription extends NewsletterModule {
             $buffer .= '<div class="tnp-field tnp-field-surname">';
             $buffer .= $this->_shortcode_label('surname', $attrs);
 
-            $buffer .= '<input class="tnp-surname" type="text" name="ns" value=""';
+            $buffer .= '<input class="tnp-surname" type="text" name="ns" id="' . esc_attr($attrs['id']) . '" value=""';
             if (isset($attrs['placeholder'])) {
                 $buffer .= ' placeholder="' . esc_attr($attrs['placeholder']) . '"';
             }
@@ -1395,8 +1415,9 @@ class NewsletterSubscription extends NewsletterModule {
                 return '<input type="hidden" name="nl[]" value="' . esc_attr($list->id) . '">';
             }
 
-            $buffer .= '<div class="tnp-field tnp-field-checkbox tnp-field-list"><label for="nl' . esc_attr($list->id) . '">';
-            $buffer .= '<input type="checkbox" id="nl' . esc_attr($list->id) . '" name="nl[]" value="' . esc_attr($list->id) . '"';
+            $idx++;
+            $buffer .= '<div class="tnp-field tnp-field-checkbox tnp-field-list"><label for="tnp-' . $idx . '">';
+            $buffer .= '<input type="checkbox" id="tnp-' . $idx . '" name="nl[]" value="' . esc_attr($list->id) . '"';
             if (isset($attrs['checked'])) {
                 $buffer .= ' checked';
             }
@@ -1435,8 +1456,9 @@ class NewsletterSubscription extends NewsletterModule {
             } else {
 
                 foreach ($lists as $list) {
-                    $buffer .= '<div class="tnp-field tnp-field-checkbox tnp-field-list"><label for="nl' . $list->id . '">';
-                    $buffer .= '<input type="checkbox" id="nl' . $list->id . '" name="nl[]" value="' . $list->id . '"';
+                    $idx++;
+                    $buffer .= '<div class="tnp-field tnp-field-checkbox tnp-field-list"><label for="nl' . $idx . '">';
+                    $buffer .= '<input type="checkbox" id="nl' . $idx . '" name="nl[]" value="' . $list->id . '"';
                     if ($list->checked) {
                         $buffer .= ' checked';
                     }
@@ -1531,8 +1553,9 @@ class NewsletterSubscription extends NewsletterModule {
 
             $buffer .= '<div class="tnp-field tnp-field-checkbox tnp-field-privacy">';
 
-            $buffer .= '<input type="checkbox" name="ny" required class="tnp-privacy" id="tnp-privacy"> ';
-            $buffer .= '<label for="tnp-privacy">';
+            $idx++;
+            $buffer .= '<input type="checkbox" name="ny" required class="tnp-privacy" id="tnp-' . $idx . '"> ';
+            $buffer .= '<label for="tnp-' . $idx . '">';
             if (!empty($attrs['url'])) {
                 $buffer .= '<a target="_blank" href="' . esc_attr($attrs['url']) . '">';
             }
@@ -1635,7 +1658,7 @@ class NewsletterSubscription extends NewsletterModule {
         if (isset($options_profile['sex_status']) && $options_profile['sex_status'] == 2) {
             $buffer .= $this->shortcode_newsletter_field(['name' => 'gender']);
         }
-        
+
         // Extra profile fields
         for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
             // Not for subscription form
@@ -1660,7 +1683,7 @@ class NewsletterSubscription extends NewsletterModule {
             $buffer .= $this->shortcode_newsletter_field(['name' => 'lists']);
         }
 
-        
+
 
         // Deprecated
         $extra = apply_filters('newsletter_subscription_extra', array());
@@ -1774,7 +1797,6 @@ class NewsletterSubscription extends NewsletterModule {
             'button_radius' => '', 'placeholder' => $this->form_options['email']), $attrs);
 
         $form = '';
-
 
         $form .= '<div class="tnp tnp-subscription-minimal ' . $attrs['class'] . '">';
         $form .= '<form action="' . esc_attr($this->build_action_url('s')) . '" method="post">';

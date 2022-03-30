@@ -67,7 +67,7 @@ Vue.component('sb-add-source-component', {
                 'action' : 'cff_source_builder_update',
                 'type' : self.addNewSource.typeSelected,
                 'id' : self.addNewSource.manualSourceID,
-                'access_token' : self.addNewSource.manualSourceToken
+                'access_token' : self.addNewSource.manualSourceToken,
             };
             if(isEventSource){
                 manualSourceData.privilege = 'events';
@@ -234,7 +234,6 @@ Vue.component('sb-add-source-component', {
             }
             var finalUrl = fbConnectURL + "{'{url=" + appendURL + "}'}";
             window.location = finalUrl;
-
         },
 
         /**

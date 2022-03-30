@@ -66,6 +66,7 @@ var settings_data = {
     uploadStatus: null,
     clearCacheStatus: null,
     optimizeCacheStatus: null,
+    dpaResetStatus: null,
     pressedBtnName: null,
     loading: false,
     hasError: cff_settings.hasError,
@@ -236,6 +237,7 @@ var cffSettings = new Vue({
             let data = new FormData();
             data.append( 'action', 'cff_activate_license' );
             data.append( 'license_key', this.licenseKey );
+            data.append( 'nonce', this.nonce );
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -305,6 +307,7 @@ var cffSettings = new Vue({
             this.pressedBtnName = 'cff';
             let data = new FormData();
             data.append( 'action', 'cff_deactivate_license' );
+            data.append( 'nonce', this.nonce );
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -343,6 +346,7 @@ var cffSettings = new Vue({
             data.append( 'license_key', licenseKey );
             data.append( 'extension_name', extension.name );
             data.append( 'extension_item_name', extension.itemName );
+            data.append( 'nonce', this.nonce );
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -410,6 +414,7 @@ var cffSettings = new Vue({
             data.append( 'action', 'cff_deactivate_extension_license' );
             data.append( 'extension_name', extension.name );
             data.append( 'extension_item_name', extension.itemName );
+            data.append( 'nonce', this.nonce );
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -442,6 +447,7 @@ var cffSettings = new Vue({
             this.testConnectionStatus = 'loading';
             let data = new FormData();
             data.append( 'action', 'cff_test_connection' );
+            data.append( 'nonce', this.nonce );
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -479,6 +485,7 @@ var cffSettings = new Vue({
             let file = this.$refs.file.files[0];
             let data = new FormData();
             data.append( 'action', 'cff_import_settings_json' );
+            data.append( 'nonce', this.nonce );
             data.append( 'file', file );
             fetch(this.ajaxHandler, {
                 method: "POST",
@@ -515,13 +522,14 @@ var cffSettings = new Vue({
                 return;
             }
 
-            let url = this.ajaxHandler + '?action=cff_export_settings_json&feed_id=' + this.exportFeed;
+            let url = this.ajaxHandler + '?action=cff_export_settings_json&feed_id=' + this.exportFeed + '&nonce=' + this.nonce;
             window.location = url;
         },
         saveSettings: function() {
             this.btnStatus = 'loading';
             let data = new FormData();
             data.append( 'action', 'cff_save_settings' );
+            data.append( 'nonce', this.nonce );
             data.append( 'model', JSON.stringify( this.model ) );
             data.append( 'cff_license_key', this.licenseKey );
             data.append( 'extensions_license_key', JSON.stringify( this.extensionsLicenseKey ) );
@@ -549,6 +557,7 @@ var cffSettings = new Vue({
             let data = new FormData();
             data.append( 'action', 'cff_clear_cache' );
             data.append( 'model', JSON.stringify( this.model ) );
+            data.append( 'nonce', this.nonce );
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -584,6 +593,7 @@ var cffSettings = new Vue({
             this.optimizeCacheStatus = 'loading';
             let data = new FormData();
             data.append( 'action', 'cff_clear_image_resize_cache' );
+            data.append( 'nonce', this.nonce );
             fetch(this.ajaxHandler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -600,6 +610,40 @@ var cffSettings = new Vue({
                     this.optimizeCacheStatus = null;
                 }.bind(this), 3000);
             });
+        },
+        dpaReset: function() {
+            this.dpaResetStatus = 'loading';
+            let data = new FormData();
+            data.append( 'action', 'cff_dpa_reset' );
+            data.append( 'nonce', this.nonce );
+            fetch(this.ajaxHandler, {
+                method: "POST",
+                credentials: 'same-origin',
+                body: data
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if ( data.success == false ) {
+                        this.dpaResetStatus = 'error';
+                        return;
+                    }
+                    this.dpaResetStatus = 'success';
+                    setTimeout(function() {
+                        this.dpaResetStatus = null;
+                    }.bind(this), 3000);
+                });
+        },
+        dpaResetStatusIcon: function() {
+            if ( this.dpaResetStatus === null ) {
+                return;
+            }
+            if ( this.dpaResetStatus == 'loading' ) {
+                return this.loaderSVG;
+            } else if ( this.dpaResetStatus == 'success' ) {
+                return this.checkmarkSVG;
+            } else if ( this.dpaResetStatus == 'error' ) {
+                return `<i class="fa fa-times-circle"></i>`;
+            }
         },
         saveChangesIcon: function() {
             if ( this.btnStatus == 'loading' ) {
@@ -672,6 +716,7 @@ var cffSettings = new Vue({
             var self = this;
              let data = new FormData();
             data.append( 'action', 'cff_feed_saver_manager_delete_source' );
+            data.append( 'nonce', this.nonce );
             data.append( 'source_id', sourceToDelete.id);
             fetch(self.ajaxHandler, {
                 method: "POST",
@@ -742,7 +787,10 @@ var cffSettings = new Vue({
          */
         ajaxPost : function(data, callback){
             var self = this;
-            self.$http.post(self.ajaxHandler,data).then(callback);
+            data['nonce'] = self.nonce;
+            data['settings_page'] = true;
+
+          self.$http.post(self.ajaxHandler,data).then(callback);
         },
 
         /**

@@ -122,11 +122,6 @@ class CFF_Customview_Control extends CFF_Controls_Base{
 						<span>{{source.account_id}}</span>
 						<div class="cff-fb-srcs-info-icon" v-html="svgIcons['copy2']" @click.prevent.default="copyToClipBoard(source.account_id)"></div>
 					</div>
-					<div class="cff-fb-srcs-info-item">
-						<strong>{{genericText.token}}</strong>
-						<span>{{source.access_token}}</span>
-						<div class="cff-fb-srcs-info-icon" v-html="svgIcons['copy2']" @click.prevent.default="copyToClipBoard(source.access_token)"></div>
-					</div>
 				</div>
 			</div>
 

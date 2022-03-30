@@ -127,7 +127,9 @@ var CFFAdminNotifications = window.CFFAdminNotifications || ( function( document
 			};
 
 			$.post( cff_admin.ajax_url, data, function( res ) {
-
+        if ($('.cff-fb-btn-new').length) {
+          window.location.reload();
+        }
 				if ( ! res.success ) {
 					//CFFAdmin.debug( res );
 				}

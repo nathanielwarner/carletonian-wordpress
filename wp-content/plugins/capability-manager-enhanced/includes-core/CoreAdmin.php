@@ -20,6 +20,8 @@ class CoreAdmin {
                     'screens' => [
                         ['base' => 'toplevel_page_pp-capabilities'],
                         ['base' => 'capabilities_page_pp-capabilities-roles'],
+                        ['base' => 'capabilities_page_pp-capabilities-editor-features'],
+                        ['base' => 'capabilities_page_pp-capabilities-admin-features'],
                         ['base' => 'capabilities_page_pp-capabilities-backup'],
                         ['base' => 'capabilities_page_pp-capabilities-settings'],
                     ]
@@ -34,6 +36,9 @@ class CoreAdmin {
         //Editor feature metaboxes promo
         add_action('pp_capabilities_features_gutenberg_after_table_tr', [$this, 'metaboxesPromo']);
         add_action('pp_capabilities_features_classic_after_table_tr', [$this, 'metaboxesPromo']);
+
+        //Admin features promo
+        add_action('pp_capabilities_admin_features_after_table_tr', [$this, 'customItemsPromo']);
     }
 
     function setUpgradeMenuLink() {
@@ -45,7 +50,7 @@ class CoreAdmin {
 
 		<script type="text/javascript">
             jQuery(document).ready(function($) {
-                $('#toplevel_page_pp-capabilities ul li:last a').attr('href', '<?php echo $url;?>').attr('target', '_blank').css('font-weight', 'bold').css('color', '#FEB123');
+                $('#toplevel_page_pp-capabilities ul li:last a').attr('href', '<?php echo esc_url_raw($url);?>').attr('target', '_blank').css('font-weight', 'bold').css('color', '#FEB123');
             });
         </script>
 		<?php
@@ -54,8 +59,8 @@ class CoreAdmin {
     function actCapabilitiesSubmenus() {
         $cap_name = (is_multisite() && is_super_admin()) ? 'read' : 'manage_capabilities';
         
-        add_submenu_page('pp-capabilities',  __('Admin Menus', 'capsman-enhanced'), __('Admin Menus', 'capsman-enhanced'), $cap_name, 'pp-capabilities-admin-menus', [$this, 'AdminMenusPromo']);
-        add_submenu_page('pp-capabilities',  __('Nav Menus', 'capsman-enhanced'), __('Nav Menus', 'capsman-enhanced'), $cap_name, 'pp-capabilities-nav-menus', [$this, 'NavMenusPromo']);
+        add_submenu_page('pp-capabilities',  esc_html__('Admin Menus', 'capsman-enhanced'), esc_html__('Admin Menus', 'capsman-enhanced'), $cap_name, 'pp-capabilities-admin-menus', [$this, 'AdminMenusPromo']);
+        add_submenu_page('pp-capabilities',  esc_html__('Nav Menus', 'capsman-enhanced'), esc_html__('Nav Menus', 'capsman-enhanced'), $cap_name, 'pp-capabilities-nav-menus', [$this, 'NavMenusPromo']);
     }
 
     function AdminMenusPromo() {
@@ -71,5 +76,10 @@ class CoreAdmin {
     function metaboxesPromo(){
         wp_enqueue_style('pp-capabilities-admin-core', plugin_dir_url(CME_FILE) . 'includes-core/admin-core.css', [], PUBLISHPRESS_CAPS_VERSION, 'all');
         include (dirname(__FILE__) . '/editor-features-promo.php');
+    }
+
+    function customItemsPromo(){
+        wp_enqueue_style('pp-capabilities-admin-core', plugin_dir_url(CME_FILE) . 'includes-core/admin-core.css', [], PUBLISHPRESS_CAPS_VERSION, 'all');
+        include (dirname(__FILE__) . '/admin-features-promo.php');
     }
 }

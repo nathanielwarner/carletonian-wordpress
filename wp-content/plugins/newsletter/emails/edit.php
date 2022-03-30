@@ -50,7 +50,7 @@ if ($controls->is_action('abort')) {
 
 if ($controls->is_action('change-private')) {
     $data = [];
-    $data['private'] = $controls->data['private'] ? 1 : 0;
+    $data['private'] = $controls->data['private'];
     $data['id'] = $email['id'];
     $email = $this->save_email($data, ARRAY_A);
     $controls->add_message_saved();
@@ -120,149 +120,154 @@ if ($controls->is_action('html')) {
 
 if ($controls->is_action('test') || $controls->is_action('save') || $controls->is_action('send') || $controls->is_action('schedule')) {
 
-    if ($controls->is_action('save')) {
-        $this->admin_logger->info('Saving newsletter: ' . $email_id);
-    } else if ($controls->is_action('send')) {
-        $this->admin_logger->info('Sending newsletter: ' . $email_id);
-    } else if ($controls->is_action('schedule')) {
-        $this->admin_logger->info('Scheduling newsletter: ' . $email_id);
-    }
-    
-    $email['subject'] = $controls->data['subject'];
-    $email['track'] = $controls->data['track'];
-    $email['editor'] = $editor_type;
-    $email['private'] = $controls->data['private'];
-    $email['message_text'] = $controls->data['message_text'];
-    if ($controls->is_action('send')) {
-        $email['send_on'] = time();
+    if ($email['updated'] != $controls->data['updated']) {
+        $controls->errors = 'This newsletter has been modified by someone else. Cannot save.';
     } else {
-        // Patch, empty on continuation
-        if (!empty($controls->data['send_on'])) {
-            $email['send_on'] = $controls->data['send_on'];
+        $email['updated'] = time();
+        if ($controls->is_action('save')) {
+            $this->admin_logger->info('Saving newsletter: ' . $email_id);
+        } else if ($controls->is_action('send')) {
+            $this->admin_logger->info('Sending newsletter: ' . $email_id);
+        } else if ($controls->is_action('schedule')) {
+            $this->admin_logger->info('Scheduling newsletter: ' . $email_id);
         }
-    }
 
-    // Reset and refill the options
-    // Try without the reset and let's see where the problems are
-    //$email['options'] = array();
-    // Reset only specific keys
-    unset($email['options']['lists']);
-    unset($email['options']['lists_operator']);
-    unset($email['options']['lists_exclude']);
-    unset($email['options']['sex']);
-    for ($i = 1; $i <= 20; $i++) {
-        unset($email['options']["profile_$i"]);
-    }
-
-    // Patch for Geo addon to be solved with a filter
-    unset($email['options']['countries']);
-    unset($email['options']['regions']);
-    unset($email['options']['cities']);
-
-    foreach ($controls->data as $name => $value) {
-        if (strpos($name, 'options_') === 0) {
-            $email['options'][substr($name, 8)] = $value;
-        }
-    }
-
-    // Before send, we build the query to extract subscriber, so the delivery engine does not
-    // have to worry about the email parameters
-    if ($email['options']['status'] == 'S') {
-        $query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='S'";
-    } else {
-        $query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='C'";
-    }
-
-    if ($email['options']['wp_users'] == '1') {
-        $query .= " and wp_user_id<>0";
-    }
-
-    if (!empty($email['options']['language'])) {
-        $query .= " and language='" . esc_sql((string) $email['options']['language']) . "'";
-    }
-
-
-    $list_where = array();
-    if (isset($email['options']['lists']) && count($email['options']['lists'])) {
-        foreach ($email['options']['lists'] as $list) {
-            $list = (int) $list;
-            $list_where[] = 'list_' . $list . '=1';
-        }
-    }
-
-    if (!empty($list_where)) {
-        if (isset($email['options']['lists_operator']) && $email['options']['lists_operator'] == 'and') {
-            $query .= ' and (' . implode(' and ', $list_where) . ')';
+        $email['subject'] = $controls->data['subject'];
+        $email['track'] = $controls->data['track'];
+        $email['editor'] = $editor_type;
+        $email['private'] = $controls->data['private'];
+        $email['message_text'] = $controls->data['message_text'];
+        if ($controls->is_action('send')) {
+            $email['send_on'] = time();
         } else {
-            $query .= ' and (' . implode(' or ', $list_where) . ')';
-        }
-    }
-
-    // Excluded lists
-    $list_where = array();
-    if (isset($email['options']['lists_exclude']) && count($email['options']['lists_exclude'])) {
-        foreach ($email['options']['lists_exclude'] as $list) {
-            $list = (int) $list;
-            $list_where[] = 'list_' . $list . '=0';
-        }
-    }
-    if (!empty($list_where)) {
-        // Must not be in one of the excluded lists
-        $query .= ' and (' . implode(' and ', $list_where) . ')';
-    }
-
-    // Gender
-    if (isset($email['options']['sex'])) {
-        $sex = $email['options']['sex'];
-        if (is_array($sex) && count($sex)) {
-            $query .= " and sex in (";
-            foreach ($sex as $x) {
-                $query .= "'" . esc_sql((string) $x) . "', ";
+            // Patch, empty on continuation
+            if (!empty($controls->data['send_on'])) {
+                $email['send_on'] = $controls->data['send_on'];
             }
-            $query = substr($query, 0, -2);
-            $query .= ")";
         }
-    }
 
-    // Profile fields filter
-    $profile_clause = array();
-    for ($i = 1; $i <= 20; $i++) {
-        if (isset($email["options"]["profile_$i"]) && count($email["options"]["profile_$i"])) {
-            $profile_clause[] = 'profile_' . $i . " IN ('" . implode("','", esc_sql($email["options"]["profile_$i"])) . "') ";
+        // Reset and refill the options
+        // Try without the reset and let's see where the problems are
+        //$email['options'] = array();
+        // Reset only specific keys
+        unset($email['options']['lists']);
+        unset($email['options']['lists_operator']);
+        unset($email['options']['lists_exclude']);
+        unset($email['options']['sex']);
+        for ($i = 1; $i <= 20; $i++) {
+            unset($email['options']["profile_$i"]);
         }
+
+        // Patch for Geo addon to be solved with a filter
+        unset($email['options']['countries']);
+        unset($email['options']['regions']);
+        unset($email['options']['cities']);
+
+        foreach ($controls->data as $name => $value) {
+            if (strpos($name, 'options_') === 0) {
+                $email['options'][substr($name, 8)] = $value;
+            }
+        }
+
+        // Before send, we build the query to extract subscriber, so the delivery engine does not
+        // have to worry about the email parameters
+        if ($email['options']['status'] == 'S') {
+            $query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='S'";
+        } else {
+            $query = "select * from " . NEWSLETTER_USERS_TABLE . " where status='C'";
+        }
+
+        if ($email['options']['wp_users'] == '1') {
+            $query .= " and wp_user_id<>0";
+        }
+
+        if (!empty($email['options']['language'])) {
+            $query .= " and language='" . esc_sql((string) $email['options']['language']) . "'";
+        }
+
+
+        $list_where = array();
+        if (isset($email['options']['lists']) && count($email['options']['lists'])) {
+            foreach ($email['options']['lists'] as $list) {
+                $list = (int) $list;
+                $list_where[] = 'list_' . $list . '=1';
+            }
+        }
+
+        if (!empty($list_where)) {
+            if (isset($email['options']['lists_operator']) && $email['options']['lists_operator'] == 'and') {
+                $query .= ' and (' . implode(' and ', $list_where) . ')';
+            } else {
+                $query .= ' and (' . implode(' or ', $list_where) . ')';
+            }
+        }
+
+        // Excluded lists
+        $list_where = array();
+        if (isset($email['options']['lists_exclude']) && count($email['options']['lists_exclude'])) {
+            foreach ($email['options']['lists_exclude'] as $list) {
+                $list = (int) $list;
+                $list_where[] = 'list_' . $list . '=0';
+            }
+        }
+        if (!empty($list_where)) {
+            // Must not be in one of the excluded lists
+            $query .= ' and (' . implode(' and ', $list_where) . ')';
+        }
+
+        // Gender
+        if (isset($email['options']['sex'])) {
+            $sex = $email['options']['sex'];
+            if (is_array($sex) && count($sex)) {
+                $query .= " and sex in (";
+                foreach ($sex as $x) {
+                    $query .= "'" . esc_sql((string) $x) . "', ";
+                }
+                $query = substr($query, 0, -2);
+                $query .= ")";
+            }
+        }
+
+        // Profile fields filter
+        $profile_clause = array();
+        for ($i = 1; $i <= 20; $i++) {
+            if (isset($email["options"]["profile_$i"]) && count($email["options"]["profile_$i"])) {
+                $profile_clause[] = 'profile_' . $i . " IN ('" . implode("','", esc_sql($email["options"]["profile_$i"])) . "') ";
+            }
+        }
+
+        if (!empty($profile_clause)) {
+            $query .= ' and (' . implode(' and ', $profile_clause) . ')';
+        }
+
+        // Temporary save to have an object and call the query filter
+        $e = Newsletter::instance()->save_email($email);
+        $query = apply_filters('newsletter_emails_email_query', $query, $e);
+
+        $email['query'] = $query;
+        if ($email['status'] == 'sent') {
+            $email['total'] = $email['sent'];
+        } else {
+            $email['total'] = $wpdb->get_var(str_replace('*', 'count(*)', $query));
+        }
+
+        if ($controls->is_action('send') && $controls->data['send_on'] < time()) {
+            $controls->data['send_on'] = time();
+        }
+
+        $email = Newsletter::instance()->save_email($email, ARRAY_A);
+
+        tnp_prepare_controls($email, $controls);
+
+        if ($email === false) {
+            $controls->errors = 'Unable to save. Try to deactivate and reactivate the plugin may be the database is out of sync.';
+        }
+
+        $controls->add_message_saved();
     }
-
-    if (!empty($profile_clause)) {
-        $query .= ' and (' . implode(' and ', $profile_clause) . ')';
-    }
-
-    // Temporary save to have an object and call the query filter
-    $e = Newsletter::instance()->save_email($email);
-    $query = apply_filters('newsletter_emails_email_query', $query, $e);
-
-    $email['query'] = $query;
-    if ($email['status'] == 'sent') {
-        $email['total'] = $email['sent'];
-    } else {
-        $email['total'] = $wpdb->get_var(str_replace('*', 'count(*)', $query));
-    }
-
-    if ($controls->is_action('send') && $controls->data['send_on'] < time()) {
-        $controls->data['send_on'] = time();
-    }
-
-    $email = Newsletter::instance()->save_email($email, ARRAY_A);
-
-    tnp_prepare_controls($email, $controls);
-
-    if ($email === false) {
-        $controls->errors = 'Unable to save. Try to deactivate and reactivate the plugin may be the database is out of sync.';
-    }
-
-    $controls->add_message_saved();
 }
 
-if ($controls->is_action('send') || $controls->is_action('schedule')) {
+if (empty($controls->errors) && ($controls->is_action('send') || $controls->is_action('schedule'))) {
 
     NewsletterStatistics::instance()->reset_stats($email);
 
@@ -320,6 +325,7 @@ if ($email['status'] != 'sent') {
     <div id="tnp-body">
         <form method="post" action="" id="newsletter-form">
             <?php $controls->init(array('cookie_name' => 'newsletter_emails_edit_tab')); ?>
+            <?php $controls->hidden('updated') ?>
             <div class="tnp-status-header">
 
                 <div class="tnp-two-thirds">
@@ -481,7 +487,7 @@ if ($email['status'] != 'sent') {
                             <td>
                                 <?php $controls->yesno('private'); ?>
                                 <?php if ($email['status'] == 'sent') { ?>
-                                    <?php $controls->button('change-private', __('Toggle')) ?>
+                                    <?php $controls->button('change-private', __('Save')) ?>
                                 <?php } ?>
                                 <p class="description">
                                     <?php _e('Hide/show from public sent newsletter list.', 'newsletter') ?>
@@ -530,10 +536,15 @@ if ($email['status'] != 'sent') {
                             <td><?php echo esc_html($email['token']); ?></td>
                         </tr>
                         <tr>
-                            <th>This is the textual version of your newsletter. If you empty it, only an HTML version will be sent but is an anti-spam best practice to include a text only version.</th>
+                            <th>This is the textual version of your newsletter. 
+                                If you empty it, only an HTML version will be sent but is an anti-spam best practice to include a text only version.</th>
                             <td>
                                 <?php if (Newsletter::instance()->options['phpmailer'] == 0) { ?>
-                                    <p class="tnp-tab-warning">The text part is sent only when Newsletter manages directly the sending process. <a href="admin.php?page=newsletter_main_main" target="_blank">See the main settings</a>.</p>
+                                    <p class="tnp-tab-warning">
+                                        See <a href="https://wordpress.org/plugins/plaintext-newsletter/" target="_blank">this plugin</a> for automatic plaintext generation.
+                                        The text part is sent only when Newsletter manages 
+                                        directly the sending process. <a href="admin.php?page=newsletter_main_main" target="_blank">See the main settings</a>.
+                                    </p>
                                 <?php } ?>
                                 <?php $controls->textarea_fixed('message_text', '100%', '500'); ?>
                             </td>

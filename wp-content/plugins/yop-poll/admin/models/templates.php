@@ -11,7 +11,7 @@ class YOP_Poll_Templates {
 	public static function template_already_exists( $base, $available_templates ) {
 		$template_exists = false;
 		foreach ( $available_templates as $available_template ) {
-			if ( $available_template->base === $base  ) {
+			if ( $available_template->base === $base ) {
 				$template_exists = true;
 			}
 		}

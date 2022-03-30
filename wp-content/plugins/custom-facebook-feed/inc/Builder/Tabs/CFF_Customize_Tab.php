@@ -950,6 +950,16 @@ class CFF_Customize_Tab{
 				]
 			],
 			[
+				'type' 				=> 'select',
+				'id' 				=> 'likeboxpos',
+				'condition'			=> ['showlikebox' => ['on']],
+				'heading' 			=> __( 'Position', 'custom-facebook-feed' ),
+				'options'			=> [
+					'top' => __( 'Top', 'custom-facebook-feed' ),
+					'bottom' => __( 'Bottom', 'custom-facebook-feed' )
+				]
+			],
+			[
 				'type' 				=> 'separator',
 				'condition'			=> ['showlikebox' => ['on']],
 				'top' 				=> 10,
@@ -964,7 +974,6 @@ class CFF_Customize_Tab{
 				'stacked'			=> 'true',
 				'layout'			=> 'half',
 				'reverse'			=> 'true',
-				'labelStrong'		=> 'true',
 				'options'			=> [
 					'enabled'	=> 'on',
 					'disabled'	=> 'off'

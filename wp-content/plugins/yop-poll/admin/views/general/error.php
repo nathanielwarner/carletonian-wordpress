@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12" align="center">
             <h2>
-                <?php echo $error; ?>
+                <?php echo esc_html( $error ); ?>
             </h2>
         </div>
     </div>

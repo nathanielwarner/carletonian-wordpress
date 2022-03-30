@@ -57,6 +57,7 @@
 
 #tnp-body .form-table th small {
     font-weight: normal;
+    display: block;
 }
 
 #tnp-body .form-table textarea {

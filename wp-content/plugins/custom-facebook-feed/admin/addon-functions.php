@@ -10,20 +10,19 @@ function cff_deactivate_addon() {
 
 	// Run a security check.
 	check_ajax_referer( 'cff-admin', 'nonce' );
-	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
-	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+
 	// Check for permissions.
-	if ( ! current_user_can( $cap ) ) {
+	if ( ! current_user_can( 'deactivate_plugins' ) ) {
 		wp_send_json_error();
 	}
 
 	$type = 'addon';
 	if ( ! empty( $_POST['type'] ) ) {
-		$type = sanitize_key( $_POST['type'] );
+		$type = sanitize_key( wp_unslash( $_POST['type'] ) );
 	}
 
 	if ( isset( $_POST['plugin'] ) ) {
-		deactivate_plugins( $_POST['plugin'] );
+		deactivate_plugins( wp_unslash( $_POST['plugin'] ) );
 
 		if ( 'plugin' === $type ) {
 			wp_send_json_success( esc_html__( 'Plugin deactivated.', 'custom-facebook-feed' ) );
@@ -47,7 +46,7 @@ function cff_activate_addon() {
 	check_ajax_referer( 'cff-admin', 'nonce' );
 
 	// Check for permissions.
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( 'activate_plugins' ) ) {
 		wp_send_json_error();
 	}
 
@@ -55,7 +54,7 @@ function cff_activate_addon() {
 
 		$type = 'addon';
 		if ( ! empty( $_POST['type'] ) ) {
-			$type = sanitize_key( $_POST['type'] );
+			$type = sanitize_key( wp_unslash( $_POST['type'] ) );
 		}
 
 		$activate = activate_plugins( $_POST['plugin'] );
@@ -84,7 +83,7 @@ function cff_install_addon() {
 	check_ajax_referer( 'cff-admin', 'nonce' );
 
 	// Check for permissions.
-	if ( ! current_user_can( 'manage_options' ) ) {
+	if ( ! current_user_can( 'install_plugins' ) ) {
 		wp_send_json_error();
 	}
 
@@ -179,11 +178,11 @@ add_action( 'wp_ajax_cff_install_addon', 'cff_install_addon' );
 
 
 /**
-* Smash Balloon Encrypt or decrypt 
-* 
+* Smash Balloon Encrypt or decrypt
+*
 * @param string @action
 * @param string @string
-* 
+*
 * @return string $output
 */
 function sb_encrypt_decrypt( $action, $string ) {

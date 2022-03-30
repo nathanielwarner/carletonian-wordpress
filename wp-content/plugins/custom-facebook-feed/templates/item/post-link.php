@@ -25,15 +25,16 @@ $cff_facebook_share_text 	= CFF_Shortcode_Display::get_post_link_fb_share_text( 
 
 
 if( $cff_show_facebook_link || $cff_show_facebook_share ):
-?>
-<div class="cff-post-links">
-	<?php if( $cff_show_facebook_link ): ?>
-		<a class="cff-viewpost-facebook" href="<?php echo esc_url($link) ?>" title="<?php echo esc_attr($link_text) ?>" <?php echo $target. '' .$cff_nofollow . ' '. $cff_link_styles; ?>><?php echo $link_text; ?></a>
-	<?php endif; ?>
-	<?php if( $cff_show_facebook_share ): ?>
-		<div class="cff-share-container">
-			<?php if( $cff_show_facebook_link ): ?>
-				<span class="cff-dot" <?php echo $cff_link_styles ?>>&middot;</span>
+	?>
+	<div class="cff-post-links">
+		<?php if( $cff_show_facebook_link ): ?>
+			<a class="cff-viewpost-facebook" href="<?php echo esc_url($link) ?>" title="<?php echo esc_attr($link_text) ?>" <?php echo $target. '' .$cff_nofollow . ' '. $cff_link_styles; ?>><?php echo $link_text; ?></a>
+		<?php endif; ?>
+		<?php if( $cff_show_facebook_share ): ?>
+			<div class="cff-share-container">
+				<?php if( $cff_show_facebook_link ): ?>
+					<span class="cff-dot" <?php echo $cff_link_styles ?>>&middot;</span>
+				<?php endif; ?>
 				<a class="cff-share-link" href="<?php echo esc_url($social_share_links['facebook']['share_link']); ?>" title="<?php echo esc_attr($cff_facebook_share_text) ?>" <?php echo $cff_link_styles ?>><?php echo $cff_facebook_share_text ?></a>
 				<p class="cff-share-tooltip">
 					<?php foreach ($social_share_links as $social_key => $social) : ?>
@@ -43,9 +44,8 @@ if( $cff_show_facebook_link || $cff_show_facebook_share ):
 						</a>
 					<?php endforeach; ?>
 				</p>
-			<?php endif; ?>
-		</div>
-	<?php endif; ?>
-</div>
-<?php
+			</div>
+		<?php endif; ?>
+	</div>
+	<?php
 endif;

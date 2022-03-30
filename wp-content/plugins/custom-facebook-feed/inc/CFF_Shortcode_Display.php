@@ -28,7 +28,8 @@ class CFF_Shortcode_Display {
 	 */
 	public function ajax_loaded(){
 		$ajax_loaded_content = '';
-		$ajax_theme = CFF_Utils::check_if_on( $this->atts['ajax'] );
+		$ajax_theme = $this->atts['ajax'] === '1' ? 'on' : $this->atts['ajax'];
+		$ajax_theme = CFF_Utils::check_if_on( $ajax_theme );
 	    if ($ajax_theme) {
 	        $cff_min  = isset( $this->options[ 'cff_minify' ] ) ? '.min' : '';
 	        $cff_link_hashtags = CFF_Utils::check_if_on( $this->atts['textlink'] ) ? 'false' : CFF_Utils::check_if_on( $this->atts['linkhashtags'] );
@@ -96,7 +97,7 @@ class CFF_Shortcode_Display {
 	    if( $js_only === 'false' ) $js_only = false;
 
 	    if( $masonry || $masonry == 'true' ){
-	    	$this->atts['headeroutside'] = true;
+	    	//$this->atts['headeroutside'] = true;
 		}
 	    $masonry_classes = '';
 	    if( isset($masonry) ) {
@@ -705,7 +706,7 @@ class CFF_Shortcode_Display {
 	}
 
 	static function get_likebox_classes( $atts ){
-		return "cff-likebox" . ( $atts[ 'likeboxoutside' ] ? " cff-outside" : '' ) . ( $atts[ 'likeboxpos' ] == 'top' ? ' cff-top' : ' cff-bottom' );
+		return "cff-likebox" . ( CFF_Utils::check_if_on($atts[ 'likeboxoutside' ]) ? " cff-outside" : '' ) . ( $atts[ 'likeboxpos' ] == 'top' ? ' cff-top' : ' cff-bottom' );
 	}
 
 	static function get_likebox_tag( $atts ){

@@ -157,5 +157,19 @@
             </div>
         </div>
     </div>
+    <div class="sb-tab-box sb-optimize-box sb-dpa-clear-box-style clearfix">
+        <div class="tab-label">
+            <h3>{{advancedTab.dpaClear.title}}</h3>
+        </div>
+        <div class="cff-tab-form-field">
+            <button type="button" class="cff-btn" @click="dpaReset()">
+                <span v-html="dpaResetStatusIcon()" :class="dpaResetStatus" v-if="dpaResetStatus !== null"></span>
+                {{advancedTab.dpaClear.clear}}
+            </button>
+            <span class="help-text">
+                {{advancedTab.dpaClear.helpText}}
+            </span>
+        </div>
+    </div>
 </div>
 <!-- todo: this is just demo content and will be replaced once I work on this -->

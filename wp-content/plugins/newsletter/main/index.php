@@ -81,37 +81,37 @@ $lists = $this->get_lists();
         <div class="tnp-dashboard">
             <div class="tnp-cards-container">
                 <div class="tnp-card tnp-mimosa">
-                    <div class="tnp-card-title">Forms</div>
-                    <div class="tnp-card-description">Setup the form fields and labels.</div>
+                    <div class="tnp-card-title"><?php esc_html_e('Forms', 'newsletter')?></div>
+                    <div class="tnp-card-description"><?php esc_html_e('Setup the form fields and labels.', 'newsletter')?></div>
                     <div class="tnp-card-button-container">
-                        <a href="?page=newsletter_subscription_profile">Edit forms</a>
+                        <a href="?page=newsletter_subscription_profile"><?php esc_html_e('Edit forms', 'newsletter')?></a>
                     </div>
                 </div>
                 <div class="tnp-card">
-                    <div class="tnp-card-title">Lists</div>
+                    <div class="tnp-card-title"><?php esc_html_e('Lists', 'newsletter')?></div>
                     <div class="tnp-card-description">You have <?php echo count($lists) ?> lists.</div>
                     <div class="tnp-card-button-container">
-                        <a href="?page=newsletter_subscription_lists">Manage</a>
+                        <a href="?page=newsletter_subscription_lists"><?php esc_html_e('Manage', 'newsletter')?></a>
                     </div>
                 </div>
                 <div class="tnp-card">
-                    <div class="tnp-card-title">Delivery</div>
-                    <div class="tnp-card-description">Change the delivery speed, sender name and return path.</div>
+                    <div class="tnp-card-title"><?php esc_html_e('Delivery', 'newsletter')?></div>
+                    <div class="tnp-card-description"><?php esc_html_e('Change the delivery speed, sender name and return path.', 'newsletter')?></div>
                     <div class="tnp-card-button-container">
-                        <a href="?page=newsletter_main_main">Change the delivery settings</a>
+                        <a href="?page=newsletter_main_main"><?php esc_html_e('Change the delivery settings', 'newsletter')?></a>
                     </div>
                 </div>
                 <div class="tnp-card">
-                    <div class="tnp-card-title">Personal Info</div>
-                    <div class="tnp-card-description">Set your company name, address, socials.</div>
+                    <div class="tnp-card-title"><?php esc_html_e('Company Info', 'newsletter')?></div>
+                    <div class="tnp-card-description"><?php esc_html_e('Set your company name, address, socials.', 'newsletter')?></div>
                     <div class="tnp-card-button-container">
-                        <a href="?page=newsletter_main_info">Edit your info</a>
+                        <a href="?page=newsletter_main_info"><?php esc_html_e('Edit your info', 'newsletter')?></a>
                     </div>
                 </div>
             </div>
             <div class="tnp-cards-container">
                 <div class="tnp-card">
-                    <div class="tnp-card-title">Newsletters</div>
+                    <div class="tnp-card-title"><?php esc_html_e('Newsletters', 'newsletter')?></div>
                     <div class="tnp-card-upper-buttons"><a href="?page=newsletter_emails_composer"><?php _e('New', 'newsletter') ?></a></div>
                     <div class="tnp-card-upper-buttons"><a href="?page=newsletter_emails_index"><?php _e('List', 'newsletter') ?></a></div>
                     <div class="tnp-card-content">

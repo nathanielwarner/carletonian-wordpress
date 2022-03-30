@@ -57,7 +57,7 @@ class CFF_New_User extends CFF_Notifications {
 	 */
 	public function verify( $notifications ) {
 		$data = array();
-		
+
 		if ( ! is_array( $notifications ) || empty( $notifications ) ) {
 			return $data;
 		}
@@ -97,6 +97,9 @@ class CFF_New_User extends CFF_Notifications {
 		}
 
 		$cff_statuses_option = get_option( 'cff_statuses', array() );
+		if ( empty( $cff_statuses_option ) ) {
+		    return array();
+        }
 		$current_time = cff_get_current_time();
 
 		// rating notice logic
@@ -232,13 +235,19 @@ class CFF_New_User extends CFF_Notifications {
 
 	/**
 	 * Review Notice Consent from User
-	 * 
+	 *
 	 * @since 4.0
 	 */
 	public function review_notice_consent() {
-		if ( ! DOING_AJAX ) {
-			return;
+		//Security Checks
+		check_ajax_referer( 'cff_nonce', 'cff_nonce' );
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
 		}
+
 		$consent = isset( $_POST[ 'consent' ] ) ? sanitize_text_field( $_POST[ 'consent' ] ) : '';
 
 		update_option( 'cff_review_consent', $consent );
@@ -294,7 +303,7 @@ class CFF_New_User extends CFF_Notifications {
 		foreach ( $notifications as $notification ) {
 			$img_src = CFF_PLUGIN_URL . 'admin/assets/img/' . sanitize_text_field( $notification['image'] );
 			$type = sanitize_text_field( $notification['id'] );
-			// check if this is a review notice 
+			// check if this is a review notice
 			if( $type == 'review' ) {
 				$review_consent = get_option( 'cff_review_consent' );
 				$cff_open_feedback_url = 'https://smashballoon.com/feedback/?plugin=facebook-lite';
@@ -377,8 +386,8 @@ class CFF_New_User extends CFF_Notifications {
 				</div>
 				<div class="cff-notice-btns-wrap">
 					<p class="cff-notice-links">
-						<?php 
-						foreach ( $buttons as $type => $button ) : 
+						<?php
+						foreach ( $buttons as $type => $button ) :
 							$btn_classes = array('cff-btn');
 							$btn_classes[] = esc_attr( $button['class'] );
 							if ( $type == 'primary' ) {
@@ -405,11 +414,11 @@ class CFF_New_User extends CFF_Notifications {
 
 	/**
 	 * CFF Get Notice Title depending on the notice type
-	 * 
+	 *
 	 * @since 4.0
-	 * 
+	 *
 	 * @param array $notification
-	 * 
+	 *
 	 * @return string $title
 	 */
 	public function get_notice_title( $notification ) {
@@ -430,12 +439,12 @@ class CFF_New_User extends CFF_Notifications {
 
 	/**
 	 * CFF Get Notice Content depending on the notice type
-	 * 
+	 *
 	 * @since 4.0
-	 * 
+	 *
 	 * @param array $notification
 	 * @param array $content_allowed_tags
-	 * 
+	 *
 	 * @return string $content
 	 */
 	public function get_notice_content( $notification, $content_allowed_tags ) {

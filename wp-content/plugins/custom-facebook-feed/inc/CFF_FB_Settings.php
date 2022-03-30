@@ -390,7 +390,10 @@ class CFF_FB_Settings {
 	 * @return array
 	 */
 	public static function get_legacy_settings( $shortcode_atts ) {
+		$encryption = new SB_Facebook_Data_Encryption();
 		$options 		= get_option( 'cff_legacy_feed_settings', array() );
+		$options 		= $encryption->maybe_decrypt( $options );
+
 		if ( ! empty( $options ) ) {
 			$options = json_decode( $options, true );
 			if ( empty( $options['id'] ) || empty( $options['sources'] ) ) {
@@ -469,6 +472,7 @@ class CFF_FB_Settings {
 		$legacy_settings_with_updated_defaults = wp_parse_args( $options, \CustomFacebookFeed\Builder\CFF_Feed_Saver::settings_defaults() );
 
 		$legacy_settings = wp_parse_args( $shortcode_atts, $legacy_settings_with_updated_defaults );
+		$legacy_settings['id'] = ! empty( $legacy_settings['account'] ) ? $legacy_settings['account'] : $legacy_settings['id'];
 
 		return $legacy_settings;
 	}

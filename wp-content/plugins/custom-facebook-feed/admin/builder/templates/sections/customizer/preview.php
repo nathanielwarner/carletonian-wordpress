@@ -21,6 +21,8 @@
 			include_once CFF_BUILDER_DIR . 'templates/preview/header.php';
 			?>
 			<div class="cff-fb-fs" :class="( valueIsEnabled(customizerFeedData.settings.headeroutside) && !valueIsEnabled(customizerFeedData.settings.likeboxoutside) ) ? 'cff-feed-height' : ''" >
+				<cff-post-likebox-component v-if="customizerFeedData.settings.likeboxpos == 'top'" :customizer-feed-data="customizerFeedData"  :translated-text="translatedText"></cff-post-likebox-component>
+
 				<div class="cff-fb-fs" :class="( valueIsEnabled(customizerFeedData.settings.headeroutside) && valueIsEnabled(customizerFeedData.settings.likeboxoutside) ) ? 'cff-feed-height' : ''" >
 					<?php
 						include_once CFF_BUILDER_DIR . 'templates/preview/timeline.php';
@@ -35,14 +37,15 @@
 						//include_once CFF_BUILDER_DIR . 'templates/preview/load-more.php';
 					?>
 				</div>
-				<?php
-					include_once CFF_BUILDER_DIR . 'templates/preview/like-box.php';
-				?>
+				<cff-post-likebox-component v-if="customizerFeedData.settings.likeboxpos == 'bottom'" v-if="" :customizer-feed-data="customizerFeedData"  :translated-text="translatedText"></cff-post-likebox-component>
+
+
 			</div>
 
 			<?php
 				include_once CFF_BUILDER_DIR . 'templates/preview/preview-components.php';
 				//include_once CFF_BUILDER_DIR . 'templates/preview/light-box.php';
+				include_once CFF_BUILDER_DIR . 'templates/preview/like-box.php';
 			?>
 		</div>
 	</div>

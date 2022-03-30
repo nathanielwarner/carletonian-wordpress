@@ -3,8 +3,8 @@ Contributors: smashballoon
 Tags: Facebook, Facebook feed, Facebook posts, Facebook group, Facebook page
 Requires at least: 4.1
 Requires PHP: 5.6
-Tested up to: 5.8
-Stable tag: 4.0
+Tested up to: 5.9
+Stable tag: 4.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -253,14 +253,70 @@ The most common reason for this is that an add-on or extension you have installe
 
 1. By default the Facebook feed inherits your theme's default styles and the Facebook feed is completely responsive
 2. Completely customize the way your Facebook feed looks to perfectly match your site
-3. Your Facebook feed is completely mobile optimized
-4. Ridiculously quick and easy to get started
-5. Customizing the Custom Facebook Feed plugin
-6. Easily manage and edit all your Facebook Feeds in one place on the All Feeds page
-7. Full translaction support so you can display your Facebook Feed in any language
-8. It's super easy to display your Facebook feed in a page, post, or widget 
+3. Use custom CSS to customize every part of the Facebook feed
+4. Display Facebook events in your Facebook feed
+5. Configuring the Custom Facebook Feed plugin
+6. General Facebook Feed options - Custom Facebook Feed Layout and Style page
+7. Facebook Feed Typography options - Custom Facebook Feed Layout and Style page
+8. Misc Facebook Feed options - Custom Facebook Feed Layout and Style page
+9. It's super easy to display your Facebook feed in any page or post
 
 == Changelog ==
+= 4.1.2 =
+* Fix: Settings that only apply to page feeds were also being displayed in the feed customizer for group feeds.
+* Fix: Like box position options were not available.
+* Fix: For legacy feeds, the shortcode setting "account" was not working.
+* Fix: Due to a change in Facebook video link format, oEmbeds would not work for some new versions of Facebook video links.
+* Fix: Fixed the setting "Header outside scrollable area" not applying on the front-end of the feed.
+* Fix: Fixed incorrect line spacing in the post content.
+* Fix: Sharing a link in a post with no post text would result in the link being displayed twice.
+* Fix: Tooltips in the settings pages were being cut off in certain circumstances due to a bug with the CSS code.
+* Fix: When the "AJAX theme loading fix" setting was enabled it would result in the JavaScript file for the plugin not being added to the page successfully.
+* Fix: Disabling the "View on Facebook link" option would also disable the share link.
+
+= 4.1.1 =
+* Fix: Updating from version 2.x to version 4.1 would not transfer legacy sources.
+* Fix: Improved plugin hardening by removing unused admin pages.
+
+= 4.1 =
+* Tweak: The Facebook app used to connect groups has changed. If you are using a Facebook group feed, then please reconnect your group accounts using the new app when convenient to prevent any future issues. When reconnecting, follow the included directions on how to add the new app to your group settings.
+* Tweak: All Facebook data is now encrypted in your WordPress database.
+* Tweak: Access Tokens are no longer able to be viewed on the settings page.
+* Fix: Manually connecting an account while on the "Settings" page would not work.
+* Fix: Fixed a PHP error when a string was used for the cache time setting.
+
+= 4.0.5 =
+* Fix: Fixed an issue that was causing the "All Feeds" page to be inaccessible to some users.
+
+= 4.0.4 =
+* Fix: The call-to-action in the Like Box widget would not display properly at certain window widths in some browsers.
+* Fix: If a feed name contained an apostrophe then additional slashes were being added each time settings were saved.
+* Tweak: An alert bubble is added to the Facebook Feed menu item when there are new notifications available.
+
+= 4.0.4 =
+* Fix: The call-to-action in the Like Box widget would not display properly at certain window widths in some browsers.
+* Fix: If a feed name contained an apostrophe then additional slashes were being added each time settings were saved.
+* Tweak: An alert bubble is added to the Facebook Feed menu item when there are new notifications available.
+
+= 4.0.3 =
+* Fix: Added additional plugin hardening.
+
+= 4.0.2 =
+* Important: With this update, the Custom CSS and Custom JS settings have been deprecated. Please see below for details.
+* Tweak: If any Custom CSS was being used in this field then it will be automatically moved into the native WordPress Customizer "Additional CSS" field instead and continue to work as normal.
+* Tweak: If any Custom JavaScript was being used, then this update will prevent that JavaScript from working. There are [directions here](https://smashballoon.com/doc/moving-custom-javascript-code-out-of-our-plugins/) on how you can migrate this JavaScript into a specialized plugin instead.
+
+= 4.0.1 =
+* Fix: Fixed a compatibility issue with the Complianz Cookie Consent plugin integration.
+* Fix: Removed the limit to the number of sources shown at one time when creating a feed.
+* Fix: When using a narrow screen, modals inside the feed creator in the backend would be cut off.
+* Fix: Fixed an issue where settings were not preserved even when using the preserve settings option and deleting the plugin.
+* Fix: Improved security hardening.
+* Fix: Fixed some options and tables not being removed from the WordPress database on uninstall.
+* Fix: Locations of feeds sorted by source would not work if the source ID was not a number.
+* Fix: Fixed PHP warnings when viewing dashboard notifications.
+* Fix: Fixed locale setting causing a PHP warning if not set.
+
 = 4.0 =
 * Important: Minimum supported WordPress version has been raised from 3.0 to 4.1.
 * New: Our biggest update ever! We've completely redesigned the plugin settings from head to toe to make it easier to create, manage, and customize your Facebook feeds.

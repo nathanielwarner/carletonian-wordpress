@@ -1,7 +1,7 @@
 === Newsletter ===
 Tags: newsletter, email marketing, welcome email, signup forms, contact, lead generation, marketing automation
-Tested up to: 5.8.1
-Stable tag: 7.2.8
+Tested up to: 5.9.2
+Stable tag: 7.4.2
 Contributors: satollo,webagile,michael-travan
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -63,6 +63,7 @@ Improve The Newsletter Plugin with these free addons:
 * [Popup Maker Integration](https://wordpress.org/plugins/newsletter-popupmaker/) - (3rd party) integration of Newsletter forms with Popup Maker plugin
 * [BuddyPress integration](https://wordpress.org/plugins/newsletter-buddypress/) - subscription opt-in inside BuddyPress signup form
 * [WP User Manager addon for Newsletter](https://wordpress.org/plugins/wpum-newsletter/) - adds the subscription option on registration forms
+* [Plaintext Generator](https://wordpress.org/plugins/plaintext-newsletter/) - generates the plaintext version from an HTML newsletter
 
 = Professional Addons =
 
@@ -95,9 +96,16 @@ We provide support for our plugin on [Wordpress.org forums](https://wordpress.or
 
 Premium Users with an active license have access to one-to-one support via our [ticketing system](https://www.thenewsletterplugin.com/support-ticket).
 
+= Developers =
+
+We have a [documentation section](https://www.thenewsletterplugin.com/documentation/developers/) dedicated to who want to develop with Newsletter.
+
+You can find us on [GitHub](https://github.com/TheNewsletterPlugin) with some examples of addons.
+
 = Follow Us =
 
 * **Our Official Website** - [https://www.thenewsletterplugin.com/](https://www.thenewsletterplugin.com/)
+* **GitHub** - [https://github.com/TheNewsletterPlugin](https://github.com/TheNewsletterPlugin)
 * **LinkedIn** - [https://www.linkedin.com/company/the-newsletter-plugin](https://www.linkedin.com/company/the-newsletter-plugin)
 * **Our Facebook Page** - [https://www.facebook.com/thenewsletterplugin](https://www.facebook.com/thenewsletterplugin)
 * **Our Twitter Account** - [https://twitter.com/newsletterwp](https://twitter.com/newsletterwp)
@@ -117,6 +125,106 @@ Thank you, The Newsletter Team
 3. The Reports extension
 
 == Changelog ==
+
+= 7.4.2 =
+
+* Fixed the post date (regression)
+* Added link to the automatic plaintext generator plugin by franciscus
+* Possible fix for our Gutenberg block (sometimes) not working
+* Added uoloads dir and url on System>Status panel
+* Fixed Status panel error when a newsletter is in "error" status
+* Added default width to the logo on header block
+
+= 7.4.1 =
+
+* Added check on invalid media on two columns post type
+* WP 5.9.2 compatibility check
+
+= 7.4.0 =
+
+* Added privacy links
+* Added filter "newsletter_subscription" (documentation is under writing)
+
+= 7.3.9 =
+
+* Fixed grid layout not showing correctly on gmail
+* Fixed notice on widget page about the wrong editor enqueued
+* Removed wrong top bar warning
+* Fixed block options on posts block
+* Fixed padding on two column posts block
+
+= 7.3.8 =
+
+* Fixed graph scale on System/Scheduler panel
+* Fixed untraslated labels on subscriber management panels
+* Fixed the "toggle" private/public status on sent newsletter
+* Removed the "action call test" from the status panel since it does not work with some providers but does not affect the correct working of Newsletter
+* Added developer information on this readme
+
+= 7.3.7 =
+
+* Fixed unwanted redirects on subscription errors
+* Fixed composer page HTML
+* Minor fixes on PHP, CSS
+* Fixed notice on image block
+
+= 7.3.6 =
+
+* Improved composer reusability in other contexts
+* Removed obsolete composer code
+* Fixed default tracking for old theme-based neewsletters
+* Forced enconding on export (attempt)
+* WP 5.9 check
+
+= 7.3.5 =
+
+* WP 5.8.3 compatibility check
+* Fixed 2021 max year in date picker
+* Typos
+
+= 7.3.4 =
+
+* Fixed delivery fatal error management
+* Fixed link to the schduler dianostica panel
+
+= 7.3.3 =
+
+* Added "complained" status to subscriber filters
+* Fixed some links bringing to a "not allowed" page
+* Fixed a notice on delivery diagnostic page
+* Fixed logo width notice on header block
+
+= 7.3.2 =
+
+* Fixed the remote ip retrieval and clean up
+* Fixed header link to status page
+* Fixed database error with too long IPs
+* Fixed the subscription of cancelled addresses
+* Fixed sender and name customization
+
+= 7.3.1 =
+
+* Dropped old mailers support
+* Improved sending process and limits checking
+* Removed obsolete notifications
+* Fixed the wrong report on single email delivery speed
+* Added support for custom sending speed by addons
+* Improved excerpt generation (but it still depends on plugins and themes...)
+* Support for building button option on composer blocks
+
+= 7.3.0 =
+
+* Fixed header block layout with (logo only layout)
+* Check for conflicts on newsletter saving
+* Added the subscriber complained status (actually not managed automatically)
+
+= 7.2.9 =
+
+* Fixed generic action button confirmation popup not showing the message
+* [SECURITY] Pre parsing of IP addresses on security panel
+* [SECURITY] Comments allowed on IP address list on security panel
+* [COMPOSER] Fixed preset name/subject
+* Improved generated forms for accessibility
 
 = 7.2.8 =
 

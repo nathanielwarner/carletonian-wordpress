@@ -25,6 +25,6 @@ $fields->font('font', __('Text', 'newsletter'), [
 ])
 ?>
 
-<?php $fields->number('logo_height', __('Height')) ?>
+<?php $fields->number('logo_width', __('Width')) ?>
 
 <?php $fields->block_commons() ?>

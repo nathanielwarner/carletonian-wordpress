@@ -10,7 +10,7 @@
         <div class="row pro-section">
             
             <div class="col-md-12 text-center guide-section-text">
-                <img src="<?php echo YOP_POLL_URL . '/admin/assets/images/guide.png';?>">
+                <img src="<?php echo esc_url( YOP_POLL_URL ) . '/admin/assets/images/guide.png'; ?>">
             </div>
             <div class="col-md-12 text-center guide-section-text">
                 <div class="extra-text">

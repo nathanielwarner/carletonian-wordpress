@@ -86,12 +86,19 @@ class NewsletterAntispam {
     }
 
     function is_ip_blacklisted($ip) {
+        
+        if ($ip === '::1' || $ip === '127.0.0.1') {
+            return false;
+        }
 
         if (empty($this->options['ip_blacklist'])) {
             return false;
         }
         $this->logger->debug('IP blacklist check');
         foreach ($this->options['ip_blacklist'] as $item) {
+            if (substr($item, 0, 1) === '#') {
+                continue;
+            }
             if ($this->ip_match($ip, $item)) {
                 return true;
             }

@@ -6,9 +6,9 @@ class YOP_Poll_Votes {
             $sort_order_allowed = array( 'asc', 'desc' ),
             $order_by_allowed = array( 'user_type', 'username', 'user_email', 'ipaddress', '', 'added_date' ),
             $settings_messages = array();
-    private static $_instance = NULL;
+    private static $_instance = null;
     public static function get_instance() {
-        if ( self::$_instance == NULL ){
+        if ( null == self::$_instance ) {
             $class           = __CLASS__;
             self::$_instance = new $class;
         }
@@ -48,8 +48,14 @@ class YOP_Poll_Votes {
 		if ( ( false === self::$errors_present ) && ( 'yes-recaptcha' === $poll->meta_data['options']['poll']['useCaptcha'] ) ) {
 			self::validate_recaptcha( $vote, $poll );
 		}
+		if ( ( false === self::$errors_present ) && ( 'yes-recaptcha-invisible' === $poll->meta_data['options']['poll']['useCaptcha'] ) ) {
+			self::validate_recaptcha_invisible( $vote, $poll );
+		}
 		if ( ( false === self::$errors_present ) && ( 'yes-recaptcha-v3' === $poll->meta_data['options']['poll']['useCaptcha'] ) ) {
 			self::validate_recaptcha_v3( $vote, $poll );
+		}
+		if ( ( false === self::$errors_present ) && ( 'yes-hcaptcha' === $poll->meta_data['options']['poll']['useCaptcha'] ) ) {
+			self::validate_hcaptcha( $vote, $poll );
 		}
 		if ( false === self::$errors_present ) {
 			if ( 'yes' === $poll->meta_data['options']['poll']['enableGdpr']  ) {
@@ -70,7 +76,6 @@ class YOP_Poll_Votes {
 						break;
 					}
 				}
-
 			} else {
 				$vote->user->c_data = self::get_voter_cookie( $vote->pollId );
 				if ( '' === $vote->user->c_data ) {
@@ -216,7 +221,7 @@ class YOP_Poll_Votes {
 		}
 	}
 	public static function validate_gdpr( $vote, $poll ) {
-		if ( 'consent' === $poll->meta_data['options']['poll']['gdprSolution']) {
+		if ( 'consent' === $poll->meta_data['options']['poll']['gdprSolution'] ) {
 			if ( 'agree' !== $vote->gdprConsent ) {
 				self::$errors_present = true;
 				array_push(
@@ -233,9 +238,9 @@ class YOP_Poll_Votes {
 			if ( '' === session_id() ) {
 				session_start();
 			}
-			$session = new \visualCaptcha\Session('visualcaptcha_' . 'yop-poll-captcha-' . $vote->pollUid );
+			$session = new \visualCaptcha\Session( 'visualcaptcha_' . 'yop-poll-captcha-' . $vote->pollUid );
 			$captcha = new \visualCaptcha\Captcha( $session );
-			if (  isset( $vote->imageCaptcha ) && ( '' !== $vote->imageCaptcha ) ) {
+			if ( isset( $vote->imageCaptcha ) && ( '' !== $vote->imageCaptcha ) ) {
 				$captcha_result = $captcha->validateImage( $vote->imageCaptcha );
 			} elseif ( isset( $vote->audioCaptcha ) && ( '' !== $vote->audioCaptcha ) ) {
 				$captcha_result = $captcha->validateAudio( $vote->audioCaptcha );
@@ -253,24 +258,73 @@ class YOP_Poll_Votes {
 		$captcha_result = false;
 		if ( 'yes-recaptcha' === $poll->meta_data['options']['poll']['useCaptcha'] ) {
 			if ( '' !== $vote->reCaptcha ) {
-				$curl_link = 'https://www.google.com/recaptcha/api/siteverify';
+				$post_link = 'https://www.google.com/recaptcha/api/siteverify';
 				$integrations = YOP_Poll_Settings::get_integrations();
 				$data = array(
-					'secret' => $integrations['reCaptcha']['secret-key'],
-					'response' => $vote->reCaptcha
+					'body' => array(
+						'secret' => $integrations['reCaptcha']['secret-key'],
+						'response' => $vote->reCaptcha,
+					),
 				);
-				$curl_con = curl_init();
-				curl_setopt( $curl_con, CURLOPT_URL, $curl_link );
-				curl_setopt( $curl_con, CURLOPT_POST, true );
-				curl_setopt( $curl_con, CURLOPT_POSTFIELDS, http_build_query( $data ) );
-				curl_setopt( $curl_con, CURLOPT_RETURNTRANSFER, true );
-				$response = curl_exec( $curl_con );
-				$response_decoded = json_decode( $response );
-				if ( false === $response_decoded->success ) {
+				$response = wp_remote_post(
+					$post_link,
+					$data
+				);
+				if ( '200' === strval( wp_remote_retrieve_response_code( $response ) ) ) {
+					$response_decoded = json_decode( wp_remote_retrieve_body( $response ) );
+					if ( false === $response_decoded->success ) {
+						self::$errors_present = true;
+						array_push(
+							self::$error_text,
+							self::$settings_messages['voting']['no-captcha-selected']
+						);
+					}
+				} else {
 					self::$errors_present = true;
 					array_push(
 						self::$error_text,
-                        self::$settings_messages['voting']['no-captcha-selected']
+						self::$settings_messages['voting']['no-captcha-selected']
+					);
+				}
+			} else {
+				self::$errors_present = true;
+				array_push(
+					self::$error_text,
+                    self::$settings_messages['voting']['no-captcha-selected']
+				);
+			}
+		}
+	}
+	public static function validate_recaptcha_invisible( $vote, $poll ) {
+		$captcha_result = false;
+		if ( 'yes-recaptcha-invisible' === $poll->meta_data['options']['poll']['useCaptcha'] ) {
+			if ( '' !== $vote->reCaptcha ) {
+				$post_link = 'https://www.google.com/recaptcha/api/siteverify';
+				$integrations = YOP_Poll_Settings::get_integrations();
+				$data = array(
+					'body' => array(
+						'secret' => $integrations['reCaptchaV2Invisible']['secret-key'],
+						'response' => $vote->reCaptcha,
+					),
+				);
+				$response = wp_remote_post(
+					$post_link,
+					$data
+				);
+				if ( '200' === strval( wp_remote_retrieve_response_code( $response ) ) ) {
+					$response_decoded = json_decode( wp_remote_retrieve_body( $response ) );
+					if ( false === $response_decoded->success ) {
+						self::$errors_present = true;
+						array_push(
+							self::$error_text,
+							self::$settings_messages['voting']['no-captcha-selected']
+						);
+					}
+				} else {
+					self::$errors_present = true;
+					array_push(
+						self::$error_text,
+						self::$settings_messages['voting']['no-captcha-selected']
 					);
 				}
 			} else {
@@ -286,21 +340,29 @@ class YOP_Poll_Votes {
 		$captcha_result = false;
 		if ( 'yes-recaptcha-v3' === $poll->meta_data['options']['poll']['useCaptcha'] ) {
 			if ( '' !== $vote->reCaptcha ) {
-				$curl_link = 'https://www.google.com/recaptcha/api/siteverify';
+				$post_link = 'https://www.google.com/recaptcha/api/siteverify';
 				$integrations = YOP_Poll_Settings::get_integrations();
 				$data = array(
-					'secret' => $integrations['reCaptchaV3']['secret-key'],
-					'response' => $vote->reCaptcha
+					'body' => array(
+						'secret' => $integrations['reCaptchaV3']['secret-key'],
+						'response' => $vote->reCaptcha,
+					),
 				);
-				$curl_con = curl_init();
-				curl_setopt( $curl_con, CURLOPT_URL, $curl_link );
-				curl_setopt( $curl_con, CURLOPT_POST, true );
-				curl_setopt( $curl_con, CURLOPT_POSTFIELDS, http_build_query( $data ) );
-				curl_setopt( $curl_con, CURLOPT_RETURNTRANSFER, true );
-				$response = curl_exec( $curl_con );
-				$response_decoded = json_decode( $response );
-				if ( true === $response_decoded->success ) {
-					if ( floatval( $integrations['reCaptchaV3']['min-allowed-score'] > floatval( $response_decoded->score ) ) ) {
+				$response = wp_remote_post(
+					$post_link,
+					$data
+				);
+				if ( '200' === strval( wp_remote_retrieve_response_code( $response ) ) ) {
+					$response_decoded = json_decode( wp_remote_retrieve_body( $response ) );
+					if ( true === $response_decoded->success ) {
+						if ( floatval( $integrations['reCaptchaV3']['min-allowed-score'] > floatval( $response_decoded->score ) ) ) {
+							self::$errors_present = true;
+							array_push(
+								self::$error_text,
+								self::$settings_messages['voting']['no-captcha-selected']
+							);
+						}
+					} else {
 						self::$errors_present = true;
 						array_push(
 							self::$error_text,
@@ -311,7 +373,48 @@ class YOP_Poll_Votes {
 					self::$errors_present = true;
 					array_push(
 						self::$error_text,
-                        self::$settings_messages['voting']['no-captcha-selected']
+						self::$settings_messages['voting']['no-captcha-selected']
+					);
+				}
+			} else {
+				self::$errors_present = true;
+				array_push(
+					self::$error_text,
+                    self::$settings_messages['voting']['no-captcha-selected']
+				);
+			}
+		}
+	}
+	public static function validate_hcaptcha( $vote, $poll ) {
+		$captcha_result = false;
+		if ( 'yes-hcaptcha' === $poll->meta_data['options']['poll']['useCaptcha'] ) {
+			if ( '' !== $vote->reCaptcha ) {
+				$post_link = 'https://hcaptcha.com/siteverify';
+				$integrations = YOP_Poll_Settings::get_integrations();
+				$data = array(
+					'body' => array(
+						'secret' => $integrations['hCaptcha']['secret-key'],
+						'response' => $vote->reCaptcha,
+					),
+				);
+				$response = wp_remote_post(
+					$post_link,
+					$data
+				);
+				if ( '200' === strval( wp_remote_retrieve_response_code( $response ) ) ) {
+					$response_decoded = json_decode( wp_remote_retrieve_body( $response ) );
+					if ( false === $response_decoded->success ) {
+						self::$errors_present = true;
+						array_push(
+							self::$error_text,
+							self::$settings_messages['voting']['no-captcha-selected']
+						);
+					}
+				} else {
+					self::$errors_present = true;
+					array_push(
+						self::$error_text,
+						self::$settings_messages['voting']['no-captcha-selected']
 					);
 				}
 			} else {
@@ -491,7 +594,7 @@ class YOP_Poll_Votes {
 			}
 			if ( '' !== $search_by ) {
 				$votes = self::get_votes_for_user( $vote->pollId, $search_by, $search_value );
-				if ( intval( $votes) >= intval( $poll->meta_data['options']['access']['votesPerUserAllowed'] ) ) {
+				if ( intval( $votes ) >= intval( $poll->meta_data['options']['access']['votesPerUserAllowed'] ) ) {
 					self::$errors_present = true;
 					array_push(
 						self::$error_text,
@@ -564,7 +667,7 @@ class YOP_Poll_Votes {
 								$element_data,
 								array(
 									'id' => $data->id,
-									'data' => $data->data
+									'data' => sanitize_text_field( $data->data )
 								)
 							);
 						}
@@ -637,7 +740,10 @@ class YOP_Poll_Votes {
 			) {
 				$voter_ip = $headers['HTTP_X_FORWARDED_FOR'];
 			} else {
-				$voter_ip = filter_var( $_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP );
+				$voter_ip = filter_var(
+					isset( $_SERVER['REMOTE_ADDR'] ) ? wp_unslash( $_SERVER['REMOTE_ADDR'] ) : '',
+					FILTER_VALIDATE_IP
+				);
 			}
 			if ( 'anonymize' == $poll->meta_data['options']['poll']['gdprSolution'] ) {
 				$voter_ip = YOP_Poll_Helper::anonymize_ip( $voter_ip );
@@ -648,7 +754,7 @@ class YOP_Poll_Votes {
 	public static function get_voter_cookie( $poll_id ) {
 		$voter_cookie = '';
 		if ( isset( $_COOKIE['ypdt'] ) && ( '' !== $_COOKIE['ypdt'] ) ) {
-			$voter_cookie = $_COOKIE['ypdt'];
+			$voter_cookie = sanitize_text_field( wp_unslash( $_COOKIE['ypdt'] ) );
 		}
 		return $voter_cookie;
 	}
@@ -683,7 +789,7 @@ class YOP_Poll_Votes {
 						YOP_Poll_SubElements::add_vote( $vote_subelement->id );
 					} else {
 						foreach ( $poll->elements as $poll_element ) {
-							if ( $vote_element->id === $poll_element->id) {
+							if ( $vote_element->id === $poll_element->id ) {
 								if ( 'yes' === $poll_element->meta_data['addOtherAnswers'] ) {
 									$sub_element_exists = YOP_Poll_SubElements::exists(
 										$vote->pollId,
@@ -784,7 +890,7 @@ class YOP_Poll_Votes {
 					$element_others = YOP_Poll_Other_Answers::get_for_element( $element->id );
 					$element_others_processed = array();
 					if ( count( $element_others ) > 0 ) {
-						foreach( $element_others as $other_answer ) {
+						foreach ( $element_others as $other_answer ) {
 							$element_others_processed[] = array(
 								'an' => esc_html( $other_answer->answer ),
 								'vn' => $other_answer->total_submits
@@ -825,10 +931,10 @@ class YOP_Poll_Votes {
 		$result_data = array();
 		$result_data['questions'] = array();
 		$result_data['custom-fields'] = array();
-		foreach( $vote->data as $vote_element ) {
-			foreach( $poll->elements as $poll_element ) {
+		foreach ( $vote->data as $vote_element ) {
+			foreach ( $poll->elements as $poll_element ) {
 				if ( $vote_element->id === $poll_element->id ) {
-					switch( $vote_element->type ) {
+					switch ( $vote_element->type ) {
 						case 'custom-field': {
 							$result_data['custom-fields'][] = array(
 																'text' => $poll_element->etext,
@@ -838,11 +944,11 @@ class YOP_Poll_Votes {
 						}
 						case 'question': {
 							$answers = array();
-							foreach( $vote_element->data as $vote_answer ) {
+							foreach ( $vote_element->data as $vote_answer ) {
 								if ( 0 === $vote_answer->id ) {
 									$answers[] = 'Other: ' . $vote_answer->data;
 								} else {
-									foreach( $poll_element->answers as $poll_answer ) {
+									foreach ( $poll_element->answers as $poll_answer ) {
 										if ( $vote_answer->id === $poll_answer->id ) {
 											$answers[] = $poll_answer->stext;
 										}
@@ -863,15 +969,19 @@ class YOP_Poll_Votes {
 	}
 	public static function send_email_notification( $vote, $poll ) {
         $email_to = [];
-        $email_to_string =  isset( $poll->meta_data['options']['poll']['emailNotificationsRecipients'] ) ?
+        $email_to_string = isset( $poll->meta_data['options']['poll']['emailNotificationsRecipients'] ) ?
             $poll->meta_data['options']['poll']['emailNotificationsRecipients'] : '';
         $recipients_array = explode( ',', $email_to_string );
-        if ( count ( $recipients_array ) > 0 ) {
+        if ( count( $recipients_array ) > 0 ) {
             foreach ( $recipients_array as $ra ) {
 				if ( ( '%VOTER-EMAIL%' === trim( $ra ) ) && ( '' !== $vote->user->email ) ) {
-					$email_to[] = str_replace( '%VOTER-EMAIL%', $vote->user->email, trim( $ra ) );
+					if ( filter_var( str_replace( '%VOTER-EMAIL%', $vote->user->email, trim( $ra ) ), FILTER_VALIDATE_EMAIL ) ) {
+						$email_to[] = str_replace( '%VOTER-EMAIL%', $vote->user->email, trim( $ra ) );
+					}
 				} else {
-                	$email_to[] = trim( $ra );
+					if ( filter_var( trim( $ra ), FILTER_VALIDATE_EMAIL ) ) {
+						$email_to[] = trim( $ra );
+					}
 				}
             }
         }
@@ -883,7 +993,7 @@ class YOP_Poll_Votes {
             $poll->meta_data['options']['poll']['emailNotificationsFromName'] : '';
         $email_from_email = isset( $poll->meta_data['options']['poll']['emailNotificationsFromEmail'] ) ?
             $poll->meta_data['options']['poll']['emailNotificationsFromEmail'] : '';
-        $email_headers = array (
+        $email_headers = array(
 			'From: ' . $email_from_name . ' <' . $email_from_email . '>',
 			'Content-Type: text/plain'
         );
@@ -911,7 +1021,7 @@ class YOP_Poll_Votes {
 		$custom_fields_block = '';
 		$vote_results = self::prepare_for_mail( $vote, $poll );
 		if ( true === isset( $vote_results['questions'] ) ) {
-			foreach( $vote_results['questions'] as $question_result ) {
+			foreach ( $vote_results['questions'] as $question_result ) {
 				$question_block = str_replace( '%QUESTION-TEXT%', $question_result['text'], $questions_tag );
 				$question_block = str_replace( '%ANSWER-VALUE%', implode( "\r\n", $question_result['answers'] ), $question_block );
 				$question_block = str_replace( '%QUESTION_TEXT%', $question_result['text'], $question_block );
@@ -920,7 +1030,7 @@ class YOP_Poll_Votes {
 			}
 		}
 		if ( true === isset( $vote_results['custom-fields'] ) ) {
-			foreach( $vote_results['custom-fields'] as $custom_field_result ) {
+			foreach ( $vote_results['custom-fields'] as $custom_field_result ) {
 				$custom_field_block = str_replace( '%CUSTOM_FIELD_NAME%', $custom_field_result['text'], $custom_fields_tag );
 				$custom_field_block = str_replace( '%CUSTOM_FIELD_VALUE%', $custom_field_result['answer'], $custom_field_block );
 				$custom_fields_block .= $custom_field_block;
@@ -962,17 +1072,15 @@ class YOP_Poll_Votes {
 		);
 		$email_body = str_replace( $custom_fields_tag, $custom_fields_block, $email_body );
 		foreach ( $email_to as $eto ) {
-		    if ( is_email( $eto ) ) {
-                wp_mail( $eto, $email_subject, $email_body, $email_headers );
-            }
+            wp_mail( $eto, $email_subject, $email_body, $email_headers );
         }
 	}
-	public static function get_vote_by_poll ( $poll_id, $limit, $offset ) {
+	public static function get_vote_by_poll( $poll_id, $limit, $offset ) {
         $query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `poll_id` = %d AND `status` = 'active' ORDER BY `added_date` ASC LIMIT %d OFFSET %d";
         $votes = $GLOBALS['wpdb']->get_results( $GLOBALS['wpdb']->prepare( $query, $poll_id, $limit, $offset ) );
         return $votes;
     }
-    public static function get_total_votes_by_poll ( $poll_id ) {
+    public static function get_total_votes_by_poll( $poll_id ) {
 	    $query = $query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `poll_id` = %d AND `status` = 'active'";
         $votes_no = $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( $query, $poll_id ) );
         return $votes_no;
@@ -982,19 +1090,19 @@ class YOP_Poll_Votes {
         $voters = $GLOBALS['wpdb']->get_results( $GLOBALS['wpdb']->prepare( $query, $poll_id ) );
         return $voters;
     }
-    public static function get_votes_to_display ( $params ) {
+    public static function get_votes_to_display( $params ) {
         if ( 0 >= intval( $params['page_no'] ) ) {
             $params['page_no'] = 1;
         }
         $pagination = self::paginate( $params );
-        if ( $params['page_no'] > $pagination['total_pages']) {
+        if ( $params['page_no'] > $pagination['total_pages'] ) {
             $params['page_no'] = 1;
         }
         if ( !in_array( $params['sort_order'], self::$sort_order_allowed ) ) {
             $params['sort_order'] = SORT_ASC;
         } elseif ( 'desc' === $params['sort_order'] ) {
             $params['sort_order'] = SORT_DESC;
-        } else{
+        } else {
             $params['sort_order'] = SORT_ASC;
         }
         if ( ( true === isset( $params['order_by'] ) ) && ( '' != $params['order_by'] ) ) {
@@ -1005,29 +1113,50 @@ class YOP_Poll_Votes {
             $params['order_by'] = 'id';
         }
         $limit = self::$votes_per_page * ( $params['page_no'] - 1 );
-        $limit_query = " LIMIT {$limit}, ". self::$votes_per_page;
+        $limit_query = " LIMIT {$limit}, " . self::$votes_per_page;
         $query = '';
         $votes = [];
         if ( current_user_can( 'yop_poll_results_others' ) ) {
             $query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `poll_id` = %d AND `status` = 'active'";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$params['poll_id']
+			);
             if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-                $params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-                $query .= " AND ( `user_type` LIKE {$params['q']} OR `user_email` LIKE {$params['q']} OR `ipaddress` LIKE {$params['q']} )";
+                $params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+                $query .= ' AND ( `user_type` LIKE %s OR `user_email` LIKE %s OR `ipaddress` LIKE %s )';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q'],
+					$params['q'],
+					$params['q']
+				);
             }
         } else if ( current_user_can( 'yop_poll_results_own' ) ) {
             $current_user = wp_get_current_user();
-            $query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `user_id` = '" . $current_user->ID . "' AND `poll_id` = %d AND `status` = 'active'";
+            $query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `user_id` = %s AND `poll_id` = %d AND `status` = 'active'";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$current_user->ID,
+				$params['poll_id']
+			);
             if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-                $params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-                $query .= " AND ( `user_type` LIKE {$params['q']} OR `user_email` LIKE {$params['q']} OR `ipaddress` LIKE {$params['q']} )";
+                $params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+                $query .= ' AND ( `user_type` LIKE % OR `user_email` LIKE %s OR `ipaddress` LIKE %s )';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q'],
+					$params['q'],
+					$params['q']
+				);
             }
         }
         if ( '' !== $query ) {
-            $query .= " ORDER BY `id` DESC";
+            $query .= ' ORDER BY `id` DESC';
             $query .= $limit_query;
-            $votes = $GLOBALS['wpdb']->get_results( $GLOBALS['wpdb']->prepare( $query, array( $params['poll_id'] ) ), ARRAY_A );
+            $votes = $GLOBALS['wpdb']->get_results( $query, ARRAY_A );
         }
-        foreach( $votes as &$vote ) {
+        foreach ( $votes as &$vote ) {
             if ( 0 != $vote['user_id'] ) {
                 $vote_user_owner = get_user_by( 'id', $vote['user_id'] );
                 if ( false !== $vote_user_owner ) {
@@ -1064,20 +1193,41 @@ class YOP_Poll_Votes {
         $query = '';
         if ( current_user_can( 'yop_poll_results_others' ) ) {
             $query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `poll_id` = %d AND `status` = 'active'";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$params['poll_id']
+			);
             if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-                $search_string = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-                $query .= " AND ( `user_type` LIKE {$search_string} OR `user_email` LIKE {$search_string} OR `ipaddress` LIKE {$search_string} )";
+                $search_string = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+                $query .= ' AND ( `user_type` LIKE %s OR `user_email` LIKE %s OR `ipaddress` LIKE %s )';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$search_string,
+					$search_string,
+					$search_string
+				);
             }
         } else if ( current_user_can( 'yop_poll_results_own' ) ) {
             $current_user = wp_get_current_user();
-            $query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `user_id` = '" . $current_user->ID . "' and `poll_id` = %d AND `status` = 'active'";
+            $query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `user_id` = %s and `poll_id` = %d AND `status` = 'active'";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$current_user->ID,
+				$params['poll_id']
+			);
             if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-                $search_string = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-                $query .= " AND ( `user_type` LIKE {$search_string} OR `user_email` LIKE {$search_string} OR `ipaddress` LIKE {$search_string} )";
+                $search_string = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+                $query .= ' AND ( `user_type` LIKE %s OR `user_email` LIKE %s OR `ipaddress` LIKE %s )';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$search_string,
+					$search_string,
+					$search_string
+				);
             }
         }
         if ( '' !== $query ) {
-            $total_votes = $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( $query, array( $params['poll_id'] ) ) );
+            $total_votes = $GLOBALS['wpdb']->get_var( $query );
         }
         if ( $total_votes > 0 ) {
             if ( self::$votes_per_page >= $total_votes ) {
@@ -1090,17 +1240,17 @@ class YOP_Poll_Votes {
         } else {
             $data['pagination'] = '';
         }
-        if ( 1 < $total_pages ){
+        if ( 1 < $total_pages ) {
             $pagination['first_page'] = '<span class="tablenav-pages-navspan" aria-hidden="true">
 							«
 						  </span>';
             $pagination['previous_page'] = '<span class="screen-reader-text">
-								' . __( 'Previous page', 'yop-poll' ) . '
+								' . esc_html__( 'Previous page', 'yop-poll' ) . '
 							</span>
 							<span class="tablenav-pages-navspan" aria-hidden="true">
 								‹
 							</span>';
-            $pagination['next_page'] = '<span class="screen-reader-text">' . __( 'Next page', 'yop-poll' ) . '
+            $pagination['next_page'] = '<span class="screen-reader-text">' . esc_html__( 'Next page', 'yop-poll' ) . '
 							</span>
 							<span aria-hidden="true">›</span>';
             $pagination['last_page'] = '<span class="tablenav-pages-navspan" aria-hidden="true">
@@ -1117,7 +1267,7 @@ class YOP_Poll_Votes {
                             'order_by' => $params['order_by'],
                             'sort_order' => $params['sort_order'],
                             'q' => ( isset( $params['q'] ) && ( '' != $params['q'] ) ) ? $params['q'] : false,
-                            'page_no' => $params['page_no']+1
+                            'page_no' => $params['page_no'] + 1
                         )
                     )
                 );
@@ -1153,7 +1303,7 @@ class YOP_Poll_Votes {
                             'order_by' => $params['order_by'],
                             'sort_order' => $params['sort_order'],
                             'q' => ( isset( $params['q'] ) && ( '' != $params['q'] ) ) ? $params['q'] : false,
-                            'page_no' => $params['page_no']-1
+                            'page_no' => $params['page_no'] - 1
                         )
                     )
                 );
@@ -1189,7 +1339,7 @@ class YOP_Poll_Votes {
                             'order_by' => $params['order_by'],
                             'sort_order' => $params['sort_order'],
                             'q' => ( isset( $params['q'] ) && ( '' != $params['q'] ) ) ? $params['q'] : false,
-                            'page_no' => $params['page_no']-1
+                            'page_no' => $params['page_no'] - 1
                         )
                     )
                 );
@@ -1202,7 +1352,7 @@ class YOP_Poll_Votes {
                             'order_by' => $params['order_by'],
                             'sort_order' => $params['sort_order'],
                             'q' => ( isset( $params['q'] ) && ( '' != $params['q'] ) ) ? $params['q'] : false,
-                            'page_no' => $params['page_no']+1
+                            'page_no' => $params['page_no'] + 1
                         )
                     )
                 );
@@ -1261,14 +1411,14 @@ class YOP_Poll_Votes {
             'pagination' => $pagination
         );
     }
-    public static function get_vote_details ( $vote_id ) {
+    public static function get_vote_details( $vote_id ) {
         $query = $GLOBALS['wpdb']->prepare(
             "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `id` = %d", $vote_id
         );
-        $vote= $GLOBALS['wpdb']->get_row( $query, OBJECT );
-        if( null !== $vote ){
-            $vote_data = unserialize($vote->vote_data);
-            if ( count($vote_data) > 0 ) {
+        $vote = $GLOBALS['wpdb']->get_row( $query, OBJECT );
+        if ( null !== $vote ) {
+            $vote_data = unserialize( $vote->vote_data );
+            if ( count( $vote_data ) > 0 ) {
                 if ( isset( $vote_data['elements'] ) ) {
                     $vote_elements = $vote_data['elements'];
                     $questions          = [];
@@ -1279,13 +1429,13 @@ class YOP_Poll_Votes {
                     if ( count( $vote_elements ) > 0 ) {
                         foreach ( $vote_elements as $ve ) {
                             $qanswers = [];
-                            if ( isset ( $ve['id'] ) ) {
+                            if ( isset( $ve['id'] ) ) {
                                 $questions_ids[] = $ve['id'];
                             }
                             if ( isset( $ve['data'] ) ) {
                                 foreach ( $ve['data'] as $vdata ) {
                                     if ( isset( $vdata['id'] ) ) {
-                                        if( 0 !== $vdata['id'] ) {
+                                        if ( 0 !== $vdata['id'] ) {
                                             $answers_ids[] = $vdata['id'];
                                         }
                                     }
@@ -1293,20 +1443,29 @@ class YOP_Poll_Votes {
                             }
                         }
                         if ( count( $questions_ids ) > 0 ) {
-                            $questions_ids_string = '('. implode( ',', $questions_ids ) .')';
-                            $questions_query = "SELECT * from {$GLOBALS['wpdb']->yop_poll_elements} where `id` in $questions_ids_string";
+							$question_ids_escaped = array_map( function( $question_id ) {
+                                return "'" . esc_sql( $question_id ) . "'";
+                            }, $questions_ids );
+							$questions_ids_string = '(' . implode( ',', $question_ids_escaped ) . ')';
+                            $questions_query = "SELECT * from {$GLOBALS['wpdb']->yop_poll_elements} where `id` IN $questions_ids_string";
                             $questions_results = $GLOBALS['wpdb']->get_results( $questions_query, OBJECT );
                         }
                         if ( count( $answers_ids ) > 0 ) {
-                            $answers_ids_string = '('. implode( ',', $answers_ids ) .')';
-                            $answers_query = "SELECT * from {$GLOBALS['wpdb']->yop_poll_subelements} where `id` in $answers_ids_string";
+							$answers_ids_escaped = array_map(
+								function( $answer_id ) {
+									return "'" . esc_sql( $answer_id ) . "'";
+								},
+								$answers_ids
+							);
+                            $answers_ids_string = '(' . implode( ',', $answers_ids_escaped ) . ')';
+                            $answers_query = "SELECT * from {$GLOBALS['wpdb']->yop_poll_subelements} where `id` IN $answers_ids_string";
                             $answers_results = $GLOBALS['wpdb']->get_results( $answers_query, OBJECT );
                         }
                         foreach ( $vote_elements as $ve ) {
                             $pqa = [ 'question' => '', 'answers' => [] ];
                             switch ( $ve['type'] ) {
                                 case 'question': {
-                                    if ( isset ( $ve['id'] ) )  {
+                                    if ( isset( $ve['id'] ) ) {
                                         foreach ( $questions_results as $qres ) {
                                             if ( $ve['id'] == $qres->id ) {
                                                 $pqa['question'] = $qres->etext;
@@ -1330,7 +1489,7 @@ class YOP_Poll_Votes {
                                     break;
                                 }
                                 case 'custom-field': {
-                                    if ( isset ( $ve['id'] ) ) {
+                                    if ( isset( $ve['id'] ) ) {
                                         foreach ( $questions_results as $qres ) {
                                             if ( $ve['id'] == $qres->id ) {
                                                 $pqa['question'] = 'custom-field';
@@ -1339,7 +1498,7 @@ class YOP_Poll_Votes {
                                             }
                                         }
                                     }
-                                    if ( isset($ve['data'] ) ) {
+                                    if ( isset( $ve['data'] ) ) {
                                         $pqa['answers'][] = [ 'answer_text' => 'custom-field', 'answer_value' => $ve['data'][0] ];
                                     }
                                     $questions[] = $pqa;
@@ -1359,50 +1518,50 @@ class YOP_Poll_Votes {
             return false;
         }
     }
-    public static function send_votes_to_download (  ) {
+    public static function send_votes_to_download() {
         $date_format = get_option( 'date_format' );
         $time_format = get_option( 'time_format' );
         if ( isset( $_REQUEST['poll_id'] ) && ( isset( $_REQUEST['doExport'] ) || isset( $_REQUEST['exportCustoms'] ) ) ) {
-            $votes = self::get_export_votes( $_REQUEST['poll_id'] );
+            $votes = self::get_export_votes( sanitize_text_field( wp_unslash( $_REQUEST['poll_id'] ) ) );
             $votes_for_csv  = [];
             $customs_data   = [];
-            if ( count( $votes ) > 0 ){
+            if ( count( $votes ) > 0 ) {
                 $x = 0;
                 $customs = [];
                 foreach ( $votes as $vote ) {
                     $vote_details = self::get_vote_details( $vote['id'] );
                     foreach ( $vote_details as $res ) {
-                        if ( 'custom-field' === $res['question']) {
+                        if ( 'custom-field' === $res['question'] ) {
                             $customs[$res['id']] = $res['caption'];
                             $customs_data[$x]['headers'][] = $res['caption'];
-                            $customs_data[$x]['data'][] = addslashes( $res['answers'][0]['answer_value'] ) ;
+                            $customs_data[$x]['data'][] = addslashes( $res['answers'][0]['answer_value'] );
                         }
                     }
                     $x++;
                 }
                 $csv_header_array = [
-                    __( 'Poll Name', 'yop-poll' ),
-                    __( 'Username', 'yop-poll' ),
-                    __( 'Email', 'yop-poll' ),
-                    __( 'User Type', 'yop-poll' ),
-                    __( 'IP', 'yop-poll' ),
-                    __( 'Date', 'yop-poll' ),
-                    __( 'Vote data', 'yop-poll' )
+                    esc_html__( 'Poll Name', 'yop-poll' ),
+                    esc_html__( 'Username', 'yop-poll' ),
+                    esc_html__( 'Email', 'yop-poll' ),
+                    esc_html__( 'User Type', 'yop-poll' ),
+                    esc_html__( 'IP', 'yop-poll' ),
+                    esc_html__( 'Date', 'yop-poll' ),
+                    esc_html__( 'Vote data', 'yop-poll' )
                 ];
                 foreach ( $customs as $key => $val ) {
-                    $csv_header_array[] = __( 'Custom field - ', 'yop-poll' ) . $val;
+                    $csv_header_array[] = esc_html__( 'Custom field - ', 'yop-poll' ) . $val;
                 }
                 foreach ( $votes as $vote ) {
                     $vote_details = self::get_vote_details( $vote['id'] );
                     $details_string = '';
                     $custom_data = [];
                     foreach ( $vote_details as $res ) {
-                        if ( 'custom-field' === $res['question']) {
+                        if ( 'custom-field' === $res['question'] ) {
                             $custom_data[$res['id']] = addslashes( $res['answers'][0]['answer_value'] );
                         } else {
-                            $details_string .= __( 'Question', 'yop-poll' ). ': ' . addslashes( $res['question'] ) .';';
+                            $details_string .= esc_html__( 'Question', 'yop-poll' ) . ': ' . addslashes( $res['question'] ) . ';';
                             foreach ( $res['answers'] as $ra ) {
-                                $details_string .= __( 'Answer', 'yop-poll' ) . ': ' . addslashes( $ra['answer_value'] ) . ';';
+                                $details_string .= esc_html__( 'Answer', 'yop-poll' ) . ': ' . addslashes( $ra['answer_value'] ) . ';';
                             }
                         }
                     }
@@ -1416,7 +1575,7 @@ class YOP_Poll_Votes {
                         stripslashes( $details_string )
                     ];
                     foreach ( $customs as $key => $val ) {
-                        if( isset( $custom_data[$key] ) ) {
+                        if ( isset( $custom_data[$key] ) ) {
                             array_push( $vote_data, $custom_data[$key] );
                         } else {
                             array_push( $vote_data, '' );
@@ -1426,59 +1585,67 @@ class YOP_Poll_Votes {
                     $x++;
                 }
             }
-            if ( isset ( $_REQUEST ['doExport'] ) && 'true' === $_REQUEST['doExport'] ) {
-                header( "Content-Type: text/csv" );
-                header( "Cache-Control: must-revalidate, post-check=0,pre-check=0" );
+            if ( isset( $_REQUEST ['doExport'] ) && 'true' === $_REQUEST['doExport'] ) {
+                header( 'Content-Type: text/csv' );
+                header( 'Cache-Control: must-revalidate, post-check=0,pre-check=0' );
                 header( "Content-Transfer-Encoding: binary\n" );
                 header( 'Content-Transfer-Encoding: binary' );
                 header( 'Connection: Keep-Alive' );
                 header( 'Expires: 0' );
                 ob_start();
-                $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop-poll' ) );
+                $f = fopen( 'php://output', 'w' ) or show_error( esc_html__( "Can't open php://output!", 'yop-poll' ) );
                 $csv_file_name    = 'votes_export.' . date( 'YmdHis' ) . '.csv';
                 header( 'Content-Disposition: attachment; filename="' . $csv_file_name . '"' );
-                if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) _e( "Can't write header!", 'yop-poll' );
+                if ( !YOP_Poll_Helper::yop_fputcsv( $f, $csv_header_array ) ) {
+					esc_html_e( "Can't write header!", 'yop-poll' );
+				}
                 if ( count( $votes_for_csv ) > 0 ) {
                     foreach ( $votes_for_csv as $vote_data ) {
-                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $vote_data, ',', '"' ) ) _e( "Can't write votes!", 'yop-poll' );
+                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $vote_data, ',', '"' ) ) {
+							esc_html_e( "Can't write votes!", 'yop-poll' );
+						}
                     }
                 }
-                fclose( $f ) or show_error( __( "Can't close php://output!", 'yop-poll' ) );
+                fclose( $f ) or show_error( esc_html__( "Can't close php://output!", 'yop-poll' ) );
                 $csvStr = ob_get_contents();
                 ob_end_clean();
-                echo $csvStr;
-                exit ();
+                echo wp_kses_post( $csvStr );
+                exit();
             }
-            if ( isset ( $_REQUEST ['exportCustoms'] ) && 'true' === $_REQUEST['exportCustoms'] ) {
-                header( "Content-Type: text/csv" );
-                header( "Cache-Control: must-revalidate, post-check=0,pre-check=0" );
+            if ( isset( $_REQUEST ['exportCustoms'] ) && 'true' === $_REQUEST['exportCustoms'] ) {
+                header( 'Content-Type: text/csv' );
+                header( 'Cache-Control: must-revalidate, post-check=0,pre-check=0' );
                 header( "Content-Transfer-Encoding: binary\n" );
                 header( 'Content-Transfer-Encoding: binary' );
                 header( 'Connection: Keep-Alive' );
                 header( 'Expires: 0' );
                 ob_start();
                 $customs_sorted_array = [];
-                foreach ($customs_data as $cd) {
+                foreach ( $customs_data as $cd ) {
                     foreach ( $cd as $key => $value ) {
                         $customs_sorted_array[$key][] = $value;
                     }
                 }
-                $f = fopen( 'php://output', 'w' ) or show_error( __( "Can't open php://output!", 'yop-poll' ) );
+                $f = fopen( 'php://output', 'w' ) or show_error( esc_html__( "Can't open php://output!", 'yop-poll' ) );
                 $count_customs = count( $customs_data );
                 if ( $count_customs > 0 ) {
                     $csv_file_name    = 'customs_export.' . date( 'YmdHis' ) . '.csv';
                     header( 'Content-Disposition: attachment; filename="' . $csv_file_name . '"' );
                     $customs_data_keys = array_keys( $customs_data );
-                    if ( !YOP_Poll_Helper::yop_fputcsv( $f, $customs_data[$customs_data_keys[0]]['headers'] ) ) _e( "Can't write header!", 'yop-poll' );
+                    if ( !YOP_Poll_Helper::yop_fputcsv( $f, $customs_data[$customs_data_keys[0]]['headers'] ) ) {
+						esc_html_e( "Can't write header!", 'yop-poll' );
+					}
                     foreach ( $customs_data as $ch ) {
-                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $ch['data'], ',', '"' ) ) _e( "Can't write votes!", 'yop-poll' );
+                        if ( !YOP_Poll_Helper::yop_fputcsv( $f, $ch['data'], ',', '"' ) ) {
+							esc_html_e( "Can't write votes!", 'yop-poll' );
+						}
                     }
-                    fclose( $f ) or show_error( __( "Can't close php://output!", 'yop-poll' ) );
+                    fclose( $f ) or show_error( esc_html__( "Can't close php://output!", 'yop-poll' ) );
                 }
                 $csvStr = ob_get_contents();
                 ob_end_clean();
-                echo $csvStr;
-                exit ();
+                echo wp_kses( $csvStr, array() );
+                exit();
             }
         }
     }
@@ -1493,11 +1660,11 @@ class YOP_Poll_Votes {
         if ( '' !== $query ) {
             $votes = $GLOBALS['wpdb']->get_results( $GLOBALS['wpdb']->prepare( $query, array( $poll_id ) ), ARRAY_A );
             foreach ( $votes as $key => $row ) {
-                if( 'wordpress' === $row['user_type'] ) {
+                if ( 'wordpress' === $row['user_type'] ) {
                     $vote_user_obj = get_user_by('id', $row['user_id'] );
-                    if( $vote_user_obj ) {
+                    if ( $vote_user_obj ) {
                         $votes[$key]['user_id'] = $vote_user_obj->user_login;
-                    } else{
+                    } else {
                         $votes[$key]['user_id'] = '';
                     }
                 } else {
@@ -1506,7 +1673,7 @@ class YOP_Poll_Votes {
                 $votes[$key]['vote_data'] = $row['vote_data'];
             }
         }
-        return  $votes;
+        return $votes;
     }
 	public static function delete_all_for_poll( $poll_id ) {
 		$query = $GLOBALS['wpdb']->prepare(
@@ -1520,9 +1687,9 @@ class YOP_Poll_Votes {
 	}
     public static function delete_vote( $vote_id, $poll_id ) {
         if ( $vote_id > 0 ) {
-            $query = $GLOBALS['wpdb']->prepare( "UPDATE {$GLOBALS['wpdb']->yop_poll_votes} SET `status` = 'deleted' WHERE `id` =%d", $vote_id);
+            $query = $GLOBALS['wpdb']->prepare( "UPDATE {$GLOBALS['wpdb']->yop_poll_votes} SET `status` = 'deleted' WHERE `id` =%d", $vote_id );
 			$result = $GLOBALS['wpdb']->query( $query );
-			$query = $GLOBALS['wpdb']->prepare( "UPDATE {$GLOBALS['wpdb']->yop_poll_other_answers} SET `status` = 'deleted' WHERE `poll_id` = %d AND `vote_id` =%d", $poll_id, $vote_id);
+			$query = $GLOBALS['wpdb']->prepare( "UPDATE {$GLOBALS['wpdb']->yop_poll_other_answers} SET `status` = 'deleted' WHERE `poll_id` = %d AND `vote_id` =%d", $poll_id, $vote_id );
             $GLOBALS['wpdb']->query( $query );
             $vote_query = $GLOBALS['wpdb']->prepare( "SELECT `vote_data` FROM {$GLOBALS['wpdb']->yop_poll_votes} WHERE `id` = %d", $vote_id );
             $vote_data = $GLOBALS['wpdb']->get_var( $vote_query );
@@ -1540,7 +1707,11 @@ class YOP_Poll_Votes {
                     }
                 }
             }
-            $q = $GLOBALS['wpdb']->prepare( "UPDATE {$GLOBALS['wpdb']->yop_poll_polls} SET `total_submits` = `total_submits` -1,  `total_submited_answers` = `total_submited_answers` - $total_submit_answers_delete WHERE `id` = %d", $poll_id );
+            $q = $GLOBALS['wpdb']->prepare(
+				"UPDATE {$GLOBALS['wpdb']->yop_poll_polls} SET `total_submits` = `total_submits` -1,  `total_submited_answers` = `total_submited_answers` - %d WHERE `id` = %d",
+				$total_submit_answers_delete,
+				$poll_id
+			);
             $GLOBALS['wpdb']->query( $q );
             if ( $result ) {
                 return true;
@@ -1555,7 +1726,7 @@ class YOP_Poll_Votes {
             {$GLOBALS['wpdb']->yop_poll_votes}.`poll_id` = {$GLOBALS['wpdb']->yop_poll_polls}.`id` WHERE {$GLOBALS['wpdb']->yop_poll_votes}.`id` = %s", $vote_id
         );
         $vote = $GLOBALS['wpdb']->get_row( $query, OBJECT );
-        if( null !== $vote ){
+        if ( null !== $vote ) {
             return $vote->author;
         } else {
             return false;

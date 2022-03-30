@@ -28,23 +28,13 @@ function newsletter_print_entries($group) {
 $status_options = Newsletter::instance()->get_options('status');
 $warning = false;
 
-$warning |= empty($status_options['mail']);
+//$warning |= empty($status_options['mail']);
+
+$current_user_email = $current_user->user_email;
+if (strpos($current_user_email, 'admin@') === 0) {
+    $current_user_email = '';
+}
 ?>
-<script>
-    function tnp_close_promotion() {
-        jQuery.post(ajaxurl + "?action=tnp_hide_promotion", {id: 'june-2020'});
-        document.getElementById('tnp-promotion-bar').style.display = 'none';
-    }
-</script>
-
-<?php if (get_option('newsletter_promotion') !== 'june-2020' && time() < gmmktime(0, 0, 0, 7, 15, 2020)) { ?>
-    <div id="tnp-promotion-bar">
-        <a href="https://www.thenewsletterplugin.com/premium?utm_source=plugin-bar&utm_campaign=june-2020" onclick="tnp_close_promotion(); return true;" target="_blank">50% discount offer until July, 15. Check it out.</a>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        <a href="javascript:void(tnp_close_promotion('june-2020'))">No, thank you!</a>
-    </div>
-<?php } ?>
-
 
 <div class="tnp-drowpdown" id="tnp-header">
     <a href="?page=newsletter_main_index"><img src="<?php echo plugins_url('newsletter'); ?>/admin/images/logo-red.png" class="tnp-header-logo" style="vertical-align: bottom;"></a>
@@ -188,20 +178,20 @@ $warning |= empty($status_options['mail']);
                             <small><?php _e('WP native site health checks', 'newsletter') ?></small></a>
                     </li>
                     <li>
-                        <a href="?page=newsletter_main_delivery"><i class="fas fa-file"></i> <?php _e('Delivery Diagnostic', 'newsletter') ?>
+                        <a href="?page=newsletter_system_delivery"><i class="fas fa-file"></i> <?php _e('Delivery Diagnostic', 'newsletter') ?>
                             <small><?php _e('Delivery analysis and test', 'newsletter') ?></small></a>
                     </li>
                     <li>
-                        <a href="?page=newsletter_main_scheduler"><i class="fas fa-robot"></i> <?php _e('Scheduler', 'newsletter') ?>
-                            <small><?php _e('', 'newsletter') ?></small></a>
+                        <a href="?page=newsletter_system_scheduler"><i class="fas fa-robot"></i> <?php _e('Scheduler', 'newsletter') ?>
+                            <small><?php _e('WordPress background jobs', 'newsletter') ?></small></a>
                     </li>
                     <li>
-                        <a href="?page=newsletter_main_status"><i class="fas fa-file"></i> <?php _e('Status', 'newsletter') ?>
+                        <a href="?page=newsletter_system_status"><i class="fas fa-file"></i> <?php _e('Status', 'newsletter') ?>
                             <small><?php _e('Checks and parameters', 'newsletter') ?></small></a>
                     </li>
 
                     <li>
-                        <a href="?page=newsletter_main_logs"><i class="fas fa-file"></i> <?php _e('Logs', 'newsletter') ?>
+                        <a href="?page=newsletter_system_logs"><i class="fas fa-file"></i> <?php _e('Logs', 'newsletter') ?>
                             <small><?php _e('Plugin and addons logs', 'newsletter') ?></small></a>
                     </li>
                 </ul>
@@ -210,23 +200,34 @@ $warning |= empty($status_options['mail']);
 
         <?php
         $license_data = Newsletter::instance()->get_license_data();
-        $premium_url = 'https://www.thenewsletterplugin.com/premium?utm_source=plugin&utm_medium=link&utm_campaign=header&utm_content=' . urlencode($_GET['page']);
+        $premium_url = 'https://www.thenewsletterplugin.com/premium?utm_source=header&utm_medium=link&utm_campaign=plugin&utm_content=' . urlencode($_GET['page']);
         ?>
 
         <?php if (empty($license_data)) { ?>
-            <li class="tnp-professional-extensions-button"><a href="<?php echo $premium_url ?>" target="_blank">
-                    <i class="fas fa-trophy"></i> <?php _e('Get Professional Addons', 'newsletter') ?></a>
-            </li>
+            <?php if (time() < 1638226799) { ?>
+                <li class="tnp-professional-extensions-button" style="background-color: #000; color: #fff; border-color: #FF5F65!important; border-width: 2px !important;"><a href="https://www.thenewsletterplugin.com/premium?utm_source=header&utm_medium=link&utm_campaign=black-friday" target="_blank">
+                        <i class="fas fa-trophy"></i> BLACK FRIDAY IS LIVE</a>
+                </li>
+            <?php } else { ?>
+                <li class="tnp-professional-extensions-button"><a href="<?php echo $premium_url ?>" target="_blank">
+                        <i class="fas fa-trophy"></i> <?php _e('Get Professional Addons', 'newsletter') ?></a>
+                </li>
+            <?php } ?>
         <?php } elseif (is_wp_error($license_data)) { ?>
             <li class="tnp-professional-extensions-button-red">
                 <a href="?page=newsletter_main_main"><i class="fas fa-hand-paper" style="color: white"></i> <?php _e('Unable to check', 'newsletter') ?></a>
             </li>
 
         <?php } elseif ($license_data->expire == 0) { ?>
-
-            <li class="tnp-professional-extensions-button"><a href="<?php echo $premium_url ?>" target="_blank">
-                    <i class="fas fa-trophy"></i> <?php _e('Get Professional Addons', 'newsletter') ?></a>
-            </li>
+            <?php if (time() < 1638226799) { ?>
+                <li class="tnp-professional-extensions-button" style="background-color: #000; color: #fff; border-color: #FF5F65!important; border-width: 2px !important;"><a href="https://www.thenewsletterplugin.com/premium?utm_source=header&utm_medium=link&utm_campaign=black-friday" target="_blank">
+                        <i class="fas fa-trophy"></i> BLACK FRIDAY IS LIVE</a>
+                </li>
+            <?php } else { ?>
+                <li class="tnp-professional-extensions-button"><a href="<?php echo $premium_url ?>" target="_blank">
+                        <i class="fas fa-trophy"></i> <?php _e('Get Professional Addons', 'newsletter') ?></a>
+                </li>
+            <?php } ?>
 
         <?php } elseif ($license_data->expire < time()) { ?>
 
@@ -240,7 +241,6 @@ $warning |= empty($status_options['mail']);
             <li class="tnp-professional-extensions-button">
                 <a href="?page=<?php echo $p ?>"><i class="fas fa-check-square"></i> <?php _e('License active', 'newsletter') ?></a>
             </li>
-
 
         <?php } ?>
     </ul>
@@ -291,12 +291,15 @@ $warning |= empty($status_options['mail']);
 <?php if (isset($_GET['debug']) || !isset($dismissed['newsletter-subscribe']) && get_option('newsletter_install_time') && get_option('newsletter_install_time') < time() - 86400 * 15) { ?>
     <div class="tnp-notice">
         <a href="<?php echo $_SERVER['REQUEST_URI'] . '&noheader=1&dismiss=newsletter-subscribe' ?>" class="tnp-dismiss">&times;</a>
-        If you want to be informed of important updates of Newsletter, you may want to subscribe to our newsletter<br>
+        Subscribe to our news, promotions and getting started lessons!
+        Proceeding you agree to the <a href="https://www.thenewsletterplugin.com/privacy" target="_blank">privacy policy</a>.
+        <br>
         <form action="https://www.thenewsletterplugin.com/?na=s" target="_blank" method="post">
             <input type="hidden" value="plugin-header" name="nr">
             <input type="hidden" value="3" name="nl[]">
-            <input type="hidden" value="single" name="optin">
-            <input type="email" name="ne" value="<?php echo esc_attr(get_option('admin_email')) ?>">
+            <input type="hidden" value="1" name="nl[]">
+            <input type="hidden" value="double" name="optin">
+            <input type="email" name="ne" value="<?php echo esc_attr($current_user_email) ?>">
             <input type="submit" value="<?php esc_attr_e('Subscribe', 'newsletter') ?>">
         </form>
     </div>
@@ -306,23 +309,25 @@ $warning |= empty($status_options['mail']);
 if (!defined('NEWSLETTER_CRON_WARNINGS') || NEWSLETTER_CRON_WARNINGS) {
     $x = NewsletterSystem::instance()->get_job_status();
     if ($x !== NewsletterSystem::JOB_OK) {
-        echo '<div class="tnpc-warning">The are issues with the delivery engine. Please <a href="?page=newsletter_main_scheduler">check them here</a>.</div>';
-    } 
+        echo '<div class="tnpc-warning">The are issues with the delivery engine. Please <a href="?page=newsletter_system_scheduler">check them here</a>.</div>';
+    }
 }
 ?>
 
 <?php
 if ($_GET['page'] !== 'newsletter_emails_edit') {
 
-    $last_failed_newsletters = Newsletter::instance()->get_emails_by_field('status', TNP_Email::STATUS_ERROR);
-
-    foreach ($last_failed_newsletters as $newsletter) {
-        echo '<div class="tnpc-error">';
-        printf(__('Newsletter "%s" stopped by fatal error.', 'newsletter'), esc_html($newsletter->subject));
-        echo '&nbsp;';
+    $last_failed_newsletters = Newsletter::instance()->get_emails_by_status(TNP_Email::STATUS_ERROR);
+    if ($last_failed_newsletters) {
         $c = new NewsletterControls();
-        $c->btn_link('?page=newsletter_emails_edit&id=' . $newsletter->id, __('Check', 'newsletter'));
-        echo '</div>';
+        foreach ($last_failed_newsletters as $n) {
+            echo '<div class="tnpc-error">';
+            printf(__('Newsletter "%s" stopped by fatal error.', 'newsletter'), esc_html($n->subject));
+            echo '&nbsp;';
+
+            $c->btn_link('?page=newsletter_emails_edit&id=' . $n->id, __('Check', 'newsletter'));
+            echo '</div>';
+        }
     }
 }
 ?>

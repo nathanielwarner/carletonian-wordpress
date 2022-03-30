@@ -839,13 +839,20 @@ class NewsletterControls {
         echo 'value="', esc_attr($value), '">';
     }
 
-    function text_email($name, $size = 40) {
+    function text_email($name, $attrs = []) {
+        if (is_numeric($attrs)) {
+            $attrs = ['size' => $attrs];
+        }
+        $attrs = array_merge(['placeholder' => __('Valid email address', 'newsletter'), 'size' => 40, 'required' => false], $attrs);
+
         $value = $this->get_value($name);
         echo '<input name="options[' . esc_attr($name) . ']" type="email" placeholder="';
-        echo esc_attr__('Valid email address', 'newsletter');
-        echo '" size="' . esc_attr($size) . '" value="';
-        echo esc_attr($value);
-        echo '">';
+        echo esc_attr($attrs['placeholder']);
+        echo '" size="', esc_attr($attrs['size']), '" value="', esc_attr($value) , '"';
+        if ($attrs['required']) {
+            echo ' required';
+        }
+        echo '>';
     }
 
     function text_url($name, $size = 40) {
@@ -1045,10 +1052,7 @@ class NewsletterControls {
         }
     }
 
-    /**
-     * @deprecated
-     */    
-    function button_confirm($action, $label, $message = '', $data = '') {
+    function button_confirm($action, $label, $message = true, $data = '') {
         $this->btn($action, $label, ['data' => $data, 'confirm' => $message]);
     }
 
@@ -1259,6 +1263,7 @@ class NewsletterControls {
             $this->checkbox_group($name, $c->cat_ID, esc_html($c->cat_name));
         }
         echo '<div style="clear: both"></div>';
+        echo '</div>';
     }
 
     /**
@@ -1435,7 +1440,7 @@ class NewsletterControls {
         echo '</select>';
 
         echo '<select id="' . esc_attr($name) . '_year" onchange="' . esc_attr($onchange) . '">';
-        for ($i = 2011; $i <= 2021; $i++) {
+        for ($i = 2011; $i <= date('Y')+3; $i++) {
             echo '<option value="' . $i . '"';
             if ($year == $i) {
                 echo ' selected';
@@ -1479,7 +1484,7 @@ class NewsletterControls {
 
         echo '<select name="options[' . esc_attr($name) . '_year]">';
         echo '<option value="">-</option>';
-        for ($i = 2011; $i <= 2021; $i++) {
+        for ($i = 2011; $i <= date('Y')+3; $i++) {
             echo '<option value="' . $i . '"';
             if ($year == $i) {
                 echo ' selected';
@@ -2075,6 +2080,7 @@ tnp_controls_init();
         $this->hidden('subject');
         $this->hidden('message');
         $this->hidden('options_preheader');
+        $this->hidden('updated');
 
         //$preheader_value = $this->get_value('options_preheader');
         //    echo '<input name="options[preheader]" id="options-preheader" type="hidden" value="', esc_attr($preheader_value), '">';

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit06e3240e7f185972289dfc9be7883e23
+class ComposerStaticInit959bcbb6a94a41bb92a90d5d095538b7
 {
     public static $files = array (
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
@@ -49,7 +49,6 @@ class ComposerStaticInit06e3240e7f185972289dfc9be7883e23
         'CF\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
-            1 => __DIR__ . '/..' . '/cloudflare/cloudflare-plugin-backend/src',
         ),
     );
 
@@ -70,10 +69,10 @@ class ComposerStaticInit06e3240e7f185972289dfc9be7883e23
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit06e3240e7f185972289dfc9be7883e23::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit06e3240e7f185972289dfc9be7883e23::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit06e3240e7f185972289dfc9be7883e23::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit06e3240e7f185972289dfc9be7883e23::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit959bcbb6a94a41bb92a90d5d095538b7::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit959bcbb6a94a41bb92a90d5d095538b7::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit959bcbb6a94a41bb92a90d5d095538b7::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit959bcbb6a94a41bb92a90d5d095538b7::$classMap;
 
         }, null, ClassLoader::class);
     }

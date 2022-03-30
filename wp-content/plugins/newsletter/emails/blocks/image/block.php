@@ -10,6 +10,7 @@
 
 $defaults = array(
     'image' => '',
+    'image-alt' => '',
     'url' => '',
     'width' => 0,
     'align' => 'center',
@@ -52,9 +53,7 @@ if (!empty($options['width'])) {
     $media->set_width($options['width']);
 }
 $media->link = $options['url'];
-if (!empty($options['image-alt'])) {
-    $media->alt = $options['image-alt'];
-}
+$media->alt = $options['image-alt'];
 
 ?>
 

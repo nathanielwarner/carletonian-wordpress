@@ -16,10 +16,13 @@ if ($controls->is_action('activate')) {
         $controls->js_redirect('admin.php?page=newsletter_extensions_index');
     }
 }
-
 ?>
 
-<div class="wrap" id="tnp-wrap">
+<style>
+<?php include __DIR__ . '/css/extensions.css' ?>
+</style>
+
+<div class="wrap tnp-main tnp-main-extensions" id="tnp-wrap">
 
     <?php include NEWSLETTER_DIR . '/tnp-header.php'; ?>
 
@@ -54,58 +57,64 @@ if ($controls->is_action('activate')) {
         <?php if (is_array($extensions)) { ?>
 
             <!-- Extensions -->
-            <h3 class="tnp-section-title">Additional professional features</h3>
-            <?php foreach ($extensions AS $e) { ?>
+            <div class="tnp-section">
+                <h3 class="tnp-section-title">Additional professional features</h3>
+                <?php foreach ($extensions AS $e) { ?>
 
-                <?php if ($e->type == "extension" || $e->type == "premium") { ?>
-                    <div class="<?php echo $e->free ? 'tnp-extension-free-box' : 'tnp-extension-premium-box' ?> <?php echo $e->slug ?>">
+                    <?php if ($e->type == "extension" || $e->type == "premium") { ?>
+                        <div class="<?php echo $e->free ? 'tnp-extension-free-box' : 'tnp-extension-premium-box' ?> <?php echo $e->slug ?>">
 
-                        <?php if ($e->free) { ?>
-                            <img class="tnp-extensions-free-badge" src="<?php echo plugins_url('newsletter') ?>/images/extension-free.png">
-                        <?php } ?>
-                        <div class="tnp-extensions-image"><img src="<?php echo $e->image ?>" alt="" /></div>
-                        <h3><?php echo $e->title ?></h3>
-                        <p><?php echo $e->description ?></p>
-                    </div>
+                            <?php if ($e->free) { ?>
+                                <img class="tnp-extensions-free-badge" src="<?php echo plugins_url('newsletter') ?>/images/extension-free.png">
+                            <?php } ?>
+                            <div class="tnp-extensions-image"><img src="<?php echo $e->image ?>" alt="" /></div>
+                            <h3><?php echo $e->title ?></h3>
+                            <p><?php echo $e->description ?></p>
+                        </div>
+                    <?php } ?>
                 <?php } ?>
-            <?php } ?>
+            </div>
 
             <!-- Integrations -->
-            <h3 class="tnp-section-title">Integrations with 3rd party plugins</h3>
-            <?php foreach ($extensions AS $e) { ?>
+            <div class="tnp-section">
+                <h3 class="tnp-section-title">Integrations with 3rd party plugins</h3>
+                <?php foreach ($extensions AS $e) { ?>
 
-                <?php if ($e->type == "integration") { ?>
+                    <?php if ($e->type == "integration") { ?>
 
-                    <div class="<?php echo $e->free ? 'tnp-extension-free-box' : 'tnp-integration-box' ?> <?php echo $e->slug ?>">
+                        <div class="<?php echo $e->free ? 'tnp-extension-free-box' : 'tnp-integration-box' ?> <?php echo $e->slug ?>">
 
-                        <?php if ($e->free) { ?>
-                            <img class="tnp-extensions-free-badge" src="<?php echo plugins_url('newsletter') ?>/images/extension-free.png">
-                        <?php } ?>
-                        <div class="tnp-extensions-image"><img src="<?php echo $e->image ?>"></div>
-                        <h3><?php echo $e->title ?></h3>
-                        <p><?php echo $e->description ?></p>
-                    </div>
+                            <?php if ($e->free) { ?>
+                                <img class="tnp-extensions-free-badge" src="<?php echo plugins_url('newsletter') ?>/images/extension-free.png">
+                            <?php } ?>
+                            <div class="tnp-extensions-image"><img src="<?php echo $e->image ?>"></div>
+                            <h3><?php echo $e->title ?></h3>
+                            <p><?php echo $e->description ?></p>
+                        </div>
+                    <?php } ?>
+
                 <?php } ?>
-
-            <?php } ?>
+            </div>
 
             <!-- Delivery -->
-            <h3 class="tnp-section-title">Integrations with reliable mail delivery services</h3>
-            <?php foreach ($extensions AS $e) { ?>
+            <div class="tnp-section">
+                <h3 class="tnp-section-title">Integrations with reliable mail delivery services</h3>
+                <?php foreach ($extensions AS $e) { ?>
 
-                <?php if ($e->type == "delivery") { ?>
-                    <div class="<?php echo $e->free ? 'tnp-extension-free-box' : 'tnp-integration-box' ?> <?php echo $e->slug ?>">
+                    <?php if ($e->type == "delivery") { ?>
+                        <div class="<?php echo $e->free ? 'tnp-extension-free-box' : 'tnp-integration-box' ?> <?php echo $e->slug ?>">
 
-                        <?php if ($e->free) { ?>
-                            <img class="tnp-extensions-free-badge" src="<?php echo plugins_url('newsletter') ?>/images/extension-free.png">
-                        <?php } ?>
-                        <div class="tnp-extensions-image"><img src="<?php echo $e->image ?>" alt="" /></div>
-                        <h3><?php echo $e->title ?></h3>
-                        <p><?php echo $e->description ?></p>
-                    </div>
+                            <?php if ($e->free) { ?>
+                                <img class="tnp-extensions-free-badge" src="<?php echo plugins_url('newsletter') ?>/images/extension-free.png">
+                            <?php } ?>
+                            <div class="tnp-extensions-image"><img src="<?php echo $e->image ?>" alt="" /></div>
+                            <h3><?php echo $e->title ?></h3>
+                            <p><?php echo $e->description ?></p>
+                        </div>
+                    <?php } ?>
+
                 <?php } ?>
-
-            <?php } ?>
+            </div>
 
 
         <?php } else { ?>

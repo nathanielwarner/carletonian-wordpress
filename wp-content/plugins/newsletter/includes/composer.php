@@ -272,6 +272,7 @@ class TNP_Composer {
 
             $controls->data['message'] = TNP_Composer::unwrap_email($email->message);
             $controls->data['subject'] = $email->subject;
+            $controls->data['updated'] = $email->updated;
         }
 
         if (!empty($email->options['sender_email'])) {
@@ -562,12 +563,19 @@ class TNP_Composer {
 
     /**
      * Inspired by: https://webdesign.tutsplus.com/tutorials/creating-a-future-proof-responsive-email-without-media-queries--cms-23919
+     * 
+     * Attributes:
+     * - columns: number of columns [2]
+     * - padding: cells padding [10]
+     * - responsive: il on mobile the cell should stack up [true]
+     * - width: the whole row width, it should reduced by the external row padding [600]
+     * 
      * @param string[] $items
      * @param array $attrs
      * @return string
      */
     static function grid($items = [], $attrs = []) {
-        $attrs = wp_parse_args($attrs, ['width' => 600, 'columns' => 2, 'padding' => 10]);
+        $attrs = wp_parse_args($attrs, ['width' => 600, 'columns' => 2, 'padding' => 10, 'responsive' => true]);
         $width = (int) $attrs['width'];
         $columns = (int) $attrs['columns'];
         $padding = (int) $attrs['padding'];
@@ -575,27 +583,44 @@ class TNP_Composer {
         $td_width = 100 / $columns;
         $chunks = array_chunk($items, $columns);
 
-        $e = '<div style="text-align:center;font-size:0;">';
-        foreach ($chunks as &$chunk) {
+        if ($attrs['responsive']) {
 
-            $e .= '<!--[if mso]><table role="presentation" width="100%"><tr><![endif]-->';
-            foreach ($chunk as &$item) {
-                $e .= '<!--[if mso]><td style="width:' . $td_width . '%;padding:' . $padding . 'px" valign="top"><![endif]-->';
+            $e = '';
+            foreach ($chunks as &$chunk) {
+                $e .= '<div style="text-align:center;font-size:0;">';
+                $e .= '<!--[if mso]><table role="presentation" width="100%"><tr><![endif]-->';
+                foreach ($chunk as &$item) {
+                    $e .= '<!--[if mso]><td width="' . $td_width . '%" style="width:' . $td_width . '%;padding:' . $padding . 'px" valign="top"><![endif]-->';
 
-                $e .= '<div class="tnp-grid-column" style="width:100%;max-width:' . $column_width . 'px;display:inline-block;vertical-align: top;box-sizing: border-box;">';
+                    $e .= '<div class="max-width-100" style="width:100%;max-width:' . $column_width . 'px;display:inline-block;vertical-align: top;box-sizing: border-box;">';
 
-                // This element to add padding without deal with border-box not well supported
-                $e .= '<div style="padding:' . $padding . 'px;">';
-                $e .= $item;
+                    // This element to add padding without deal with border-box not well supported
+                    $e .= '<div style="padding:' . $padding . 'px;">';
+                    $e .= $item;
+                    $e .= '</div>';
+                    $e .= '</div>';
+
+                    $e .= '<!--[if mso]></td><![endif]-->';
+                }
+                $e .= '<!--[if mso]></tr></table><![endif]-->';
                 $e .= '</div>';
-                $e .= '</div>';
-
-                $e .= '<!--[if mso]></td><![endif]-->';
             }
-            $e .= '<!--[if mso]></tr></table><![endif]-->';
-            $e .= '</div>';
+
+            return $e;
+        } else {
+            $e = '<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width: 100%; max-width: 100%!important">';
+            foreach ($chunks as &$chunk) {
+                $e .= '<tr>';
+                foreach ($chunk as &$item) {
+                    $e .= '<td width="' . $td_width . '%" style="width:' . $td_width . '%; padding:' . $padding . 'px" valign="top">';
+                    $e .= $item;
+                    $e .= '</td>';
+                }
+                $e .= '</tr>';
+            }
+            $e .= '</table>';
+            return $e;
         }
-        return $e;
     }
 
     static function get_text_style($options, $prefix, $composer, $attrs = []) {
@@ -623,6 +648,22 @@ class TNP_Composer {
             $style->background = empty($options[$prefix . 'background']) ? $composer[$type . '_background_color'] : $options[$prefix . 'background'];
         }
         return $style;
+    }
+
+    static function get_button_options($options, $prefix, $composer) {
+        $button_options = [];
+        $scale = 1;
+        $button_options['button_font_family'] = empty($options[$prefix . '_font_family']) ? $composer['button_font_family'] : $options[$prefix . '_font_family'];
+        $button_options['button_font_size'] = empty($options[$prefix . '_font_size']) ? round($composer['button_font_size'] * $scale) : $options[$prefix . '_font_size'];
+        $button_options['button_font_color'] = empty($options[$prefix . '_font_color']) ? $composer['button_font_color'] : $options[$prefix . '_font_color'];
+        $button_options['button_font_weight'] = empty($options[$prefix . '_font_weight']) ? $composer['button_font_weight'] : $options[$prefix . '_font_weight'];
+        $button_options['button_background'] = empty($options[$prefix . '_background']) ? $composer['button_background_color'] : $options[$prefix . '_background'];
+        $button_options['button_align'] = empty($options[$prefix . '_align']) ? 'center' : $options[$prefix . '_align'];
+        $button_options['button_width'] = empty($options[$prefix . '_width']) ? 'center' : $options[$prefix . '_width'];
+        $button_options['button_url'] = empty($options[$prefix . '_url']) ? '#' : $options[$prefix . '_url'];
+        $button_options['button_label'] = empty($options[$prefix . '_label']) ? '' : $options[$prefix . '_label'];
+
+        return $button_options;
     }
 
 }

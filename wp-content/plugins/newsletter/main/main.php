@@ -35,8 +35,8 @@ if (!$controls->is_action()) {
         }
 
         $controls->data['scheduler_max'] = (int) $controls->data['scheduler_max'];
-        if ($controls->data['scheduler_max'] < 10)
-            $controls->data['scheduler_max'] = 10;
+        if ($controls->data['scheduler_max'] < 12)
+            $controls->data['scheduler_max'] = 12;
 
 
         if (!$this->is_email($controls->data['reply_to'], true)) {
@@ -171,7 +171,9 @@ if (!empty($return_path)) {
                             </th>
                             <td>
                                 <?php $controls->text_email('sender_email', 40); ?>
-
+                                <div class="description">
+                                    <a href="https://www.thenewsletterplugin.com/documentation/installation/newsletter-configuration/#sender" target="_blank">Emails delivered with a different address?</a>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -215,6 +217,12 @@ if (!empty($return_path)) {
                                     $controls->button('create', __('Create the page', 'newsletter'));
                                 }
                                 ?>
+                                <?php if ($this->is_multilanguage()) { ?>
+                                <p class="description">
+                                    With multilanguage plugins be sure the selected page is translated in every language (usually only the title needs to be translated, the content
+                                    should just be the <code>[newsletter]</code> shortcode).
+                                </p>
+                                <?php } ?> 
                             </td>
                         </tr>
 
@@ -246,7 +254,7 @@ if (!empty($return_path)) {
                             <td>
                                 <?php $controls->text('scheduler_max', 5); ?> (min. 10)
                                 <p class="description">
-                                    <a href="?page=newsletter_main_status#tnp-speed">See the collected statistics</a>
+                                    <a href="?page=newsletter_system_status#tnp-speed">See the collected statistics</a>
                             </td>
                         </tr>
                     </table>

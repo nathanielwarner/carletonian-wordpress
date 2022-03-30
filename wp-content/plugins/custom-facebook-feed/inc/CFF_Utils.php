@@ -7,6 +7,7 @@
  * @since 2.19
  */
 namespace CustomFacebookFeed;
+use CustomFacebookFeed\SB_Facebook_Data_Encryption;
 
 
 
@@ -812,6 +813,11 @@ class CFF_Utils{
 	            $header_access_token = reset($access_token);
 	            if( empty($header_access_token) ) $header_access_token = key($access_token);
 	        }
+
+	        $encryption = new SB_Facebook_Data_Encryption();
+			$header_access_token = $encryption->decrypt($header_access_token) ? $encryption->decrypt($header_access_token) : $header_access_token;
+
+
 		    $header_details_json_url = 'https://graph.facebook.com/v4.0/'.$page_id.'?fields=id,picture.height(150).width(150),cover,name,link'.$page_only_fields.'&access_token='. $header_access_token;
 
 		    //Get the data

@@ -139,12 +139,12 @@ class MPSUM_Disable_Updates {
 				add_filter('auto_update_plugin',  array( $this, 'automatic_updates_plugins' ), PHP_INT_MAX - 10, 2);
 			} elseif ('automatic_off' == $core_options['plugin_updates']) {
 				add_filter('auto_update_plugin',  '__return_false', PHP_INT_MAX - 10, 2);
-			} else { // if manually update option is selected then the auto_update_plugin filter should return boolean false
-				add_filter('auto_update_plugin',  '__return_false', 1, 2); // should be one of the most prioritized hooks (as early as it could)
+			} elseif ('on' === $core_options['plugin_updates']) { // if manually update option (on) is selected then the auto_update_plugin filter should return boolean false
+				add_filter('auto_update_plugin',  '__return_false', 1, 2); // should be one that corresponds with earlier execution (as early as it could)
 			}
 		} else {
 			// if none of the plugin updates setting is selected (it can happen on a fresh EUM install) also return boolean false for the auto_update_plugin filter
-			add_filter('auto_update_plugin',  '__return_false', 1, 2); // should be one of the most prioritized hooks (as early as it could)
+			add_filter('auto_update_plugin',  '__return_false', 1, 2); // should be one that corresponds with earlier execution (as early as it could)
 		}
 
 		// Enable Theme Auto-updates
@@ -155,7 +155,11 @@ class MPSUM_Disable_Updates {
 				add_filter('auto_update_theme',  array( $this, 'automatic_updates_theme' ), PHP_INT_MAX - 10, 2);
 			} elseif ('automatic_off' == $core_options['theme_updates']) {
 				add_filter('auto_update_theme',  '__return_false', PHP_INT_MAX - 10, 2);
+			} elseif ('on' === $core_options['theme_updates']) { // if manually update option (on) is selected then the auto_update_theme filter should return boolean false
+				add_filter('auto_update_theme',  '__return_false', 1, 2); // should be one that corresponds with earlier execution (as early as it could)
 			}
+		} else {
+			add_filter('auto_update_theme',  '__return_false', 1, 2); // should be one that corresponds with earlier execution (as early as it could)
 		}
 
 		// Automatic Updates E-mail Address

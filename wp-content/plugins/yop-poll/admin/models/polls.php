@@ -6,7 +6,7 @@ class YOP_Poll_Polls {
 			$text_weight_allowed = array( 'normal', 'bold' ),
 			$text_align_allowed = array( 'left', 'center', 'right' ),
 			$yes_no_allowed = array( 'yes', 'no' ),
-			$captcha_allowed = array( 'yes', 'yes-recaptcha', 'yes-recaptcha-invisible', 'yes-recaptcha-v3', 'no' ),
+			$captcha_allowed = array( 'yes', 'yes-recaptcha', 'yes-recaptcha-invisible', 'yes-recaptcha-v3', 'yes-hcaptcha', 'no' ),
 			$answers_display_allowed = array( 'vertical', 'horizontal', 'columns' ),
 			$answers_sort_allowed = array( 'as-defined' ),
 			$date_values_allowed = array( 'now', 'custom', 'never', 'custom-date' ),
@@ -22,7 +22,40 @@ class YOP_Poll_Polls {
 			$sort_order_allowed = array( 'asc', 'desc' ),
 			$order_by_allowed = array( 'id', 'name', 'status', 'total_submits', 'author', 'sdate', 'edate' ),
 			$ends_soon_interval = 10,
-			$polls_per_page = 10;
+			$polls_per_page = 10,
+			$allowed_tags_for_templates_and_skins = array(
+				'div' => array(
+					'class' => array(),
+					'style' => array(),
+					'data-temp' => array(),
+					'data-skin' => array(),
+					'data-cscheme' => array(),
+				),
+				'form' => array(
+					'class' => array(),
+				),
+				'h5' => array(),
+				'ul' => array(
+					'class' => array(),
+				),
+				'li' => array(
+					'class' => array(),
+				),
+				'input' => array(
+					'type' => array(),
+					'checked' => array(),
+				),
+				'label' => array(
+					'class' => array(),
+				),
+				'a' => array(
+					'href' => array(),
+					'class' => array(),
+				),
+			);
+	public static function get_allowed_tags_for_templates_and_skins() {
+		return self::$allowed_tags_for_templates_and_skins;
+	}
 	public static function get_text_sizes() {
 		return self::$text_size_allowed;
 	}
@@ -31,7 +64,7 @@ class YOP_Poll_Polls {
 			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %s", $poll_id
 		);
 		$poll = $GLOBALS['wpdb']->get_row( $query, OBJECT );
-		if( null !== $poll ){
+		if ( null !== $poll ) {
 			return $poll->author;
 		} else {
 			return false;
@@ -45,16 +78,28 @@ class YOP_Poll_Polls {
 		if ( current_user_can( 'yop_poll_results_others' ) ) {
 			$query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `status` != 'deleted'";
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " AND `name` LIKE {$params['q']}";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' AND `name` LIKE %s';
+				$query .= $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q']
+				);
 			}
 		} else if ( current_user_can( 'yop_poll_results_own' ) ) {
 			$query = "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE
-						`author` = '" . $current_user->ID . "'
+						`author` = %s
 						AND `status` !='deleted'";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$current_user->ID
+			);
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " AND `name` LIKE {$params['q']}";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' AND `name` LIKE %s';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q']
+				);
 			}
 		}
 		if ( '' !== $query ) {
@@ -72,17 +117,17 @@ class YOP_Poll_Polls {
 		} else {
 			$data['pagination'] = '';
 		}
-		if ( 1 < $total_pages ){
+		if ( 1 < $total_pages ) {
 			$pagination['first_page'] = '<span class="tablenav-pages-navspan" aria-hidden="true">
 							«
 						  </span>';
 			$pagination['previous_page'] = '<span class="screen-reader-text">
-								' . __( 'Previous page', 'yop-poll' ) . '
+								' . esc_html__( 'Previous page', 'yop-poll' ) . '
 							</span>
 							<span class="tablenav-pages-navspan" aria-hidden="true">
 								‹
 							</span>';
-			$pagination['next_page'] = '<span class="screen-reader-text">' . __( 'Next page', 'yop-poll' ) . '
+			$pagination['next_page'] = '<span class="screen-reader-text">' . esc_html__( 'Next page', 'yop-poll' ) . '
 							</span>
 							<span aria-hidden="true">›</span>';
 			$pagination['last_page'] = '<span class="tablenav-pages-navspan" aria-hidden="true">
@@ -99,7 +144,7 @@ class YOP_Poll_Polls {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']+1
+								'page_no' => $params['page_no'] + 1
 							)
 						)
 					);
@@ -135,7 +180,7 @@ class YOP_Poll_Polls {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']-1
+								'page_no' => $params['page_no'] - 1
 							)
 						)
 					);
@@ -171,7 +216,7 @@ class YOP_Poll_Polls {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']-1
+								'page_no' => $params['page_no'] - 1
 							)
 						)
 					);
@@ -184,7 +229,7 @@ class YOP_Poll_Polls {
 								'order_by' => $params['order_by'],
 								'sort_order' => $params['sort_order'],
 								'q' => htmlentities( $params['q'] ),
-								'page_no' => $params['page_no']+1
+								'page_no' => $params['page_no'] + 1
 							)
 						)
 					);
@@ -262,40 +307,56 @@ class YOP_Poll_Polls {
 			$params['sort_order'] = SORT_ASC;
 		} elseif ( 'desc' === $params['sort_order'] ) {
 			$params['sort_order'] = SORT_DESC;
-		} else{
+		} else {
 			$params['sort_order'] = SORT_ASC;
 		}
 		if ( !in_array( $params['order_by'], self::$order_by_allowed ) ) {
 			$params['order_by'] = 'id';
 		}
-		if ( $params['page_no'] > $pagination['total_pages']) {
+		if ( $params['page_no'] > $pagination['total_pages'] ) {
 			$params['page_no'] = 1;
 		}
 		$limit = self::$polls_per_page * ( $params['page_no'] - 1 );
-		$limit_query = " LIMIT {$limit}, ". self::$polls_per_page;
 		if ( current_user_can( 'yop_poll_results_others' ) ) {
 			$query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `status` != 'deleted'";
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " AND `name` LIKE {$params['q']} ORDER BY `id` DESC";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' AND `name` LIKE %s ORDER BY `id` DESC';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q']
+				);
 			} else {
-				$query .= " ORDER BY `id` DESC";
+				$query .= ' ORDER BY `id` DESC';
 			}
 		} else if ( current_user_can( 'yop_poll_results_own' ) ) {
-			$query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `author` = '" . $current_user->ID . "'
+			$query = "SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `author` = %s
 					AND `status` != 'deleted'";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$current_user->ID
+			);
 			if ( isset( $params['q'] ) && ( '' !== $params['q'] ) ) {
-				$params['q'] = "'" . '%' . esc_sql( $GLOBALS['wpdb']->esc_like( $params['q'] ) ) . '%' . "'";
-				$query .= " AND `name` LIKE {$params['q']} ORDER BY `id` DESC";
+				$params['q'] = '%' . $GLOBALS['wpdb']->esc_like( $params['q'] ) . '%';
+				$query .= ' AND `name` LIKE %s ORDER BY `id` DESC';
+				$query = $GLOBALS['wpdb']->prepare(
+					$query,
+					$params['q']
+				);
 			} else {
-				$query .= " ORDER BY `id` DESC";
+				$query .= ' ORDER BY `id` DESC';
 			}
 		}
 		if ( '' !== $query ) {
-			$query .= $limit_query;
+			$query .= ' LIMIT %d, %d';
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$limit,
+				self::$polls_per_page
+			);
 			$polls = $GLOBALS['wpdb']->get_results( $query, ARRAY_A );
 		}
-		foreach( $polls as &$poll ) {
+		foreach ( $polls as &$poll ) {
 			$statistics[$poll['status']]++;
 			if ( true === self::is_ended( $poll, false ) ) {
 				$poll['status'] = 'ended';
@@ -348,7 +409,11 @@ class YOP_Poll_Polls {
 		if ( current_user_can( 'yop_poll_results_others' ) ) {
 			$query = "SELECT `id`, `name` FROM {$GLOBALS['wpdb']->yop_poll_polls} ORDER BY `name`";
 		} else if ( current_user_can( 'yop_poll_results_own' ) ) {
-			$query = "SELECT `id`, `name` FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `author` = '" . $current_user->ID . "' ORDER BY `name`";
+			$query = "SELECT `id`, `name` FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `author` = %s ORDER BY `name`";
+			$query = $GLOBALS['wpdb']->prepare(
+				$query,
+				$current_user->ID
+			);
 		}
 		if ( '' !== $query ) {
 			$polls = $GLOBALS['wpdb']->get_results( $query, OBJECT );
@@ -375,10 +440,10 @@ class YOP_Poll_Polls {
 					'meta_data' => serialize( $poll_meta_data ),
 					'total_submits' => 0,
 					'total_submited_answers' => 0,
-					'added_date' => isset( $poll->added_date ) ? $poll->added_date : current_time( 'mysql' ),
-					'modified_date' => isset( $poll->modified_date ) ? $poll->modified_date : current_time( 'mysql' )
+					'added_date' => isset( $poll->added_date ) ? sanitize_text_field( $poll->added_date ) : current_time( 'mysql' ),
+					'modified_date' => isset( $poll->modified_date ) ? sanitize_text_field( $poll->modified_date ) : current_time( 'mysql' )
 				);
-				if ( isset( $poll->ID ) && is_numeric($poll->ID ) ) {
+				if ( isset( $poll->ID ) && is_numeric( $poll->ID ) ) {
 					$data['id'] = $poll->ID;
 				}
 				if ( isset( $poll->poll_author ) && is_numeric( $poll->poll_author ) ) {
@@ -418,7 +483,7 @@ class YOP_Poll_Polls {
 									self::$errors_present = false;
 								} else {
 									self::$errors_present = true;
-									self::$error_text = __( 'Error adding page', 'yop-poll' );
+									self::$error_text = esc_html__( 'Error adding page', 'yop-poll' );
 								}
 							}
 						}
@@ -427,11 +492,11 @@ class YOP_Poll_Polls {
 					}
 				} else {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error adding poll', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error adding poll', 'yop-poll' );
 				}
 			} else {
 				self::$errors_present = true;
-				self::$error_text = __( 'A poll with this name already exists', 'yop-poll' );
+				self::$error_text = esc_html__( 'A poll with this name already exists', 'yop-poll' );
 			}
 		}
 		return array(
@@ -459,9 +524,9 @@ class YOP_Poll_Polls {
 				$db_poll_meta = unserialize( $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT `meta_data` FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %d", $poll->id ) ) );
 				if ( 'yes' === $poll->options->poll->autoGeneratePollPage ) {
                     $has_page = true;
-                    if ( isset( $db_poll_meta['options']['poll']['pageId'] ) && ( $db_poll_meta['options']['poll']['pageId'] > 0 ) ){
+                    if ( isset( $db_poll_meta['options']['poll']['pageId'] ) && ( $db_poll_meta['options']['poll']['pageId'] > 0 ) ) {
                         $poll_page_count = $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT COUNT(*) FROM {$GLOBALS['wpdb']->posts} WHERE `ID` = %d AND `post_status` = 'publish'", $db_poll_meta['options']['poll']['pageId'] ) );
-                        if ( 0 === (int)$poll_page_count ) {
+                        if ( 0 === (int) $poll_page_count ) {
                             $has_page = false;
                         }
                     } else {
@@ -515,7 +580,7 @@ class YOP_Poll_Polls {
 					}
 				} else {
 					self::$errors_present = true;
-					self::$error_text = __( 'Error adding poll', 'yop-poll' );
+					self::$error_text = esc_html__( 'Error adding poll', 'yop-poll' );
 				}
 				if ( true === isset( $poll->elementsRemoved ) ) {
 					$elements_removed = explode( ',', $poll->elementsRemoved );
@@ -527,7 +592,7 @@ class YOP_Poll_Polls {
 			}
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error updating poll', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error updating poll', 'yop-poll' );
 		}
 		return array(
 			'success' => !self::$errors_present,
@@ -568,7 +633,7 @@ class YOP_Poll_Polls {
 			YOP_Poll_Bans::delete_all_for_poll( $poll_id );
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error deleting poll', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error deleting poll', 'yop-poll' );
 		}
 		return array(
 			'success' => !self::$errors_present,
@@ -582,7 +647,7 @@ class YOP_Poll_Polls {
 		);
 		$cloned_poll = $GLOBALS['wpdb']->get_row( $poll_query, OBJECT );
 		$data = array(
-			'name' => $cloned_poll->name . ' ' . __( 'clone', 'yop-poll' ),
+			'name' => $cloned_poll->name . ' ' . esc_html__( 'clone', 'yop-poll' ),
 			'template' => $cloned_poll->template,
 			'template_base' => $cloned_poll->template_base,
 			'skin_base' => $cloned_poll->skin_base,
@@ -604,7 +669,7 @@ class YOP_Poll_Polls {
 			$new_poll_meta_data = unserialize( $cloned_poll->meta_data );
 			if ( 'yes' === $new_poll_meta_data['options']['poll']['autoGeneratePollPage'] ) {
 				$page_id = wp_insert_post( array(
-					'post_title' => $cloned_poll->name . ' ' . __( 'clone', 'yop-poll' ),
+					'post_title' => $cloned_poll->name . ' ' . esc_html__( 'clone', 'yop-poll' ),
 					'post_content' => "[yop_poll id='{$new_poll_id}']",
 					'post_status' => 'publish',
 					'post_type' => 'page',
@@ -622,13 +687,13 @@ class YOP_Poll_Polls {
 						self::$errors_present = false;
 					} else {
 						self::$errors_present = true;
-						self::$error_text = __( 'Error adding page', 'yop-poll' );
+						self::$error_text = esc_html__( 'Error adding page', 'yop-poll' );
 					}
 				}
 			}
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error cloning poll', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error cloning poll', 'yop-poll' );
 		}
 		return array(
 			'success' => !self::$errors_present,
@@ -647,7 +712,7 @@ class YOP_Poll_Polls {
 			YOP_Poll_Votes::delete_all_for_poll( $poll_id );
 		} else {
 			self::$errors_present = true;
-			self::$error_text = __( 'Error resetting votes', 'yop-poll' );
+			self::$error_text = esc_html__( 'Error resetting votes', 'yop-poll' );
 		}
 		return array(
 			'success' => !self::$errors_present,
@@ -673,7 +738,7 @@ class YOP_Poll_Polls {
 				),
 				'answers' => array(
 					'paddingLeftRight' => sanitize_text_field( $poll->design->style->answers->paddingLeftRight ),
-					'paddingTopBottom' => sanitize_text_field(  $poll->design->style->answers->paddingTopBottom ),
+					'paddingTopBottom' => sanitize_text_field( $poll->design->style->answers->paddingTopBottom ),
 					'textColor' => sanitize_text_field( $poll->design->style->answers->textColor ),
 					'textSize' => sanitize_text_field( $poll->design->style->answers->textSize ),
 					'textWeight' => sanitize_text_field( $poll->design->style->answers->textWeight ),
@@ -731,10 +796,25 @@ class YOP_Poll_Polls {
 					'emailNotificationsFromEmail' => sanitize_text_field( $poll->options->poll->emailNotificationsFromEmail ),
                     'emailNotificationsRecipients' => sanitize_text_field( $poll->options->poll->emailNotificationsRecipients ),
 					'emailNotificationsSubject' => sanitize_text_field( $poll->options->poll->emailNotificationsSubject ),
-					'emailNotificationsMessage' => sanitize_text_field( $poll->options->poll->emailNotificationsMessage ),
+					'emailNotificationsMessage' => wp_kses(
+						$poll->options->poll->emailNotificationsMessage,
+						array(
+							'br' => array()
+						)
+					),
 					'enableGdpr' => sanitize_text_field( $poll->options->poll->enableGdpr ),
 					'gdprSolution' => sanitize_text_field( $poll->options->poll->gdprSolution ),
-					'gdprConsentText' => sanitize_text_field( $poll->options->poll->gdprConsentText ),
+					'gdprConsentText' => wp_kses(
+						$poll->options->poll->gdprConsentText,
+						array(
+							'a' => array(
+								'href' => array(),
+								'target' => array(),
+								'title' => array(),
+								'rel' => array()
+							)
+						)
+					),
 					'loadWithAjax' => sanitize_text_field( $poll->options->poll->loadWithAjax ),
 					'notificationMessageLocation' => sanitize_text_field( $poll->options->poll->notificationMessageLocation )
 				),
@@ -766,303 +846,303 @@ class YOP_Poll_Polls {
 	public static function validate_data( stdClass $poll ) {
 		if ( false === is_object( $poll ) ) {
 			self::$errors_present = true;
-			self::$error_text = __( 'Invalid data', 'yop-poll' );
+			self::$error_text = esc_html__( 'Invalid data', 'yop-poll' );
 		} else {
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->name ) ||
-				( '' === trim( $poll->name ) ) )
+				( '' === sanitize_text_field( $poll->name ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Name" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll Name" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->template ) ||
-				( '' === trim( $poll->design->template ) ) ||
+				( '' === sanitize_text_field( $poll->design->template ) ) ||
 				( 0 === intval( $poll->design->template ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Template" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Template" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->poll->backgroundColor ) ||
-				( '' === trim( $poll->design->style->poll->backgroundColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->poll->backgroundColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->poll->backgroundColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Background Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll Background Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->poll->borderSize ) ||
-				( '' === trim( $poll->design->style->poll->borderSize ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->poll->borderSize ) ) ||
 				( !ctype_digit( (string) $poll->design->style->poll->borderSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Border Thickness" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll Border Thickness" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->poll->borderColor ) ||
-				( '' === trim( $poll->design->style->poll->borderColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->poll->borderColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->poll->borderColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Border Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll Border Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->poll->borderRadius ) ||
-				( '' === trim( $poll->design->style->poll->borderRadius ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->poll->borderRadius ) ) ||
 				( !ctype_digit( (string) $poll->design->style->poll->borderRadius ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Border Radius" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll Border Radius" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->poll->paddingLeftRight ) ||
-				( '' === trim( $poll->design->style->poll->paddingLeftRight ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->poll->paddingLeftRight ) ) ||
 				( !ctype_digit( (string) $poll->design->style->poll->paddingLeftRight ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Padding Left/Right" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll Padding Left/Right" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->poll->paddingTopBottom ) ||
-				( '' === trim( $poll->design->style->poll->paddingTopBottom ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->poll->paddingTopBottom ) ) ||
 				( !ctype_digit( (string) $poll->design->style->poll->paddingTopBottom ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Poll Padding Top/Bottom" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Poll Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			/* QUESTIONS STYLE CHECK */
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->questions->textColor ) ||
-				( '' === trim( $poll->design->style->questions->textColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->questions->textColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->questions->textColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Text Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Question Text Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->questions->textSize ) ||
-				( '' === trim( $poll->design->style->questions->textSize ) ) )
+				( '' === sanitize_text_field( $poll->design->style->questions->textSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Text Size" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Question Text Size" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->questions->textWeight ) ||
-				( '' === trim( $poll->design->style->questions->textWeight ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->questions->textWeight ) ) ||
 				( !in_array( $poll->design->style->questions->textWeight, self::$text_weight_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Text Weight" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Question Text Weight" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->questions->textAlign ) ||
-				( '' === trim( $poll->design->style->questions->textAlign ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->questions->textAlign ) ) ||
 				( !in_array( $poll->design->style->questions->textAlign, self::$text_align_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Question Text Align" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Question Text Align" is invalid', 'yop-poll' );
 			}
 			/* ANSWERS STYLE CHECK */
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->answers->paddingLeftRight ) ||
-				( '' === trim( $poll->design->style->answers->paddingLeftRight ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->answers->paddingLeftRight ) ) ||
 				( !ctype_digit( (string) $poll->design->style->answers->paddingLeftRight ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Padding Left/Right" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Answers Padding Left/Right" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->answers->paddingTopBottom ) ||
-				( '' === trim( $poll->design->style->answers->paddingTopBottom ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->answers->paddingTopBottom ) ) ||
 				( !ctype_digit( (string) $poll->design->style->answers->paddingTopBottom ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Padding Top/Bottom" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Answers Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->answers->textColor ) ||
-				( '' === trim( $poll->design->style->answers->textColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->answers->textColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->answers->textColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Text Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Answers Text Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->answers->textSize ) ||
-				( '' === trim( $poll->design->style->answers->textSize ) ) )
+				( '' === sanitize_text_field( $poll->design->style->answers->textSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Text Size" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Answers Text Size" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->answers->textWeight ) ||
-				( '' === trim( $poll->design->style->answers->textWeight ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->answers->textWeight ) ) ||
 				( !in_array( $poll->design->style->answers->textWeight, self::$text_weight_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Answers Text Weight" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Answers Text Weight" is invalid', 'yop-poll' );
 			}
 			/* BUTTONS STYLE CHECK */
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->backgroundColor ) ||
-				( '' === trim( $poll->design->style->buttons->backgroundColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->backgroundColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->buttons->backgroundColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Background Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Background Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->borderSize ) ||
-				( '' === trim( $poll->design->style->buttons->borderSize ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->borderSize ) ) ||
 				( !ctype_digit( (string) $poll->design->style->buttons->borderSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Border Thickness" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Border Thickness" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->borderColor ) ||
-				( '' === trim( $poll->design->style->buttons->borderColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->borderColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->buttons->borderColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Border Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Border Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->borderRadius ) ||
-				( '' === trim( $poll->design->style->buttons->borderRadius ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->borderRadius ) ) ||
 				( !ctype_digit( (string) $poll->design->style->buttons->borderRadius ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Border Radius" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Border Radius" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->paddingLeftRight ) ||
-				( '' === trim( $poll->design->style->buttons->paddingLeftRight ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->paddingLeftRight ) ) ||
 				( !ctype_digit( (string) $poll->design->style->buttons->paddingLeftRight ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Padding Left/Right" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Padding Left/Right" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->paddingTopBottom ) ||
-				( '' === trim( $poll->design->style->buttons->paddingTopBottom ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->paddingTopBottom ) ) ||
 				( !ctype_digit( (string) $poll->design->style->buttons->paddingTopBottom ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Padding Top/Bottom" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->textColor ) ||
-				( '' === trim( $poll->design->style->buttons->textColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->textColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->buttons->textColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Text Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Text Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->textSize ) ||
-				( '' === trim( $poll->design->style->buttons->textSize ) ) )
+				( '' === sanitize_text_field( $poll->design->style->buttons->textSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Text Size" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Text Size" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->buttons->textWeight ) ||
-				( '' === trim( $poll->design->style->buttons->textWeight ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->buttons->textWeight ) ) ||
 				( !in_array( $poll->design->style->answers->textWeight, self::$text_weight_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Text Weight" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Text Weight" is invalid', 'yop-poll' );
 			}
 			/* ERRORS STYLE CHECK */
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->borderLeftColorForSuccess ) ||
-				( '' === trim( $poll->design->style->errors->borderLeftColorForSuccess ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->errors->borderLeftColorForSuccess ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->errors->borderLeftColorForSuccess ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Messages Border Color For Success" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Messages Border Color For Success" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->borderLeftColorForError ) ||
-				( '' === trim( $poll->design->style->errors->borderLeftColorForError ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->errors->borderLeftColorForError ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->errors->borderLeftColorForError ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Messages Border Color For Error" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Messages Border Color For Error" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->borderLeftSize ) ||
-				( '' === trim( $poll->design->style->errors->borderLeftSize ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->errors->borderLeftSize ) ) ||
 				( !ctype_digit( (string) $poll->design->style->errors->borderLeftSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Messages Border Left Thickness" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Messages Border Left Thickness" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->paddingTopBottom ) ||
-				( '' === trim( $poll->design->style->errors->paddingTopBottom ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->errors->paddingTopBottom ) ) ||
 				( !ctype_digit( (string) $poll->design->style->errors->paddingTopBottom ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Messages Padding Top/Bottom" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Messages Padding Top/Bottom" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->textColor ) ||
-				( '' === trim( $poll->design->style->errors->textColor ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->errors->textColor ) ) ||
 				( !ctype_alnum( str_replace( '#', '', $poll->design->style->errors->textColor ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Buttons Text Color" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Buttons Text Color" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->textSize ) ||
-				( '' === trim( $poll->design->style->errors->textSize ) ) )
+				( '' === sanitize_text_field( $poll->design->style->errors->textSize ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Messages Text Size" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Messages Text Size" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !isset( $poll->design->style->errors->textWeight ) ||
-				( '' === trim( $poll->design->style->errors->textWeight ) ) ||
+				( '' === sanitize_text_field( $poll->design->style->errors->textWeight ) ) ||
 				( !in_array( $poll->design->style->answers->textWeight, self::$text_weight_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Messages Text Weight" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Messages Text Weight" is invalid', 'yop-poll' );
 			}
 			/* POLL ELEMENTS CHECK */
 			if (
@@ -1070,75 +1150,75 @@ class YOP_Poll_Polls {
 				( 0 === count( $poll->elements ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'No elements present', 'yop-poll' );
+				self::$error_text = esc_html__( 'No elements present', 'yop-poll' );
 			}
 			if ( false === self::$errors_present ) {
-				foreach( $poll->elements as $element ) {
+				foreach ( $poll->elements as $element ) {
 					switch ( $element->type ) {
 						case 'text-question': {
 							if (
 								( false === self::$errors_present ) &&
 								( !isset( $element->text ) ||
 								( '' === trim( $element->text ) ) ||
-								( '' === sanitize_text_field( $element->text ) ) 
+								( '' === sanitize_text_field( $element->text ) )
 								)
 							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Question" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Question" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( 0 == count( $element->answers ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'At least one answer per question is required', 'yop-poll' );
+								self::$error_text = esc_html__( 'At least one answer per question is required', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present )
-							){
-								foreach( $element->answers as $answer ) {
+							) {
+								foreach ( $element->answers as $answer ) {
 									if (
 										( false === self::$errors_present ) &&
 										( !isset( $answer->text ) ||
 										( '' === trim( $answer->text ) ) ||
 										( '' === sanitize_text_field( $answer->text ) )
 										)
-									){
+									) {
 										self::$errors_present = true;
-										self::$error_text = __( 'Answer text is invalid', 'yop-poll' );
+										self::$error_text = esc_html__( 'Answer text is invalid', 'yop-poll' );
 									}
 									if (
 										( false === self::$errors_present ) &&
 										!in_array( $answer->options->makeDefault, self::$yes_no_allowed )
 									) {
 										self::$errors_present = true;
-										self::$error_text = __( 'Data for default answer is invalid', 'yop-poll' );
+										self::$error_text = esc_html__( 'Data for default answer is invalid', 'yop-poll' );
 									}
 									if (
 										( false === self::$errors_present ) &&
 										!in_array( $answer->options->makeLink, self::$yes_no_allowed )
 									) {
 										self::$errors_present = true;
-										self::$error_text = __( ' Data for "Answer Link" is invalid', 'yop-poll' );
+										self::$error_text = esc_html__( ' Data for "Answer Link" is invalid', 'yop-poll' );
 									}
 									if (
 										( false === self::$errors_present ) &&
 										( 'yes' === $answer->options->makeLink ) &&
 										( ( !isset( $answer->options->link ) ) ||
-										( '' === trim( $answer->options->link ) ) ||
+										( '' === sanitize_text_field( $answer->options->link ) ) ||
 										!filter_var( $answer->options->link, FILTER_VALIDATE_URL ) )
 									) {
 										self::$errors_present = true;
-										self::$error_text = __( 'Data for "Answer link" is invalid', 'yop-poll' );
+										self::$error_text = esc_html__( 'Data for "Answer link" is invalid', 'yop-poll' );
 									}
 								}
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !in_array( $element->options->allowOtherAnswers, self::$yes_no_allowed ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Allow other options" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Allow other options" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
@@ -1146,77 +1226,77 @@ class YOP_Poll_Polls {
 								( '' === trim( $element->options->otherAnswersLabel ) ) ||
 								( '' === sanitize_text_field( $element->options->otherAnswersLabel ) )
 								)
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Label for Other Answers" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Label for Other Answers" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !in_array( $element->options->addOtherAnswers, self::$yes_no_allowed ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Add other answers in answer list" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Add other answers in answer list" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !in_array( $element->options->displayOtherAnswersInResults, self::$yes_no_allowed ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Display other answers in results list" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Display other answers in results list" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !in_array( $element->options->allowMultipleAnswers, self::$yes_no_allowed ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Allow multiple answers " is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Allow multiple answers " is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !isset( $element->options->multipleAnswersMinim ) ||
-								( '' === trim( $element->options->multipleAnswersMinim ) ) )
-							){
+								( '' === sanitize_text_field( $element->options->multipleAnswersMinim ) ) )
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Minimum answers required" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Minimum answers required" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !isset( $element->options->multipleAnswersMaxim ) ||
 								( '' === trim( $element->options->multipleAnswersMaxim ) ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Maximum answers required" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Maximum answers required" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( intval( $element->options->multipleAnswersMinim ) > intval( $element->options->multipleAnswersMaxim ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Minimum answers required" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Minimum answers required" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !in_array( $element->options->answersDisplay, self::$answers_display_allowed ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Display answers" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Display answers" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( 'columns' === $element->options->answersDisplay ) &&
 								( !isset( $element->options->answersColumns ) ||
-								( '' === trim( $element->options->answersColumns ) ) ||
+								( '' === sanitize_text_field( $element->options->answersColumns ) ) ||
 								( 0 === intval( $element->options->answersColumns ) ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Maximum answers required" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Maximum answers required" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !in_array( $element->options->answersSort, self::$answers_sort_allowed ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Sort Answers" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Sort Answers" is invalid', 'yop-poll' );
 							}
 							break;
 						}
@@ -1229,14 +1309,14 @@ class YOP_Poll_Polls {
 								)
 							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Custom Field" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Custom Field" is invalid', 'yop-poll' );
 							}
 							if (
 								( false === self::$errors_present ) &&
 								( !in_array( $element->options->makeRequired, self::$yes_no_allowed ) )
-							){
+							) {
 								self::$errors_present = true;
-								self::$error_text = __( 'Data for "Make Required" is invalid', 'yop-poll' );
+								self::$error_text = esc_html__( 'Data for "Make Required" is invalid', 'yop-poll' );
 							}
 							break;
 						}
@@ -1255,14 +1335,14 @@ class YOP_Poll_Polls {
 				)
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "Vote Button Label" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "Vote Button Label" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->showResultsLink, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Show [Results] link" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Show [Results] link" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1273,60 +1353,60 @@ class YOP_Poll_Polls {
 				)
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "[Results] Link Label" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "[Results] Link Label" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->showTotalVotes, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Show Total Votes" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Show Total Votes" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->showTotalAnswers, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Show Total Answers" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Show Total Answers" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->startDateOption, self::$date_values_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Start Date" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Start Date" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( 'custom' === $poll->options->poll->startDateOption ) &&
 				( !isset( $poll->options->poll->startDateCustom ) ||
-				( '' === trim( $poll->options->poll->startDateCustom ) ) )
+				( '' === sanitize_text_field( $poll->options->poll->startDateCustom ) ) )
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "Start Date" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "Start Date" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->endDateOption, self::$date_values_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "End Date" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "End Date" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( 'custom' === $poll->options->poll->endDateOption ) &&
 				( !isset( $poll->options->poll->endDateCustom ) ||
-				( '' === trim( $poll->options->poll->endDateCustom ) ) )
+				( '' === sanitize_text_field( $poll->options->poll->endDateCustom ) ) )
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "End Date" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "End Date" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->redirectAfterVote, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Redirect after vote" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Redirect after vote" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1337,121 +1417,121 @@ class YOP_Poll_Polls {
 				)
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "Redirect Url" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "Redirect Url" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->resetPollStatsAutomatically, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Reset Poll Stats automatically" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Reset Poll Stats automatically" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->resetPollStatsEveryPeriod, self::$reset_stats_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Reset Every" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Reset Every" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->autoGeneratePollPage, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Auto Generate Poll Page" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Auto Generate Poll Page" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->useCaptcha, self::$captcha_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Use Captcha" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Use Captcha" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->poll->sendEmailNotifications, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Send Email notifications" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Send Email notifications" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( 'yes' === $poll->options->poll->sendEmailNotifications ) &&
 				( !isset( $poll->options->poll->emailNotificationsFromName ) ||
-				( '' === trim( $poll->options->poll->emailNotificationsFromName ) ) )
+				( '' === sanitize_text_field( $poll->options->poll->emailNotificationsFromName ) ) )
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "From Name" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "From Name" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( 'yes' === $poll->options->poll->sendEmailNotifications ) &&
 				( !isset( $poll->options->poll->emailNotificationsFromEmail ) ||
-				( '' === trim( $poll->options->poll->emailNotificationsFromEmail ) ) )
+				( '' === sanitize_text_field( $poll->options->poll->emailNotificationsFromEmail ) ) )
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "From Email" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "From Email" is invalid', 'yop-poll' );
 			}
             if (
                 ( false === self::$errors_present ) &&
                 ( 'yes' === $poll->options->poll->sendEmailNotifications ) &&
                 ( !isset( $poll->options->poll->emailNotificationsRecipients ) ||
-                    ( '' === trim( $poll->options->poll->emailNotificationsRecipients ) ) )
+                    ( '' === sanitize_text_field( $poll->options->poll->emailNotificationsRecipients ) ) )
             ) {
                 self::$errors_present = true;
-                self::$error_text = __( 'Data for "Recipients" is invalid', 'yop-poll' );
+                self::$error_text = esc_html__( 'Data for "Recipients" is invalid', 'yop-poll' );
             }
 			if (
 				( false === self::$errors_present ) &&
 				( 'yes' === $poll->options->poll->sendEmailNotifications ) &&
 				( !isset( $poll->options->poll->emailNotificationsSubject ) ||
-				( '' === trim( $poll->options->poll->emailNotificationsSubject ) ) )
+				( '' === sanitize_text_field( $poll->options->poll->emailNotificationsSubject ) ) )
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "Subject" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "Subject" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( 'yes' === $poll->options->poll->sendEmailNotifications ) &&
 				( !isset( $poll->options->poll->emailNotificationsMessage ) ||
-				( '' === trim( $poll->options->poll->emailNotificationsMessage ) ) )
+				( '' === sanitize_text_field( $poll->options->poll->emailNotificationsMessage ) ) )
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "Message" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "Message" is invalid', 'yop-poll' );
 			}
 			/* POLL OPTIONS->RESULTS CHECK */
 			if (
 				( false === self::$errors_present ) &&
 				( 0 < count( $poll->options->results->showResultsMoment ) ) &&
 				( 0 === count( array_intersect( $poll->options->results->showResultsMoment, self::$show_results_allowed ) ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Show results" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Show results" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( in_array( 'custom-date', $poll->options->results->showResultsMoment ) ) &&
 				( !isset( $poll->options->results->customDateResults ) ||
-				( '' === trim( $poll->options->results->customDateResults ) ) )
+				( '' === sanitize_text_field( $poll->options->results->customDateResults ) ) )
 			 ) {
 				 self::$errors_present = true;
-				 self::$error_text = __( 'Data for "Show Results" is invalid', 'yop-poll' );
+				 self::$error_text = esc_html__( 'Data for "Show Results" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
-				( 0 < count( $poll->options->results->showResultsMoment ) ) && !in_array('never', $poll->options->results->showResultsMoment ) &&
-				( ( 0 === count( $poll->options->results->showResultsTo )) ||
+				( 0 < count( $poll->options->results->showResultsMoment ) ) && !in_array( 'never', $poll->options->results->showResultsMoment ) &&
+				( ( 0 === count( $poll->options->results->showResultsTo ) ) ||
 				( 0 === count( array_intersect( $poll->options->results->showResultsTo, self::$show_results_to_allowed ) ) ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Show results to" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Show results to" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->results->backToVoteOption, self::$yes_no_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Display [Back to vote] link" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Display [Back to vote] link" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1460,16 +1540,16 @@ class YOP_Poll_Polls {
 				( '' === trim( $poll->options->results->backToVoteCaption ) ) ||
 				( '' === sanitize_text_field( $poll->options->results->backToVoteCaption ) )
 				)
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "[Back to vote] caption" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "[Back to vote] caption" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->results->sortResults, self::$sort_results_allowed ) )
-			){
+			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Sort Results" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Sort Results" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1477,14 +1557,14 @@ class YOP_Poll_Polls {
 				( !in_array( $poll->options->results->sortResultsRule, self::$sort_results_rule_allowed ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Sort rule" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Sort rule" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->results->displayResultsAs, self::$display_results_as_allowed ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Display Results As"', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Display Results As"', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1492,7 +1572,7 @@ class YOP_Poll_Polls {
 				( 0 === count( array_intersect( $poll->options->access->votePermissions, self::$vote_permissions_allowed ) ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Vote Permissions" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Vote Permissions" is invalid', 'yop-poll' );
 			}
 			/*
 			if (
@@ -1500,16 +1580,16 @@ class YOP_Poll_Polls {
 				( !in_array( $poll->options->access->allowWordpressVotes, self::$yes_no_allowed ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Wordpress" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Wordpress" is invalid', 'yop-poll' );
 			}
 			*/
 			if (
 				( false === self::$errors_present ) &&
 				( count( $poll->options->access->blockVoters ) > 0 ) &&
-				( 0 === count( array_intersect($poll->options->access->blockVoters, self::$block_voters_allowed) ) )
+				( 0 === count( array_intersect( $poll->options->access->blockVoters, self::$block_voters_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Block Voters" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Block Voters" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1521,14 +1601,14 @@ class YOP_Poll_Polls {
 				( !in_array( $poll->options->access->blockForPeriod, self::$block_voters_period_allowed ) ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Block Period" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Block Period" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
 				( !in_array( $poll->options->access->limitVotesPerUser, self::$yes_no_allowed ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Limit Number Of Votes per User" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Limit Number Of Votes per User" is invalid', 'yop-poll' );
 			}
 			if (
 				( false === self::$errors_present ) &&
@@ -1536,7 +1616,7 @@ class YOP_Poll_Polls {
 				( 0 === intval( $poll->options->access->votesPerUserAllowed ) )
 			) {
 				self::$errors_present = true;
-				self::$error_text = __( 'Data for "Votes per user" is invalid', 'yop-poll' );
+				self::$error_text = esc_html__( 'Data for "Votes per user" is invalid', 'yop-poll' );
 			}
 		}
 	}
@@ -1563,7 +1643,7 @@ class YOP_Poll_Polls {
         }
     }
     public static function ends_soon( $poll ) {
-        $ends_soon_date = date( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) . ' + ' . self::$ends_soon_interval. ' days' ) );
+        $ends_soon_date = date( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) . ' + ' . self::$ends_soon_interval . ' days' ) );
 		$poll_meta_data = unserialize( $poll['meta_data'] );
 		if ( 'custom' === $poll_meta_data['options']['poll']['endDateOption'] ) {
             $end_date = date( 'Y-m-d H:i:s', strtotime( $poll_meta_data['options']['poll']['endDateCustom'] ) );
@@ -1591,7 +1671,7 @@ class YOP_Poll_Polls {
 			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %s AND `status` != 'deleted'", $poll_id
 		);
 		$poll = $GLOBALS['wpdb']->get_row( $query, OBJECT );
-		if( null !== $poll ){
+		if ( null !== $poll ) {
 			$poll_meta_data = unserialize( $poll->meta_data );
 			$poll->meta_data = array(
 				'style' => self::convert_meta_data_for_style( $poll_meta_data['style'] ),
@@ -1618,16 +1698,16 @@ class YOP_Poll_Polls {
 				"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %s AND `status` !='deleted'", $poll_id
 			);
 			$poll = $GLOBALS['wpdb']->get_row( $query, OBJECT );
-			if ( null !== $poll ){
+			if ( null !== $poll ) {
 				$poll_meta_data = unserialize( $poll->meta_data );
 				$poll->meta_data = array(
 					'style' => self::convert_meta_data_for_style( $poll_meta_data['style'] ),
 					'options' => $poll_meta_data['options']
 				);
 				$poll_elements = YOP_Poll_Elements::get_all_for_poll( $poll_id );
-				foreach( $poll_elements as $poll_element ) {
+				foreach ( $poll_elements as $poll_element ) {
 					if ( true === isset( $poll_element->meta_data['answersSort'] ) ) {
-						switch( $poll_element->meta_data['answersSort'] ) {
+						switch ( $poll_element->meta_data['answersSort'] ) {
 							case 'as-defined': {
 								$sub_elements_order_by = 'sorder';
 								$sub_elements_order_rule = 'ASC';
@@ -1671,7 +1751,7 @@ class YOP_Poll_Polls {
 			"SELECT * FROM {$GLOBALS['wpdb']->yop_poll_polls} WHERE `id` = %s AND `status` !='deleted'", $poll_id
 		);
 		$poll = $GLOBALS['wpdb']->get_row( $query, OBJECT );
-		if( null !== $poll ){
+		if ( null !== $poll ) {
 			$poll->meta_data = unserialize( $poll->meta_data );
 			switch ( $poll->meta_data['options']['results']['sortResults'] ) {
 				case 'as-defined': {
@@ -1717,16 +1797,16 @@ class YOP_Poll_Polls {
 						$poll_element->answers[] = $poll_sub_element;
 					}
 				}
-				if ( 
-					( true === isset( $poll_element->meta_data['displayOtherAnswersInResults'] ) ) && 
+				if (
+					( true === isset( $poll_element->meta_data['displayOtherAnswersInResults'] ) ) &&
 					( 'yes' === $poll_element->meta_data['displayOtherAnswersInResults'] ) &&
 					( 'no' === $poll_element->meta_data['addOtherAnswers'] )
 					) {
 					$element_other_answers = YOP_Poll_Other_Answers::get_for_element( $poll_element->id );
 					if ( count( $element_other_answers ) > 0 ) {
 						$i = 1;
-						foreach( $element_other_answers as $other_answer ) {
-							$poll_element->answers[] = ( object ) array(
+						foreach ( $element_other_answers as $other_answer ) {
+							$poll_element->answers[] = (object) array(
 								'id' => 0,
 								'poll_id' => $poll_id,
 								'element_id' => $poll_element->id,
@@ -1804,7 +1884,7 @@ class YOP_Poll_Polls {
 		/*END POLL*/
 		/*BEGIN QUESTIONS*/
 		if ( true === in_array( $meta_data_for_style['questions']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
-			switch( $meta_data_for_style['questions']['textSize'] ) {
+			switch ( $meta_data_for_style['questions']['textSize'] ) {
 				case 'small': {
 					$meta_data_for_style['questions']['textSize'] = '14';
 					break;
@@ -1834,7 +1914,7 @@ class YOP_Poll_Polls {
 			$meta_data_for_style['answers']['paddingTopBottom'] = $meta_data_for_style['answers']['padding'];
 		}
 		if ( true === in_array( $meta_data_for_style['answers']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
-			switch( $meta_data_for_style['answers']['textSize'] ) {
+			switch ( $meta_data_for_style['answers']['textSize'] ) {
 				case 'small': {
 					$meta_data_for_style['answers']['textSize'] = '14';
 					break;
@@ -1861,7 +1941,7 @@ class YOP_Poll_Polls {
 			$meta_data_for_style['buttons']['paddingTopBottom'] = '5';
 		}
 		if ( true === in_array( $meta_data_for_style['buttons']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
-			switch( $meta_data_for_style['buttons']['textSize'] ) {
+			switch ( $meta_data_for_style['buttons']['textSize'] ) {
 				case 'small': {
 					$meta_data_for_style['buttons']['textSize'] = '14';
 					break;
@@ -1894,7 +1974,7 @@ class YOP_Poll_Polls {
 			$meta_data_for_style['errors']['paddingTopBottom'] = $meta_data_for_style['errors']['padding'];
 		}
 		if ( true === in_array( $meta_data_for_style['errors']['textSize'], array( 'small', 'medium', 'large' ) ) ) {
-			switch( $meta_data_for_style['errors']['textSize'] ) {
+			switch ( $meta_data_for_style['errors']['textSize'] ) {
 				case 'small': {
 					$meta_data_for_style['errors']['textSize'] = '14';
 					break;
@@ -1940,9 +2020,9 @@ class YOP_Poll_Polls {
 	public static function has_started_frontend( $poll ) {
         $today = date( 'Y-m-d H:i:s', strtotime( current_time( 'mysql' ) ) );
 		if ( 'custom' === $poll->meta_data['options']['poll']['startDateOption'] ) {
-            $end_date = date( 'Y-m-d H:i:s', strtotime( $poll->meta_data['options']['poll']['startDateCustom'] ) );
-            if ( $end_date ) {
-                if ( $today < $end_date ) {
+            $start_date = date( 'Y-m-d H:i:s', strtotime( $poll->meta_data['options']['poll']['startDateCustom'] ) );
+            if ( $start_date ) {
+                if ( $today < $start_date ) {
                     return false;
                 } else {
                     return true;
@@ -2004,7 +2084,7 @@ class YOP_Poll_Polls {
 				$results[$i]['sorder'] = $answer->sorder;
 				$results[$i]['votes'] = $answer->total_submits;
 				if ( 0 < intval( $poll->total_submits ) ) {
-					if ( 0 ===  ( 100 * $answer->total_submits % $poll->total_submits ) ) {
+					if ( 0 === ( 100 * $answer->total_submits % $poll->total_submits ) ) {
 						$results[$i]['percentage'] = number_format( $answer->total_submits / $poll->total_submits * 100, 0 );
 					} else {
 						$results[$i]['percentage'] = number_format( $answer->total_submits / $poll->total_submits * 100, 2 );
@@ -2031,7 +2111,7 @@ class YOP_Poll_Polls {
 			$order_by['votes'][$key] = $row['votes'];
 			$order_by['percentage'][$key] = $row['percentage'];
 		}
-		if ( 0 < count( $results) ) {
+		if ( 0 < count( $results ) ) {
 			array_multisort( $order_by[$sort_params['order_by']], $sort_params['sort_order'], $results );
 		}
 		return $results;
@@ -2039,7 +2119,9 @@ class YOP_Poll_Polls {
 	public static function add_vote( $poll_id, $total_submited_answers ) {
 		$query = $GLOBALS['wpdb']->prepare(
 			"UPDATE {$GLOBALS['wpdb']->yop_poll_polls} SET `total_submits` = `total_submits` + 1, "
-			. "`total_submited_answers` = `total_submited_answers` + {$total_submited_answers} WHERE `id` = %s", $poll_id
+			. '`total_submited_answers` = `total_submited_answers` + %d WHERE `id` = %s',
+			$total_submited_answers,
+			$poll_id
 		);
 		$GLOBALS['wpdb']->query( $query );
 	}
@@ -2158,9 +2240,9 @@ class YOP_Poll_Polls {
 		$search_field = '';
 		$total_votes_for_user = '';
 		$accept_votes_from_user = true;
-		switch( $user_type ) {
+		switch ( $user_type ) {
 			case 'wordpress': {
-				$search_field = "user_id";
+				$search_field = 'user_id';
 				break;
 			}
 			case 'facebook': {
@@ -2314,7 +2396,7 @@ class YOP_Poll_Polls {
 					$elements_votes[$i] = 0;
 					foreach ( $element_data->answers as $answer_data ) {
 						if ( intval( $answer_data->id ) > 0 ) {
-							$elements_votes[$i] += intval( $answer_data->votes);
+							$elements_votes[$i] += intval( $answer_data->votes );
 						}
 					}
 					$i++;
@@ -2328,7 +2410,7 @@ class YOP_Poll_Polls {
 					$votes[$i]->trackingId = '';
 					$votes[$i]->data = array();
 					$j = 0;
-					foreach( $elements_data as $element_data ) {
+					foreach ( $elements_data as $element_data ) {
 						if ( intval( $element_data->id ) > 0 ) {
 							$votes[$i]->data[$j] = new stdClass();
 							$votes[$i]->data[$j]->type = 'question';
@@ -2355,18 +2437,18 @@ class YOP_Poll_Polls {
 				$result['success'] = true;
 			} else {
 				$result['success'] = false;
-				$result['error'] = __( 'Number of votes for each question should be the same', 'yop-poll' );
+				$result['error'] = esc_html__( 'Number of votes for each question should be the same', 'yop-poll' );
 			}
 		} else {
 			$result['success'] = false;
-			$result['error'] = __( 'Invalid Poll', 'yop-poll' );
+			$result['error'] = esc_html__( 'Invalid Poll', 'yop-poll' );
 		}
 		return $result;
 	}
 	public static function has_other_answers( $poll ) {
 		if ( true === isset( $poll->elements ) ) {
-			foreach( $poll->elements as $element ) {
-				if ( 
+			foreach ( $poll->elements as $element ) {
+				if (
 					( true === in_array( $element->etype, array( 'text-question', 'media-question' ) ) ) &&
 					( 'yes' === $element->meta_data['allowOtherAnswers'] )
 					) {
@@ -2376,5 +2458,61 @@ class YOP_Poll_Polls {
 		} else {
 			return false;
 		}
+	}
+	public static function get_all_polls_for_archive( $params, $order_by ) {
+		if ( 0 !== $params['max'] ) {
+			$limit = 'LIMIT %d';
+			$query = "SELECT `id` FROM `{$GLOBALS['wpdb']->yop_poll_polls}` WHERE `status` = 'published' {$order_by} LIMIT %d";
+			$query_ready = $GLOBALS['wpdb']->prepare(
+				$query,
+				$params['max']
+			);
+		} else {
+			$query_ready = "SELECT `id` FROM `{$GLOBALS['wpdb']->yop_poll_polls}` WHERE `status` = 'published' {$order_by}";
+		}
+        $polls = $GLOBALS['wpdb']->get_results( $query_ready, ARRAY_A );
+		return $polls;
+	}
+	public static function get_active_polls_for_archive( $params, $order_by ) {
+		$polls_for_display = array();
+		$nr_added = 0;
+		$query_ready = "SELECT `id`, `meta_data` FROM `{$GLOBALS['wpdb']->yop_poll_polls}` WHERE `status` = 'published' {$order_by}";
+		$polls = $GLOBALS['wpdb']->get_results( $query_ready, OBJECT );
+		foreach ( $polls as $poll ) {
+			$poll->meta_data = unserialize( $poll->meta_data );
+			if (
+				( true === YOP_Poll_Polls::has_started_frontend( $poll ) ) &&
+				( false === YOP_Poll_Polls::has_ended_frontend( $poll ) )
+			) {
+				if ( 0 === $params['max'] ) {
+					$polls_for_display[]['id'] = $poll->id;
+				} else {
+					if ( $nr_added < $params['max'] ) {
+						$polls_for_display[]['id'] = $poll->id;
+						$nr_added++;
+					}
+				}
+			}
+		}
+		return $polls_for_display;
+	}
+	public static function get_ended_polls_for_archive( $params, $order_by ) {
+		$polls_for_display = array();
+		$nr_added = 0;
+		$query_ready = "SELECT `id`, `meta_data` FROM `{$GLOBALS['wpdb']->yop_poll_polls}` WHERE `status` = 'published' {$order_by}";
+		$polls = $GLOBALS['wpdb']->get_results( $query_ready, ARRAY_A );
+		foreach ( $polls as $poll ) {
+			if ( true === YOP_Poll_Polls::is_ended( $poll, false ) ) {
+				if ( 0 === $params['max'] ) {
+					$polls_for_display[]['id'] = $poll['id'];
+				} else {
+					if ( $nr_added < $params['max'] ) {
+						$polls_for_display[]['id'] = $poll['id'];
+						$nr_added++;
+					}
+				}
+			}
+		}
+		return $polls_for_display;
 	}
 }

@@ -33,18 +33,9 @@ class NewsletterEmails extends NewsletterModule {
         $this->themes = new NewsletterThemes('emails');
         parent::__construct('emails', '1.1.5');
         add_action('newsletter_action', array($this, 'hook_newsletter_action'), 13, 3);
-
+        add_action('newsletter_init', [$this, 'hook_newsletter_init']);
+        
         if (is_admin()) {
-            if (defined('DOING_AJAX') && DOING_AJAX) {
-                add_action('wp_ajax_tnpc_render', array($this, 'tnpc_render_callback'));
-                add_action('wp_ajax_tnpc_preview', array($this, 'tnpc_preview_callback'));
-                add_action('wp_ajax_tnpc_css', array($this, 'tnpc_css_callback'));
-                add_action('wp_ajax_tnpc_options', array($this, 'hook_wp_ajax_tnpc_options'));
-                add_action('wp_ajax_tnpc_get_all_presets', array($this, 'ajax_get_all_presets'));
-                add_action('wp_ajax_tnpc_get_preset', array($this, 'ajax_get_preset'));
-                add_action('wp_ajax_tnpc_delete_preset', array($this, 'hook_wp_ajax_tnpc_delete_preset'));
-                add_action('wp_ajax_tnpc_regenerate_email', array($this, 'hook_wp_ajax_tnpc_regenerate_email'));
-            }
             // Thank you to plugins which add the WP editor on other admin plugin pages...
             if (isset($_GET['page']) && $_GET['page'] == 'newsletter_emails_edit') {
                 global $wp_actions;
@@ -52,21 +43,37 @@ class NewsletterEmails extends NewsletterModule {
             }
         }
     }
+    
+    function hook_newsletter_init() {
+        if (is_admin()) {
+            if (defined('DOING_AJAX') && DOING_AJAX) {
+                if (Newsletter::instance()->is_allowed()) {
+                    add_action('wp_ajax_tnpc_render', array($this, 'tnpc_render_callback'));
+                    add_action('wp_ajax_tnpc_preview', array($this, 'tnpc_preview_callback'));
+                    add_action('wp_ajax_tnpc_css', array($this, 'tnpc_css_callback'));
+                    add_action('wp_ajax_tnpc_options', array($this, 'hook_wp_ajax_tnpc_options'));
+                    add_action('wp_ajax_tnpc_get_all_presets', array($this, 'ajax_get_all_presets'));
+                    add_action('wp_ajax_tnpc_get_preset', array($this, 'ajax_get_preset'));
+                    add_action('wp_ajax_tnpc_delete_preset', array($this, 'hook_wp_ajax_tnpc_delete_preset'));
+                    add_action('wp_ajax_tnpc_regenerate_email', array($this, 'hook_wp_ajax_tnpc_regenerate_email'));
+                }
+            }
+        }
+    }
 
     function options_decode($options) {
-
-        // Start compatibility
+        // Old "query string" format
         if (is_string($options) && strpos($options, 'options[') !== false) {
-            $opts = array();
+            $opts = [];
             parse_str($options, $opts);
             $options = $opts['options'];
         }
-        // End compatibility
 
         if (is_array($options)) {
             return $options;
         }
 
+        // Json data should be base64 encoded, but for short time it wasn't
         $tmp = json_decode($options, true);
         if (is_null($tmp)) {
             return json_decode(base64_decode($options), true);
@@ -83,13 +90,13 @@ class NewsletterEmails extends NewsletterModule {
         return base64_encode(json_encode($options, JSON_HEX_TAG | JSON_HEX_AMP));
     }
 
+    /**
+     * Builds and returns the HTML with the form fields of a specific block.
+     * 
+     * @global wpdb $wpdb
+     */
     function hook_wp_ajax_tnpc_options() {
         global $wpdb;
-
-        // TODO: Uniform to use id everywhere
-//        if (!isset($_REQUEST['id'])) {
-//            $_REQUEST['id'] = $_REQUEST['b'];
-//        }
 
         $block = $this->get_block($_REQUEST['id']);
         if (!$block) {
@@ -120,12 +127,8 @@ class NewsletterEmails extends NewsletterModule {
             $inline_edits = $controls->data['inline_edits'];
         }
         echo '<input type="hidden" name="options[inline_edits]" value="', esc_attr($this->options_encode($inline_edits)), '">';
-
-        ob_start();
-        include $block['dir'] . '/options.php';
-        $content = ob_get_clean();
         echo "<h2>", esc_html($block["name"]), "</h2>";
-        echo $content;
+        include $block['dir'] . '/options.php';
         wp_die();
     }
 
@@ -274,7 +277,7 @@ class NewsletterEmails extends NewsletterModule {
         if (class_exists('NewsletterAutomated')) {
             $result .= "<a href='?page=newsletter_automated_index'>";
         } else {
-            $result .= "<a href='https://www.thenewsletterplugin.com/automated?utm_source=plugin&utm_campaign=automated&utm_medium=composer'>";
+            $result .= "<a href='https://www.thenewsletterplugin.com/automated?utm_source=composer&utm_campaign=plugin&utm_medium=automated'>";
         }
         $result .= "<img src='" . plugins_url('newsletter') . "/emails/images/automated.png' title='Automated addon' alt='Automated'/>";
         $result .= "<span class='tnpc-preset-label'>Daily, weekly and monthly newsletters</span></a>";
@@ -288,7 +291,7 @@ class NewsletterEmails extends NewsletterModule {
         if (class_exists('NewsletterAutoresponder')) {
             $result .= "<a href='?page=newsletter_autoresponder_index'>";
         } else {
-            $result .= "<a href='https://www.thenewsletterplugin.com/autoresponder?utm_source=plugin&utm_campaign=autoresponder&utm_medium=composer' target='_blank'>";
+            $result .= "<a href='https://www.thenewsletterplugin.com/autoresponder?utm_source=composer&utm_campaign=plugin&utm_medium=autoresponder' target='_blank'>";
         }
         $result .= "<img src='" . plugins_url('newsletter') . "/emails/images/autoresponder.png' title='Autoresponder addon' alt='Autoresponder'/>";
         $result .= "<span class='tnpc-preset-label'>Autoresponders</span></a>";
@@ -308,26 +311,6 @@ class NewsletterEmails extends NewsletterModule {
         $result .= "</div>";
 
         return $result;
-    }
-
-    /**
-     * Check if the preset name exists and adds an incremental suffix if the name exists.
-     *
-     * @param string $name
-     *
-     * @return string
-     */
-    public function sanitize_preset_name($name) {
-        global $wpdb;
-
-        $name = empty($name) ? __('Empty name preset', 'newsletter') : $name;
-        $name = sanitize_text_field($name);
-        $type = self::PRESET_EMAIL_TYPE;
-        $count = (int) $wpdb->get_var("SELECT COUNT(*) FROM " . NEWSLETTER_EMAILS_TABLE . " WHERE type='$type' and subject='$name'");
-
-        $name = $count > 0 ? $name . " - " . ($count + 1) : $name;
-
-        return $name;
     }
 
     function has_dynamic_blocks($theme) {
@@ -356,29 +339,14 @@ class NewsletterEmails extends NewsletterModule {
      *
      * $email can actually be even a string containing the full newsletter HTML code.
      *
-     * @param TNP_Email $email (Rinominare)
+     * @param TNP_Email $email
      * @return string
      */
     function regenerate($email, $context = []) {
 
-        // Cannot be removed due to compatibility issues with old Automated versions
-        if (is_object($email)) {
-            $theme = $email->message;
-        } else {
-            $theme = $email;
-        }
-
-        //$this->logger->debug('Starting email regeneration');
-        //$this->logger->debug($context);
-
-        if (empty($theme)) {
-            $this->logger->debug('The email was empty');
-            return array('body' => '', 'subject' => '');
-        }
-
         $context = array_merge(['last_run' => 0, 'type' => ''], $context);
 
-        preg_match_all('/data-json="(.*?)"/m', $theme, $matches, PREG_PATTERN_ORDER);
+        preg_match_all('/data-json="(.*?)"/m', $email->message, $matches, PREG_PATTERN_ORDER);
 
         $result = '';
         $subject = '';
@@ -397,15 +365,9 @@ class NewsletterEmails extends NewsletterModule {
             $out = $this->render_block($options['block_id'], true, $options, $context);
             if (is_array($out)) {
                 if ($out['return_empty_message'] || $out['stop']) {
-                    if (is_object($email)) {
-                        return false;
-                    }
-                    return array();
+                    return false;
                 }
                 if ($out['skip']) {
-                    if (NEWSLETTER_DEBUG) {
-                        $result .= 'Block removed by request';
-                    }
                     continue;
                 }
                 if (empty($subject) && !empty($out['subject'])) {
@@ -416,28 +378,10 @@ class NewsletterEmails extends NewsletterModule {
             $result .= $block_html;
         }
 
-        // We need to keep the CSS/HEAD part, the regenearion is only about blocks
-
-        if (is_object($email)) {
-            $result = TNP_Composer::get_main_wrapper_open($email) . $result . TNP_Composer::get_main_wrapper_close($email);
-        }
-
-        $x = strpos($theme, '<body');
-        if ($x !== false) {
-            $x = strpos($theme, '>', $x);
-            $result = substr($theme, 0, $x + 1) . $result . '</body></html>';
-        } else {
-
-        }
-
-        if (is_object($email)) {
-            $email->message = $result;
-            $email->subject = $subject;
-            return true;
-        }
-
-        // Kept for compatibility
-        return array('body' => $result, 'subject' => $subject);
+        $email->message = TNP_Composer::get_html_open($email) . TNP_Composer::get_main_wrapper_open($email) .
+                $result . TNP_Composer::get_main_wrapper_close($email) . TNP_Composer::get_html_close($email);
+        $email->subject = $subject;
+        return true;
     }
 
     function remove_block_data($text) {
@@ -529,7 +473,7 @@ class NewsletterEmails extends NewsletterModule {
             }
             echo $this->get_outlook_wrapper_open($width);
 
-            echo '<p>Ops, this block type is no more registered!</p>';
+            echo '<p>Ops, this block type is not avalable.</p>';
 
             echo $this->get_outlook_wrapper_close();
 
@@ -907,7 +851,6 @@ class NewsletterEmails extends NewsletterModule {
                 die();
                 break;
 
-
             case 'emails-create':
                 // Newsletter from themes are created on frontend context because sometime WP themes change the way the content,
                 // excerpt, thumbnail are extracted.
@@ -934,7 +877,7 @@ class NewsletterEmails extends NewsletterModule {
                 $email = array();
                 $email['status'] = 'new';
                 $email['subject'] = ''; //__('Here the email subject', 'newsletter');
-                $email['track'] = 1;
+                $email['track'] = Newsletter::instance()->options['track'];
                 $email['send_on'] = time();
                 $email['editor'] = NewsletterEmails::EDITOR_TINYMCE;
                 $email['type'] = 'message';
@@ -947,7 +890,6 @@ class NewsletterEmails extends NewsletterModule {
                 ob_start();
                 include $theme['dir'] . '/theme.php';
                 $email['message'] = ob_get_clean();
-
 
                 if (!empty($theme_subject)) {
                     $email['subject'] = $theme_subject;
@@ -997,7 +939,7 @@ class NewsletterEmails extends NewsletterModule {
         if (!is_file($full_file)) {
             return new WP_Error('1', 'Missing block.php file in ' . $dir);
         }
-        
+
         $relative_dir = substr($dir, strlen(WP_CONTENT_DIR));
         $file = basename($dir);
 
@@ -1204,8 +1146,6 @@ class NewsletterEmails extends NewsletterModule {
 
     function get_composer_css() {
         $css = file_get_contents(__DIR__ . '/tnp-composer/css/newsletter.css');
-        $css .= "\n\n";
-        $css .= file_get_contents(__DIR__ . '/tnp-composer/css/backend.css');
         $blocks = $this->get_blocks();
         foreach ($blocks as $block) {
             if (!file_exists($block['dir'] . '/style.css')) {
@@ -1217,6 +1157,13 @@ class NewsletterEmails extends NewsletterModule {
         }
         return $css;
     }
+    
+    function get_composer_backend_css() {
+        $css = file_get_contents(__DIR__ . '/tnp-composer/css/backend.css');
+        $css .= "\n\n";
+        $css .= $this->get_composer_css();
+        return $css;
+    }    
 
     /**
      * Send an email to the test subscribers.
@@ -1264,86 +1211,85 @@ class NewsletterEmails extends NewsletterModule {
         $email->subject = $original_subject;
     }
 
-	/**
-	 * Send an email to the test subscribers.
-	 *
-	 * @param TNP_Email $email Could be any object with the TNP_Email attributes
-	 * @param string $email_address
-	 *
-	 * @throws Exception
-	 */
-	function send_test_newsletter_to_email_address( $email, $email_address ) {
+    /**
+     * Send an email to the test subscribers.
+     *
+     * @param TNP_Email $email Could be any object with the TNP_Email attributes
+     * @param string $email_address
+     *
+     * @throws Exception
+     */
+    function send_test_newsletter_to_email_address($email, $email_address) {
 
-		if ( ! $email ) {
-			throw new Exception( __( 'Newsletter should be saved before send a test', 'newsletter' ) );
-		}
+        if (!$email) {
+            throw new Exception(__('Newsletter should be saved before send a test', 'newsletter'));
+        }
 
-		$this->set_test_subject_to( $email );
+        $this->set_test_subject_to($email);
 
-		$dummy_subscriber        = $this->make_dummy_subscriber();
-		$dummy_subscriber->email = $email_address;
+        $dummy_subscriber = $this->make_dummy_subscriber();
+        $dummy_subscriber->email = $email_address;
 
-		$result = Newsletter::instance()->send( $email, [ $dummy_subscriber ], true );
+        $result = Newsletter::instance()->send($email, [$dummy_subscriber], true);
 
-		$email = '<a href="admin.php?page=newsletter_users_edit&id=' . $dummy_subscriber->id . '" target="_blank">' . $dummy_subscriber->email . '</a>';
+        $email = '<a href="admin.php?page=newsletter_users_edit&id=' . $dummy_subscriber->id . '" target="_blank">' . $dummy_subscriber->email . '</a>';
 
-		if ( is_wp_error( $result ) ) {
-			$error_message = 'Something went wrong. Check the error logs on status page.<br>';
-			$error_message .= __( 'Test subscribers:', 'newsletter' );
-			$error_message .= ' ' . $email;
-			$error_message .= '<br>';
-			$error_message .= '<strong>' . esc_html( $result->get_error_message() ) . '</strong><br>';
-			$error_message .= '<a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank"><strong>' . __( 'Read more about delivery issues', 'newsletter' ) . '</strong></a>.';
-			throw new Exception( $error_message );
-		}
+        if (is_wp_error($result)) {
+            $error_message = 'Something went wrong. Check the error logs on status page.<br>';
+            $error_message .= __('Test subscribers:', 'newsletter');
+            $error_message .= ' ' . $email;
+            $error_message .= '<br>';
+            $error_message .= '<strong>' . esc_html($result->get_error_message()) . '</strong><br>';
+            $error_message .= '<a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank"><strong>' . __('Read more about delivery issues', 'newsletter') . '</strong></a>.';
+            throw new Exception($error_message);
+        }
 
-		$messages = __( 'Test subscribers:', 'newsletter' );
+        $messages = __('Test subscribers:', 'newsletter');
 
-		$messages .= ' ' . $email;
-		$messages .= '.<br>';
-		$messages .= '<a href="https://www.thenewsletterplugin.com/documentation/subscribers#test" target="_blank"><strong>' .
-		             __( 'Read more about test subscribers', 'newsletter' ) . '</strong></a>.<br>';
-		$messages .= '<a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank"><strong>' . __( 'Read more about delivery issues', 'newsletter' ) . '</strong></a>.';
+        $messages .= ' ' . $email;
+        $messages .= '.<br>';
+        $messages .= '<a href="https://www.thenewsletterplugin.com/documentation/subscribers#test" target="_blank"><strong>' .
+                __('Read more about test subscribers', 'newsletter') . '</strong></a>.<br>';
+        $messages .= '<a href="https://www.thenewsletterplugin.com/documentation/email-sending-issues" target="_blank"><strong>' . __('Read more about delivery issues', 'newsletter') . '</strong></a>.';
 
-		return $messages;
-	}
+        return $messages;
+    }
 
-	private function set_test_subject_to($email) {
-		if ( $email->subject == '' ) {
-			$email->subject = '[TEST] Dummy subject, it was empty (remember to set it)';
-		} else {
-			$email->subject = $email->subject . ' (TEST)';
-		}
-	}
+    private function set_test_subject_to($email) {
+        if ($email->subject == '') {
+            $email->subject = '[TEST] Dummy subject, it was empty (remember to set it)';
+        } else {
+            $email->subject = $email->subject . ' (TEST)';
+        }
+    }
 
-	private function make_dummy_subscriber() {
-		$dummy_user           = new TNP_User();
-		$dummy_user->id       = 0;
-		$dummy_user->email    = 'john.doe@example.org';
-		$dummy_user->name     = 'John';
-		$dummy_user->surname  = 'Doe';
-		$dummy_user->sex      = 'n';
-		$dummy_user->language = '';
-		$dummy_user->ip       = '';
+    private function make_dummy_subscriber() {
+        $dummy_user = new TNP_User();
+        $dummy_user->id = 0;
+        $dummy_user->email = 'john.doe@example.org';
+        $dummy_user->name = 'John';
+        $dummy_user->surname = 'Doe';
+        $dummy_user->sex = 'n';
+        $dummy_user->language = '';
+        $dummy_user->ip = '';
 
-		for ( $i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i ++ ) {
-			$profile_key              = "profile_$i";
-			$dummy_user->$profile_key = '';
-		}
+        for ($i = 1; $i <= NEWSLETTER_PROFILE_MAX; $i++) {
+            $profile_key = "profile_$i";
+            $dummy_user->$profile_key = '';
+        }
 
-		return $dummy_user;
-	}
+        return $dummy_user;
+    }
 
     function restore_options_from_request() {
-        
+
         require_once NEWSLETTER_INCLUDES_DIR . '/controls.php';
         $controls = new NewsletterControls();
         $options = $controls->data;
-        
+
         if (isset($_POST['options']) && is_array($_POST['options'])) {
             // Get all block options
             //$options = stripslashes_deep($_POST['options']);
-
             // Deserialize inline edits when
             // render is preformed on saving block options
             if (isset($options['inline_edits']) && !is_array($options['inline_edits'])) {

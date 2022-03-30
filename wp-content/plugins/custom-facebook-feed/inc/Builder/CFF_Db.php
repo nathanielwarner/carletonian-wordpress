@@ -6,6 +6,7 @@
  */
 
 namespace CustomFacebookFeed\Builder;
+use CustomFacebookFeed\SB_Facebook_Data_Encryption;
 
 class CFF_Db {
 
@@ -37,7 +38,7 @@ class CFF_Db {
 
 		if ( empty( $args ) ) {
 
-			$limit = (int)self::RESULTS_PER_PAGE;
+			$limit = 200;
 			$sql = "SELECT s.id, s.account_id, s.account_type, s.privilege, s.access_token, s.username, s.info, s.error, s.expires, count(f.id) as used_in
 				FROM $sources_table_name s
 				LEFT JOIN $feeds_table_name f ON f.settings LIKE CONCAT('%', s.account_id, '%')
@@ -55,7 +56,7 @@ class CFF_Db {
 			$i = 0;
 			foreach ( $results as $result ) {
 				if ( (int)$result['used_in'] > 0 ) {
-					$account_id = esc_sql( $result['account_id'] );
+					$account_id = "'" . esc_sql( $result['account_id'] ) . "'";
 					$sql = "SELECT *
 						FROM $feeds_table_name
 						WHERE settings LIKE CONCAT('%', $account_id, '%')
@@ -80,6 +81,15 @@ class CFF_Db {
 			return $wpdb->get_results( $sql, ARRAY_A );
 		}
 
+		if ( isset( $args['type'] ) && ! isset( $args['id'] ) ) {
+			$sql = $wpdb->prepare( "
+			SELECT * FROM $sources_table_name
+			WHERE account_type = %s;
+		 ", $args['type'] );
+
+			return $wpdb->get_results( $sql, ARRAY_A );
+		}
+
 		if ( ! isset( $args['id'] ) ) {
 			return false;
 		}
@@ -93,7 +103,7 @@ class CFF_Db {
 			$id_array = explode( ',', str_replace( ' ' , '', esc_sql( $args['id'] ) ) );
 		}
 		if ( isset( $id_array ) ) {
-			$id_string = "'" . implode( "' , '", $id_array ) . "'";
+			$id_string = "'" . implode( "' , '", array_map( 'esc_sql', $id_array ) ) . "'";
 		}
 
 		$privilege = isset( $args['privilege'] ) ? $args['privilege'] : '';
@@ -129,6 +139,7 @@ class CFF_Db {
 	public static function source_update( $to_update, $where_data ) {
 		global $wpdb;
 		$sources_table_name = $wpdb->prefix . 'cff_sources';
+		$encryption = new SB_Facebook_Data_Encryption();
 
 		$data = array();
 		$where = array();
@@ -147,7 +158,7 @@ class CFF_Db {
 			$where_format[] = '%s';
 		}
 		if ( isset( $to_update['access_token'] ) ) {
-			$data['access_token'] = $to_update['access_token'];
+			$data['access_token'] = $encryption->maybe_encrypt( $to_update['access_token'] );
 			$format[] = '%s';
 		}
 		if ( isset( $to_update['username'] ) ) {
@@ -155,7 +166,7 @@ class CFF_Db {
 			$format[] = '%s';
 		}
 		if ( isset( $to_update['info'] ) ) {
-			$data['info'] = $to_update['info'];
+			$data['info'] = $encryption->maybe_encrypt( $to_update['info'] );
 			$format[] = '%s';
 		}
 		if ( isset( $to_update['error'] ) ) {
@@ -214,6 +225,7 @@ class CFF_Db {
 	public static function source_insert( $to_insert ) {
 		global $wpdb;
 		$sources_table_name = $wpdb->prefix . 'cff_sources';
+		$encryption = new SB_Facebook_Data_Encryption();
 
 		$data = array();
 		$format = array();
@@ -233,7 +245,7 @@ class CFF_Db {
 			$format[] = '%s';
 		}
 		if ( isset( $to_insert['access_token'] ) ) {
-			$data['access_token'] = $to_insert['access_token'];
+			$data['access_token'] = $encryption->maybe_encrypt( $to_insert['access_token'] );
 			$format[] = '%s';
 		}
 		if ( isset( $to_insert['username'] ) ) {
@@ -241,7 +253,7 @@ class CFF_Db {
 			$format[] = '%s';
 		}
 		if ( isset( $to_insert['info'] ) ) {
-			$data['info'] = $to_insert['info'];
+			$data['info'] = $encryption->maybe_encrypt( $to_insert['info'] );
 			$format[] = '%s';
 		}
 		if ( isset( $to_insert['error'] ) ) {
@@ -460,7 +472,7 @@ class CFF_Db {
 		global $wpdb;
 		$feeds_table_name = $wpdb->prefix . 'cff_feeds';
 		$feed_caches_table_name = $wpdb->prefix . 'cff_feed_caches';
-		$feed_ids_array = implode(',', $feed_ids_array);
+		$feed_ids_array = implode(',', array_map( 'absint', $feed_ids_array ) );
 		$wpdb->query(
 			$wpdb->prepare(
 				"DELETE FROM $feeds_table_name WHERE id IN ($feed_ids_array)"
@@ -593,7 +605,7 @@ class CFF_Db {
 			 settings longtext NOT NULL default '',
 			 author bigint(20) unsigned NOT NULL default '1',
 			 status varchar(255) NOT NULL default '',
-			 last_modified datetime NOT NULL default '0000-00-00 00:00:00',
+			 last_modified datetime NOT NULL,
 			 PRIMARY KEY  (id),
 			 KEY author (author)
 			) $charset_collate;
@@ -623,7 +635,7 @@ class CFF_Db {
                 cache_key varchar(255) NOT NULL default '',
                 cache_value longtext NOT NULL default '',
                 cron_update varchar(20) NOT NULL default 'yes',
-                last_updated datetime NOT NULL default '0000-00-00 00:00:00',
+                last_updated datetime NOT NULL,
                 PRIMARY KEY  (id),
                 KEY feed_id (feed_id)
             ) $charset_collate;";
@@ -651,12 +663,12 @@ class CFF_Db {
 				account_id varchar(255) NOT NULL default '',
                 account_type varchar(255) NOT NULL default '',
                 privilege varchar(255) NOT NULL default '',
-                access_token varchar(255) NOT NULL default '',
+                access_token varchar(1000) NOT NULL default '',
                 username varchar(255) NOT NULL default '',
                 info text NOT NULL default '',
                 error text NOT NULL default '',
-                expires datetime NOT NULL default '0000-00-00 00:00:00',
-                last_updated datetime NOT NULL default '0000-00-00 00:00:00',
+                expires datetime NOT NULL,
+                last_updated datetime NOT NULL,
                 author bigint(20) unsigned NOT NULL default '1',
                 PRIMARY KEY  (id),
                 KEY account_type (account_type($max_index_length)),
@@ -707,8 +719,8 @@ class CFF_Db {
                 username varchar(255) NOT NULL default '',
                 info text NOT NULL default '',
                 error text NOT NULL default '',
-                expires datetime NOT NULL default '0000-00-00 00:00:00',
-                last_updated datetime NOT NULL default '0000-00-00 00:00:00',
+                expires datetime NOT NULL,
+                last_updated datetime NOT NULL,
                 author bigint(20) unsigned NOT NULL default '1',
                 PRIMARY KEY  (id),
                 KEY account_type (account_type($max_index_length)),
@@ -897,6 +909,24 @@ class CFF_Db {
 
 				}
 			}
+		}
+	}
+
+	public static function clear_cff_feed_caches() {
+		global $wpdb;
+		$feed_caches_table_name = $wpdb->prefix . 'cff_feed_caches';
+
+		if ( $wpdb->get_var( "show tables like '$feed_caches_table_name'" ) === $feed_caches_table_name ) {
+			$wpdb->query( "DELETE FROM $feed_caches_table_name" );
+		}
+	}
+
+	public static function clear_cff_sources() {
+		global $wpdb;
+		$sources_table_name = $wpdb->prefix . 'cff_sources';
+
+		if ( $wpdb->get_var( "show tables like '$sources_table_name'" ) === $sources_table_name ) {
+			$wpdb->query( "DELETE FROM $sources_table_name" );
 		}
 	}
 

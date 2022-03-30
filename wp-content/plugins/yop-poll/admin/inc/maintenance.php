@@ -43,7 +43,7 @@ class YOP_POLL_Maintenance {
 			$this->importer->initialise();
 		}
 		$this->create_options();
-		if ( ! wp_next_scheduled ( 'yop_poll_hourly_event', array() ) ) {
+		if ( ! wp_next_scheduled( 'yop_poll_hourly_event', array() ) ) {
 			wp_schedule_event( time(), 'hourly', 'yop_poll_hourly_event', array() );
 		}
         //$this->create_archive_page();
@@ -140,12 +140,36 @@ class YOP_POLL_Maintenance {
 	public function update_to_version_6_3_1() {
 		update_option( 'yop_poll_version', '6.3.1' );
 	}
+	public function update_to_version_6_3_2() {
+		update_option( 'yop_poll_version', '6.3.2' );
+	}
+	public function update_to_version_6_3_3() {
+		update_option( 'yop_poll_version', '6.3.3' );
+	}
+	public function update_to_version_6_3_4() {
+		update_option( 'yop_poll_version', '6.3.4' );
+	}
+	public function update_to_version_6_3_5() {
+		update_option( 'yop_poll_version', '6.3.5' );
+	}
+	public function update_to_version_6_3_6() {
+		update_option( 'yop_poll_version', '6.3.6' );
+	}
+	public function update_to_version_6_3_7() {
+		update_option( 'yop_poll_version', '6.3.7' );
+	}
+	public function update_to_version_6_3_8() {
+		update_option( 'yop_poll_version', '6.3.8' );
+	}
+	public function update_to_version_6_3_9() {
+		update_option( 'yop_poll_version', '6.3.9' );
+	}
     public function create_archive_page() {
         $poll_archive_page = get_page_by_path( 'yop-poll-archive', ARRAY_A );
         if ( ! $poll_archive_page ) {
             $_p                   = array();
             $_p['post_title']     = 'Poll Archive';
-            $_p['post_content']   = "[yop_poll_archive]";
+            $_p['post_content']   = '[yop_poll_archive]';
             $_p['post_status']    = 'publish';
             $_p['post_type']      = 'page';
             $_p['comment_status'] = 'open';
@@ -162,11 +186,11 @@ class YOP_POLL_Maintenance {
     public function create_options() {
 		update_option( 'yop_poll_version', YOP_POLL_VERSION );
 		$plugin_old_settings = get_option( 'yop_poll_options' );
-		if( $plugin_old_settings ) {
+		if ( $plugin_old_settings ) {
             update_option( 'yop_poll_settings', YOP_Poll_Settings::import_settings_from_5x( $plugin_old_settings ) );
         } else {
 			$plugin_current_settings = get_option( 'yop_poll_settings' );
-			if ( false === $plugin_current_settings) {
+			if ( false === $plugin_current_settings ) {
 				update_option( 'yop_poll_settings', YOP_Poll_Settings::create_settings() );
 			}
         }
@@ -212,9 +236,9 @@ class YOP_POLL_Maintenance {
         $url = admin_url( 'admin.php?page=yop-poll-import' );
         $html = '<div class="updated">';
         $html .= '<p>';
-        $html .= __( 'Click <a href="' . $url . '" target="_blank">here</a> to start the import.', 'yop-poll' );
+        $html .= esc_html__( 'Click <a href="' . $url . '" target="_blank">here</a> to start the import.', 'yop-poll' );
         $html .= '</p>';
         $html .= '</div><!-- /.updated -->';
-        echo $html;
+        echo wp_kses_post( $html );
     }
 }

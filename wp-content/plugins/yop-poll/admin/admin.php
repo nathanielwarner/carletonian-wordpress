@@ -12,7 +12,7 @@ class YOP_Poll_Admin {
 			add_filter( 'clean_url', array( &$this, 'clean_recaptcha_url' ) );
             add_action( 'admin_menu', array( &$this, 'build_admin_menu' ) );
             add_action( 'plugins_loaded', array( &$this, 'verify_update' ) );
-			add_action( 'plugins_loaded', array( $this, 'load_translations') );
+			add_action( 'plugins_loaded', array( $this, 'load_translations' ) );
             add_action( 'admin_enqueue_scripts', array( &$this, 'load_dependencies' ), 1000 );
             add_action( 'wp_ajax_create_yop_poll', array( &$this, 'create_poll' ) );
             add_action( 'wp_ajax_update_yop_poll', array( &$this, 'update_poll' ) );
@@ -71,40 +71,40 @@ class YOP_Poll_Admin {
 		    	<form action="" method="post">
 		    		<!-- Modal header -->
 		    		<div id="yop-poll-deactivate-header">
-		    			<img src="<?php echo YOP_POLL_URL . "/admin/assets/images/yop-poll-admin-menu-icon16.png";?>">
-						Quick Feedback
+		    			<img src="<?php echo esc_url( YOP_POLL_URL ) . '/admin/assets/images/yop-poll-admin-menu-icon16.png'; ?>">
+						<?php esc_html_e( 'Quick Feedback', 'yop-poll' ); ?>
 		    		</div>
 		    		<!-- Modal inner -->
 		    		<div id="yop-poll-deactivate-inner">
-			    	    <h3><?php echo __( "We're sorry to see you go.", 'yop-poll' ); ?></h3>
-			            <p><strong><?php echo __( 'If you have a moment, please share why you are deactivating YOP Poll:', 'yop-poll' ) ?></strong></p>
+			    	    <h3><?php echo esc_html_e( "We're sorry to see you go.", 'yop-poll' ); ?></h3>
+			            <p><strong><?php esc_html_e( 'If you have a moment, please share why you are deactivating YOP Poll:', 'yop-poll' ); ?></strong></p>
 
 			    	    <ul>
 
 			    	    	<li>
 								<label>
 									<input type="radio" name="yop-poll_disable_reason" value="technical-issue" />
-									<strong><?php echo __( "I couldn't get the plugin to work", 'yop-poll' ); ?></strong>
-									<p><?php echo __( 'Please describe the issues below. This will help us test and solve these problems in a timely manner.', 'yop-poll' ); ?></p>
-									<textarea name="yop-poll_deactivate_details[]" placeholder="<?php echo __( 'Type the issues here...', 'yop-poll' ); ?>"></textarea>
+									<strong><?php esc_html_e( "I couldn't get the plugin to work", 'yop-poll' ); ?></strong>
+									<p><?php esc_html_e( 'Please describe the issues below. This will help us test and solve these problems in a timely manner.', 'yop-poll' ); ?></p>
+									<textarea name="yop-poll_deactivate_details[]" placeholder="<?php esc_html_e( 'Type the issues here...', 'yop-poll' ); ?>"></textarea>
 								</label>
 							</li>
 
 			                <li>
 			                	<label>
 			                		<input type="radio" name="yop-poll_disable_reason" value="missing-feature" />
-			                		<strong><?php echo __( 'Missing features I need', 'yop-poll' ); ?></strong>
-									<p><?php echo __( 'Please describe the feature you need. This will help us prioritize our tasks and work on the most requested features.', 'yop-poll' ); ?></p>
-									<textarea name="yop-poll_deactivate_details[]" placeholder="<?php echo __( 'Type the missing features here...', 'yop-poll' ); ?>"></textarea>
+			                		<strong><?php esc_html_e( 'Missing features I need', 'yop-poll' ); ?></strong>
+									<p><?php esc_html_e( 'Please describe the feature you need. This will help us prioritize our tasks and work on the most requested features.', 'yop-poll' ); ?></p>
+									<textarea name="yop-poll_deactivate_details[]" placeholder="<?php esc_html_e( 'Type the missing features here...', 'yop-poll' ); ?>"></textarea>
 								</label>
 							</li>
 
 							<li>
 								<label>
 									<input type="radio" name="yop-poll_disable_reason" value="other" />
-									<strong><?php echo __( 'Other reason', 'yop-poll' ); ?></strong>
-			    			  		<p><?php echo __( 'We are continuously improving YOP Poll and your feedback is extremely important to us. Please let us know how we can improve the plugin.', 'yop-poll' ); ?></p>
-			    			  		<textarea name="yop-poll_deactivate_details[]" placeholder="<?php echo __( 'Type your feedback here...', 'yop-poll' ); ?>"></textarea>
+									<strong><?php esc_html_e( 'Other reason', 'yop-poll' ); ?></strong>
+			    			  		<p><?php esc_html_e( 'We are continuously improving YOP Poll and your feedback is extremely important to us. Please let us know how we can improve the plugin.', 'yop-poll' ); ?></p>
+			    			  		<textarea name="yop-poll_deactivate_details[]" placeholder="<?php esc_html_e( 'Type your feedback here...', 'yop-poll' ); ?>"></textarea>
 			    			  	</label>
 			    			</li>
 
@@ -114,8 +114,8 @@ class YOP_Poll_Admin {
 
 			    	<!-- Modal footer -->
 		    	    <div id="yop-poll-deactivate-footer">
-			    	    <input disabled id="yop-poll-feedback-submit" class="button button-primary" type="submit" name="yop-poll-feedback-submit" value="<?php echo __( 'Submit & Deactivate', 'yop-poll' ); ?>" />
-			    	    <a id="yop-poll-deactivate-without-feedback" href="#"><?php echo __( 'Skip and Deactivate', 'yop-poll'); ?></a>
+			    	    <input disabled id="yop-poll-feedback-submit" class="button button-primary" type="submit" name="yop-poll-feedback-submit" value="<?php esc_html_e( 'Submit & Deactivate', 'yop-poll' ); ?>" />
+			    	    <a id="yop-poll-deactivate-without-feedback" href="#"><?php esc_html_e( 'Skip and Deactivate', 'yop-poll' ); ?></a>
 			    	</div>
 
 			    	<!-- Token -->
@@ -202,8 +202,8 @@ class YOP_Poll_Admin {
 		<?php
 	}
 	public function clean_recaptcha_url( $url ) {
-		if ( false !== strstr( $url, "recaptcha/api.js" ) ) {
-			$url = str_replace( "&#038;", "&", $url );
+		if ( false !== strstr( $url, 'recaptcha/api.js' ) ) {
+			$url = str_replace( '&#038;', '&', $url );
 		}
 		return $url;
 	}
@@ -322,10 +322,42 @@ class YOP_Poll_Admin {
 				$maintenance  = new YOP_POLL_Maintenance();
 				$maintenance->update_to_version_6_3_1();
 			}
+			if ( true === version_compare( $installed_version, '6.3.2', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_2();
+			}
+			if ( true === version_compare( $installed_version, '6.3.3', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_3();
+			}
+			if ( true === version_compare( $installed_version, '6.3.4', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_4();
+			}
+			if ( true === version_compare( $installed_version, '6.3.5', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_5();
+			}
+			if ( true === version_compare( $installed_version, '6.3.6', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_6();
+			}
+			if ( true === version_compare( $installed_version, '6.3.7', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_7();
+			}
+			if ( true === version_compare( $installed_version, '6.3.8', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_8();
+			}
+			if ( true === version_compare( $installed_version, '6.3.9', '<' ) ) {
+				$maintenance  = new YOP_POLL_Maintenance();
+				$maintenance->update_to_version_6_3_9();
+			}
         }
 	}
     public function load_translations() {
-        load_plugin_textdomain( 'yop-poll', FALSE,  'yop-poll/languages/' );
+        load_plugin_textdomain( 'yop-poll', false, 'yop-poll/languages/' );
     }
 	public function is_user_logged_in() {
 		if ( true === is_user_logged_in() ) {
@@ -336,7 +368,7 @@ class YOP_Poll_Admin {
 		die();
 	}
 	public function build_admin_menu() {
-		if( function_exists( 'add_menu_page' ) ) {
+		if ( function_exists( 'add_menu_page' ) ) {
 			$page = add_menu_page(
 				__( 'Yop Poll', 'yop-poll' ),
 				__( 'Yop Poll', 'yop-poll' ),
@@ -346,7 +378,7 @@ class YOP_Poll_Admin {
 					$this,
 					'manage_polls'
 				),
-				YOP_POLL_URL . "admin/assets/images/yop-poll-admin-menu-icon16.png",
+				YOP_POLL_URL . 'admin/assets/images/yop-poll-admin-menu-icon16.png',
 				'26.6'
 			);
 			if ( function_exists( 'add_submenu_page' ) ) {
@@ -404,8 +436,8 @@ class YOP_Poll_Admin {
                 }
                 $subpage = add_submenu_page(
                     'yop-polls',
-                    __( 'Settings', 'yop-poll' ),
-                    __( 'Settings', 'yop-poll' ),
+                    esc_html__( 'Settings', 'yop-poll' ),
+                    esc_html__( 'Settings', 'yop-poll' ),
                     'yop_poll_results_own',
                     'yop-poll-settings',
                     array(
@@ -428,8 +460,8 @@ class YOP_Poll_Admin {
 				}
 				$subpage = add_submenu_page(
                     'yop-polls',
-                    __( 'Upgrade to Pro', 'yop-poll' ),
-                    __( 'Upgrade to Pro', 'yop-poll' ),
+                    esc_html__( 'Upgrade to Pro', 'yop-poll' ),
+                    esc_html__( 'Upgrade to Pro', 'yop-poll' ),
                     'yop_poll_results_own',
                     'yop-poll-upgrade-to-pro',
                     array(
@@ -458,54 +490,56 @@ class YOP_Poll_Admin {
 	}
 	public function load_scripts() {
         $plugin_settings = YOP_Poll_Settings::get_all_settings();
-        if (false !== $plugin_settings) {
-            $plugin_settings_decoded = unserialize($plugin_settings);
+        if ( false !== $plugin_settings ) {
+            $plugin_settings_decoded = unserialize( $plugin_settings );
         }
         //include jquery by default
-        wp_enqueue_script('jquery');
-        wp_enqueue_script('tiny_mce');
-        wp_enqueue_script('jquery-ui-core', array('jquery'));
-        wp_enqueue_script('jquery-ui-datepicker', array('jquery'));
-        wp_enqueue_script('jquery-ui-sortable', array('jquery-ui-core'));
-        wp_enqueue_script('jquery-ui-draggable', array('jquery-ui-core'));
-		wp_enqueue_script('jquery-ui-droppable', array('jquery-ui-core'));
-		if ( TRUE === YOP_POLL_TEST_MODE ) {
+        wp_enqueue_script( 'jquery' );
+        wp_enqueue_script( 'tiny_mce' );
+        wp_enqueue_script( 'jquery-ui-core', array( 'jquery' ) );
+        wp_enqueue_script( 'jquery-ui-datepicker', array( 'jquery' ) );
+        wp_enqueue_script( 'jquery-ui-sortable', array( 'jquery-ui-core' ) );
+        wp_enqueue_script( 'jquery-ui-draggable', array( 'jquery-ui-core' ) );
+		wp_enqueue_script( 'jquery-ui-droppable', array( 'jquery-ui-core' ) );
+		if ( true === YOP_POLL_TEST_MODE ) {
 			$plugin_admin_js_file = 'admin-' . YOP_POLL_VERSION . '.js';
 
 		} else {
 			$plugin_admin_js_file = 'admin-' . YOP_POLL_VERSION . '.min.js';
 		}
-		wp_enqueue_script( 'yop', YOP_POLL_URL . 'admin/assets/js/' . $plugin_admin_js_file , array( 'jquery',
+		wp_enqueue_script( 'yop', YOP_POLL_URL . 'admin/assets/js/' . $plugin_admin_js_file, array(
+			'jquery',
 			'jquery-ui-sortable',
 			'jquery-ui-dialog',
-			'jquery-ui-datepicker' )
+			'jquery-ui-datepicker',
+			)
 		);
         /* add reCaptcha if enabled */
         if (
-            (true === isset($plugin_settings_decoded['integrations']['reCaptcha']['enabled'])) &&
-            ('yes' === $plugin_settings_decoded['integrations']['reCaptcha']['enabled']) &&
-            (true === isset($plugin_settings_decoded['integrations']['reCaptcha']['site-key'])) &&
-            ('' !== $plugin_settings_decoded['integrations']['reCaptcha']['site-key']) &&
-            (true === isset($plugin_settings_decoded['integrations']['reCaptcha']['secret-key'])) &&
-            ('' !== $plugin_settings_decoded['integrations']['reCaptcha']['secret-key'])
+            ( true === isset( $plugin_settings_decoded['integrations']['reCaptcha']['enabled'] ) ) &&
+            ( 'yes' === $plugin_settings_decoded['integrations']['reCaptcha']['enabled'] ) &&
+            ( true === isset( $plugin_settings_decoded['integrations']['reCaptcha']['site-key'] ) ) &&
+            ( '' !== $plugin_settings_decoded['integrations']['reCaptcha']['site-key'] ) &&
+            ( true === isset( $plugin_settings_decoded['integrations']['reCaptcha']['secret-key'] ) ) &&
+            ( '' !== $plugin_settings_decoded['integrations']['reCaptcha']['secret-key'] )
         ) {
             $args = array(
                 'render' => 'explicit',
                 'onload' => 'YOPPollOnLoadRecaptcha'
             );
-            wp_register_script('yop-reCaptcha', add_query_arg($args, 'https://www.google.com/recaptcha/api.js'), '', null);
-            wp_enqueue_script('yop-reCaptcha');
+            wp_register_script( 'yop-reCaptcha', add_query_arg( $args, 'https://www.google.com/recaptcha/api.js' ), '', null );
+            wp_enqueue_script( 'yop-reCaptcha' );
         }
         /* done adding reCaptcha */
-        if (true === isset( $plugin_settings_decoded['messages']['captcha']['accessibility-description'] ) ) {
-            $captcha_accessibility_description = str_replace('[STRONG]', '<strong>', esc_html( $plugin_settings_decoded['messages']['captcha']['accessibility-description'] ) );
-            $captcha_accessibility_description = str_replace('[/STRONG]', '</strong>', $captcha_accessibility_description );
+        if ( true === isset( $plugin_settings_decoded['messages']['captcha']['accessibility-description'] ) ) {
+            $captcha_accessibility_description = str_replace( '[STRONG]', '<strong>', esc_html( $plugin_settings_decoded['messages']['captcha']['accessibility-description'] ) );
+            $captcha_accessibility_description = str_replace( '[/STRONG]', '</strong>', $captcha_accessibility_description );
         } else {
             $captcha_accessibility_description = '';
         }
         if ( true === isset( $plugin_settings_decoded['messages']['captcha']['explanation'] ) ) {
-            $captcha_explanation = str_replace('[STRONG]', '<strong>', esc_html( $plugin_settings_decoded['messages']['captcha']['explanation'] ) );
-            $captcha_explanation = str_replace('[/STRONG]', '</strong>', $captcha_explanation );
+            $captcha_explanation = str_replace( '[STRONG]', '<strong>', esc_html( $plugin_settings_decoded['messages']['captcha']['explanation'] ) );
+            $captcha_explanation = str_replace( '[/STRONG]', '</strong>', $captcha_explanation );
         } else {
             $captcha_explanation = '';
         }
@@ -515,8 +549,8 @@ class YOP_Poll_Admin {
                 'dateFormat' => self::$date_format,
                 'timeFormat' => self::$time_format,
                 'timeNow' => time(),
-                'votingEnded' => isset( $plugin_settings_decoded['messages']['voting']['poll-ended'] ) ? esc_html__( $plugin_settings_decoded['messages']['voting']['poll-ended'] ) : '',
-                'votingNotStarted' => isset( $plugin_settings_decoded['messages']['voting']['poll-not-started'] ) ? esc_html__( $plugin_settings_decoded['messages']['voting']['poll-not-started'] ) : '',
+                'votingEnded' => isset( $plugin_settings_decoded['messages']['voting']['poll-ended'] ) ? esc_html( $plugin_settings_decoded['messages']['voting']['poll-ended'] ) : '',
+                'votingNotStarted' => isset( $plugin_settings_decoded['messages']['voting']['poll-not-started'] ) ? esc_html( $plugin_settings_decoded['messages']['voting']['poll-not-started'] ) : '',
                 'newCustomFieldText' => esc_html__( 'New Custom Field', 'yop-poll' ),
                 'deleteTitle'  => esc_html__( 'Warning', 'yop-poll' ),
                 'deletePollMessage' => esc_html__( 'Are you sure you want to delete this poll?', 'yop-poll' ),
@@ -574,13 +608,13 @@ class YOP_Poll_Admin {
                     'votingText' => esc_html__( 'Voting', 'yop-poll' ),
                     'resultsText' => esc_html__( 'Results', 'yop-poll' ),
                     'numberOfVotesSingular' => isset( $plugin_settings_decoded['messages']['results']['single-vote'] ) ? esc_html( $plugin_settings_decoded['messages']['results']['single-vote'] ) : '',
-                    'numberOfVotesPlural' => isset( $plugin_settings_decoded['messages']['results']['multiple-votes'] ) ? esc_html__( $plugin_settings_decoded['messages']['results']['multiple-votes'] ) : '',
-                    'numberOfAnswerSingular' => isset( $plugin_settings_decoded['messages']['results']['single-answer'] ) ? esc_html__( $plugin_settings_decoded['messages']['results']['single-answer'] ) : '',
-                    'numberOfAnswersPlural' => isset( $plugin_settings_decoded['messages']['results']['multiple-answers'] ) ? esc_html__( $plugin_settings_decoded['messages']['results']['multiple-answers'] ) : '',
-                    'annonymousVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['anonymous'] ) ? esc_html__( $plugin_settings_decoded['messages']['buttons']['anonymous'] ) : '',
-                    'wordpressVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['wordpress'] ) ? esc_html__( $plugin_settings_decoded['messages']['buttons']['wordpress'] ) : '',
-                    'facebookVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['facebook'] ) ? esc_html__( $plugin_settings_decoded['messages']['buttons']['facebook'] ) : '',
-                    'googleVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['google'] ) ? esc_html__( $plugin_settings_decoded['messages']['buttons']['google'] ) :''
+                    'numberOfVotesPlural' => isset( $plugin_settings_decoded['messages']['results']['multiple-votes'] ) ? esc_html( $plugin_settings_decoded['messages']['results']['multiple-votes'] ) : '',
+                    'numberOfAnswerSingular' => isset( $plugin_settings_decoded['messages']['results']['single-answer'] ) ? esc_html( $plugin_settings_decoded['messages']['results']['single-answer'] ) : '',
+                    'numberOfAnswersPlural' => isset( $plugin_settings_decoded['messages']['results']['multiple-answers'] ) ? esc_html( $plugin_settings_decoded['messages']['results']['multiple-answers'] ) : '',
+                    'annonymousVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['anonymous'] ) ? esc_html( $plugin_settings_decoded['messages']['buttons']['anonymous'] ) : '',
+                    'wordpressVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['wordpress'] ) ? esc_html( $plugin_settings_decoded['messages']['buttons']['wordpress'] ) : '',
+                    'facebookVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['facebook'] ) ? esc_html( $plugin_settings_decoded['messages']['buttons']['facebook'] ) : '',
+                    'googleVoteText' => isset( $plugin_settings_decoded['messages']['buttons']['google'] ) ? esc_html( $plugin_settings_decoded['messages']['buttons']['google'] ) : ''
                 ),
                 'saveParams' => array(
 					'noTemplateSelected' => esc_html__( 'Template is missing', 'yop-poll' ),
@@ -613,7 +647,7 @@ class YOP_Poll_Admin {
                 'showLogDetailsLinkText' => esc_html__( 'View Details', 'yop-poll' ),
                 'hideLogDetailsLinkText' => esc_html__( 'Hide Details', 'yop-poll' ),
                 'numberOfVotesText'      => esc_html__( 'Number of Votes', 'yop-poll' ),
-                'resultsParams'=> array(
+                'resultsParams' => array(
                     'singleVote' => esc_html__( 'vote', 'yop-poll' ),
                     'multipleVotes' => esc_html__( 'votes', 'yop-poll' )
                 ),
@@ -637,21 +671,21 @@ class YOP_Poll_Admin {
 		wp_enqueue_style( 'yop-public', YOP_POLL_URL . 'public/assets/css/yop-poll-public-' . YOP_POLL_VERSION . '.css' );
 	}
 	public function change_page_title( $title ) {
-		$_page = isset( $_GET['page'] ) ? $_GET['page'] : '';
-		$_action = isset( $_GET['action'] ) ? $_GET['action'] : '';
+		$_page = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : '';
+		$_action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
 		switch ( $_page ) {
 			case 'yop-polls':{
 				switch ( $_action ) {
 					case 'edit': {
-						$title = __( 'Edit Poll', 'yop-poll' );
+						$title = esc_html__( 'Edit Poll', 'yop-poll' );
 						break;
 					}
 					case 'view-results': {
-						$title = __( 'View Poll Results', 'yop-poll' );
+						$title = esc_html__( 'View Poll Results', 'yop-poll' );
 						break;
 					}
 					default: {
-						$title = __( 'All Polls', 'yop-poll' );
+						$title = esc_html__( 'All Polls', 'yop-poll' );
 						break;
 					}
 				}
@@ -660,7 +694,7 @@ class YOP_Poll_Admin {
 			case 'yop-poll-logs': {
 				switch ( $_action ) {
 					default: {
-						$title = __( 'View Logs', 'yop-poll' );
+						$title = esc_html__( 'View Logs', 'yop-poll' );
 						break;
 					}
 				}
@@ -669,15 +703,15 @@ class YOP_Poll_Admin {
 			case 'yop-poll-bans': {
 				switch ( $_action ) {
 					case 'add': {
-						$title = __( 'Add Ban', 'yop-poll' );
+						$title = esc_html__( 'Add Ban', 'yop-poll' );
 						break;
 					}
 					case 'edit': {
-						$title = __( 'Edit Ban', 'yop-poll' );
+						$title = esc_html__( 'Edit Ban', 'yop-poll' );
 						break;
 					}
 					default: {
-						$title = __( 'All Bans', 'yop-poll' );
+						$title = esc_html__( 'All Bans', 'yop-poll' );
 						break;
 					}
 				}
@@ -687,26 +721,27 @@ class YOP_Poll_Admin {
 		return $title;
 	}
 	public function manage_polls() {
-		$_action = isset( $_GET['action'] ) ? $_GET['action'] : '';
-		switch ( $_action) {
+		$_action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+		$poll_id = isset( $_GET['poll_id'] ) ? sanitize_text_field( wp_unslash( $_GET['poll_id'] ) ) : '';
+		switch ( $_action ) {
 			case 'edit': {
-				$this->show_edit_poll( $_GET['poll_id'] );
+				$this->show_edit_poll( $poll_id );
 				break;
 			}
 			case 'delete': {
-				$this->delete_poll( $_GET['poll_id'] );
+				$this->delete_poll( $poll_id );
 				break;
 			}
 			case 'view-results': {
-				$this->display_results( $_GET['poll_id'] );
+				$this->display_results( $poll_id );
 				break;
 			}
             case 'results': {
-                $this->build_results( $_GET['poll_id'] );
+                $this->build_results( $poll_id );
                 break;
             }
             case 'view-votes': {
-                $this->display_votes( $_GET['poll_id'] );
+                $this->display_votes( $poll_id );
                 break;
             }
 			default: {
@@ -717,11 +752,11 @@ class YOP_Poll_Admin {
 	}
 	public function show_polls() {
 		if ( current_user_can( 'yop_poll_results_own' ) ) {
-			$params['q'] = isset( $_GET['q']) ? $_GET['q'] : '';
-			$params['order_by'] = isset( $_GET['order_by'] ) ? $_GET['order_by'] : '';
-			$params['sort_order'] = isset( $_GET['sort_order'] ) ? $_GET['sort_order'] : 'desc';
-			$params['page_no'] = isset( $_GET['page_no'] ) ? $_GET['page_no'] : '1';
-			$params['perpage'] = isset( $_GET['perpage'] ) && is_numeric( $_GET['perpage'] ) && $_GET['perpage'] > 0 ? $_GET['perpage'] : 10;
+			$params['q'] = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+			$params['order_by'] = isset( $_GET['order_by'] ) ? sanitize_text_field( wp_unslash( $_GET['order_by'] ) ) : '';
+			$params['sort_order'] = isset( $_GET['sort_order'] ) ? sanitize_text_field( wp_unslash( $_GET['sort_order'] ) ) : 'desc';
+			$params['page_no'] = isset( $_GET['page_no'] ) ? sanitize_text_field( wp_unslash( $_GET['page_no'] ) ) : '1';
+			$params['perpage'] = isset( $_GET['perpage'] ) && is_numeric( $_GET['perpage'] ) && $_GET['perpage'] > 0 ? sanitize_text_field( wp_unslash( $_GET['perpage'] ) ) : 10;
 			$polls = YOP_Poll_Polls::get_polls( $params );
 			$show_guide = YOP_Poll_Settings::get_show_guide();
 			$template = YOP_POLL_PATH . 'admin/views/polls/view.php';
@@ -747,7 +782,9 @@ class YOP_Poll_Admin {
 			$template = YOP_POLL_PATH . 'admin/views/polls/add/main.php';
 			$templates = YOP_Poll_Templates::get_templates();
 			$skins = YOP_Poll_Skins::get_skins();
+			$allowed_tags_for_templates_and_skins = YOP_Poll_Polls::get_allowed_tags_for_templates_and_skins();
 			echo YOP_Poll_View::render( $template, array(
+				'allowed_tags' => $allowed_tags_for_templates_and_skins,
 				'templates' => $templates,
 				'skins' => $skins,
 				'notifications' => YOP_Poll_Settings::get_notifications(),
@@ -769,51 +806,64 @@ class YOP_Poll_Admin {
 					$template = YOP_POLL_PATH . 'admin/views/polls/edit/main.php';
 					$templates = YOP_Poll_Templates::get_templates();
 					$skins = YOP_Poll_Skins::get_skins();
+					$allowed_tags_for_templates_and_skins = YOP_Poll_Polls::get_allowed_tags_for_templates_and_skins();
 					echo YOP_Poll_View::render( $template, array(
+						'allowed_tags' => $allowed_tags_for_templates_and_skins,
 						'poll' => $poll,
 						'templates' => $templates,
 						'skins' => $skins,
 						'integrations' => YOP_Poll_Settings::get_integrations(),
-						'date_format' => self::$date_format ) );
+						'date_format' => self::$date_format )
+					);
 				} else {
-					echo __( 'You don\'t have sufficient permissions to access this page', 'yop-poll');
+					esc_html_e( 'You don\'t have sufficient permissions to access this page', 'yop-poll' );
 				}
 			}
 		}
 	}
 	public function create_poll() {
 		if ( current_user_can( 'yop_poll_add' ) && check_ajax_referer( 'yop-poll-add-poll', '_token', false ) ) {
-			$result = YOP_Poll_Polls::add( json_decode( wp_unslash( $_POST['poll'] ) ) );
-			if ( true === $result['success'] ) {
-				wp_send_json_success( 
-					array(
-						'success' => true,
-						'message' => __( 'Poll successfully added', 'yop-poll' ),
-						'pollId' => $result['poll_id']
+			if ( true === isset( $_POST['poll'] ) ) {
+				$poll_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+					json_decode(
+						wp_unslash(
+							$_POST['poll']
+						)
 					)
 				);
-			} else {
-				wp_send_json_error( $result['error'] );
+				$result = YOP_Poll_Polls::add( $poll_sanitized );
+				if ( true === $result['success'] ) {
+					wp_send_json_success(
+						array(
+							'success' => true,
+							'message' => esc_html__( 'Poll successfully added', 'yop-poll' ),
+							'pollId' => $result['poll_id']
+						)
+					);
+				} else {
+					wp_send_json_error( $result['error'] );
+				}
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function update_poll() {
 		$current_user = wp_get_current_user();
-		$poll = json_decode( wp_unslash( $_POST['poll'] ) );
-		$poll_owner = YOP_Poll_Polls::get_owner( $poll->id );
+		$poll_received = isset( $_POST['poll'] ) ? json_decode( wp_unslash( $_POST['poll'] ) ) : array();
+		$poll_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object( $poll_received );
+		$poll_owner = YOP_Poll_Polls::get_owner( $poll_sanitized->id );
 		if ( check_ajax_referer( 'yop-poll-edit-poll', '_token', false ) ) {
 			if (
 				( ( $poll_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_edit_own' ) ) ) ||
 				( ( $poll_owner !== $current_user->ID ) && ( current_user_can( 'yop_poll_edit_others' ) ) )
 			) {
-				$result = YOP_Poll_Polls::update( $poll );
+				$result = YOP_Poll_Polls::update( $poll_sanitized );
 				if ( true === $result['success'] ) {
-					wp_send_json_success( 
+					wp_send_json_success(
 						array(
 							'success' => true,
-							'message' => __( 'Poll successfully updated', 'yop-poll' ),
+							'message' => esc_html__( 'Poll successfully updated', 'yop-poll' ),
 							'newElements' => $result['new-elements'],
 							'newSubElements' => $result['new-subelements'],
 						)
@@ -822,16 +872,16 @@ class YOP_Poll_Admin {
 					wp_send_json_error( $result['error'] );
 				}
 			} else {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function delete_single_poll() {
 		if ( check_ajax_referer( 'yop-poll-view-polls', '_token', false ) || check_ajax_referer( 'yop-poll-edit-poll', '_token', false ) ) {
 			if ( isset( $_POST['poll_id'] ) && ( 0 < intval( $_POST['poll_id'] ) ) ) {
-				$poll_id = sanitize_text_field( $_POST['poll_id'] );
+				$poll_id = sanitize_text_field( wp_unslash( $_POST['poll_id'] ) );
 				$current_user = wp_get_current_user();
 				$poll_owner = YOP_Poll_Polls::get_owner( $poll_id );
 				if (
@@ -840,26 +890,29 @@ class YOP_Poll_Admin {
 				) {
 					$result = YOP_Poll_Polls::delete( $poll_id );
 					if ( true === $result['success'] ) {
-						wp_send_json_success( __( 'Poll successfully deleted', 'yop-poll' ) );
+						wp_send_json_success( esc_html__( 'Poll successfully deleted', 'yop-poll' ) );
 					} else {
 						wp_send_json_error( $result['error'] );
 					}
 				} else {
-					wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+					wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 				}
 			} else {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function delete_bulk_poll() {
 		if ( check_ajax_referer( 'yop-poll-bulk-polls', '_token', false ) ) {
 			$current_user = wp_get_current_user();
-			$polls = json_decode( wp_unslash( $_POST['polls'] ) );
+			$polls_received = isset( $_POST['polls'] ) ? json_decode( wp_unslash( $_POST['polls'] ) ) : array();
+			$polls_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+				$polls_received
+			);
 			$success = 0;
-			foreach ( $polls as $poll ) {
+			foreach ( $polls_sanitized as $poll ) {
 				$poll_owner = YOP_Poll_Polls::get_owner( $poll );
 				if (
 					( ( $poll_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_delete_own' ) ) ) ||
@@ -875,50 +928,53 @@ class YOP_Poll_Admin {
 					$success--;
 				}
 			}
-			if ( $success === intval( count( $polls ) ) ) {
+			if ( $success === intval( count( $polls_sanitized ) ) ) {
 				wp_send_json_success( _n(
 					'Poll successfully deleted',
 					'Polls successfully deleted',
-					count( $polls ),
+					count( $polls_sanitized ),
 					'yop-poll' )
 				);
 			} else {
-				wp_send_json_error( _(
+				wp_send_json_error( _n(
 					'Error deleting poll',
 					'Error deleting polls',
-					count( $polls ),
+					count( $polls_sanitized ),
 					'yop-poll' )
 				);
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function clone_single_poll() {
 		if ( check_ajax_referer( 'yop-poll-view-polls', '_token', false ) ) {
 			if ( isset( $_POST['poll_id'] ) && ( 0 < intval( $_POST['poll_id'] ) ) ) {
 				if ( current_user_can( 'yop_poll_add' ) ) {
-					$result = YOP_Poll_Polls::clone_poll( $_POST['poll_id'] );
+					$result = YOP_Poll_Polls::clone_poll( sanitize_text_field( wp_unslash( $_POST['poll_id'] ) ) );
 					if ( true === $result['success'] ) {
-						wp_send_json_success( __( 'Poll successfully cloned', 'yop-poll' ) );
+						wp_send_json_success( esc_html__( 'Poll successfully cloned', 'yop-poll' ) );
 					} else {
 						wp_send_json_error( $result['error'] );
 					}
 				} else {
-					wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+					wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 				}
 			} else {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function clone_bulk_poll() {
 		if ( check_ajax_referer( 'yop-poll-bulk-polls', '_token', false ) ) {
-			$polls = json_decode( wp_unslash( $_POST['polls'] ) );
+			$polls_received = isset( $_POST['polls'] ) ? json_decode( wp_unslash( $_POST['polls'] ) ) : array();
+			$polls_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+				$polls_received
+			);
 			$success = 0;
-			foreach ( $polls as $poll ) {
+			foreach ( $polls_sanitized as $poll ) {
 				if ( current_user_can( 'yop_poll_add' ) ) {
 					$result = YOP_Poll_Polls::clone_poll( $poll );
 					if ( true === $result['success'] ) {
@@ -930,30 +986,33 @@ class YOP_Poll_Admin {
 					$success--;
 				}
 			}
-			if ( $success === intval( count( $polls ) ) ) {
+			if ( $success === intval( count( $polls_sanitized ) ) ) {
 				wp_send_json_success( _n(
 					'Poll successfully cloned',
 					'Polls successfully cloned',
-					count( $polls ),
+					count( $polls_sanitized ),
 					'yop-poll' )
 				);
 			} else {
-				wp_send_json_error( _(
+				wp_send_json_error( _n(
 					'Error cloning poll',
 					'Error cloning polls',
-					count( $polls ),
+					count( $polls_sanitized ),
 					'yop-poll' )
 				);
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function reset_bulk_poll() {
 		if ( check_ajax_referer( 'yop-poll-bulk-polls', '_token', false ) ) {
-			$polls = json_decode( wp_unslash( $_POST['polls'] ) );
+			$polls_received = isset( $_POST['polls'] ) ? json_decode( wp_unslash( $_POST['polls'] ) ) : array();
+			$polls_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+				$polls_received
+			);
 			$success = 0;
-			foreach ( $polls as $poll ) {
+			foreach ( $polls_sanitized as $poll ) {
 				if ( current_user_can( 'yop_poll_add' ) ) {
 					$result = YOP_Poll_Polls::reset_poll( $poll );
 					if ( true === $result['success'] ) {
@@ -965,13 +1024,13 @@ class YOP_Poll_Admin {
 					$success--;
 				}
 			}
-			if ( $success === intval( count( $polls ) ) ) {
-				wp_send_json_success( __( 'Votes successfully reset', 'yop-poll' ) );
+			if ( $success === intval( count( $polls_sanitized ) ) ) {
+				wp_send_json_success( esc_html__( 'Votes successfully reset', 'yop-poll' ) );
 			} else {
-				wp_send_json_error( __( 'Error resetting votes', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'Error resetting votes', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function display_results( $poll_id ) {
@@ -988,10 +1047,10 @@ class YOP_Poll_Admin {
 	}
 	public function build_results( $poll_id ) {
         if ( current_user_can( 'yop_poll_results_own' ) ) {
-            $params['q'] = isset( $_GET['q']) ? $_GET['q'] : '';
-            $params['order_by'] = isset( $_GET['order_by'] ) ? $_GET['order_by'] : '';
-            $params['sort_order'] = isset( $_GET['sort_order'] ) ? $_GET['sort_order'] : 'asc';
-            $params['page_no'] = isset( $_GET['page_no'] ) ? $_GET['page_no'] : '1';
+            $params['q'] = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+            $params['order_by'] = isset( $_GET['order_by'] ) ? sanitize_text_field( wp_unslash( $_GET['order_by'] ) ) : '';
+            $params['sort_order'] = isset( $_GET['sort_order'] ) ? sanitize_text_field( wp_unslash( $_GET['sort_order'] ) ) : 'asc';
+            $params['page_no'] = isset( $_GET['page_no'] ) ? sanitize_text_field( wp_unslash( $_GET['page_no'] ) ) : '1';
             $template = YOP_POLL_PATH . 'admin/views/results/view.php';
             $poll = YOP_Poll_Polls::get_poll_for_admin( $poll_id );
             if ( $poll ) {
@@ -1006,7 +1065,7 @@ class YOP_Poll_Admin {
                 $total_votes_per_question = [];
                 $total_voters_per_question = [];
                 $votes_count = $GLOBALS['wpdb']->get_var( $GLOBALS['wpdb']->prepare( "SELECT COUNT(*) FROM `{$GLOBALS['wpdb']->yop_poll_votes}` WHERE `poll_id` = %d AND `status` = 'active'", array( $poll_id ) ) );
-                $total_pages = ceil( $votes_count/$limit );
+                $total_pages = ceil( $votes_count / $limit );
                 $query  = "SELECT * FROM `{$GLOBALS['wpdb']->yop_poll_votes}` WHERE `poll_id` = %d AND `status` = 'active' limit $offset, $limit";
                 $votes = $GLOBALS['wpdb']->get_results( $GLOBALS['wpdb']->prepare( $query, array( $poll_id ) ) );
 
@@ -1025,12 +1084,12 @@ class YOP_Poll_Admin {
                                     $question_aswers[] = $answers['data'];
                                 }
                             }
-                            if( isset( $total_votes_per_question[$ave['id']] ) ) {
+                            if ( isset( $total_votes_per_question[$ave['id']] ) ) {
                                 $total_votes_per_question[$ave['id']]++;
                             } else {
                                 $total_votes_per_question[$ave['id']] = 1;
                             }
-                            if( isset( $total_voters_per_question[$ave['id']][$user_type] ) ) {
+                            if ( isset( $total_voters_per_question[$ave['id']][$user_type] ) ) {
                                 $total_voters_per_question[$ave['id']][$user_type]++;
                             } else {
                                 $total_voters_per_question[$ave['id']][$user_type] = 1;
@@ -1040,7 +1099,7 @@ class YOP_Poll_Admin {
                     }
                 }
                 $other_answers = YOP_Poll_Helper::group_other_answers( $other_answers );
-                if( count( $votes ) > 0 ) {
+                if ( count( $votes ) > 0 ) {
                     $cf_hidden .= '<input type="hidden" name="cf_total_pages" id="cf-total-pages" value="' . $total_pages . '">';
                     $cf_hidden .= '<input type="hidden" name="cf_page" id="cf-page" value="' . $page . '">';
                     foreach ( $votes as $vote ) {
@@ -1053,7 +1112,7 @@ class YOP_Poll_Admin {
                             }
                         }
                         if ( count( $custom_fields ) > 0 ) {
-                            $cf_total_pages = ceil( count( $custom_fields )/$limit );
+                            $cf_total_pages = ceil( count( $custom_fields ) / $limit );
                             $cf_string .= '<tr>';
                             foreach ( $custom_fields as $cf ) {
                                 $cf_string .= '<td>' . $cf['data'] . '</td>';
@@ -1081,7 +1140,7 @@ class YOP_Poll_Admin {
                     )
                 );
             } else {
-                $error = __( 'Invalid poll', 'yop-poll' );
+                $error = esc_html__( 'Invalid poll', 'yop-poll' );
                 $template = YOP_POLL_PATH . 'admin/views/general/error.php';
                 echo YOP_Poll_View::render(
                     $template,
@@ -1094,13 +1153,13 @@ class YOP_Poll_Admin {
     }
     public function display_votes( $poll_id ) {
         if ( current_user_can( 'yop_poll_results_own' ) ) {
-            $params['q'] = isset( $_GET['q']) ? $_GET['q'] : '';
-            $params['order_by'] = isset( $_GET['order_by'] ) ? $_GET['order_by'] : '';
-            $params['sort_order'] = isset( $_GET['sort_order'] ) ? $_GET['sort_order'] : 'asc';
-            $params['page_no'] = isset( $_GET['page_no'] ) ? $_GET['page_no'] : '1';
-            $params['page'] = isset( $_GET['page'] ) ? $_GET['page'] : 'yop-poll';
-            $params['poll_id'] = isset( $_GET['poll_id'] ) ? $_GET['poll_id'] : '';
-            $params['action'] = isset( $_GET['action'] ) ? $_GET['action'] : '';
+            $params['q'] = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+            $params['order_by'] = isset( $_GET['order_by'] ) ? sanitize_text_field( wp_unslash( $_GET['order_by'] ) ) : '';
+            $params['sort_order'] = isset( $_GET['sort_order'] ) ? sanitize_text_field( wp_unslash( $_GET['sort_order'] ) ) : 'asc';
+            $params['page_no'] = isset( $_GET['page_no'] ) ? sanitize_text_field( wp_unslash( $_GET['page_no'] ) ) : '1';
+            $params['page'] = isset( $_GET['page'] ) ? sanitize_text_field( wp_unslash( $_GET['page'] ) ) : 'yop-poll';
+            $params['poll_id'] = isset( $_GET['poll_id'] ) ? sanitize_text_field( wp_unslash( $_GET['poll_id'] ) ) : '';
+            $params['action'] = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
             $template = YOP_POLL_PATH . 'admin/views/results/votes.php';
             $poll = YOP_Poll_Polls::get_poll_for_admin( $poll_id );
             if ( $poll ) {
@@ -1120,7 +1179,7 @@ class YOP_Poll_Admin {
                     )
                 );
             } else {
-                $error = __( 'Invalid poll', 'yop-poll' );
+                $error = esc_html__( 'Invalid poll', 'yop-poll' );
                 $template = YOP_POLL_PATH . 'admin/views/general/error.php';
                 echo YOP_Poll_View::render(
                     $template,
@@ -1134,16 +1193,17 @@ class YOP_Poll_Admin {
     public function get_yop_poll_votes_customs() {
         if ( check_ajax_referer( 'yop-poll-get-vote-customs', '_token', false ) ) {
             $limit = 10;
-            if(isset($_POST['page']) && $_POST['page'] != "") {
-                $page = $_POST['page'];
-                $offset = $limit * ($page-1);
+            if ( isset( $_POST['page'] ) && '' !== $_POST['page'] ) {
+                $page = sanitize_text_field( wp_unslash( $_POST['page'] ) );
+                $offset = $limit * ( $page - 1 );
             } else {
                 $page = 1;
                 $offset = 0;
             }
-            $votes = YOP_Poll_Votes::get_vote_by_poll( $_POST['poll_id'], $limit, $offset );
+			$poll_id = isset( $_POST['poll_id'] ) ? sanitize_text_field( wp_unslash( $_POST['poll_id'] ) ) : '';
+            $votes = YOP_Poll_Votes::get_vote_by_poll( $poll_id, $limit, $offset );
             $cf_string = '';
-            if( count( $votes ) > 0 ) {
+            if ( count( $votes ) > 0 ) {
                 foreach ( $votes as $vote ) {
                     $vote_data = unserialize( $vote->vote_data );
                     $custom_fields = [];
@@ -1154,7 +1214,7 @@ class YOP_Poll_Admin {
                     }
                     if ( count( $custom_fields ) > 0 ) {
                         $cf_string .= '<tr>';
-                        foreach ($custom_fields as $cf ) {
+                        foreach ( $custom_fields as $cf ) {
                             $cf_string .= '<td>' . $cf['data'] . '</td>';
                         }
                         $cf_string .= '</tr>';
@@ -1165,7 +1225,7 @@ class YOP_Poll_Admin {
                 wp_send_json_success( $cf_string );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
     }
 	public function manage_support() {
@@ -1176,12 +1236,12 @@ class YOP_Poll_Admin {
 		$template = YOP_POLL_PATH . 'admin/views/general/migrate-old-tables.php';
 		echo YOP_Poll_View::render( $template );
 	}
-	public function manage_logs () {
+	public function manage_logs() {
 		if ( current_user_can( 'yop_poll_add' ) ) {
-			$params['q'] = isset( $_GET['q']) ? $_GET['q'] : '';
-			$params['order_by'] = isset( $_GET['order_by'] ) ? $_GET['order_by'] : '';
-			$params['sort_order'] = isset( $_GET['sort_order'] ) ? $_GET['sort_order'] : 'asc';
-			$params['page_no'] = isset( $_GET['page_no'] ) ? $_GET['page_no'] : '1';
+			$params['q'] = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+			$params['order_by'] = isset( $_GET['order_by'] ) ? sanitize_text_field( wp_unslash( $_GET['order_by'] ) ) : '';
+			$params['sort_order'] = isset( $_GET['sort_order'] ) ? sanitize_text_field( wp_unslash( $_GET['sort_order'] ) ) : 'asc';
+			$params['page_no'] = isset( $_GET['page_no'] ) ? sanitize_text_field( wp_unslash( $_GET['page_no'] ) ) : '1';
             $logs = YOP_Poll_Logs::get_logs( $params );
             $template = YOP_POLL_PATH . 'admin/views/logs/view.php';
             echo YOP_Poll_View::render( $template, array(
@@ -1198,44 +1258,46 @@ class YOP_Poll_Admin {
 	public function get_log_details() {
         if ( check_ajax_referer( 'yop-poll-view-logs', '_token', false ) ) {
             if ( isset( $_POST['log_id'] ) && ( 0 < intval( $_POST['log_id'] ) ) ) {
-                $log_owner = YOP_Poll_Logs::get_owner( $_POST['log_id'] );
+				$log_id = sanitize_text_field( wp_unslash( $_POST['log_id'] ) );
+                $log_owner = YOP_Poll_Logs::get_owner( $log_id );
 				$current_user = wp_get_current_user();
                 if ( $log_owner == $current_user->ID ) {
-                    $results = YOP_Poll_Logs::get_log_details( $_POST['log_id'] );
+                    $results = YOP_Poll_Logs::get_log_details( $log_id );
                     $details_string = '';
                     foreach ( $results as $res ) {
-                        if ( 'custom-field' === $res['question']) {
-                            $details_string .= "<div>" . __( 'Custom Field', 'yop-poll' ) . ': ' . $res['caption'];
-                            $details_string .= '<div style="padding-left: 10px;">' . __( 'Answer', 'yop-poll' ) . ': ' .
+                        if ( 'custom-field' === $res['question'] ) {
+                            $details_string .= '<div>' . esc_html__( 'Custom Field', 'yop-poll' ) . ': ' . $res['caption'];
+                            $details_string .= '<div style="padding-left: 10px;">' . esc_html__( 'Answer', 'yop-poll' ) . ': ' .
                                 $res['answers'][0]['answer_value'] . '</div>';
                         } else {
-                            $details_string .= "<div>" . __('Question', 'yop-poll' ). ': ' . $res['question'];
+                            $details_string .= '<div>' . esc_html__( 'Question', 'yop-poll' ) . ': ' . $res['question'];
                             foreach ( $res['answers'] as $ra ) {
-                                $details_string .= '<div style="padding-left: 10px;">' . __( 'Answer', 'yop-poll' ) . ': ' . $ra['answer_value'] . '</div>';
+                                $details_string .= '<div style="padding-left: 10px;">' . esc_html__( 'Answer', 'yop-poll' ) . ': ' . $ra['answer_value'] . '</div>';
                             }
                         }
                         $details_string .= '</div>';
                     }
                     wp_send_json_success( [ 'details' => $details_string ] );
                 } else {
-                    wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+                    wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
                 }
             } else {
-                wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+                wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
     }
 	public function manage_bans() {
-		$_action = isset( $_GET['action'] ) ? $_GET['action'] : '';
-		switch ( $_action) {
+		$_action = isset( $_GET['action'] ) ? sanitize_text_field( wp_unslash( $_GET['action'] ) ) : '';
+		switch ( $_action ) {
 			case 'add': {
 				$this->show_add_ban();
 				break;
 			}
 			case 'edit': {
-				$this->show_edit_ban( $_GET['ban_id'] );
+				$ban_id = isset( $_GET['ban_id'] ) ? sanitize_text_field( wp_unslash( $_GET['ban_id'] ) ) : '';
+				$this->show_edit_ban( $ban_id );
 				break;
 			}
 			default: {
@@ -1246,10 +1308,10 @@ class YOP_Poll_Admin {
 	}
 	public function show_bans() {
 		if ( current_user_can( 'yop_poll_add' ) ) {
-			$params['q'] = isset( $_GET['q']) ? $_GET['q'] : '';
-			$params['order_by'] = isset( $_GET['order_by'] ) ? $_GET['order_by'] : '';
-			$params['sort_order'] = isset( $_GET['sort_order'] ) ? $_GET['sort_order'] : 'asc';
-			$params['page_no'] = isset( $_GET['page_no'] ) ? $_GET['page_no'] : '1';
+			$params['q'] = isset( $_GET['q'] ) ? sanitize_text_field( wp_unslash( $_GET['q'] ) ) : '';
+			$params['order_by'] = isset( $_GET['order_by'] ) ? sanitize_text_field( wp_unslash( $_GET['order_by'] ) ) : '';
+			$params['sort_order'] = isset( $_GET['sort_order'] ) ? sanitize_text_field( wp_unslash( $_GET['sort_order'] ) ) : 'asc';
+			$params['page_no'] = isset( $_GET['page_no'] ) ? sanitize_text_field( wp_unslash( $_GET['page_no'] ) ) : '1';
 			$template = YOP_POLL_PATH . 'admin/views/bans/view.php';
 			$bans = YOP_Poll_Bans::get_bans( $params );
 			echo YOP_Poll_View::render( $template, array(
@@ -1274,14 +1336,18 @@ class YOP_Poll_Admin {
 	}
 	public function create_ban() {
 		if ( current_user_can( 'yop_poll_add' ) && check_ajax_referer( 'yop-poll-add-ban', '_token', false ) ) {
-			$result = YOP_Poll_Bans::add( json_decode( wp_unslash( $_POST['ban'] ) ) );
+			$ban_received = isset( $_POST['ban'] ) ? json_decode( wp_unslash( $_POST['ban'] ) ) : array();
+			$ban_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+				$ban_received
+			);
+			$result = YOP_Poll_Bans::add( $ban_sanitized );
 			if ( true === $result['success'] ) {
-				wp_send_json_success( __( 'Ban successfully added', 'yop-poll' ) );
+				wp_send_json_success( esc_html__( 'Ban successfully added', 'yop-poll' ) );
 			} else {
 				wp_send_json_error( $result['error'] );
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function show_edit_ban( $ban_id ) {
@@ -1301,7 +1367,7 @@ class YOP_Poll_Admin {
 						'polls' => $polls
 					));
 				} else {
-					echo __( 'You don\'t have sufficient permissions to access this page', 'yop-poll' );
+					esc_html_e( 'You don\'t have sufficient permissions to access this page', 'yop-poll' );
 				}
 			}
 		}
@@ -1309,7 +1375,7 @@ class YOP_Poll_Admin {
 	public function delete_single_ban() {
 		if ( check_ajax_referer( 'yop-poll-view-bans', '_token', false ) ) {
 			if ( isset( $_POST['ban_id'] ) && ( 0 < intval( $_POST['ban_id'] ) ) ) {
-				$ban_id = sanitize_text_field( $_POST['ban_id'] );
+				$ban_id = sanitize_text_field( wp_unslash( $_POST['ban_id'] ) );
 				$current_user = wp_get_current_user();
 				$ban_owner = YOP_Poll_Bans::get_owner( $ban_id );
 				if (
@@ -1318,48 +1384,54 @@ class YOP_Poll_Admin {
 				) {
 					$result = YOP_Poll_Bans::delete( $ban_id );
 					if ( true === $result['success'] ) {
-						wp_send_json_success( __( 'Ban successfully deleted', 'yop-poll' ) );
+						wp_send_json_success( esc_html__( 'Ban successfully deleted', 'yop-poll' ) );
 					} else {
 						wp_send_json_error( $result['error'] );
 					}
 				} else {
-					wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+					wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 				}
 			} else {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function update_ban() {
-		$ban = json_decode( wp_unslash( $_POST['ban'] ) );
-		$ban_owner = YOP_Poll_Bans::get_owner( $ban->ban->id );
+		$ban_received = isset( $_POST['ban'] ) ? json_decode( wp_unslash( $_POST['ban'] ) ) : array();
+		$ban_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+			$ban_received
+		);
+		$ban_owner = YOP_Poll_Bans::get_owner( $ban_sanitized->ban->id );
 		$current_user = wp_get_current_user();
 		if ( check_ajax_referer( 'yop-poll-edit-ban', '_token', false ) ) {
 			if (
 				( ( $ban_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_edit_own' ) ) ) ||
 				( ( $ban_owner !== $current_user->ID ) && ( current_user_can( 'yop_poll_edit_others' ) ) )
 			) {
-				$result = YOP_Poll_Bans::update( $ban );
+				$result = YOP_Poll_Bans::update( $ban_sanitized );
 				if ( true === $result['success'] ) {
-					wp_send_json_success( __( 'Ban successfully updated', 'yop-poll' ) );
+					wp_send_json_success( esc_html__( 'Ban successfully updated', 'yop-poll' ) );
 				} else {
 					wp_send_json_error( $result['error'] );
 				}
 			} else {
-				wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function delete_bulk_ban() {
 		if ( check_ajax_referer( 'yop-poll-bulk-bans', '_token', false ) ) {
-			$bans = json_decode( wp_unslash( $_POST['bans'] ) );
+			$bans_received = isset( $_POST['bans'] ) ? json_decode( wp_unslash( $_POST['bans'] ) ) : array();
+			$bans_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+				$bans_received
+			);
 			$success = 0;
 			$current_user = wp_get_current_user();
-			foreach ( $bans as $ban ) {
+			foreach ( $bans_sanitized as $ban ) {
 				$ban_owner = YOP_Poll_Bans::get_owner( $ban );
 				if (
 					( ( $ban_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_delete_own' ) ) ) ||
@@ -1375,83 +1447,87 @@ class YOP_Poll_Admin {
 					$success--;
 				}
 			}
-			if ( $success === intval( count( $bans ) ) ) {
+			if ( $success === intval( count( $bans_sanitized ) ) ) {
 				wp_send_json_success( _n(
 					'Ban successfully deleted',
 					'Bans successfully deleted',
-					count( $bans ),
+					count( $bans_sanitized ),
 					'yop-poll' )
 				);
 			} else {
-				wp_send_json_error( _(
+				wp_send_json_error( _n(
 					'Error deleting ban',
 					'Error deleting bans',
-					count( $bans ),
+					count( $bans_sanitized ),
 					'yop-poll' )
 				);
 			}
 		} else {
-			wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
 		}
 	}
 	public function record_vote() {
-		$vote_data = json_decode( wp_unslash( $_POST['data'] ) );
-		if ( isset( $vote_data->pollId ) && ( 0 < intval( $vote_data->pollId ) ) ) {
-			if ( check_ajax_referer( 'yop-poll-vote-' . $vote_data->pollId, '_token', false ) ) {
-				$result = YOP_Poll_Votes::add( $vote_data );
+		$vote_data_received = isset( $_POST['data'] ) ? json_decode( wp_unslash( $_POST['data'] ) ) : array();
+		$vote_data_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+			$vote_data_received
+		);
+		if ( isset( $vote_data_sanitized->pollId ) && ( 0 < intval( $vote_data_sanitized->pollId ) ) ) {
+			if ( check_ajax_referer( 'yop-poll-vote-' . $vote_data_sanitized->pollId, '_token', false ) ) {
+				$result = YOP_Poll_Votes::add( $vote_data_sanitized );
 				if ( true === $result['success'] ) {
-					wp_send_json_success( __( 'Vote Recorded', 'yop-poll' ) );
+					wp_send_json_success( esc_html__( 'Vote Recorded', 'yop-poll' ) );
 				} else {
 					wp_send_json_error( $result['error'] );
 				}
 			} else {
-				wp_send_json_error( __( 'Invalid data 1', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'Invalid data 1', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'Invalid data 2', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'Invalid data 2', 'yop-poll' ) );
 		}
 	}
 	public function record_wordpress_vote() {
 		if ( isset( $_GET['poll_id'] ) && ( 0 < intval( $_GET['poll_id'] ) ) ) {
 			$template = YOP_POLL_PATH . 'admin/views/general/addnewwordpressvote.php';
 			echo YOP_Poll_View::render( $template, array(
-				'poll_id' => $_GET['poll_id']
+				'poll_id' => sanitize_text_field( wp_unslash( $_GET['poll_id'] ) )
 			) );
 		} else {
 			echo 'no go';
 		}
 		wp_die();
 	}
-	public function get_vote_details () {
+	public function get_vote_details() {
         if ( check_ajax_referer( 'yop-poll-get-vote-details', '_token', false ) ) {
             if ( isset( $_POST['voteid'] ) && ( intval( $_POST['voteid'] ) > 0 ) ) {
-                $results = YOP_Poll_Votes::get_vote_details( $_POST['voteid'] );
+				$vote_id = sanitize_text_field( wp_unslash( $_POST['voteid'] ) );
+                $results = YOP_Poll_Votes::get_vote_details( $vote_id );
                 $details_string = '';
                 foreach ( $results as $res ) {
-                    if ( 'custom-field' === $res['question']) {
-                        $details_string .= "<div>" . __( 'Custom Field', 'yop-poll' ) . ': ' . $res['caption'];
-                        $details_string .= '<div style="padding-left: 10px;">' . __( 'Answer', 'yop-poll' ) . ': ' .
+                    if ( 'custom-field' === $res['question'] ) {
+                        $details_string .= '<div>' . esc_html__( 'Custom Field', 'yop-poll' ) . ': ' . $res['caption'];
+                        $details_string .= '<div style="padding-left: 10px;">' . esc_html__( 'Answer', 'yop-poll' ) . ': ' .
                             esc_html( $res['answers'][0]['answer_value'] ) . '</div>';
                     } else {
-                        $details_string .= "<div>" . __('Question', 'yop-poll' ). ': ' . $res['question'];
+                        $details_string .= '<div>' . esc_html__( 'Question', 'yop-poll' ) . ': ' . $res['question'];
                         foreach ( $res['answers'] as $ra ) {
-                            $details_string .= '<div style="padding-left: 10px;">' . __( 'Answer', 'yop-poll' ) . ': ' . esc_html( $ra['answer_value'] ) . '</div>';
+                            $details_string .= '<div style="padding-left: 10px;">' . esc_html__( 'Answer', 'yop-poll' ) . ': ' . esc_html( $ra['answer_value'] ) . '</div>';
                         }
                     }
                     $details_string .= '</div>';
                     }
                     wp_send_json_success( [ 'details' => $details_string ] );
             } else {
-                wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+                wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
     }
     public function delete_single_vote() {
         if ( check_ajax_referer( 'yop-poll-get-vote-details', '_token', false ) ) {
-            $poll_id = sanitize_text_field( $_POST['poll_id'] );
-            $vote_id = sanitize_text_field( $_POST['vote_id'] );
+            $poll_id = isset( $_POST['poll_id'] ) ? sanitize_text_field( wp_unslash( $_POST['poll_id'] ) ) : '';
+            $vote_id = isset( $_POST['vote_id'] ) ? sanitize_text_field( wp_unslash( $_POST['vote_id'] ) ) : '';
             $success = 0;
             $current_user = wp_get_current_user();
             $vote_owner = YOP_Poll_Votes::get_owner( $vote_id );
@@ -1459,35 +1535,38 @@ class YOP_Poll_Admin {
                 ( ( $vote_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_delete_own' ) ) ) ||
                 ( ( $vote_owner !== $current_user->ID ) && ( current_user_can( 'yop_poll_delete_others' ) ) )
             ) {
-                if ( $vote_id >0 ) {
+                if ( $vote_id > 0 ) {
                     $result = YOP_Poll_Votes::delete_vote( $vote_id, $poll_id );
                     if ( true === $result ) {
-                        wp_send_json_success( __( 'Vote successfully deleted', 'yop-poll' ) );
+                        wp_send_json_success( esc_html__( 'Vote successfully deleted', 'yop-poll' ) );
                     } else {
-                        wp_send_json_error( __( 'Error deleting vote', 'yop-poll' ) );
+                        wp_send_json_error( esc_html__( 'Error deleting vote', 'yop-poll' ) );
                     }
                 }
             } else {
-                wp_send_json_error( __( 'Error deleting vote', 'yop-poll' ) );
+                wp_send_json_error( esc_html__( 'Error deleting vote', 'yop-poll' ) );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
     }
     public function delete_bulk_votes() {
         if ( check_ajax_referer( 'yop-poll-bulk-votes', '_token', false ) ) {
-            $votes = json_decode( wp_unslash( $_POST['votes'] ) );
-            $poll_id = $_POST['poll_id'];
+            $votes_received = isset( $_POST['votes'] ) ? json_decode( wp_unslash( $_POST['votes'] ) ) : array();
+			$votes_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+				$votes_received
+			);
+            $poll_id = isset( $_POST['poll_id'] ) ? sanitize_text_field( wp_unslash( $_POST['poll_id'] ) ) : '';
             $success = 0;
             $current_user = wp_get_current_user();
-            foreach ( $votes as $vote ) {
+            foreach ( $votes_sanitized as $vote ) {
                 $vote_owner = YOP_Poll_Votes::get_owner( $vote );
                 if (
                     ( ( $vote_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_delete_own' ) ) ) ||
                     ( ( $vote_owner !== $current_user->ID ) && ( current_user_can( 'yop_poll_delete_others' ) ) )
                 ) {
                     $votes_to_be_deleted[] = $vote;
-                    if ( count( $votes_to_be_deleted ) >0 ) {
+                    if ( count( $votes_to_be_deleted ) > 0 ) {
                         $result = YOP_Poll_Votes::delete_vote( $vote, $poll_id );
                         if ( true === $result ) {
                             $success++;
@@ -1499,29 +1578,29 @@ class YOP_Poll_Admin {
                     $success--;
                 }
             }
-            if ( $success === intval( count( $votes ) ) ) {
+            if ( $success === intval( count( $votes_sanitized ) ) ) {
                 wp_send_json_success( _n(
                         'Vote successfully deleted',
                         'Votes successfully deleted',
-                        count( $votes ),
+                        count( $votes_sanitized ),
                         'yop-poll' )
                 );
             } else {
-                wp_send_json_error( _(
+                wp_send_json_error( _n(
                         'Error deleting vote',
                         'Error deleting votes',
-                        count( $votes ),
+                        count( $votes_sanitized ),
                         'yop-poll' )
                 );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
     }
     public function delete_single_log() {
         if ( check_ajax_referer( 'yop-poll-view-logs', '_token', false ) ) {
             if ( isset( $_POST['log_id'] ) && ( 0 < intval( $_POST['log_id'] ) ) ) {
-				$log_id = sanitize_text_field( $_POST['log_id'] );
+				$log_id = sanitize_text_field( wp_unslash( $_POST['log_id'] ) );
                 $log_owner = YOP_Poll_Logs::get_owner( $log_id );
 				$current_user = wp_get_current_user();
                 if (
@@ -1530,26 +1609,29 @@ class YOP_Poll_Admin {
                 ) {
                     $result = YOP_Poll_Logs::delete( $log_id );
                     if ( true === $result['success'] ) {
-                        wp_send_json_success( __( 'Log successfully deleted', 'yop-poll' ) );
+                        wp_send_json_success( esc_html__( 'Log successfully deleted', 'yop-poll' ) );
                     } else {
                         wp_send_json_error( $result['error'] );
                     }
                 } else {
-                    wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+                    wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
                 }
             } else {
-                wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+                wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
     }
     public function delete_bulk_log() {
         if ( check_ajax_referer( 'yop-poll-bulk-logs', '_token', false ) ) {
-            $logs = json_decode( wp_unslash( $_POST['logs'] ) );
+            $logs_received = isset( $_POST['logs'] ) ? json_decode( wp_unslash( $_POST['logs'] ) ) : array();
+			$logs_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+				$logs_received
+			);
             $success = 0;
 			$current_user = wp_get_current_user();
-            foreach ( $logs as $log ) {
+            foreach ( $logs_sanitized as $log ) {
                 $log_owner = YOP_Poll_Logs::get_owner( $log );
                 if (
                     ( ( $log_owner === $current_user->ID ) && ( current_user_can( 'yop_poll_delete_own' ) ) ) ||
@@ -1565,23 +1647,23 @@ class YOP_Poll_Admin {
                     $success--;
                 }
             }
-            if ( $success === intval( count( $logs ) ) ) {
+            if ( $success === intval( count( $logs_sanitized ) ) ) {
                 wp_send_json_success( _n(
                         'Log successfully deleted',
                         'Logs successfully deleted',
-                        count( $logs ),
+                        count( $logs_sanitized ),
                         'yop-poll' )
                 );
             } else {
-                wp_send_json_error( _(
+                wp_send_json_error( _n(
                         'Error deleting log',
                         'Error deleting logs',
-                        count( $logs ),
+                        count( $logs_sanitized ),
                         'yop-poll' )
                 );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
     }
 	public function manage_settings() {
@@ -1595,77 +1677,84 @@ class YOP_Poll_Admin {
             echo YOP_Poll_View::render( $template, array( 'settings' => $unserialized_settings ) );
         }
     }
-	public function save_settings () {
+	public function save_settings() {
         if ( current_user_can( 'yop_poll_add' ) ) {
             if ( check_ajax_referer( 'yop-poll-update-settings', '_token', false ) ) {
-                $result = YOP_Poll_Settings::save_settings( json_decode( wp_unslash( $_POST['settings'] ) ) );
+				$settings_received = isset( $_POST['settings'] ) ? json_decode( wp_unslash( $_POST['settings'] ) ) : array();
+				$settings_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+					$settings_received
+				);
+                $result = YOP_Poll_Settings::save_settings( $settings_sanitized );
                 if ( true === $result['success'] ) {
-                    wp_send_json_success( __( 'Settings updated', 'yop-poll' ) );
+                    wp_send_json_success( esc_html__( 'Settings updated', 'yop-poll' ) );
                 } else {
                     wp_send_json_error( $result['error'] );
                 }
             } else {
-                wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+                wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
             }
         } else {
-            wp_send_json_error( __( 'You are not allowed to perform this action', 'yop-poll' ) );
+            wp_send_json_error( esc_html__( 'You are not allowed to perform this action', 'yop-poll' ) );
         }
 	}
 	public function add_votes_manually() {
 		if ( isset( $_POST['id'] ) && ( 0 < intval( $_POST['id'] ) ) ) {
 			if ( check_ajax_referer( 'yop-poll-add-votes-manually', '_token', false ) ) {
-				$poll_id = intval( $_POST['id'] );
-				$votes_data = json_decode( wp_unslash( $_POST['data'] ) );
-				$result = YOP_Poll_Polls::add_votes_manually( $poll_id, $votes_data );
+				$poll_id = intval( sanitize_text_field( wp_unslash( $_POST['id'] ) ) );
+				$votes_data_received = isset( $_POST['data'] ) ? json_decode( wp_unslash( $_POST['data'] ) ) : array();
+				$votes_data_sanitized = YOP_Poll_Helper::sanitize_text_or_array_or_object(
+					$votes_data_received
+				);
+				$result = YOP_Poll_Polls::add_votes_manually( $poll_id, $votes_data_sanitized );
 				if ( true === $result['success'] ) {
-					wp_send_json_success( __( 'Votes Succesfully Added', 'yop-poll' ) );
+					wp_send_json_success( esc_html__( 'Votes Succesfully Added', 'yop-poll' ) );
 				} else {
 					wp_send_json_error( $result['error'] );
 				}
 			} else {
-				wp_send_json_error( __( 'Invalid data 1', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'Invalid data 1', 'yop-poll' ) );
 			}
 		} else {
-			wp_send_json_error( __( 'Invalid data 2', 'yop-poll' ) );
+			wp_send_json_error( esc_html__( 'Invalid data 2', 'yop-poll' ) );
 		}
 	}
 	public function create_poll_for_frontend() {
-		if ( ( true === isset( $_POST['poll_id'] ) ) && ( '' !== $_POST['poll_id'] )  ) {
+		if ( ( true === isset( $_POST['poll_id'] ) ) && ( '' !== $_POST['poll_id'] ) ) {
 			$params = array();
-			$poll_id = sanitize_text_field( $_POST['poll_id'] );
-			$params['tracking_id'] = sanitize_text_field( $_POST['tracking_id'] );
-			$params['show_results'] = sanitize_text_field( $_POST['show_results'] );
+			$poll_id = sanitize_text_field( wp_unslash( $_POST['poll_id'] ) );
+			$params['tracking_id'] = isset( $_POST['tracking_id'] ) ? sanitize_text_field( wp_unslash( $_POST['tracking_id'] ) ) : '';
+			$params['show_results'] = isset( $_POST['show_results'] ) ? sanitize_text_field( wp_unslash( $_POST['show_results'] ) ) : '';
 			$poll_for_output = YOP_Poll_Public::generate_poll_for_ajax( $poll_id, $params );
 			if ( false !== $poll_for_output ) {
 				wp_send_json_success( $poll_for_output );
 			} else {
-				wp_send_json_error( __( 'Error generating poll', 'yop-poll' ) );
+				wp_send_json_error( esc_html__( 'Error generating poll', 'yop-poll' ) );
 				wp_die();
 			}
 		}
 	}
 	public function stop_showing_guide() {
 		YOP_Poll_Settings::update_show_guide( 'no' );
-		wp_send_json_success( __( 'Setting Updated', 'yop-poll' ) );
+		wp_send_json_success( esc_html__( 'Setting Updated', 'yop-poll' ) );
 	}
 	public function send_guide() {
-		$user_input = sanitize_text_field( $_POST['input'] );
+		$user_input = isset( $_POST['input'] ) ? sanitize_text_field( wp_unslash( $_POST['input'] ) ) : '';
 		$url = 'https://admin.yoppoll.com/';
         $request_string = array(
             'body'       => array(
                 'action'  => 'send-guide',
-                'input' =>  $user_input
+                'input' => $user_input
             ),
             'user-agent' => 'WordPress/' . YOP_POLL_VERSION . ';'
         );
         $result = wp_remote_post( $url, $request_string );
-        if( ! is_wp_error( $result ) && ( 200 === $result['response']['code'] ) ) {
+        if ( ! is_wp_error( $result ) && ( 200 === $result['response']['code'] ) ) {
             $response = unserialize( $result['body'] );
         } else {
             $response = null;
 		}
 		YOP_Poll_Settings::update_show_guide( 'no' );
-		wp_send_json_success( __( 'Guide Sent', 'yop-poll' ) );
+		wp_send_json_success( esc_html__( 'Guide Sent', 'yop-poll' ) );
 	}
 	public function show_upgrade_to_pro() {
 		$template = YOP_POLL_PATH . 'admin/views/general/upgrade-page.php';
@@ -1674,24 +1763,26 @@ class YOP_Poll_Admin {
 		) );
 	}
 	public function send_deactivation_feedback() {
-		if( empty( $_POST['_token'] ) || ! wp_verify_nonce( $_POST['_token'], 'yop-poll_deactivation' ) ) {
+		$_token = isset( $_POST['_token'] ) ? sanitize_text_field( wp_unslash( $_POST['_token'] ) ) : '';
+		if ( empty( $_token ) || ! wp_verify_nonce( $_token, 'yop-poll_deactivation' ) ) {
 			wp_die( 0 );
 		}
-		if( isset( $_POST['data'] ) ) {
-	        parse_str( $_POST['data'], $form_data );
+		if ( isset( $_POST['data'] ) ) {
+			$data = sanitize_text_field( wp_unslash( $_POST['data'] ) );
+	        parse_str( $data, $form_data );
 		}
-		$subject = "YOP Poll Deactivation Notification";
+		$subject = 'YOP Poll Deactivation Notification';
 		$message = '';
 		if ( isset( $form_data['yop-poll_disable_reason'] ) ) {
-			$message .= "Reason: " . sanitize_text_field( $form_data['yop-poll_disable_reason'] );
+			$message .= 'Reason: ' . sanitize_text_field( $form_data['yop-poll_disable_reason'] );
 		}
-	    if( isset( $form_data['yop-poll_deactivate_details'] ) ) {
+	    if ( isset( $form_data['yop-poll_deactivate_details'] ) ) {
 	        $message .= "\n\r";
-	        $message .= 'Message: ' . sanitize_text_field( implode('', $form_data['yop-poll_deactivate_details']) );
+	        $message .= 'Message: ' . sanitize_text_field( implode( '', $form_data['yop-poll_deactivate_details'] ) );
 	    } else {
 			$message = 'No extra details given';
 		}
-		$email_headers = array (
+		$email_headers = array(
 			'From: Wordpress Deactivation Notice <deactivate@yop-poll.com>',
 			'Content-Type: text/plain'
         );

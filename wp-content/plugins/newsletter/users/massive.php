@@ -18,6 +18,11 @@ if ($controls->is_action('remove_unsubscribed')) {
     $controls->messages = __('Subscribers unsubscribed deleted: ', 'newsletter') . $r . '.';
 }
 
+if ($controls->is_action('remove_complained')) {
+    $r = $wpdb->query("delete from " . NEWSLETTER_USERS_TABLE . " where status='P'");
+    $controls->messages = __('Subscribers complained deleted: ', 'newsletter') . $r . '.';
+}
+
 if ($controls->is_action('remove_bounced')) {
     $r = $wpdb->query("delete from " . NEWSLETTER_USERS_TABLE . " where status='B'");
     $controls->messages = __('Subscribers bounced deleted: ', 'newsletter') . $r . '.';
@@ -176,7 +181,7 @@ if ($controls->is_action('update_inactive')) {
                                 <?php echo $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='U'"); ?>
                             </td>
                             <td>
-                                <?php $controls->button_confirm('remove_unsubscribed', __('Delete all unsubscribed', 'newsletter')); ?>
+                                <?php $controls->button_confirm('remove_unsubscribed', __('Delete all', 'newsletter')); ?>
                             </td>
                         </tr>
 
@@ -186,7 +191,17 @@ if ($controls->is_action('update_inactive')) {
                                 <?php echo $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='B'"); ?>
                             </td>
                             <td>
-                                <?php $controls->button_confirm('remove_bounced', __('Delete all bounced', 'newsletter')); ?>
+                                <?php $controls->button_confirm('remove_bounced', __('Delete all', 'newsletter')); ?>
+                            </td>
+                        </tr>
+                        
+                        <tr>
+                            <td><?php _e('Complained', 'newsletter') ?></td>
+                            <td>
+                                <?php echo $wpdb->get_var("select count(*) from " . NEWSLETTER_USERS_TABLE . " where status='P'"); ?>
+                            </td>
+                            <td>
+                                <?php $controls->button_confirm('remove_complained', __('Delete all', 'newsletter')); ?>
                             </td>
                         </tr>
                         <tr>
@@ -216,7 +231,7 @@ if ($controls->is_action('update_inactive')) {
 
                             </td>
                             <td>
-                                <?php $controls->button_confirm('update_inactive', __('Update', 'newsletter')); ?>
+                                <?php $controls->btn('update_inactive', __('Update', 'newsletter'), ['confirm'=>true]); ?>
                             </td>
                         </tr>
 
@@ -228,7 +243,7 @@ if ($controls->is_action('update_inactive')) {
                                 <?php $controls->language('language', false) ?> <?php _e('subscribers without a language', 'newsletter') ?>
                             </td>
                             <td>
-                                <?php $controls->button_confirm('language', '&raquo;'); ?>
+                                <?php $controls->btn('language', '&raquo;', ['confirm'=>true]); ?>
                             </td>
                         </tr>
                         <?php } ?>

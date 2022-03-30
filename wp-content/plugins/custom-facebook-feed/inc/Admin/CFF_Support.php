@@ -12,6 +12,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 use CustomFacebookFeed\CFF_View;
 use CustomFacebookFeed\CFF_Utils;
 use CustomFacebookFeed\CFF_Response;
+use CustomFacebookFeed\SB_Facebook_Data_Manager;
 use CustomFacebookFeed\Builder\CFF_Db;
 use CustomFacebookFeed\CFF_Feed_Locator;
 use CustomFacebookFeed\Builder\CFF_Feed_Builder;
@@ -129,9 +130,9 @@ class CFF_Support {
 
     /**
      * Page Data to use in front end
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return array
      */
     public function page_data() {
@@ -256,7 +257,7 @@ class CFF_Support {
 
     /**
      * Get System Info
-     * 
+     *
      * @since 4.0
      */
     public function get_system_info() {
@@ -297,9 +298,9 @@ class CFF_Support {
 
     /**
      * Get Site and Server Info
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_site_n_server_info() {
@@ -327,9 +328,9 @@ class CFF_Support {
 
     /**
      * Get Active Plugins
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_active_plugins_info() {
@@ -350,9 +351,9 @@ class CFF_Support {
 
     /**
      * Get Global Settings
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_global_settings_info() {
@@ -432,9 +433,9 @@ class CFF_Support {
 
     /**
      * Get Feeds Settings
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_feeds_settings_info() {
@@ -442,6 +443,7 @@ class CFF_Support {
 
         $feeds_list = CFF_Feed_Builder::get_feed_list();
         $source_list = CFF_Feed_Builder::get_source_list();
+        $manager = new SB_Facebook_Data_Manager();
         $i = 0;
         foreach( $feeds_list as $feed ) {
             if ( $i >= 25 ) {
@@ -458,7 +460,7 @@ class CFF_Support {
                         $output .= $source['username'];
                         $output .= ' (' . $source_id . ')';
                         $output .= "</br>";
-                        $output .= $source['access_token'];
+                        $output .= $manager->remote_encrypt( $source['access_token']  );
                     }
                 }
             }
@@ -475,20 +477,20 @@ class CFF_Support {
             $i++;
         }
         $output .= "</br>";
-        
+
         return $output;
     }
-    
+
     /**
      * Get Image Resizing Info
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_image_resizing_info() {
         $output = "## IMAGE RESIZING: ##" . "</br>";
-        
+
         $upload  = wp_upload_dir();
         $upload_dir = $upload['basedir'];
         $upload_dir = trailingslashit( $upload_dir ) . CFF_UPLOADS_NAME;
@@ -501,15 +503,15 @@ class CFF_Support {
             }
         }
         $output .= "</br>";
-        
+
         return $output;
     }
 
     /**
      * Get Posts Table Info
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_posts_table_info() {
@@ -559,9 +561,9 @@ class CFF_Support {
 
     /**
      * CFF Get Errors Info
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_errors_info() {
@@ -590,9 +592,9 @@ class CFF_Support {
 
     /**
      * Get Action Logs Info
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_action_logs_info() {
@@ -604,15 +606,15 @@ class CFF_Support {
             endforeach;
         endif;
         $output .= "</br>";
-        
+
         return $output;
     }
 
     /**
      * Get Feeds Settings
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string
      */
     public static function get_oembeds_info() {
@@ -627,9 +629,9 @@ class CFF_Support {
 
     /**
      * CFF Get Support URL
-     * 
+     *
      * @since 4.0
-     * 
+     *
      * @return string $url
      */
     public function get_support_url() {
@@ -657,6 +659,16 @@ class CFF_Support {
 	 * @return CFF_Response
 	 */
 	public function cff_export_settings_json() {
+		//\CustomFacebookFeed\Builder\CFF_Feed_Builder::check_privilege( false );
+        //Security Checks
+        check_ajax_referer( 'cff-admin', 'nonce'  );
+
+        $cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+        $cap = apply_filters( 'cff_settings_pages_capability', $cap );
+        if ( ! current_user_can( $cap ) ) {
+           wp_send_json_error(); // This auto-dies.
+        }
+
 		if ( ! isset( $_GET['feed_id'] ) ) {
 			return;
 		}
@@ -678,11 +690,11 @@ class CFF_Support {
 
     /**
      * CFF Get Whitespace
-     * 
+     *
      * @since 4.0
-     * 
-     * @param int $times 
-     * 
+     *
+     * @param int $times
+     *
      * @return string
      */
     public static function get_whitespace( $times ) {

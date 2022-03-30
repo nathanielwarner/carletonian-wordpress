@@ -44,15 +44,23 @@ class CFF_Admin{
 	public function register_dashboard_menus(){
 		$notice = '';
 		if ( \cff_main()->cff_error_reporter->are_critical_errors() ) {
-			$notice = ' <span class="update-plugins cff-error-alert"><span>!</span></span>';
+			$notice = ' <span class="cff-notice-alert"><span>!</span></span>';
 		}
 
 		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
 		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
 
+		$sbi_notifications = new CFF_Notifications();
+		$notifications = $sbi_notifications->get();
+
+		$notice_bubble = '';
+		if ( empty( $notice ) && ! empty( $notifications ) && is_array( $notifications ) ) {
+			$notice_bubble = ' <span class="cff-notice-alert"><span>'.count( $notifications ).'</span></span>';
+		}
+
 		add_menu_page(
-			'',
-			'Facebook Feed'. $notice,
+			'Facebook Feed',
+			'Facebook Feed'. $notice . $notice_bubble,
 			$cap,
 			'cff-top',
 			'cff_settings_page'
@@ -68,7 +76,7 @@ class CFF_Admin{
 		);
 
     	//Show a Instagram plugin menu item if it isn't already installed
-		if( !is_plugin_active( 'instagram-feed/instagram-feed.php' ) && !is_plugin_active( 'instagram-feed-pro/instagram-feed.php' ) ){
+		if( !is_plugin_active( 'instagram-feed/instagram-feed.php' ) && !is_plugin_active( 'instagram-feed-pro/instagram-feed.php' )  && current_user_can( 'activate_plugins' ) && current_user_can( 'install_plugins' ) ){
 			add_submenu_page(
 				'cff-top',
 				__( 'Instagram Feed', 'custom-facebook-feed' ),
@@ -80,7 +88,7 @@ class CFF_Admin{
 		}
 
 	    //Show a Twitter plugin menu item if it isn't already installed
-		if( !is_plugin_active( 'custom-twitter-feeds/custom-twitter-feed.php' ) && !is_plugin_active( 'custom-twitter-feeds-pro/custom-twitter-feed.php' ) ){
+		if( !is_plugin_active( 'custom-twitter-feeds/custom-twitter-feed.php' ) && !is_plugin_active( 'custom-twitter-feeds-pro/custom-twitter-feed.php' )  && current_user_can( 'activate_plugins' ) && current_user_can( 'install_plugins' )  ){
 			add_submenu_page(
 				'cff-top',
 				__( 'Twitter Feed', 'custom-facebook-feed' ),
@@ -92,7 +100,7 @@ class CFF_Admin{
 		}
 
     	//Show a YouTube plugin menu item if it isn't already installed
-		if( !is_plugin_active( 'feeds-for-youtube/youtube-feed.php' ) && !is_plugin_active( 'youtube-feed-pro/youtube-feed.php' ) ){
+		if( !is_plugin_active( 'feeds-for-youtube/youtube-feed.php' ) && !is_plugin_active( 'youtube-feed-pro/youtube-feed.php' ) && current_user_can( 'activate_plugins' ) && current_user_can( 'install_plugins' )  ){
 			add_submenu_page(
 				'cff-top',
 				__( 'YouTube Feed', 'custom-facebook-feed' ),

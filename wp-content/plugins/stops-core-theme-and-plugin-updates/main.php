@@ -5,7 +5,7 @@ Plugin Name: Easy Updates Manager
 Plugin URI: https://easyupdatesmanager.com
 Description: Manage and disable WordPress updates, including core, plugin, theme, and automatic updates - Works with Multisite and has built-in logging features.
 Author: Easy Updates Manager Team
-Version: 9.0.10
+Version: 9.0.12
 Update URI: https://wordpress.org/plugins/stops-core-theme-and-plugin-updates/
 Author URI: https://easyupdatesmanager.com
 Contributors: kidsguide, ronalfy
@@ -18,7 +18,7 @@ Network: true
 
 if (!defined('ABSPATH')) die('No direct access allowed');
 
-if (!defined('EASY_UPDATES_MANAGER_VERSION')) define('EASY_UPDATES_MANAGER_VERSION', '9.0.10');
+if (!defined('EASY_UPDATES_MANAGER_VERSION')) define('EASY_UPDATES_MANAGER_VERSION', '9.0.12');
 
 if (!defined('EASY_UPDATES_MANAGER_MAIN_PATH')) define('EASY_UPDATES_MANAGER_MAIN_PATH', plugin_dir_path(__FILE__));
 if (!defined('EASY_UPDATES_MANAGER_URL')) define('EASY_UPDATES_MANAGER_URL', plugin_dir_url(__FILE__));
@@ -859,7 +859,7 @@ if (!class_exists('MPSUM_Updates_Manager')) {
 				<# } #>";
 			}
 
-			return $html;
+			return apply_filters('eum_entity_auto_update_setting_html', $html, $entity);
 		}
 		
 		/**

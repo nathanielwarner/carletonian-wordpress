@@ -8,6 +8,7 @@
 namespace CustomFacebookFeed\Builder;
 
 use CustomFacebookFeed\CFF_FB_Settings;
+use CustomFacebookFeed\SB_Facebook_Data_Encryption;
 
 class CFF_Feed_Saver {
 
@@ -219,6 +220,7 @@ class CFF_Feed_Saver {
 	 * @since 4.0
 	 */
 	public function update() {
+		$encryption = new SB_Facebook_Data_Encryption();
 		if ( ! isset( $this->sanitized_and_sorted_data ) ) {
 			return false;
 		}
@@ -231,6 +233,8 @@ class CFF_Feed_Saver {
 
 		if ( $this->is_legacy ) {
 			$to_save_json = \CustomFacebookFeed\CFF_Utils::cff_json_encode( $settings_array );
+			$to_save_json = $encryption->maybe_encrypt( $to_save_json );
+
 			return update_option( 'cff_legacy_feed_settings', $to_save_json );
 		}
 
@@ -282,10 +286,10 @@ class CFF_Feed_Saver {
 	 *
 	 * @since 4.0
 	 */
-	public function get_feed_settings() {
+	public function get_feed_settings( $is_export = false ) {
+		$encryption = new SB_Facebook_Data_Encryption();
 		if ( $this->is_legacy ) {
-			$return = CFF_FB_Settings::get_legacy_settings( array() );
-
+			$return =  CFF_FB_Settings::get_legacy_settings( array() ) ;
 			$this->feed_db_data = array(
 				'id' => 'legacy',
 				'feed_name' => __( 'Legacy Feeds', 'custom-facebook-feed' ),
@@ -351,9 +355,9 @@ class CFF_Feed_Saver {
 					'account_id' => stripslashes( $source['account_id'] ),
 					'account_type' => stripslashes( $source['account_type'] ),
 					'privilege' => stripslashes( $source['privilege'] ),
-					'access_token' => stripslashes( $source['access_token'] ),
+					'access_token' => $is_export === true ? stripslashes( $source['access_token'] ) : stripslashes( $encryption->decrypt( $source['access_token'] ) ),
 					'username' => stripslashes( $source['username'] ),
-					'info' => stripslashes( $source['info'] ),
+					'info' => stripslashes( $encryption->decrypt( $source['info'] ) ),
 					'error' => stripslashes( $source['error'] ),
 					'expires' => stripslashes( $source['expires'] ),
 					'avatar_url' => stripslashes( $source['avatar_url'] ),
@@ -381,9 +385,9 @@ class CFF_Feed_Saver {
 					'account_id' => stripslashes( $source_query[0]['account_id'] ),
 					'account_type' => stripslashes( $source_query[0]['account_type'] ),
 					'privilege' => stripslashes( $source_query[0]['privilege'] ),
-					'access_token' => stripslashes( $source_query[0]['access_token'] ),
+					'access_token' => stripslashes( $encryption->decrypt( $source_query[0]['access_token'] ) ),
 					'username' => stripslashes( $source_query[0]['username'] ),
-					'info' => stripslashes( $source_query[0]['info'] ),
+					'info' => stripslashes( $encryption->decrypt( $source_query[0]['info'] ) ),
 					'expires' => stripslashes( $source_query[0]['expires'] ),
 				);
 
@@ -422,6 +426,7 @@ class CFF_Feed_Saver {
 
 		$args = array( 'id' => $sources );
 		$source_query = CFF_Db::source_query( $args );
+		$encryption = new SB_Facebook_Data_Encryption();
 
 		$return['sources'] = array();
 		if ( ! empty( $source_query ) ) {
@@ -430,9 +435,9 @@ class CFF_Feed_Saver {
 					'record_id' => stripslashes( $source['id'] ),
 					'account_id' => stripslashes( $source['account_id'] ),
 					'account_type' => stripslashes( $source['account_type'] ),
-					'access_token' => stripslashes( $source['access_token'] ),
+					'access_token' => stripslashes( $encryption->decrypt( $source['access_token'] ) ),
 					'username' => stripslashes( $source['username'] ),
-					'info' => stripslashes( $source['info'] ),
+					'info' => stripslashes( $encryption->decrypt( $source['info'] ) ),
 					'expires' => stripslashes( $source['expires'] ),
 				);
 			}
@@ -798,8 +803,9 @@ class CFF_Feed_Saver {
 
 	public static function set_legacy_feed_settings() {
 		$to_save = CFF_Post_Set::legacy_to_builder_convert();
-
+		$encryption = new SB_Facebook_Data_Encryption();
 		$to_save_json = \CustomFacebookFeed\CFF_Utils::cff_json_encode( $to_save );
+		$to_save_json = $encryption->maybe_encrypt( $to_save_json );
 
 		update_option( 'cff_legacy_feed_settings', $to_save_json );
 	}

@@ -34,11 +34,8 @@ class MPSUM_Logs {
 	
 	// Format: key=<version>, value=array of method names to call
 	private static $db_updates = array(
-		'1.0.0' => array(
+		'1.1.6' => array(
 			'build_table',
-		),
-		'1.1.5' => array(
-			'add_stacktrace_column',
 		)
 	);
 
@@ -49,7 +46,7 @@ class MPSUM_Logs {
 	 * @access private
 	 * @var string $slug
 	 */
-	private static $version = '1.1.5';
+	private static $version = '1.1.6';
 
 	/**
 	 * Holds a variable for checkin the logs table
@@ -595,6 +592,7 @@ class MPSUM_Logs {
 						action VARCHAR(255) NOT NULL,
 						status VARCHAR(255) NOT NULL,
 						notes TEXT NOT NULL,
+						stacktrace TEXT DEFAULT NULL,
 						date DATETIME NOT NULL,
 						PRIMARY KEY  (log_id)
 						) {$charset_collate};";
@@ -646,11 +644,5 @@ class MPSUM_Logs {
 		$sql = "drop table if exists $tablename";
 		$wpdb->query($sql);
 		delete_site_option('mpsum_log_table_version');
-	}
-	
-	public static function add_stacktrace_column() {
-		global $wpdb;
-		$tablename = $wpdb->base_prefix . 'eum_logs';
-		$wpdb->query('ALTER TABLE '.$tablename.' ADD stacktrace TEXT DEFAULT NULL AFTER notes');
 	}
 }

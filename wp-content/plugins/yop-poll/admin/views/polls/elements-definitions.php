@@ -6,16 +6,16 @@
 					<span class="glyphicon glyphicon-chevron-down hspace collapse-element" aria-hidden="true"></span>
 				</span>
 				<span class="bar-title pull-left poll-element-collapse element-title">
-					<?php _e( 'Custom Field', 'yop-poll' );?>
+					<?php esc_html_e( 'Custom Field', 'yop-poll' ); ?>
 				</span>
 				<span class="pull-right actions">
-					<a href="#" class="hspace custom-field-edit-more" title="<?php _e( 'Edit', 'yop-poll' );?>">
+					<a href="#" class="hspace custom-field-edit-more" title="<?php esc_html_e( 'Edit', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 					</a>
-					<a href="#" class="hspace custom-field-edit-clone" title="<?php _e( 'Duplicate', 'yop-poll' );?>">
+					<a href="#" class="hspace custom-field-edit-clone" title="<?php esc_html_e( 'Duplicate', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
 					</a>
-					<a href="#" class="hspace custom-field-edit-delete" title="<?php _e( 'Delete', 'yop-poll' );?>">
+					<a href="#" class="hspace custom-field-edit-delete" title="<?php esc_html_e( 'Delete', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 					</a>
 				</span>
@@ -25,10 +25,10 @@
 					<div class="form-horizontal">
 						<div class="form-group">
 							<div class="col-sm-11">
-								<input type="text" class="form-control input-lg custom-field-name" name="question text" value="<?php _e( 'Custom Field', 'yop-poll' );?>" placeholder="<?php _e( 'Custom Field', 'yop-poll' );?>">
+								<input type="text" class="form-control input-lg custom-field-name" name="question text" value="<?php esc_html_e( 'Custom Field', 'yop-poll' ); ?>" placeholder="<?php esc_html_e( 'Custom Field', 'yop-poll' ); ?>">
 							</div>
 							<div class="col-sm-1">
-								<label class="pull-right set-as-default-inline" title="<?php _e( 'Set as required', 'yop-poll' );?>">
+								<label class="pull-right set-as-default-inline" title="<?php esc_html_e( 'Set as required', 'yop-poll' ); ?>">
 									<input type="checkbox" class="custom-field-required">
 								</label>
 							</div>
@@ -39,17 +39,17 @@
 					<div class="form-group">
 						<div class="col-md-2">
 							<a href="#" class="upgrade-to-pro" data-screen="pie-results">
-								<img src="<?php echo YOP_POLL_URL;?>admin/assets/images/pro-horizontal.svg" class="responsive" />
+								<img src="<?php echo esc_url( YOP_POLL_URL ); ?>admin/assets/images/pro-horizontal.svg" class="responsive" />
 							</a>
-							<?php _e( 'Type', 'yop-poll' ); ?>
+							<?php esc_html_e( 'Type', 'yop-poll' ); ?>
 						</div>
 						<div class="col-md-10">
 							<select class="custom-field-type admin-select" style="width: 100%">
 								<option value="textfield" selected>
-									<?php _e( 'Textfield', 'yop-poll' );?>
+									<?php esc_html_e( 'Textfield', 'yop-poll' ); ?>
 								</option>
 								<option value="textarea">
-									<?php _e( 'Textarea', 'yop-poll' );?>
+									<?php esc_html_e( 'Textarea', 'yop-poll' ); ?>
 								</option>
 							</select>
 						</div>
@@ -59,7 +59,7 @@
 							<div class="col-md-4">
 								<div class="checkbox">
 									<label>
-									  <input type="checkbox" class="custom-field-make-required"> <?php _e( 'Set as Required', 'yop-poll' );?>
+									  <input type="checkbox" class="custom-field-make-required"> <?php esc_html_e( 'Set as Required', 'yop-poll' ); ?>
 									</label>
 								  </div>
 							</div>
@@ -67,7 +67,7 @@
 						<div class="row">
 							<div class="col-md-12 text-right">
 								<button type="button" class="btn btn-default custom-field-edit-done">
-									<?php _e( 'Done', 'yop-poll' );?>
+									<?php esc_html_e( 'Done', 'yop-poll' ); ?>
 								</button>
 							</div>
 						</div>
@@ -83,16 +83,16 @@
 					<span class="glyphicon glyphicon-chevron-down hspace collapse-element" aria-hidden="true"></span>
 				</span>
 				<span class="bar-title pull-left poll-element-collapse element-title">
-					<?php _e( 'Do you have a question', 'yop-poll' );?>
+					<?php esc_html_e( 'Do you have a question', 'yop-poll' ); ?>
 				</span>
 				<span class="pull-right actions">
-					<a href="#" class="hspace add-text-answer" title="<?php _e( 'Add Answer', 'yop-poll' );?>">
+					<a href="#" class="hspace add-text-answer" title="<?php esc_html_e( 'Add Answer', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
 					</a>
-					<a href="#" class="hspace text-question-edit-clone" title="<?php _e( 'Duplicate', 'yop-poll' );?>">
+					<a href="#" class="hspace text-question-edit-clone" title="<?php esc_html_e( 'Duplicate', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
 					</a>
-					<a href="#" class="hspace text-question-edit-delete" title="<?php _e( 'Delete', 'yop-poll' );?>">
+					<a href="#" class="hspace text-question-edit-delete" title="<?php esc_html_e( 'Delete', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 					</a>
 				</span>
@@ -100,62 +100,62 @@
 			<div class="content-inside">
 				<div class="question-text">
 					<div class="form-group">
-						<input type="text" class="form-control input-lg question-value" name="question text" value="<?php _e( 'Do you have a question?', 'yop-poll' );?>" placeholder="<?php _e( 'Question text', 'yop-poll' );?>">
+						<input type="text" class="form-control input-lg question-value" name="question text" value="<?php esc_html_e( 'Do you have a question?', 'yop-poll' ); ?>" placeholder="<?php esc_html_e( 'Question text', 'yop-poll' ); ?>">
 					</div>
 				</div>
 				<div class="answers">
 				</div>
 				<div class="question-options">
 					<h4>
-						<?php _e( 'OPTIONS', 'yop-poll' );?>
+						<?php esc_html_e( 'OPTIONS', 'yop-poll' ); ?>
 					</h4>
 					<div class="form-horizontal">
 						<div class="form-group">
 							<div class="col-md-3">
-								<?php _e( 'Allow other answers', 'yop-poll' );?>
+								<?php esc_html_e( 'Allow other answers', 'yop-poll' ); ?>
 							</div>
 							<div class="col-md-9">
 								<select class="allow-other-answers admin-select" style="width:100%">
-									<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
-									<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
+									<option value="yes"><?php esc_html_e( 'Yes', 'yop-poll' ); ?></option>
+									<option value="no" selected><?php esc_html_e( 'No', 'yop-poll' ); ?></option>
 								</select>
 							</div>
 						</div>
 						<div class="other-answers-section hide">
 							<div class="form-group">
 								<div class="col-md-3">
-									<?php _e( 'Label for Other Answers', 'yop-poll' );?>
+									<?php esc_html_e( 'Label for Other Answers', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-9">
-									<input type="text" name="" value="<?php _e( 'Other', 'yop-poll' );?>" class="form-control other-answers-label" />
+									<input type="text" name="" value="<?php esc_html_e( 'Other', 'yop-poll' ); ?>" class="form-control other-answers-label" />
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-3">
-									<?php _e( 'Add other answers in answers list', 'yop-poll' );?>
+									<?php esc_html_e( 'Add other answers in answers list', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-9">
 									<select class="add-other-answers admin-select" style="width:100%">
-										<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
-										<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
+										<option value="yes"><?php esc_html_e( 'Yes', 'yop-poll' ); ?></option>
+										<option value="no" selected><?php esc_html_e( 'No', 'yop-poll' ); ?></option>
 									</select>
 								</div>
 							</div>
 							<div class="form-group">
 								<div class="col-md-3">
-									<?php _e( 'Display other answers in results list', 'yop-poll' );?>
+									<?php esc_html_e( 'Display other answers in results list', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-9">
 									<select class="display-other-answers-in-results admin-select" style="width:100%">
-										<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
-										<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
+										<option value="yes"><?php esc_html_e( 'Yes', 'yop-poll' ); ?></option>
+										<option value="no" selected><?php esc_html_e( 'No', 'yop-poll' ); ?></option>
 									</select>
 								</div>
 							</div>
 							<div class="other-answers-results-color-section hide">
 								<div class="form-group">
 									<div class="col-md-3">
-										<?php _e( 'Results Color', 'yop-poll' );?>
+										<?php esc_html_e( 'Results Color', 'yop-poll' ); ?>
 									</div>
 									<div class="col-md-9">
 										<input type="text" value="#000" class="form-control other-answers-results-color" />
@@ -165,19 +165,19 @@
 						</div>
 						<div class="form-group">
 							<div class="col-md-3">
-								<?php _e( 'Allow multiple answers', 'yop-poll' );?>
+								<?php esc_html_e( 'Allow multiple answers', 'yop-poll' ); ?>
 							</div>
 							<div class="col-md-9">
 								<select class="allow-multiple-answers admin-select" style="width:100%">
-									<option value="yes"><?php _e( 'Yes', 'yop-poll' );?></option>
-									<option value="no" selected><?php _e( 'No', 'yop-poll' );?></option>
+									<option value="yes"><?php esc_html_e( 'Yes', 'yop-poll' ); ?></option>
+									<option value="no" selected><?php esc_html_e( 'No', 'yop-poll' ); ?></option>
 								</select>
 							</div>
 						</div>
 						<div class="multiple-answers-section hide">
 							<div class="form-group">
 								<div class="col-md-3">
-									<?php _e( 'Minimum answers required', 'yop-poll' );?>
+									<?php esc_html_e( 'Minimum answers required', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-9">
 									<input type="text" name="" value="1" class="form-control multiple-answers-minim"/>
@@ -185,7 +185,7 @@
 							</div>
 							<div class="form-group">
 								<div class="col-md-3">
-									<?php _e( 'Maximum answers allowed', 'yop-poll' );?>
+									<?php esc_html_e( 'Maximum answers allowed', 'yop-poll' ); ?>
 								</div>
 								<div class="col-md-9">
 									<input type="text" name="" value="1" class="form-control multiple-answers-maxim"/>
@@ -194,28 +194,28 @@
 						</div>
 						<div class="form-group">
 							<div class="col-md-3">
-								<?php _e( 'Display answers', 'yop-poll' );?>
+								<?php esc_html_e( 'Display answers', 'yop-poll' ); ?>
 							</div>
 							<div class="col-md-9">
 								<select class="answers-display admin-select" style="width:100%">
 									<option value="vertical" selected>
-										<?php _e( 'Vertical', 'yop-poll' );?>
+										<?php esc_html_e( 'Vertical', 'yop-poll' ); ?>
 									</option>
 									<option value="horizontal">
-										<?php _e( 'Horizontal', 'yop-poll' );?>
+										<?php esc_html_e( 'Horizontal', 'yop-poll' ); ?>
 									</option>
 									<option value="columns">
-										<?php _e( 'Columns', 'yop-poll' );?>
+										<?php esc_html_e( 'Columns', 'yop-poll' ); ?>
 									</option>
 								</select>
 							</div>
 						</div>
 						<div class="form-group answers-display-section hide">
 							<div class="col-md-3">
-								<?php _e( 'Display answers', 'yop-poll' );?>
+								<?php esc_html_e( 'Display answers', 'yop-poll' ); ?>
 							</div>
 							<div class="col-md-9">
-								<input type="text" name="button-label" class="form-control answers-columns"/>&nbsp;<?php _e( 'columns', 'yop-poll' );?>
+								<input type="text" name="button-label" class="form-control answers-columns"/>&nbsp;<?php esc_html_e( 'columns', 'yop-poll' ); ?>
 							</div>
 						</div>
 					</div>
@@ -227,16 +227,16 @@
 		<div class="answer" data-id="">
 			<div class="title-bar">
 				<span class="bar-title pull-left">
-					<?php _e( 'Answer', 'yop-poll' );?>
+					<?php esc_html_e( 'Answer', 'yop-poll' ); ?>
 				</span>
 				<span class="pull-right actions">
-					<a href="#" class="hspace text-answer-edit-more" title="<?php _e( 'Edit', 'yop-poll' );?>">
+					<a href="#" class="hspace text-answer-edit-more" title="<?php esc_html_e( 'Edit', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 					</a>
-					<a href="#" class="hspace text-answer-edit-clone" title="<?php _e( 'Duplicate', 'yop-poll' );?>">
+					<a href="#" class="hspace text-answer-edit-clone" title="<?php esc_html_e( 'Duplicate', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
 					</a>
-					<a href="#" class="hspace text-answer-edit-delete" title="<?php _e( 'Delete', 'yop-poll' );?>">
+					<a href="#" class="hspace text-answer-edit-delete" title="<?php esc_html_e( 'Delete', 'yop-poll' ); ?>">
 						<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
 					</a>
 				</span>
@@ -246,10 +246,10 @@
 					<div class="form-horizontal">
 						<div class="form-group">
 							<div class="col-sm-11">
-								<input type="text" class="form-control answer-value" name="question text" value="<?php _e( 'New Answer', 'yop-poll' );?>" placeholder="<?php _e( 'Answer text', 'yop-poll' );?>">
+								<input type="text" class="form-control answer-value" name="question text" value="<?php esc_html_e( 'New Answer', 'yop-poll' ); ?>" placeholder="<?php esc_html_e( 'Answer text', 'yop-poll' ); ?>">
 							</div>
 							<div class="col-sm-1">
-								<label class="pull-right set-as-default-inline" title="<?php _e( 'Set as default', 'yop-poll' );?>">
+								<label class="pull-right set-as-default-inline" title="<?php esc_html_e( 'Set as default', 'yop-poll' ); ?>">
 									<input type="checkbox" class="answer-is-default">
 								</label>
 							</div>
@@ -262,21 +262,21 @@
 							<div class="col-md-4">
 								<div class="checkbox">
 									<label>
-									  <input type="checkbox" class="answer-make-default"> <?php _e( 'Set as default', 'yop-poll' );?>
+									  <input type="checkbox" class="answer-make-default"> <?php esc_html_e( 'Set as default', 'yop-poll' ); ?>
 									</label>
 								  </div>
 							</div>
 							<div class="col-md-4">
 								<div class="checkbox">
 									<label>
-									  <input type="checkbox" class="answer-make-link"> <?php _e( 'Make it a link', 'yop-poll' );?>
+									  <input type="checkbox" class="answer-make-link"> <?php esc_html_e( 'Make it a link', 'yop-poll' ); ?>
 									</label>
 								  </div>
 							</div>
 							<div class="col-md-4">
 								<div class="checkbox">
 									<label>
-										<?php _e( 'Results color', 'yop-poll' );?>
+										<?php esc_html_e( 'Results color', 'yop-poll' ); ?>
 									</label>
 									<input type="text" value="#000" class="form-control answer-results-color" />
 								</div>
@@ -290,7 +290,7 @@
 						<div class="row">
 							<div class="col-md-12 text-right">
 								<button type="button" class="btn btn-default text-answer-edit-done">
-									<?php _e( 'Done', 'yop-poll' );?>
+									<?php esc_html_e( 'Done', 'yop-poll' ); ?>
 								</button>
 							</div>
 						</div>

@@ -20,7 +20,7 @@ $cff_header_styles 		= $this_class->get_style_attribute( 'header' );
 
 
 
-//Check Header Type 
+//Check Header Type
 if ($cff_header_type == "text") : //Start Text Header
 	$cff_icon_style 		= $this_class->get_style_attribute( 'header_icon' );
 	$cff_header_classes 	= CFF_Shortcode_Display::get_header_txt_classes( $cff_header_outside );
@@ -29,7 +29,7 @@ if ($cff_header_type == "text") : //Start Text Header
 		<span class="fa fab fa-<?php echo $atts['headericon']  ?>" <?php echo $cff_icon_style ?> aria-hidden="true"></span>
 		<span class="header-text"><?php echo stripslashes( $atts['headertext'] ) ?></span>
 	</h3>
-<?php 
+<?php
 //End Text Header
 elseif ($cff_header_type == "visual" && $cff_show_header) : //Start Visual Header
 	$header_details = CFF_Utils::fetch_header_data( $page_id, $cff_is_group, $access_token, $cff_cache_time, false, $data_att_html );

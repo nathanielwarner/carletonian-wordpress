@@ -1,4 +1,8 @@
 /* WordPress admin main wrapper */
+:root {
+    --tnp-color-green: #27AE60;
+}
+
 #wpwrap {
     background-color: #222B36 !important;
 }
@@ -35,35 +39,35 @@
 }
 
 .container {
-  width: 100%;
-  padding-right: 1rem;
-  padding-left: 1rem;
-  margin-right: auto;
-  margin-left: auto;
+    width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    margin-right: auto;
+    margin-left: auto;
 }
 
 @media (min-width: 576px) {
-  .container {
-    max-width: 540px;
-  }
+    .container {
+        max-width: 540px;
+    }
 }
 
 @media (min-width: 768px) {
-  .container {
-    max-width: 720px;
-  }
+    .container {
+        max-width: 720px;
+    }
 }
 
 @media (min-width: 992px) {
-  .container {
-    max-width: 960px;
-  }
+    .container {
+        max-width: 960px;
+    }
 }
 
 @media (min-width: 1200px) {
-  .container {
-    max-width: 1140px;
-  }
+    .container {
+        max-width: 1140px;
+    }
 }
 
 .row:before,
@@ -186,7 +190,7 @@
 ******************************************************************************/
 
 #tnp-body {
-    padding: 10px;
+    padding: 0 10px 10px 10px;
     /*background-color: #28313C;*/
 }
 
@@ -205,6 +209,11 @@
     margin-bottom: 10px;
 }
 
+#tnp-body hr {
+    height: 0px;
+    border: 0;
+    border-top: 1px solid #666;
+}
 
 #tnp-body ul {
     list-style-type: circle;
@@ -233,7 +242,7 @@
 #tnp-body .button-primary,
 #tnp-body .button-primary:visited,
 #tnp-body .button-primary:hover {
-     color: #fff;
+    color: #fff;
     text-shadow: none;
     width: auto;
     vertical-align: bottom;
@@ -584,7 +593,7 @@ table.clicks {
     font-family: soleil, sans-serif;
     letter-spacing: 0.1rem;
     font-size: 1.1rem;
-    line-height: 1.8rem;
+    line-height: normal;
     text-transform: uppercase;
     vertical-align: middle;
     font-weight: 700;
@@ -738,15 +747,18 @@ table.clicks {
 /* Footer */
 
 #tnp-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-top: 10px;
-    padding: 20px 10px 10px 40px;
+    padding: 10px 30px;
     background-color: #28313C;
     font-family: soleil, sans-serif;
 }
 
 #tnp-footer div {
-    width: 33%;
-    display: inline-block;
+    /*width: 33%;*/
+    /*display: inline-block;*/
 }
 
 #tnp-footer a {
@@ -761,7 +773,7 @@ table.clicks {
 #tnp-footer input[type="submit"] {
     background-color: #2ECC71;
     border: none;
-    padding: 5px;
+    padding: 5px 10px;
     color: #fff;
 }
 
@@ -929,97 +941,6 @@ span.wp-media-buttons-icon:before {
     border: 1px solid #eee;
     width: 100%;
 }
-
-.tnp-db-table {
-    width: auto;
-    background-color: #fff;
-}
-
-.tnp-db-table thead {
-    border-bottom: 1px solid #eee;
-}
-
-.tnp-db-table th {
-    font-weight: bold;
-}
-
-.tnp-db-table td, .tnp-db-table th {
-    padding: 3px;
-    font-family: monospace;
-    border: 0;
-}
-
-/* STATUS PANEL */
-
-.tnp-main-status h3, .tnp-main-status h4 {
-    color: #fff;
-}
-
-.tnp-ok {
-    font-weight: bold;
-    color: white;
-    font-size: 14px;
-    background-color: #27AE60;
-    padding: 2px 10px;
-    border-radius: 10px;
-    display: inline-block;
-    width: 75px;
-    text-align: center;
-}
-
-.tnp-ko {
-    font-weight: bold;
-    color: white;
-    font-size: 14px;
-    background-color: #E74C41;
-    padding: 2px 10px;
-    border-radius: 10px;
-    display: inline-block;
-    width: 75px;
-    text-align: center;
-}
-
-.tnp-maybe {
-    font-weight: bold;
-    color: white;
-    font-size: 14px;
-    background-color: #F1C40F;
-    padding: 2px 10px;
-    border-radius: 10px;
-    display: inline-block;
-    width: 75px;
-    text-align: center;
-}
-
-.tnp-main-status .tnp-log-files li {
-    padding-left: 15px;
-}
-
-.tnp-main-status .tnp-log-files li, .tnp-main-status .tnp-log-files li a {
-    color: #fff;
-}
-
-.tnp-main-status .tnp-log-files .tnp-log-size {
-    font-style: italic;
-}
-
-table.widefat {
-    border: 0;
-    box-shadow: none;
-}
-
-#tnp-status-table tbody tr:nth-child(2n+1) {
-    background-color: #ECF0F1;
-    border-radius: 2px;
-    margin: 5px;
-}
-
-#tnp-parameters-table tbody tr:nth-child(2n+1) {
-    background-color: #ECF0F1;
-    border-radius: 2px;
-    margin: 5px;
-}
-
 
 /* Suggerimenti Oggetto + Inserimento Emoticons */
 
@@ -1501,4 +1422,27 @@ span.tnp-email-status.tnp-email-status--error {
 .sp-replacer {
     width:  30px!important;
     height: 30px!important;
+}
+
+
+/* Subscriber status labels */
+
+#tnp-body .unsubscribed {
+    color: gray;
+}
+
+#tnp-body .confirmed {
+    color: darkgreen;
+}
+
+#tnp-body .not-confirmed {
+    color: darkgray;
+}
+
+#tnp-body .complained {
+    color: red;
+}
+
+#tnp-body .bounced {
+    color: darkorange;
 }

@@ -17,13 +17,17 @@ class NewsletterLogger {
     var $level;
     var $module;
     var $file;
+    var $is_debug = false;
 
     function __construct($module) {
         $this->module = $module;
-        if (defined('NEWSLETTER_LOG_LEVEL'))
+        if (defined('NEWSLETTER_LOG_LEVEL')) {
             $this->level = NEWSLETTER_LOG_LEVEL;
-        else
+        } else {
             $this->level = (int) get_option('newsletter_log_level', self::ERROR);
+        }
+
+        $this->is_debug = $this->level == self::DEBUG;
 
         $secret = get_option('newsletter_logger_secret', '');
         if (strlen($secret) < 8) {

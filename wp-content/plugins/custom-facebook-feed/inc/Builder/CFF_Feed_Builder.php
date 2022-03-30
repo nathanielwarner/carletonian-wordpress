@@ -8,7 +8,7 @@ namespace CustomFacebookFeed\Builder;
 use CustomFacebookFeed\Builder\Tabs\CFF_Styling_Tab;
 use CustomFacebookFeed\CFF_Utils;
 use CustomFacebookFeed\CFF_Response;
-use CustomFacebookFeed\Custom_Facebook_Feed_Pro;
+use CustomFacebookFeed\SB_Facebook_Data_Encryption;
 use function DI\value;
 
 class CFF_Feed_Builder {
@@ -50,12 +50,31 @@ class CFF_Feed_Builder {
 		add_action( 'wp_ajax_sb_other_plugins_modal', array( 'CustomFacebookFeed\Builder\CFF_Feed_Builder', 'sb_other_plugins_modal' ) );
 	}
 
+	public static function check_privilege( $check_nonce, $action = 'cff-admin' ) {
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+
+		if ( ! current_user_can( $cap ) ) {
+			wp_die ( 'You did not do this the right way!' );
+		}
+
+		if ( $check_nonce ) {
+			$nonce = ! empty( $_POST[ $check_nonce ] ) ? $_POST[ $check_nonce ] : false;
+
+			if ( ! wp_verify_nonce( $nonce, $action ) ) {
+				wp_die ( 'You did not do this the right way!' );
+			}
+		}
+	}
+
 	/**
 	 * Used to dismiss onboarding using AJAX
 	 *
 	 * @since 4.0
 	 */
 	public static function after_dismiss_onboarding() {
+		check_ajax_referer( 'cff-admin' , 'nonce');
+
 		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
 		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
 
@@ -75,6 +94,12 @@ class CFF_Feed_Builder {
 	 * @since 4.0
 	 */
 	public static function sb_other_plugins_modal() {
+		check_ajax_referer( 'cff_nonce' , 'cff_nonce');
+
+		if ( ! current_user_can( 'activate_plugins' ) || ! current_user_can( 'install_plugins' ) ) {
+			wp_send_json_error();
+		}
+
 		$plugin = isset( $_POST['plugin'] ) ? sanitize_text_field( $_POST['plugin'] ) : '';
 		$sb_other_plugins = self::install_plugins_popup();
 		$plugin = $sb_other_plugins[ $plugin ];
@@ -166,13 +191,12 @@ class CFF_Feed_Builder {
    	public function builder_enqueue_admin_scripts(){
         if(get_current_screen()):
         	$screen = get_current_screen();
-        	if ($screen->id == 'facebook-feed_page_cff-feed-builder') :
+        	if ( strpos($screen->id, 'cff-feed-builder')  !== false ) :
 
 				$license_key = null;
 				if ( get_option( 'cff_license_key' ) ) {
 					$license_key = get_option( 'cff_license_key' );
 				}
-
 				$upgrade_url = 'https://smashballoondemo.com/?utm_campaign=facebook-free&utm_source=lite-upgrade-bar';
 
 		        $newly_retrieved_source_connection_data = CFF_Source::maybe_source_connection_data();
@@ -961,6 +985,7 @@ class CFF_Feed_Builder {
 			'errorNotice' => __( 'There was an error when trying to connect to Facebook.', 'custom-facebook-feed' ),
 			'errorDirections' => '<a href="https://smashballoon.com/custom-facebook-feed/docs/errors/" target="_blank" rel="noopener">' . __( 'Directions on How to Resolve This Issue', 'custom-facebook-feed' )  . '</a>',
 			'errorSource' => __( 'Source Invalid', 'custom-facebook-feed' ),
+			'updateRequired' => __( 'Update Required', 'custom-facebook-feed' ),
 			'invalid' => __( 'Invalid', 'custom-facebook-feed' ),
 			'reconnect' => __( 'Reconnect', 'custom-facebook-feed' ),
 			'feed' => __( 'feed', 'custom-facebook-feed' ),
@@ -1092,15 +1117,16 @@ class CFF_Feed_Builder {
 				'accessToken' => __( 'Facebook Access Token', 'custom-facebook-feed' ),
 				'enterToken' => __( 'Enter Token', 'custom-facebook-feed' ),
 				'addApp' => __( 'Add Facebook App to your group', 'custom-facebook-feed' ),
-				'addAppDetails' => __( 'To get posts from your group, Facebook requires the "Smash Balloon Plugin" app to be added in your group settings. Just follow the directions here:', 'custom-facebook-feed' ),
+				'addAppDetails' => __( 'To get posts from your group, Facebook requires the "Smash Balloon Wordpress" app to be added in your group settings. Just follow the directions here:', 'custom-facebook-feed' ),
 				'addAppSteps' => [
 					__( 'Go to your group settings page by ', 'custom-facebook-feed' ),
-					sprintf( __( 'Search for "Smash Balloon" and select our app %s(see screenshot)%s', 'custom-facebook-feed' ), '<a href="JavaScript:void(0);" id="cff-group-app-tooltip">', '<img class="cff-group-app-screenshot sb-tr-1" src="' . trailingslashit( CFF_PLUGIN_URL ) . 'admin/assets/img/group-app.png" alt="Thumbnail Layout"></a>'),
+					sprintf( __( 'Search for "Smash Balloon WordPress" and select our app %s(see screenshot)%s', 'custom-facebook-feed' ), '<a href="JavaScript:void(0);" id="cff-group-app-tooltip">', '<img class="cff-group-app-screenshot sb-tr-1" src="' . trailingslashit( CFF_PLUGIN_URL ) . 'admin/assets/img/group-app.png" alt="Thumbnail Layout"></a>'),
 					__( 'Click "Add" and you are done.', 'custom-facebook-feed' )
 				],
+				'reconnectingAppDir' => __( 'If you are reconnecting an existing Group then make sure to follow the directions above to add this new app to your Group settings. The previous app will no longer work. This is required in order for new posts to be retrieved.', 'custom-facebook-feed' ),
 				'appMemberInstructions' => sprintf( __( 'To display a feed form this group, Facebook requires the admin to add the Smash Balloon app in the group settings. Please ask an admin to follow the %sdirections here%s to add the app.', 'custom-facebook-feed' ), '<a href="https://smashballoon.com/doc/display-facebook-group-feed/" target="_blank" rel="noopener noreferrer">', '</a>' ) . '<br><br>' . __( 'Once this is done, you will be able to display a feed from this group.', 'custom-facebook-feed' ),
 				'notAdmin' => __( 'For groups you are not an administrator of', 'custom-facebook-feed' ),
-				'disclaimer' => sprintf( __( 'Please note: Due to a Facebook limitation, only content posted to a group in the past 90 days can be displayed. %sMore information.%s', 'custom-facebook-feed' ), '<a href="https://smashballoon.com/doc/facebook-api-change-limits-groups-to-90-days/" target="_blank" rel="noopener noreferrer">', '</a>' ),
+				'disclaimer' => sprintf( __( 'Please note: There are Facebook limitations to displaying group content which may prevent older posts from being displayed. Please %ssee here%s for more information.', 'custom-facebook-feed' ), '<a href="https://smashballoon.com/doc/facebook-api-change-limits-groups-to-90-days/" target="_blank" rel="noopener noreferrer">', '</a>' ),
 				'noGroupTooltip' => __( 'Due to Facebook limitations, it\'s not possible to display photo feeds from a Group, only a Page.', 'custom-facebook-feed' )
 			),
 			'footer' => array(
@@ -1482,6 +1508,7 @@ class CFF_Feed_Builder {
 	public static function get_source_list( $page = 1 ) {
 		$args['page'] = $page;
 		$source_data = CFF_Db::source_query( $args );
+	   	$encryption = new SB_Facebook_Data_Encryption();
 
 		$legacy_data = \CustomFacebookFeed\CFF_FB_Settings::get_legacy_settings( array() );
 
@@ -1489,10 +1516,12 @@ class CFF_Feed_Builder {
 
 		$return = array();
 		foreach ( $source_data as $source ) {
-			$info = ! empty( $source['info'] ) ? json_decode( $source['info'] ) : array();
+			$info = ! empty( $source['info'] ) ? json_decode($encryption->decrypt( $source['info'] ) ) : array();
 			$avatar = \CustomFacebookFeed\CFF_Parse::get_avatar( $info );
 
 			$source['avatar_url'] = $avatar;
+
+			$source['needs_update'] = CFF_Source::needs_update( $source, $info );
 
 			if ( $source['account_id'] === $legacy_id ) {
 				$source['used_in'] = $source['used_in'] + 1;

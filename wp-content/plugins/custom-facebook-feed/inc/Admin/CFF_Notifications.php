@@ -21,7 +21,7 @@ class CFF_Notifications {
 	 *
 	 * @var string
 	 */
-	const SOURCE_URL = 'http://plugin.smashballoon.com/notifications.json';
+	const SOURCE_URL = 'https://plugin.smashballoon.com/notifications.json';
 
 	/**
 	 * @var string
@@ -86,16 +86,16 @@ class CFF_Notifications {
 
 		// on cron. Once a week?
 		add_action( 'cff_notification_update', array( $this, 'update' ) );
-		
+
 		add_action( 'wp_ajax_cff_dashboard_notification_dismiss', array( $this, 'dismiss' ) );
-		
+
 		add_action( 'cff_header_notices', array( $this, 'header_notices' ) );
 		add_action( 'wp_ajax_cff_dismiss_upgrade_notice', array( $this, 'dismiss_upgrade_notice' ) );
 	}
 
 	/**
 	 * Header Notices
-	 * 
+	 *
 	 * @since 4.0
 	 */
 	public function header_notices() {
@@ -128,12 +128,20 @@ class CFF_Notifications {
 
 	/**
 	 * Dismiss Upgrade Notice
-	 * 
+	 *
 	 * @since 4.0
-	 * 
+	 *
 	 * @return CFF_Response
 	 */
 	public function dismiss_upgrade_notice() {
+		// Run a security check.
+		check_ajax_referer( 'cff_nonce' , 'cff_nonce');
+
+		$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+		$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+		if ( ! current_user_can( $cap ) ) {
+			wp_send_json_error(); // This auto-dies.
+		}
 		// set the transient so it will hide for next 7 days
 		set_transient( 'facebook_feed_dismiss_lite', 'dismiss', 1 * WEEK_IN_SECONDS );
 
@@ -157,9 +165,8 @@ class CFF_Notifications {
 
 		$current_screen = get_current_screen();
 		// if we are one single feed page then return
-		if ( $current_screen->base == "facebook-feed_page_cff-feed-builder" && isset( $_GET['feed_id'] ) ) {
+		if ( is_object( $current_screen ) && $current_screen->base == "facebook-feed_page_cff-feed-builder" && isset( $_GET['feed_id'] ) ) {
 			$access = false;
-			return;
 		}
 
 		return apply_filters( 'cff_admin_notifications_has_access', $access );
@@ -235,6 +242,25 @@ class CFF_Notifications {
 		$option = $this->get_option();
 
 		foreach ( $notifications as $notification ) {
+			// Ignore if max version has been reached
+			if ( ! empty( $notification['maxver'] ) && version_compare( $notification['maxver'],  CFFVER ) <= 0 ) {
+				continue;
+			}
+
+			// Ignore if min version has not been reached
+			if ( ! empty( $notification['minver'] ) && version_compare( $notification['minver'],  CFFVER ) >= 0 ) {
+				continue;
+			}
+
+			// Ignore if a specific cff_status is empty or false
+			if ( ! empty( $notification['statuscheck'] ) ) {
+				$status_key          = sanitize_key( $notification['statuscheck'] );
+				$cff_statuses_option = get_option( 'cff_statuses', array() );
+
+				if ( empty( $cff_statuses_option[ $status_key ] ) ) {
+					continue;
+				}
+			}
 
 			// The message and license should never be empty, if they are, ignore.
 			if ( empty( $notification['content'] ) || empty( $notification['type'] ) ) {
@@ -292,6 +318,26 @@ class CFF_Notifications {
 			if ( ( ! empty( $notification['start'] ) && cff_get_current_time() < strtotime( $notification['start'] ) )
 			     || ( ! empty( $notification['end'] ) && cff_get_current_time() > strtotime( $notification['end'] ) ) ) {
 				unset( $notifications[ $key ] );
+			}
+
+			// Ignore if max version has been reached
+			if ( ! empty( $notification['maxver'] ) && version_compare( $notification['maxver'],  CFFVER ) <= 0 ) {
+				unset( $notifications[ $key ] );
+			}
+
+			// Ignore if min version has not been reached
+			if ( ! empty( $notification['minver'] ) && version_compare( $notification['minver'],  CFFVER ) >= 0 ) {
+				unset( $notifications[ $key ] );
+			}
+
+			// Ignore if a specific cff_status is empty or false
+			if ( ! empty( $notification['statuscheck'] ) ) {
+				$status_key          = sanitize_key( $notification['statuscheck'] );
+				$cff_statuses_option = get_option( 'cff_statuses', array() );
+
+				if ( empty( $cff_statuses_option[ $status_key ] ) ) {
+					unset( $notifications[ $key ] );
+				}
 			}
 		}
 
@@ -517,6 +563,9 @@ class CFF_Notifications {
 					if ( ! empty( $btn['attr'] ) ) {
 						$btn['target'] = '_blank';
 					}
+					if ( empty( $btn['class'] ) ) {
+						$btn['class'] = '';
+					}
 					$buttons_html .= sprintf(
 						'<a href="%1$s" class="cff-btn %2$s %3$s"%4$s>%5$s</a>',
 						! empty( $btn['url'] ) ? esc_url( $this->replace_merge_fields( $btn['url'], $notification ) ) : '',
@@ -544,7 +593,7 @@ class CFF_Notifications {
 					$image_html .= '</svg>';
 				} else if ( $notification['id'] === 'review' || $notification['id'] === 'discount' ) {
 					$image_html = sprintf(
-						'<div class="bell"><img src="%s" alt="notice">', 
+						'<div class="bell"><img src="%s" alt="notice">',
 						CFF_PLUGIN_URL . 'admin/assets/img/' . sanitize_text_field( $notification['image'] )
 					);
 				} else {
@@ -650,11 +699,15 @@ class CFF_Notifications {
 		}
 
 		$close_href = add_query_arg( array( 'cff_dismiss' => $type ) );
+		$class      = '';
+		if ( $type === 'review' || $type === 'discount' ) {
+			$class = $type === 'review' ? ' cff_review_notice' : ' cff_discount_notice';
+		}
 		?>
 
-        <div id="cff-notifications" class="<?php echo ($type == 'review' || $type == 'discount') ? 'cff_' . $type . '_notice' : ''; ?>">
-			<a 
-				class="dismiss" 
+        <div id="cff-notifications" class="<?php echo esc_attr( $class ); ?>">
+			<a
+				class="dismiss"
 				title="<?php echo esc_attr__( 'Dismiss this message', 'custom-facebook-feed' ); ?>"
 				<?php echo ( $type == 'review' || $type == 'discount' ) ? 'href="'. esc_attr( $close_href ) .'"' : '' ?>
 			>

@@ -5,7 +5,7 @@ class YOP_Poll_Widget extends WP_Widget {
 			'yop_poll_widget',
 			__( 'YOP Poll', 'yop-poll' ),
 			array(
-				'description' => __( 'Add a poll to your site', 'yop-poll' )
+				'description' => esc_html__( 'Add a poll to your site', 'yop-poll' )
 			)
 		);
 	}
@@ -21,36 +21,36 @@ class YOP_Poll_Widget extends WP_Widget {
 		$polls = YOP_Poll_Polls::get_names();
 		?>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'title' ); ?>">
-				<?php _e( 'Title:', 'yop-poll' ); ?>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>">
+				<?php esc_attr_e( 'Title:', 'yop-poll' ); ?>
 			</label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'title' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'title' ) ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>" />
 		</p>
 		<p>
-			<label for = "<?php echo $this->get_field_id( 'poll_id' ); ?>">
+			<label for = "<?php echo esc_attr( $this->get_field_id( 'poll_id' ) ); ?>">
 				<?php
-				_e( 'Poll to display', 'yop-poll' );
+				esc_attr_e( 'Poll to display', 'yop-poll' );
 				?>
 			</label>
-			<select id = "<?php echo $this->get_field_id( 'poll_id' ); ?>" name = "<?php echo $this->get_field_name( 'poll_id' ); ?>" class = "widefat">
+			<select id = "<?php echo esc_attr( $this->get_field_id( 'poll_id' ) ); ?>" name = "<?php echo esc_attr( $this->get_field_name( 'poll_id' ) ); ?>" class = "widefat">
 				<option value = "0" <?php selected( 0, $poll_id ); ?>>
-					<?php _e( 'Don\'t Display Poll (Disable)', 'yop-poll' ); ?>
+					<?php esc_attr_e( 'Don\'t Display Poll (Disable)', 'yop-poll' ); ?>
 				</option>
 				<option value = "-1" <?php selected( -1, $poll_id ); ?>>
-					<?php _e( 'Display Current Active Poll', 'yop-poll' ); ?>
+					<?php esc_attr_e( 'Display Current Active Poll', 'yop-poll' ); ?>
 				</option>
 				<option value = "-2" <?php selected( -2, $poll_id ); ?>>
-					<?php _e( 'Display Latest Poll', 'yop-poll' ); ?>
+					<?php esc_attr_e( 'Display Latest Poll', 'yop-poll' ); ?>
 				</option>
 				<option value = "-3" <?php selected( -3, $poll_id ); ?>>
-					<?php _e( 'Display Random Poll', 'yop-poll' ); ?>
+					<?php esc_attr_e( 'Display Random Poll', 'yop-poll' ); ?>
 				</option>
 				<?php
 				if ( 0 < count( $polls ) ) {
-					foreach( $polls as $poll ) {
+					foreach ( $polls as $poll ) {
 						?>
-						<option value="<?php echo $poll->id;?>" <?php selected( $poll->id, $poll_id ); ?>>
-							<?php echo $poll->name;?>
+						<option value="<?php echo esc_attr( $poll->id ); ?>" <?php selected( $poll->id, $poll_id ); ?>>
+							<?php echo esc_html( $poll->name ); ?>
 						</option>
 						<?php
 					}
@@ -59,10 +59,10 @@ class YOP_Poll_Widget extends WP_Widget {
 			</select>
 		</p>
 		<p>
-			<label for="<?php echo $this->get_field_id( 'tracking_id' ); ?>">
-				<?php _e( 'Tracking Id:', 'yop-poll' ); ?>
+			<label for="<?php echo esc_attr( $this->get_field_id( 'tracking_id' ) ); ?>">
+				<?php esc_attr_e( 'Tracking Id:', 'yop-poll' ); ?>
 			</label>
-			<input class="widefat" id="<?php echo $this->get_field_id( 'tracking_id' ); ?>" name="<?php echo $this->get_field_name( 'tracking_id' ); ?>" type="text" value="<?php echo esc_attr( $tracking_id ); ?>" />
+			<input class="widefat" id="<?php echo esc_attr( $this->get_field_id( 'tracking_id' ) ); ?>" name="<?php echo esc_attr( $this->get_field_name( 'tracking_id' ) ); ?>" type="text" value="<?php echo esc_attr( $tracking_id ); ?>" />
 		</p>
 		<?php
 	}
@@ -74,7 +74,7 @@ class YOP_Poll_Widget extends WP_Widget {
 		return $instance;
 	}
 	public function widget( $args, $instance ) {
-		$title = ( isset( $instance['title'] ) ) ? esc_attr( $instance['title'] ) : __("");
+		$title = ( isset( $instance['title'] ) ) ? esc_attr( $instance['title'] ) : esc_html__( '' );
 		$poll_id = ( isset( $instance['poll_id'] ) ) ? intval( $instance['poll_id'] ) : -1;
 		$tracking_id = ( isset( $instance['tracking_id'] ) ) ? $instance['tracking_id'] : '';
 		$public = new YOP_Poll_Public();
@@ -86,11 +86,11 @@ class YOP_Poll_Widget extends WP_Widget {
                 'show_results' => ''
 			)
 		);
-		echo $args['before_widget'];
-		echo $args['before_title'];
-		print( $title );
-		echo $args['after_title'];
+		echo wp_kses_post( $args['before_widget'] );
+		echo wp_kses_post( $args['before_title'] );
+		print( wp_kses_post( $title ) );
+		echo wp_kses_post( $args['after_title'] );
 		print( $poll_output );
-		echo $args['after_widget'];
+		echo wp_kses_post( $args['after_widget'] );
 	}
 }

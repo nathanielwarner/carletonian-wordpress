@@ -137,7 +137,7 @@ $controls->data['search_page'] ++;
                 <?php $controls->text('search_text', 45, __('Search text', 'newsletter')); ?>
 
                 <?php _e('filter by', 'newsletter') ?>:
-                <?php $controls->select('search_status', array('' => 'Any status', 'T' => 'Test subscribers', 'C' => 'Confirmed', 'S' => 'Not confirmed', 'U' => 'Unsubscribed', 'B' => 'Bounced')); ?>
+                <?php $controls->select('search_status', ['' => 'Any status', 'T' => 'Test subscribers', 'C' => 'Confirmed', 'S' => 'Not confirmed', 'U' => 'Unsubscribed', 'B' => 'Bounced', 'P'=> TNP_User::get_status_label('P')]); ?>
                 <?php $controls->lists_select('search_list', '-'); ?>
 
                 <?php $controls->button('search', __('Search', 'newsletter')); ?>
@@ -186,53 +186,27 @@ $controls->data['search_page'] ++;
                 <?php foreach ($list as $s) { ?>
                     <tr>
                         <th scope="row" class="check-column" style="vertical-align: middle"><input class="tnp-selector" type="checkbox" name="ids[]" value="<?php echo $s->id; ?>"/></td>
-                        <td>
-                            <?php echo $s->id; ?>
-                        </td>
-
-                        <td>
-                            <?php echo esc_html($s->email); ?>
-                        </td>
-                        
-                        <td>
-                            <?php echo esc_html($s->name); ?> <?php echo esc_html($s->surname); ?>
-                        </td>
-
-                        <td>
-                            <small>
-                                <?php echo $this->get_user_status_label($s) ?>
-                            </small>
-                        </td>
-
+                        <td><?php echo $s->id; ?></td>
+                        <td><?php echo esc_html($s->email); ?></td>
+                        <td><?php echo esc_html($s->name); ?> <?php echo esc_html($s->surname); ?></td>
+                        <td><small><?php echo $this->get_user_status_label($s, true) ?></small></td>
                         <?php if (isset($options['show_preferences']) && $options['show_preferences'] == 1) { ?>
-                            <td>
-                                <small>
-                                    <?php
+                            <td><small><?php
                                     $lists = $this->get_lists();
                                     foreach ($lists as $item) {
                                         $l = 'list_' . $item->id;
                                         if ($s->$l == 1)
                                             echo esc_html($item->name) . '<br>';
                                     }
-                                    ?>
-                                </small>
-                            </td>
+                                    ?></small></td>
                         <?php } ?>
-
-                        <td>
-                            <?php $controls->button_icon_edit($this->get_admin_page_url('edit') . '&amp;id=' . $s->id)?>
-                        </td>
-                        
-                        <td style="white-space: nowrap">
-                            <?php $controls->button_icon_delete($s->id); ?>
-                       
+                        <td><?php $controls->button_icon_edit($this->get_admin_page_url('edit') . '&amp;id=' . $s->id)?></td>
+                        <td style="white-space: nowrap"><?php $controls->button_icon_delete($s->id); ?>
                             <?php if ($s->status == "C") { ?>
                             <?php $controls->button_icon('resend_welcome', 'fa-redo', __('Resend welcome', 'newsletter'), $s->id, true); ?>
                             <?php } else { ?>
                             <?php $controls->button_icon('resend', 'fa-redo', __('Resend activation', 'newsletter'), $s->id, true); ?>
-                            <?php } ?>
-                        </td>
-
+                            <?php } ?></td>
                     </tr>
                 <?php } ?>
             </table>

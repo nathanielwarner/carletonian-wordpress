@@ -59,6 +59,16 @@ class Easy_Updates_Manager_Notices extends Updraft_Notices_1_0 {
 				'supported_positions' => $this->anywhere,
 				'validity_function' => 'is_updraftcentral_installed',
 			),
+			'subscriben' => array(
+				'prefix' => '',
+				'title' => 'Subscriben ' .__('by', 'stops-core-theme-and-plugin-updates'). ' UpdraftPlus',
+				'text' => __("The WordPress subscription extension for WooCommerce store owners.", "stops-core-theme-and-plugin-updates"),
+				'image' => 'notices/subscriben.png',
+				'button_link' => 'https://subscribenplugin.com',
+				'button_meta' => 'read_more',
+				'dismiss_time' => 'dismiss_page_notice_until',
+				'supported_positions' => $this->anywhere,
+			),
 			'wp-optimize' => array(
 				'prefix' => '',
 				'title' => 'WP-Optimize',

@@ -77,7 +77,7 @@ class CFF_Settings_Tab{
 				'type' 				=> 'select',
 				'id' 				=> 'showpostsby',
 				'heading' 			=> __( 'Display posts by', 'custom-facebook-feed' ),
-				'condition'			=> ['feedtype' => ['timeline']],
+				'condition'			=> ['feedtype' => ['timeline'],'pagetype' => ['page']],
 				'conditionHide'		=> true,
 				'ajaxAction' 		=> 'feedFlyPreview',
 				'options'			=> [

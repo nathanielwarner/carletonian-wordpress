@@ -3,12 +3,12 @@ class YOP_Poll_Other_Answers {
     private static $errors_present = false,
                 $case_sensitive = false;
     public static function add( $poll_id, $element_id, $vote_id, $answer ) {
-        if ( true === isset ( $poll_id ) && ( $poll_id > 0 ) ) {
+        if ( true === isset( $poll_id ) && ( $poll_id > 0 ) ) {
             if ( true === isset( $vote_id ) && ( $vote_id > 0 ) ) {
                 $data = array(
-                    'poll_id' => $poll_id,
-                    'element_id' => $element_id,
-                    'vote_id' => $vote_id,
+                    'poll_id' => sanitize_text_field( $poll_id ),
+                    'element_id' => sanitize_text_field( $element_id ),
+                    'vote_id' => sanitize_text_field( $vote_id ),
                     'answer' => sanitize_text_field( $answer ),
                     'status' => 'active',
                     'added_date' => current_time( 'mysql' ),

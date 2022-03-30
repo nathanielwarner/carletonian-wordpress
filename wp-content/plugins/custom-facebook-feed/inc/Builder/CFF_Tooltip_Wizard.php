@@ -57,17 +57,17 @@ class CFF_Tooltip_Wizard {
 	public function enqueues() {
 
 		wp_enqueue_style(
-			'tooltipster',
+			'cff-tooltipster-css',
 			CFF_PLUGIN_URL . 'admin/builder/assets/css/tooltipster.css',
 			null,
-			'4.2.6'
+			CFFVER
 		);
 
 		wp_enqueue_script(
-			'tooltipster',
+			'cff-tooltipster-js',
 			CFF_PLUGIN_URL . 'admin/builder/assets/js/jquery.tooltipster.min.js',
 			[ 'jquery' ],
-			'4.2.6',
+			CFFVER,
 			true
 		);
 

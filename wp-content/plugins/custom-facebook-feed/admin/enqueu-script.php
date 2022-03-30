@@ -7,6 +7,14 @@ require_once trailingslashit( CFF_PLUGIN_DIR ) . 'inc/Admin/CFF_Install_Skin.php
 
 
 function cff_ppca_token_check_flag() {
+	check_ajax_referer( 'cff_nonce' , 'cff_nonce');
+
+	$cap = current_user_can( 'manage_custom_facebook_feed_options' ) ? 'manage_custom_facebook_feed_options' : 'manage_options';
+	$cap = apply_filters( 'cff_settings_pages_capability', $cap );
+	if ( ! current_user_can( $cap ) ) {
+		wp_send_json_error(); // This auto-dies.
+	}
+
     if( get_transient('cff_ppca_access_token_invalid') ){
         print_r(true);
     } else {

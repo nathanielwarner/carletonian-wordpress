@@ -94,7 +94,6 @@ class CFF_Theme_CSS {
 		$url = $this->file;
 		$args = array(
 			'timeout' => 60,
-			'sslverify' => false
 		);
 		$response = wp_remote_get( esc_url_raw( $url ), $args );
 

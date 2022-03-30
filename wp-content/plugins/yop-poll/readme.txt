@@ -3,8 +3,8 @@ Contributors: yourownprogrammer
 Donate Link: https://www.yop-poll.com
 Tags: booth, create poll, poll plugin, poll, polls, wordpress poll, vote, voting, survey, polling, yop poll, yop
 Requires at least: 3.3
-Tested up to: 5.8
-Stable tag: trunk
+Tested up to: 5.9
+Stable tag: 6.3.9
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.htm
 
@@ -119,8 +119,46 @@ You can have only one question per poll.
 
 == Changelog ==
 
+= 6.3.9 =
+* fixed issue that was preventing editing polls on windows servers
+
+= 6.3.8 =
+* updated sanitization for templates and skins
+* fixed issue with total votes and answers not displaying correctly
+
+= 6.3.7 =
+* fixed issue with built in captcha
+* updated sanitization for built in captcha
+* updated the design of built in captcha
+
+= 6.3.6 =
+* fixed issue with polls not displaying correctly in widgets
+* fixed archive shortcode to only display published polls
+* added more sanitization for arrays and objects
+
+= 6.3.5 =
+* fixed typo in 4.x importer causing issues on some installs
+
+= 6.3.4 =
+* fixed issue with google reCaptcha v2 Invisible
+* fixed issue with archive shortcode displaying polls not started when "show" is set to active
+* fixed issue with displaying incorrect message when a poll is ended
+* added support for hCaptcha
+* added more sanitization
+
+= 6.3.3 =
+* fixed XSS bugs
+* fixed issue with validating email addresses when sending notifications for votes
+* added tags for messages - [strong][/strong], [u][/u], [i][/i], [br]
+* added tags for elements - [strong][/strong], [u][/u], [i][/i], [br]
+* added support for links in the consent text
+* added new option for yop_poll_archive shortcode. Now it supports displaying only polls that accept votes. Usage - [yop_poll_archive sort=date_added/num_votes sortdir=asc/desc max=0/number-desired show=active/ended/all]
+
+= 6.3.2 =
+* fixed issue with migrating polls from versions lower than 6.0.0
+
 = 6.3.1 =
-* fixed XSS bug - Props to Vishnupriya Ilango of Fortinet's FortiGuard Labs
+* fixed XSS bugs CVE-2021-24833, CVE-2021-24834 - Props to Vishnupriya Ilango of Fortinet's FortiGuard Labs
 * fixed issue with custom styles not applying to custom fields
 
 = 6.3.0 =

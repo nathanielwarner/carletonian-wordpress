@@ -3,6 +3,7 @@
 namespace Yoast\WP\Lib;
 
 use wpdb;
+use ReturnTypeWillChange;
 use Yoast\WP\SEO\Config\Migration_Status;
 
 /**
@@ -48,6 +49,7 @@ use Yoast\WP\SEO\Config\Migration_Status;
  * @see http://www.php-fig.org/psr/psr-1/
  */
 class ORM implements \ArrayAccess {
+
 	/*
 	 * --- CLASS CONSTANTS ---
 	 */
@@ -2225,11 +2227,11 @@ class ORM implements \ArrayAccess {
 	/**
 	 * Inserts multiple rows in a single query. Expects new rows as it's a strictly insert function, not an update one.
 	 *
+	 * @example From the Indexable_Link_Builder class: $this->seo_links_repository->query()->insert_many( $links );
+	 *
 	 * @param array $models Array of model instances to be inserted.
 	 *
 	 * @return bool True for successful insert, false for failed.
-	 *
-	 * @example From the Indexable_Link_Builder class: $this->seo_links_repository->query()->insert_many( $links );
 	 *
 	 * @throws \InvalidArgumentException Invalid instances to be inserted.
 	 * @throws \InvalidArgumentException Instance to be inserted is not a new one.
@@ -2378,7 +2380,7 @@ class ORM implements \ArrayAccess {
 	/**
 	 * Builds a bulk INSERT query.
 	 *
-	 * @param array $models Array of model instances to be inserted.
+	 * @param array $models             Array of model instances to be inserted.
 	 * @param array $dirty_column_names Array of dirty fields to be used in INSERT.
 	 *
 	 * @return string The insert query.
@@ -2453,6 +2455,7 @@ class ORM implements \ArrayAccess {
 	 *
 	 * @return bool Whether the data has the key.
 	 */
+	#[ReturnTypeWillChange]
 	public function offsetExists( $key ) {
 		return \array_key_exists( $key, $this->data );
 	}
@@ -2464,6 +2467,7 @@ class ORM implements \ArrayAccess {
 	 *
 	 * @return array|mixed|null The value.
 	 */
+	#[ReturnTypeWillChange]
 	public function offsetGet( $key ) {
 		return $this->get( $key );
 	}
@@ -2474,6 +2478,7 @@ class ORM implements \ArrayAccess {
 	 * @param string|int $key   Key.
 	 * @param mixed      $value Value.
 	 */
+	#[ReturnTypeWillChange]
 	public function offsetSet( $key, $value ) {
 		if ( \is_null( $key ) ) {
 			return;
@@ -2486,6 +2491,7 @@ class ORM implements \ArrayAccess {
 	 *
 	 * @param mixed $key Key.
 	 */
+	#[ReturnTypeWillChange]
 	public function offsetUnset( $key ) {
 		unset( $this->data[ $key ] );
 		unset( $this->dirty_fields[ $key ] );

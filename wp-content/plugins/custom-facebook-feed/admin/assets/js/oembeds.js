@@ -1,4 +1,5 @@
 var oembeds_data = {
+    nonce: cff_oembeds.nonce,
     genericText: cff_oembeds.genericText,
     images: cff_oembeds.images,
     modal: cff_oembeds.modal,
@@ -66,7 +67,6 @@ var cffoEmbeds = new Vue({
             })
             .then(response => response.json())
             .then(data => {
-                console.log(data);
                 if( data.success == false ) {
                     this.installerStatus = 'error'
                 }
@@ -95,6 +95,7 @@ var cffoEmbeds = new Vue({
             this.fboEmbedLoader = true;
             let data = new FormData();
             data.append( 'action', 'disable_facebook_oembed' );
+            data.append( 'nonce', this.nonce );
             fetch(cff_oembeds.ajax_handler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -115,6 +116,7 @@ var cffoEmbeds = new Vue({
             this.instaoEmbedLoader = true;
             let data = new FormData();
             data.append( 'action', 'disable_instagram_oembed' );
+            data.append( 'nonce', this.nonce );
             fetch(cff_oembeds.ajax_handler, {
                 method: "POST",
                 credentials: 'same-origin',
@@ -157,7 +159,7 @@ var cffoEmbeds = new Vue({
 
         /**
          * Toggle Sticky Widget view
-         * 
+         *
          * @since 4.0
          */
          toggleStickyWidget: function() {

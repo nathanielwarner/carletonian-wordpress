@@ -1,5 +1,12 @@
 <?php
 $text_style = TNP_Composer::get_text_style($options, '', $composer);
+if ($media) {
+    $image_width = (int) (600 - $options['block_padding_left'] - $options['block_padding_right']) / 2;
+    if ($options['logo_width']) {
+        $image_width = min($options['logo_width'], $image_width);
+    }
+    $media->set_width($image_width);
+}
 ?>
 <style>
     .text {
@@ -27,7 +34,7 @@ $text_style = TNP_Composer::get_text_style($options, '', $composer);
             <?php if ($media) { ?>
                 <?php echo TNP_Composer::image($media) ?>
             <?php } else { ?>
-            [logo]
+                [logo]
             <?php } ?>
         </td>
         <td width="50%" align="center" style="padding: 10px">

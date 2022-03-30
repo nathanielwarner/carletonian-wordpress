@@ -8,9 +8,14 @@ class YOP_Poll_Public {
 		add_action( 'init', array( $this, 'create_shortcodes' ) );
 	}
 	public function clean_recaptcha_url( $tag, $handle ) {
-		if ( 'yop-reCaptcha' !== $handle )
-        	return $tag;
-		return str_replace( "&#038;", "&", str_replace( ' src', ' async defer src', $tag ) );
+		if (
+			( 'yop-reCaptcha' === $handle ) ||
+			( 'yop-hCaptcha' === $handle )
+		) {
+			return str_replace( '&#038;', '&', str_replace( ' src', ' async defer src', $tag ) );
+		} else {
+			return $tag;
+		}
 	}
 	public function load_dependencies() {
 		$this->load_styles();
@@ -23,9 +28,9 @@ class YOP_Poll_Public {
 		$plugin_frontend_js_file = '';
 		$plugin_settings = YOP_Poll_Settings::get_all_settings();
 		if ( false !== $plugin_settings ) {
-			$plugin_settings_decoded = unserialize( $plugin_settings);
+			$plugin_settings_decoded = unserialize( $plugin_settings );
 		}
-		if ( TRUE === YOP_POLL_TEST_MODE ) {
+		if ( true === YOP_POLL_TEST_MODE ) {
 			$plugin_frontend_js_file = 'yop-poll-public-' . YOP_POLL_VERSION . '.js';
 		} else {
 			$plugin_frontend_js_file = 'yop-poll-public-' . YOP_POLL_VERSION . '.min.js';
@@ -36,7 +41,7 @@ class YOP_Poll_Public {
 			( 'yes' === $plugin_settings_decoded['integrations']['reCaptcha']['enabled'] ) &&
 			( '' !== $plugin_settings_decoded['integrations']['reCaptcha']['site-key'] ) &&
 			( '' !== $plugin_settings_decoded['integrations']['reCaptcha']['secret-key'] )
-			) || 
+			) ||
 		(
 			( true === isset( $plugin_settings_decoded['integrations']['reCaptchaV2Invisible']['enabled'] ) ) &&
 			( 'yes' === $plugin_settings_decoded['integrations']['reCaptchaV2Invisible']['enabled'] ) &&
@@ -67,6 +72,27 @@ class YOP_Poll_Public {
 				/* done adding reCaptcha */
 			}
 		}
+		if (
+			( true === isset( $plugin_settings_decoded['integrations']['hCaptcha']['enabled'] ) ) &&
+			( 'yes' === $plugin_settings_decoded['integrations']['hCaptcha']['enabled'] ) &&
+			( '' !== $plugin_settings_decoded['integrations']['hCaptcha']['site-key'] ) &&
+			( '' !== $plugin_settings_decoded['integrations']['hCaptcha']['secret-key'] )
+		) {
+			//add hCaptcha code since it's enabled
+			wp_register_script(
+				'yop-hCaptcha',
+				add_query_arg(
+					array(
+						'render' => 'explicit',
+						'onload' => 'YOPPollOnLoadHCaptcha',
+					),
+					'https://js.hcaptcha.com/1/api.js',
+					'',
+					null
+				)
+			);
+			wp_enqueue_script( 'yop-hCaptcha');
+		}
 		$captcha_accessibility_description = str_replace( '[STRONG]', '<strong>', esc_html( $plugin_settings_decoded['messages']['captcha']['accessibility-description'] ) );
 		$captcha_accessibility_description = str_replace( '[/STRONG]', '</strong>', $captcha_accessibility_description );
 		$captcha_explanation = str_replace( '[STRONG]', '<strong>', esc_html( $plugin_settings_decoded['messages']['captcha']['explanation'] ) );
@@ -86,7 +112,10 @@ class YOP_Poll_Public {
 					),
 					'reCaptchaV3' => array(
 						'siteKey' => isset( $plugin_settings_decoded['integrations']['reCaptchaV3']['site-key'] ) ? $plugin_settings_decoded['integrations']['reCaptchaV3']['site-key'] : ''
-					)
+					),
+					'hCaptcha' => array(
+						'siteKey' => isset( $plugin_settings_decoded['integrations']['hCaptcha']['site-key'] ) ? $plugin_settings_decoded['integrations']['hCaptcha']['site-key'] : ''
+					),
 				),
 				'captchaParams' => array(
 					'imgPath' => YOP_POLL_URL . 'public/assets/img/',
@@ -99,21 +128,73 @@ class YOP_Poll_Public {
 					'refreshTitle' => esc_html( $plugin_settings_decoded['messages']['captcha']['refresh-title'] )
 				),
 				'voteParams' => array(
-					'invalidPoll' => esc_html( $plugin_settings_decoded['messages']['voting']['invalid-poll'] ),
-					'noAnswersSelected' => esc_html( $plugin_settings_decoded['messages']['voting']['no-answers-selected'] ),
-					'minAnswersRequired' => esc_html( $plugin_settings_decoded['messages']['voting']['min-answers-required'] ),
-					'maxAnswersRequired' => esc_html( $plugin_settings_decoded['messages']['voting']['max-answers-required'] ),
-					'noAnswerForOther' => esc_html( $plugin_settings_decoded['messages']['voting']['no-answer-for-other'] ),
-					'noValueForCustomField' => esc_html( $plugin_settings_decoded['messages']['voting']['no-value-for-custom-field'] ),
-					'consentNotChecked' => esc_html( $plugin_settings_decoded['messages']['voting']['consent-not-checked'] ),
-					'noCaptchaSelected' => esc_html( $plugin_settings_decoded['messages']['voting']['no-captcha-selected'] ),
-					'thankYou' => esc_html( $plugin_settings_decoded['messages']['voting']['thank-you'] )
+					'invalidPoll' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['invalid-poll'] )
+					),
+					'noAnswersSelected' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['no-answers-selected'] )
+					),
+					'minAnswersRequired' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['min-answers-required'] )
+					),
+					'maxAnswersRequired' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['max-answers-required'] )
+					),
+					'noAnswerForOther' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['no-answer-for-other'] )
+					),
+					'noValueForCustomField' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['no-value-for-custom-field'] )
+					),
+					'consentNotChecked' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['consent-not-checked'] )
+					),
+					'noCaptchaSelected' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['no-captcha-selected'] )
+					),
+					'thankYou' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['voting']['thank-you'] )
+					)
 				),
-				'resultsParams'=> array(
-					'singleVote' => esc_html( $plugin_settings_decoded['messages']['results']['single-vote'] ),
-					'multipleVotes' => esc_html( $plugin_settings_decoded['messages']['results']['multiple-votes'] ),
-					'singleAnswer' => esc_html( $plugin_settings_decoded['messages']['results']['single-answer'] ),
-					'multipleAnswers' => esc_html( $plugin_settings_decoded['messages']['results']['multiple-answers'] )
+				'resultsParams' => array(
+					'singleVote' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['results']['single-vote'] )
+					),
+					'multipleVotes' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['results']['multiple-votes'] )
+					),
+					'singleAnswer' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['results']['single-answer'] )
+					),
+					'multipleAnswers' => str_replace(
+						array( '[strong]', '[/strong]', '[i]', '[/i]', '[u]', '[/u]', '[br]' ),
+						array( '<strong>', '</strong>', '<i>', '</i>', '<u>', '</u>', '</br>' ),
+						esc_html( $plugin_settings_decoded['messages']['results']['multiple-answers'] )
+					)
 				)
 			)
 		));
@@ -121,7 +202,7 @@ class YOP_Poll_Public {
 	public function load_translation() {
 		load_plugin_textdomain( 'yop-poll', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 	}
-	public function create_shortcodes()  {
+	public function create_shortcodes() {
 		add_shortcode( 'yop_poll', array( $this, 'parse_regular_shortcode' ) );
 		add_shortcode( 'yop_poll_archive', array( $this, 'parse_archive_shortcode' ) );
 		add_shortcode( 'yop_poll_stats', array( $this, 'parse_stats_shortcode' ) );
@@ -142,14 +223,15 @@ class YOP_Poll_Public {
 			array(
 				'max' => 0,
 				'sort' => 'date_added',
-				'sortdir' => 'asc'
+				'sortdir' => 'asc',
+				'show' => 'all'
 			),
 			$atts, 'yop_poll_archive'
 		);
 		return $this->generate_polls_for_archive( $params );
 	}
-	public function generate_poll( $params ){
-		if ( isset( $params['id'] ) && ( '' !== $params['id'] ) && ( '0' != $params['id'] )  ) {
+	public function generate_poll( $params ) {
+		if ( isset( $params['id'] ) && ( '' !== $params['id'] ) && ( '0' != $params['id'] ) ) {
 			$poll = '';
 			$poll_ready_for_output = '';
 			$params['loaded_with'] = '1';
@@ -167,7 +249,7 @@ class YOP_Poll_Public {
 					break;
 				}
 				default: {
-					$poll_id = $params['id'];
+					$poll_id = sanitize_text_field( wp_unslash( $params['id'] ) );
 					break;
 				}
 			}
@@ -204,7 +286,7 @@ class YOP_Poll_Public {
 		}
 	}
 	public static function generate_poll_for_ajax( $poll_id, $params ) {
-		$poll_ready_for_output ='';
+		$poll_ready_for_output = '';
 		$params['loaded_with'] = '2';
 		if ( isset( $poll_id ) ) {
 			$poll = YOP_Poll_Polls::get_info( $poll_id );
@@ -232,46 +314,52 @@ class YOP_Poll_Public {
 	}
 	public function generate_polls_for_archive( $params ) {
 		$order_by = '';
-		switch ( $params['sort']) {
+		switch ( $params['sort'] ) {
 			case 'date_added': {
-				$order_by = "ORDER BY `added_date`";
+				$order_by = 'ORDER BY `added_date`';
 				break;
 			}
 			case 'num_votes': {
-				$order_by = "ORDER BY `total_submits`";
+				$order_by = 'ORDER BY `total_submits`';
 				break;
 			}
 			default: {
-				$order_by = "ORDER BY `added_date`";
+				$order_by = 'ORDER BY `added_date`';
 				break;
 			}
 		}
 		switch ( $params['sortdir'] ) {
 			case 'asc': {
-				$order_by .= " ASC";
+				$order_by .= ' ASC';
 				break;
 			}
 			case 'desc': {
-				$order_by .= " DESC";
+				$order_by .= ' DESC';
 				break;
 			}
 			default: {
-				$order_by .= " ASC";
+				$order_by .= ' ASC';
 				break;
 			}
 		}
 		$limit = '';
-		if ( 0 !== $params['max'] ) {
-			$limit = "LIMIT %d";
-			$query = "SELECT `id` FROM `{$GLOBALS['wpdb']->yop_poll_polls}` WHERE `status` != 'deleted' {$order_by} LIMIT %d";
-			$query_ready =$GLOBALS['wpdb']->prepare(
-				$query,
-				$params['max']
-			);
-		} else {
-			$query_ready = "SELECT `id` FROM `{$GLOBALS['wpdb']->yop_poll_polls}` WHERE `status` != 'deleted' {$order_by}";
+		switch ( $params['show'] ) {
+			case 'all': {
+				$polls = YOP_Poll_Polls::get_all_polls_for_archive( $params, $order_by );
+				break;
+			}
+			case 'active': {
+				$polls = YOP_Poll_Polls::get_active_polls_for_archive( $params, $order_by );
+				break;
+			}
+			case 'ended': {
+				$polls = YOP_Poll_Polls::get_ended_polls_for_archive( $params, $order_by );
+				break;
+			}
+			default: {
+				$polls = YOP_Poll_Polls::get_all_polls_for_archive( $params, $order_by );
+			}
 		}
-        $polls = $GLOBALS['wpdb']->get_results( $query_ready, ARRAY_A );
 		$content = '';
         if ( count( $polls ) > 0 ) {
             foreach ( $polls as $poll ) {
@@ -294,7 +382,7 @@ class YOP_Poll_Public {
 					YOP_Poll_Polls::reset_stats_for_poll( $poll['id'] );
 					switch ( $poll['resetPollStatsEveryPeriod'] ) {
 						case 'hours': {
-							$unit_multiplier = 60 *60;
+							$unit_multiplier = 60 * 60;
 							break;
 						}
 						case 'days': {
